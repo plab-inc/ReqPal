@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import {serve} from "https://deno.land/std@0.168.0/http/server.ts";
 
 interface Product {
   qualification: string;
@@ -20,7 +20,7 @@ serve(async (req)=>{
     
     const contentType = req.headers.get('Content-Type');
     if (!contentType || !contentType.includes('multipart/form-data')) {
-        const response = new Response(JSON.stringify({
+        return new Response(JSON.stringify({
             error: "Invalid Content-Type. Must be multipart/form-data."
         }), {
             headers: {
@@ -28,13 +28,12 @@ serve(async (req)=>{
             },
             status: 415
         });
-        return response;
     }
 
     const formData = await req.formData();
     const csvFile: File = formData.get('csv') as File;
     if (!csvFile) {
-        const response = new Response(JSON.stringify({
+        return new Response(JSON.stringify({
             error: "No CSV file found in form data."
         }), {
             headers: {
@@ -42,12 +41,11 @@ serve(async (req)=>{
             },
             status: 422
         });
-        return response;
     }
     
     const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
     if (!validateCSVFormat(csvString)) {
-        const response = new Response(JSON.stringify({
+        return new Response(JSON.stringify({
             error: "Invalid CSV format"
         }), {
             headers: {
@@ -55,7 +53,6 @@ serve(async (req)=>{
             },
             status: 400
         });
-        return response;
     }
     
     const json = convertCSVtoJSONString(csvString);
@@ -109,16 +106,13 @@ function checkRequirementColumns(line: string, products: number) {
             return false;
         }
     }
-    [
-        'Req-ID',
-        'Titel',
-        'Beschreibung'
-    ].every((field, index)=>{
-        if (requirementFields[index] !== field) {
-            console.error('Invalid requirement colum titles');
-            return false;
+    const correctTitles = ['Req-ID', 'Titel', 'Beschreibung'];
+    for (let i = 0; i < correctTitles.length; i++) {
+        if (requirementFields[i] !== correctTitles[i]) {
+            console.error('Invalid requirement column titles');
+            break;
         }
-    });
+    }
     return true;
 }
 function convertCSVtoJSONString(csvString: string): RequirementsJSON {
