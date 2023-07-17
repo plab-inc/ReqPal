@@ -1,0 +1,15 @@
+# Dependencies
+/node_modules
+
+# Build directory
+/dist
+
+# Cache directories
+/.cache
+/.output
+
+# Env files (You might want to ignore only specific env files, depending on your needs)
+/.env
+
+# Logs
+/*.log*
