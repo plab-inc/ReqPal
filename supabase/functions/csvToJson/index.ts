@@ -110,7 +110,7 @@ function checkRequirementColumns(line: string, products: number) {
     for (let i = 0; i < correctTitles.length; i++) {
         if (requirementFields[i] !== correctTitles[i]) {
             console.error('Invalid requirement column titles');
-            break;
+            return false;
         }
     }
     return true;
