@@ -27,6 +27,7 @@
     "sass": "^1.60.0",
     "supabase": "^1.77.9",
     "typescript": "^5.0.0",
+    "unplugin-vue-components": "^0.25.1",
     "vite": "^4.4.0",
     "vite-plugin-vuetify": "^1.0.2",
     "vue-tsc": "^1.8.5"
