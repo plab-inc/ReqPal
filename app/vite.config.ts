@@ -8,7 +8,7 @@ import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import { resolve } from 'path';
-import { readdirSync } from 'fs';
+import { existsSync } from 'node:fs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -31,10 +31,10 @@ export default defineConfig({
     components({
       dirs: [],
       resolvers: [
-        name => readdirSync(resolve(__dirname, './src/components'))
-            .filter(file => file.endsWith('.component.vue'))
-            .map(file => file.split('.')[0])
-            .includes(name) ? { name: "default", from: `@/components/${name}.component.vue` } : undefined,
+        (name) => {
+          const path = resolve(__dirname, './src/components', `${name}.component.vue`)
+          return existsSync(path) ? path : undefined
+        }
       ],
     }),
   ],
