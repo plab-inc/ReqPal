@@ -28,7 +28,7 @@ const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
 onMounted(() => {
-  if(authStore.session) {
+  if(authStore.session && authStore.user) {
     profileStore.fetchProfile(authStore.user?.id);
   }
 });
