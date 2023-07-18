@@ -1,10 +1,13 @@
 // Plugins
 import vue from '@vitejs/plugin-vue'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import components from 'unplugin-vue-components/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import  path  from 'path'
+import {ComponentResolver} from "unplugin-vue-components";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,6 +21,9 @@ export default defineConfig({
       styles: {
         configFile: 'src/styles/settings.scss',
       },
+    }),
+    components({
+      dts: true,
     }),
   ],
   define: { 'process.env': {} },
