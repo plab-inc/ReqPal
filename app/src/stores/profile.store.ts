@@ -1,5 +1,3 @@
-// profile.store.ts
-import { defineStore } from 'pinia';
 import { supabase } from '@/plugins/supabase';
 
 interface ProfileState {
