@@ -2,6 +2,7 @@
 import vue from '@vitejs/plugin-vue'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import components from 'unplugin-vue-components/vite'
+import autoImport from 'unplugin-auto-import/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
@@ -21,6 +22,14 @@ export default defineConfig({
       styles: {
         configFile: 'src/styles/settings.scss',
       },
+    }),
+    autoImport({
+      dts: true,
+      imports:
+          ['vue', 'vue-router', 'pinia',
+            //{ from: 'vue-router', imports: ['Router, RouteLocationRaw'], type: true },
+            //{ from: 'vue-router', imports: ['createRouter', 'createWebHistory'] }
+          ],
     }),
     components({
       dirs: [],

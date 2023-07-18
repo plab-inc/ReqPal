@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia';
-
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
 interface AlertStore {
   id: string;
