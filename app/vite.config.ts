@@ -6,8 +6,8 @@ import components from 'unplugin-vue-components/vite'
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import  path  from 'path'
-import {ComponentResolver} from "unplugin-vue-components";
+import { resolve } from 'path';
+import { readdirSync } from 'fs';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,7 +23,13 @@ export default defineConfig({
       },
     }),
     components({
-      dts: true,
+      dirs: [],
+      resolvers: [
+        name => readdirSync(resolve(__dirname, './src/components'))
+            .filter(file => file.endsWith('.component.vue'))
+            .map(file => file.split('.')[0])
+            .includes(name) ? { name: "default", from: `@/components/${name}.component.vue` } : undefined,
+      ],
     }),
   ],
   define: { 'process.env': {} },
