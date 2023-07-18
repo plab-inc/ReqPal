@@ -1,4 +1,3 @@
-import { defineStore } from 'pinia';
 import { supabase } from '@/plugins/supabase';
 import { Session, User } from '@supabase/supabase-js'
 

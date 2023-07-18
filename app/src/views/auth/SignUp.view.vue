@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+
 import { useAuthStore } from "@/stores/auth.store";
 import { addErrorAlert } from "@/services/alert.service";
 import { requiredRule, matchingPasswordsRule, emailRule } from "@/utils/validationRules";
