@@ -67,7 +67,6 @@ const router: Router = createRouter({
 async function isAuthenticated() {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw error;
-  console.log(data.session);
   return data.session !== null;
 }
 
