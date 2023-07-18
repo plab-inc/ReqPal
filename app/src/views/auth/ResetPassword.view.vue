@@ -34,7 +34,6 @@
 
 <script setup lang="ts">
 
-import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { requiredRule, emailRule } from "@/utils/validationRules";
 import { addErrorAlert, addInfoAlert } from "@/services/alert.service";
