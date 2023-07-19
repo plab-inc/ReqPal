@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Navigation/>
+    <Navigation></Navigation>
     <v-main>
       <div v-for="alert in alertStore.alerts" :key="alert.id">
         <v-alert :type="alert.type" closable @click:close="alertStore.removeAlert(alert.id)" >
@@ -15,11 +15,14 @@
         </v-sheet>
       </v-container>
     </v-main>
-    <Footer/>
+
+    <Footer></Footer>
   </v-app>
 </template>
 
 <script lang="ts" setup>
+import Navigation from "@/components/Navigation.component.vue";
+import Footer from "@/components/Footer.component.vue";
 import { useAlertStore } from "@/stores/alert.store";
 
 const alertStore = useAlertStore();

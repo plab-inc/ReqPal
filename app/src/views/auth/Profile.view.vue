@@ -20,3 +20,7 @@
     </v-row>
   </v-container>
 </template>
+
+<script setup lang="ts">
+import Upload from "@/components/Upload.component.vue";
+</script>
