@@ -36,7 +36,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const selectedAnswers = ref([]);
+const selectedAnswers = ref<boolean[]>([]);
 const submitted = ref(false);
 
 function submitAnswers(): void {
