@@ -2,10 +2,6 @@
 /node_modules
 *.lock
 
-# Auto imports
-auto-imports.d.ts
-components.d.ts
-
 # Build directory
 /dist
 
