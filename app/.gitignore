@@ -5,6 +5,9 @@
 # Build directory
 /dist
 
+# Build info
+tsconfig.tsbuildinfo
+
 # Cache directories
 /.cache
 /.output
