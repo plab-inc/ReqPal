@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import router from "@/router";
 
+import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { requiredRule, emailRule } from "@/utils/validationRules";
 import { addErrorAlert } from "@/services/alert.service";
