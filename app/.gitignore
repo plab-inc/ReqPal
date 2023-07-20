@@ -5,6 +5,9 @@
 # Build directory
 /dist
 
+# Auto imports
+auto-imports.d.ts
+
 # Build info
 tsconfig.tsbuildinfo
 

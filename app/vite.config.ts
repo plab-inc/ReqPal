@@ -18,8 +18,11 @@ export default defineConfig({
       autoImport: true,
     }),
     autoImport({
-      dts: true,
-        imports: ['vue'],
+      dts: "src/auto-imports.d.ts",
+      imports: [
+        'vue',
+        'vue-router',
+      ],
         vueTemplate: true,
         injectAtEnd: true
     }),
