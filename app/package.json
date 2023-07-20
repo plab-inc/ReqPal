@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "type-check": "vue-tsc --noEmit",
+    "type-check": "vue-tsc --noEmit --composite false",
     "preview": "vite preview",
     "lint": "eslint .. --fix --ignore-path .gitignore"
   },
@@ -25,6 +25,8 @@
     "@vue/eslint-config-typescript": "^11.0.0",
     "eslint": "^8.0.0",
     "eslint-plugin-vue": "^9.0.0",
+    "unimport": "^3.0.14",
+    "unplugin-auto-import": "^0.16.6",
     "sass": "^1.60.0",
     "supabase": "^1.77.9",
     "typescript": "^5.0.0",

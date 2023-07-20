@@ -1,6 +1,7 @@
 // Plugins
 import vue from '@vitejs/plugin-vue'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import autoImport from 'unplugin-auto-import/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
@@ -15,6 +16,12 @@ export default defineConfig({
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
       autoImport: true,
+    }),
+    autoImport({
+      dts: true,
+        imports: ['vue'],
+        vueTemplate: true,
+        injectAtEnd: true
     }),
   ],
   define: { 'process.env': {} },
