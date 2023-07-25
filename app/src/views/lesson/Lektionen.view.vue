@@ -1,22 +1,29 @@
 <template>
-    <h1>Lektionen</h1>
+    <h1>Alle Lektionen</h1>
+
   <div>
-    <MultipleChoice :question=question :answers=answers
-    ></MultipleChoice>
+    <div v-if="!lessonStore.lessons.length">
+        <p>Loading Lessons...</p>
+    </div>
+
+    <ul>
+    <li v-for="lesson in lessons">
+      <router-link :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }">
+        {{ lesson.title }}
+        {{ lesson.description }}
+      </router-link>
+    </li>
+    </ul>
   </div>
+
 </template>
   
 <script setup lang="ts">
 
-import MultipleChoice from "@/components/MultipleChoice.component.vue";
+import {useLessonStore} from "@/stores/lesson.store";
 
-const question = "Welche dieser Aussagen stimmen?"
-
-const answers = [
-  { text: "Option 1", right: false, id: 1 },
-  { text: "Option 2", right: true, id: 2 },
-  { text: "Option 3", right: false, id: 3 },
-]
+const lessonStore = useLessonStore();
+const lessons = lessonStore.lessons;
 
 </script>
   

@@ -3,16 +3,16 @@
     <v-container>
       <h2>Multiple Choice Test</h2>
 
-      <p>{{ props.question }}</p>
+      <p>{{ props.question.description }}</p>
       <p v-if="submitted">Lösung:</p>
 
-      <v-checkbox v-for="(answer, index) in props.answers"
+      <v-checkbox v-for="(answer, index) in props.question.answers"
                   :key="index"
-                  :label="answer.text"
+                  :label="answer.description"
                   v-model="selectedAnswers[index]"
-                  :class="{ 'right': submitted && selectedAnswers[index] == answer.right,
+                  :class="{ 'right': submitted && selectedAnswers[index] == answer.isCorrect,
                 'disabled': submitted,
-                'wrong': submitted && selectedAnswers[index] != answer.right}">
+                'wrong': submitted && selectedAnswers[index] != answer.isCorrect}">
       </v-checkbox>
 
       <v-btn @click="submitAnswers">Submit</v-btn>
@@ -23,16 +23,10 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-
-interface Answer {
-  text: string,
-  right: boolean,
-  id: number
-}
+import {Question} from "@/stores/lesson.store";
 
 interface Props {
-  question: string;
-  answers: Answer[];
+  question: Question;
 }
 
 const props = defineProps<Props>();
@@ -44,7 +38,7 @@ function submitAnswers(): void {
 }
 
 onMounted(() => {
-  selectedAnswers.value = props.answers.map(() => false);
+  selectedAnswers.value = props.question.answers.map(() => false);
 });
 
 </script>
