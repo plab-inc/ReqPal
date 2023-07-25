@@ -12,6 +12,17 @@ export const useProfileStore = defineStore('profile', {
   }),
   actions: {
     async fetchProfile(userId: string) {
+
+      const storedUserData = localStorage.getItem('user');
+
+      if (storedUserData) {
+        const userData = JSON.parse(storedUserData);
+        if(userId === userData.userId) {
+          this.username = userData.username;
+          return;
+        }
+      }
+
       const { data, error } = await supabase
         .from('profiles')
         .select('username')
@@ -23,6 +34,13 @@ export const useProfileStore = defineStore('profile', {
       if (data) {
         this.username = data.username;
       }
+
+      const userData = {
+        userId: userId,
+        username: this.username
+      };
+
+      localStorage.setItem('user', JSON.stringify(userData));
     },
   },
 });
