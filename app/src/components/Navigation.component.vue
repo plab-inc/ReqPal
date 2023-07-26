@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth.store";
 import { useProfileStore } from "@/stores/profile.store";
-import { onMounted } from "vue";
+
 import router from "@/router";
 
 const links = ["Dashboard", "Lektionen", "Szenario", "Feedback"];

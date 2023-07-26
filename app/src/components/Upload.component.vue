@@ -39,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
 import { addWarningAlert } from "@/services/alert.service";
 import { useTheme } from "vuetify";
 
