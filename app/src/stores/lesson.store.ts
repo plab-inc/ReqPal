@@ -9,16 +9,26 @@ export interface Answer {
 }
 
 export interface Question {
-    id: string;
+    id: number;
     lessonId: string;
     type: string;
     description: string;
     answers: Answer[];
-    userResults: Answer[];
+    userResults: Result | null;
+}
+
+export interface Result {
+    wholeAnswerIsCorrect: boolean;
+    results: answerResults[];
+}
+
+export interface answerResults {
+    id: string,
+    answerIsCorrect: boolean;
 }
 
 interface Lesson {
-    id: string;
+    id: number;
     title: string;
     description: string;
 }
@@ -43,9 +53,8 @@ export const useLessonStore = defineStore('lesson', {
             return state.lessons;
         },
 
-        getLessonById: (state) => (id: string) => {
+        getLessonById: (state) => {
             return state.currentLesson;
-            //return state.lessons?.find(lesson => lesson.id === id) || null;
         },
 
         getAllQuestions: state => {
@@ -82,7 +91,7 @@ export const useLessonStore = defineStore('lesson', {
             this.lessonsLoaded = true;
         },
 
-        async fetchLessonById(lessonId: string) {
+        async fetchLessonById(lessonId: number) {
             console.log("Fetching single lessons")
 
             const lessonJson = localStorage.getItem('lesson');
@@ -138,51 +147,19 @@ export const useLessonStore = defineStore('lesson', {
                         type: questionData.type,
                         description: questionData.description,
                         answers: questionData.answers,
-                        userResults: [],
+                        userResults: null,
                     };
                 });
                 localStorage.setItem('questions', JSON.stringify(this.currentQuestions));
             }
         },
-        /*
-        async compareUserAnswers(userAnswerJson: Answer[], questionAnswerJson: Answer[]) {
-            console.log("Comparing answers: ")
-            this.userResults = [];
 
-            const {data, error} = await supabase.rpc('check_user_answers', {
-                user_answers_json: userAnswerJson,
-                correct_answers_json: questionAnswerJson,
-            })
-
-            if (error) {
-                console.error(error)
-            }
-
-            if (data) {
-                console.log("Finished comparing:");
-
-                data.forEach((resultData: string) => {
-                    const parsed = JSON.parse(resultData);
-                    const newAnswer: Answer = {
-                        id: parsed.id,
-                        description: parsed.description,
-                        isCorrect: parsed.is_correct,
-                    };
-                    this.userResults.push(newAnswer);
-                })
-
-                console.log("result: " + this.userResults);
-            }
-        },*/
-
-        async compareUserAnswers(userAnswerJson: Answer[], questionAnswerJson: Answer[], questionId: string) {
-            const data = await compareUserAnswers(userAnswerJson, questionAnswerJson);
-            console.log(data)
+        async compareUserAnswers(userAnswerJson: Answer[], questionId: number) {
+            const data = await compareUserAnswers(userAnswerJson, questionId);
             if (data) {
                 const question = this.currentQuestions.find((q) => q.id === questionId);
                 if (question) {
                     question.userResults = data;
-                    console.log("compared to: " + question.userResults)
                 }
             }
         }

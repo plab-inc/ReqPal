@@ -1,24 +1,29 @@
 import {supabase} from "@/plugins/supabase";
-import {Answer} from "@/stores/lesson.store";
+import {Answer, Result} from "@/stores/lesson.store";
 
-export async function compareUserAnswers(userAnswerJson: Answer[], questionAnswerJson: Answer[]) {
+export async function compareUserAnswers(userAnswerJson: Answer[], questionId: number) {
 
-    const userResults: Answer[] = [];
+    let userResult: Result | undefined;
 
-    const {data, error} = await supabase.rpc('check_user_answers', {
-        user_answers_json: userAnswerJson,
-        correct_answers_json: questionAnswerJson,
+    const {data, error} = await supabase.rpc('compare_solution_answer_whole_correct', {
+        answer_json: userAnswerJson,
+        question_id: questionId,
     })
 
     if (error) {
         console.error(error)
     }
 
-    if (data) {
-        data.forEach((resultData: string) => {
-            const parsed = JSON.parse(resultData);
-            userResults.push(parsed);
-        })
-        return userResults;
-    }
+    userResult = data;
+    /*
+    if (userResult) {
+        console.log(userResult)
+        const results = userResult.results;
+
+        results.forEach((answerResult: { id: string, answerIsCorrect: boolean }) => {
+            const {id, answerIsCorrect} = answerResult;
+            console.log(answerResult);
+        });
+    }*/
+    return userResult;
 }
