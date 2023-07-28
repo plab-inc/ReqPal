@@ -10,12 +10,13 @@
                   :key="index"
                   :label="answer.description"
                   v-model="selectedAnswers[index]"
-                  :class="{ 'right': submitted && selectedAnswers[index] == answer.isCorrect,
+                  :class="{ 'right': submitted && (props.question.userResults?.[index]?.solution ?? false),
                 'disabled': submitted,
-                'wrong': submitted && selectedAnswers[index] != answer.isCorrect}">
+                'wrong': submitted && !(props.question.userResults?.[index]?.solution ?? false)}">
       </v-checkbox>
 
       <v-btn @click="submitAnswers">Submit</v-btn>
+
     </v-container>
   </v-card>
 </template>
@@ -23,7 +24,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {Question} from "@/stores/lesson.store";
+import {Answer, Question, useLessonStore} from "@/stores/lesson.store";
 
 interface Props {
   question: Question;
@@ -32,8 +33,21 @@ interface Props {
 const props = defineProps<Props>();
 const selectedAnswers = ref<boolean[]>([]);
 const submitted = ref(false);
+const lessonStore = useLessonStore();
 
-function submitAnswers(): void {
+async function submitAnswers(): Promise<void> {
+  if (submitted.value) return;
+
+  const userAnswers = props.question.answers.map((answer, index) => {
+    return {
+      id: answer.id,
+      description: answer.description,
+      solution: selectedAnswers.value[index],
+    };
+  });
+
+  //lessonStore.compareUserAnswers(JSON.stringify(userAnswers), JSON.stringify(props.question.answers));
+  await lessonStore.compareUserAnswers(userAnswers, props.question.answers, props.question.id);
   submitted.value = true;
 }
 
