@@ -10,9 +10,9 @@
                   :key="index"
                   :label="answer.description"
                   v-model="selectedAnswers[index]"
-                  :class="{ 'right': submitted && (props.question.userResults?.[index]?.solution ?? false),
+                  :class="{ 'right': submitted && (props.question.userResults?.wholeAnswerIsCorrect || (props.question.userResults?.results[index]?.answerIsCorrect ?? false)),
                 'disabled': submitted,
-                'wrong': submitted && !(props.question.userResults?.[index]?.solution ?? false)}">
+                'wrong': submitted && !(props.question.userResults?.results[index]?.answerIsCorrect ?? false)}">
       </v-checkbox>
 
       <v-btn @click="submitAnswers">Submit</v-btn>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {Answer, Question, useLessonStore} from "@/stores/lesson.store";
+import {Question, useLessonStore} from "@/stores/lesson.store";
 
 interface Props {
   question: Question;
@@ -46,8 +46,7 @@ async function submitAnswers(): Promise<void> {
     };
   });
 
-  //lessonStore.compareUserAnswers(JSON.stringify(userAnswers), JSON.stringify(props.question.answers));
-  await lessonStore.compareUserAnswers(userAnswers, props.question.answers, props.question.id);
+  await lessonStore.compareUserAnswers(userAnswers, props.question.id);
   submitted.value = true;
 }
 
