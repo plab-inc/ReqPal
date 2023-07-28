@@ -1,15 +1,14 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
-import {compareUserAnswers} from "@/services/lesson.service";
 
-export interface Answer {
-    id: string,
+export interface Lesson {
+    id: string;
+    title: string;
     description: string;
-    solution: boolean;
 }
 
 export interface Question {
-    id: number;
+    id: string;
     lessonId: string;
     type: string;
     description: string;
@@ -17,20 +16,20 @@ export interface Question {
     userResults: Result | null;
 }
 
-export interface Result {
+interface Answer {
+    id: string,
+    description: string;
+    solution: boolean;
+}
+
+interface Result {
     wholeAnswerIsCorrect: boolean;
     results: answerResults[];
 }
 
-export interface answerResults {
+interface answerResults {
     id: string,
     answerIsCorrect: boolean;
-}
-
-interface Lesson {
-    id: number;
-    title: string;
-    description: string;
 }
 
 interface LessonState {
@@ -68,10 +67,8 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async fetchLessons() {
-            console.log("Checking to fetch lessons")
             if (this.lessonsLoaded) return;
 
-            console.log("Fetching lessons...")
             const {data, error} = await supabase
                 .from('lessons')
                 .select('id, title, description')
@@ -91,14 +88,15 @@ export const useLessonStore = defineStore('lesson', {
             this.lessonsLoaded = true;
         },
 
-        async fetchLessonById(lessonId: number) {
-            console.log("Fetching single lessons")
+        async fetchLessonById(lessonId: string) {
 
             const lessonJson = localStorage.getItem('lesson');
             if (lessonJson) {
-                console.log("Used local storage")
-                this.currentLesson = JSON.parse(lessonJson);
-                if (this.currentLesson?.id == lessonId) return;
+                const tempLesson: Lesson = JSON.parse(lessonJson);
+                if (tempLesson.id.toString() === lessonId) {
+                    this.currentLesson = tempLesson;
+                    return;
+                }
             }
 
             const {data, error} = await supabase
@@ -116,18 +114,20 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async fetchQuestionsForLesson(lessonId: string) {
-            console.log("Fetching questions for lesson")
+            this.currentQuestions = [];
 
             const questionsJson = localStorage.getItem('questions');
             if (questionsJson) {
-                console.log("Used local storage")
-                this.currentQuestions = JSON.parse(questionsJson);
-                const result = this.currentQuestions?.every(question => {
-                    return question.lessonId === lessonId;
-                });
+                const tempQuestions: Question[] = JSON.parse(questionsJson);
 
-                if (result === true) {
-                    return;
+                if (tempQuestions.length > 0) {
+                    const result = tempQuestions?.every(question => {
+                        return question.lessonId === lessonId;
+                    });
+                    if (result === true) {
+                        this.currentQuestions = tempQuestions;
+                        return;
+                    }
                 }
             }
 
@@ -139,7 +139,6 @@ export const useLessonStore = defineStore('lesson', {
             if (error) throw error;
 
             if (data) {
-
                 this.currentQuestions = data.map((questionData: any) => {
                     return {
                         id: questionData.id,
@@ -154,8 +153,17 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        async compareUserAnswers(userAnswerJson: Answer[], questionId: number) {
-            const data = await compareUserAnswers(userAnswerJson, questionId);
+        async compareUserAnswers(userAnswerJson: Answer[], questionId: string) {
+
+            const {data, error} = await supabase.rpc('mc_compare_solution', {
+                answer_json: userAnswerJson,
+                question_id: questionId,
+            })
+
+            if (error) {
+                console.error(error)
+            }
+
             if (data) {
                 const question = this.currentQuestions.find((q) => q.id === questionId);
                 if (question) {
