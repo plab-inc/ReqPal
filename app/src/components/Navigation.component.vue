@@ -2,9 +2,10 @@
   <v-app-bar color="surface" class="px-3" flat>
     <v-app-bar-title @click="$router.push('/')"> Lernplattform </v-app-bar-title>
 
+
     <v-tabs centered color="surface">
-      <v-tab variant="plain" v-for="link in links" :key="link" :to="link">
-        {{ link }}
+      <v-tab variant="plain" v-for="(link, index) in links" :key="index" :to="{ name: link.name}">
+        {{ link.title }}
       </v-tab>
     </v-tabs>
     <v-spacer></v-spacer>
@@ -23,7 +24,18 @@ import { useProfileStore } from "@/stores/profile.store";
 
 import router from "@/router";
 
-const links = ["Dashboard", "Lektionen", "Szenario", "Feedback"];
+interface Link {
+  title: string,
+  name: string
+}
+
+const links: Link[] = [
+  { title: "Dashboard", name: "Dashboard" },
+  { title: "Lektionen", name: "AllLessons" },
+  { title: "Szenario", name: "Szenario" },
+  { title: "Feedback", name: "Feedback" }
+];
+
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
