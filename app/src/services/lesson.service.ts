@@ -5,7 +5,7 @@ export async function compareUserAnswers(userAnswerJson: Answer[], questionId: n
 
     let userResult: Result | undefined;
 
-    const {data, error} = await supabase.rpc('compare_solution_answer_whole_correct', {
+    const {data, error} = await supabase.rpc('mc_compare_solution', {
         answer_json: userAnswerJson,
         question_id: questionId,
     })
