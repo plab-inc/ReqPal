@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <RouterView />
+    <RouterView/>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { supabase } from "@/plugins/supabase";
-import { useAuthStore } from "@/stores/auth.store";
+import {supabase} from "@/plugins/supabase";
+import {useAuthStore} from "@/stores/auth.store";
 import {useLessonStore} from "@/stores/lesson.store";
 
 supabase.auth.onAuthStateChange((event, session) => {
