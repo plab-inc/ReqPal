@@ -14,7 +14,7 @@ const routes = [
       {
         path: "/lessons",
         name: "AllLessons",
-        component: () => import("@/views/lesson/Lektionen.view.vue"),
+        component: () => import("@/views/lesson/Lessons.view.vue"),
       },
       {
         path: "/lessons/:lessonId",
