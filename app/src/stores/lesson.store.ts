@@ -1,36 +1,6 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
-
-export interface Lesson {
-    id: string;
-    title: string;
-    description: string;
-}
-
-export interface Question {
-    id: string;
-    lessonId: string;
-    type: string;
-    description: string;
-    answers: Answer[];
-    userResults: Result | null;
-}
-
-interface Answer {
-    id: string,
-    description: string;
-    solution: boolean;
-}
-
-interface Result {
-    wholeAnswerIsCorrect: boolean;
-    results: answerResults[];
-}
-
-interface answerResults {
-    id: string,
-    answerIsCorrect: boolean;
-}
+import {Answer, Lesson, Question} from "@/types/lesson.types";
 
 interface LessonState {
     lessons: Lesson[];
