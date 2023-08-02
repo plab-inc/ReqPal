@@ -24,7 +24,8 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import {Question, useLessonStore} from "@/stores/lesson.store";
+import {useLessonStore} from "@/stores/lesson.store";
+import {Question} from "@/types/lesson.types";
 
 interface Props {
   question: Question;
