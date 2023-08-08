@@ -128,13 +128,11 @@ router.beforeEach(async (to, from) => {
 });
 
 async function fetchLessons() {
-    console.log("Fetching lessons before entering the view...")
     const lessonStore = useLessonStore();
     return lessonStore.fetchLessons();
 }
 
 async function fetchLessonById(lessonId: string | RouteParamValue[]) {
-    console.log("Fetching lesson before entering the view...")
     const lessonStore = useLessonStore();
     await lessonStore.fetchLessonById(<string>lessonId);
     if (lessonStore.currentLesson) {
