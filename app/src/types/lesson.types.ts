@@ -9,7 +9,6 @@ export interface Question {
     lessonId: string;
     type: string;
     description: string;
-    answers: Answer[];
     userResults: Result | null;
 }
 
