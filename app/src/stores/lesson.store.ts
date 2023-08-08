@@ -66,7 +66,6 @@ export const useLessonStore = defineStore('lesson', {
 
             if (lesson) {
                 if(lesson.id.toString() === lessonId) {
-                    console.log("used local storage: " + lesson)
                     this.currentLesson = lesson;
                     return;
                 }
@@ -83,7 +82,6 @@ export const useLessonStore = defineStore('lesson', {
             if (data) {
                 this.currentLesson = data;
                 lessonFromLocalStorage.value = data;
-                console.log("set local storage to: " + lessonFromLocalStorage.value)
             }
         },
 
@@ -99,7 +97,6 @@ export const useLessonStore = defineStore('lesson', {
                         return question.lessonId === lessonId;
                     });
                     if (result === true) {
-                        console.log("used storage")
                         this.currentQuestions = questions;
                         return;
                     }
@@ -127,7 +124,6 @@ export const useLessonStore = defineStore('lesson', {
 
                     this.currentQuestions = newQuestions;
                     questionsFromStorage.value = newQuestions;
-                    console.log("set storage")
                 }
             }
         },
