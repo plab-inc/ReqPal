@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
 import {Answer, Lesson, Question} from "@/types/lesson.types";
+import {useStorage} from "@vueuse/core";
 
 interface LessonState {
     lessons: Lesson[];
@@ -60,11 +61,13 @@ export const useLessonStore = defineStore('lesson', {
 
         async fetchLessonById(lessonId: string) {
 
-            const lessonJson = localStorage.getItem('lesson');
-            if (lessonJson) {
-                const tempLesson: Lesson = JSON.parse(lessonJson);
-                if (tempLesson.id.toString() === lessonId) {
-                    this.currentLesson = tempLesson;
+            const lessonFromLocalStorage = useStorage('lesson', { id: '', title: '', description: '' });
+            const lesson: Lesson = lessonFromLocalStorage.value;
+
+            if (lesson) {
+                if(lesson.id.toString() === lessonId) {
+                    console.log("used local storage: " + lesson)
+                    this.currentLesson = lesson;
                     return;
                 }
             }
@@ -79,23 +82,25 @@ export const useLessonStore = defineStore('lesson', {
 
             if (data) {
                 this.currentLesson = data;
-                localStorage.setItem('lesson', JSON.stringify(data));
+                lessonFromLocalStorage.value = data;
+                console.log("set local storage to: " + lessonFromLocalStorage.value)
             }
         },
 
         async fetchQuestionsForLesson(lessonId: string) {
             this.currentQuestions = [];
 
-            const questionsJson = localStorage.getItem('questions');
-            if (questionsJson) {
-                const tempQuestions: Question[] = JSON.parse(questionsJson);
-
-                if (tempQuestions.length > 0) {
-                    const result = tempQuestions?.every(question => {
+            const questionsFromStorage = useStorage('questions', [{ id: '', lessonId: '', type: '', description: '',
+                userResults: null}]);
+            const questions: Question[] = questionsFromStorage.value;
+            if (questions) {
+                if (questions.length > 0) {
+                    const result = questions?.every(question => {
                         return question.lessonId === lessonId;
                     });
                     if (result === true) {
-                        this.currentQuestions = tempQuestions;
+                        console.log("used storage")
+                        this.currentQuestions = questions;
                         return;
                     }
                 }
@@ -109,16 +114,21 @@ export const useLessonStore = defineStore('lesson', {
             if (error) throw error;
 
             if (data) {
-                this.currentQuestions = data.map((questionData: any) => {
-                    return {
-                        id: questionData.id,
-                        lessonId: lessonId,
-                        type: questionData.type,
-                        description: questionData.description,
-                        userResults: null,
-                    };
-                });
-                localStorage.setItem('questions', JSON.stringify(this.currentQuestions));
+                if (data) {
+                    const newQuestions = data.map((questionData: any) => {
+                        return {
+                            id: questionData.id,
+                            lessonId: lessonId,
+                            type: questionData.type,
+                            description: questionData.description,
+                            userResults: null,
+                        };
+                    });
+
+                    this.currentQuestions = newQuestions;
+                    questionsFromStorage.value = newQuestions;
+                    console.log("set storage")
+                }
             }
         },
 
