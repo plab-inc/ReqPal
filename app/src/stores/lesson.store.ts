@@ -103,7 +103,7 @@ export const useLessonStore = defineStore('lesson', {
 
             const {data, error} = await supabase
                 .from('questions')
-                .select('id, description, type, answers')
+                .select('id, description, type')
                 .eq('lesson_id', lessonId)
 
             if (error) throw error;
@@ -115,12 +115,28 @@ export const useLessonStore = defineStore('lesson', {
                         lessonId: lessonId,
                         type: questionData.type,
                         description: questionData.description,
-                        answers: questionData.answers,
                         userResults: null,
                     };
                 });
                 localStorage.setItem('questions', JSON.stringify(this.currentQuestions));
             }
+        },
+
+        async fetchAnswersForQuestion(questionId: string) {
+
+            const {data, error} = await supabase
+                .from('questions')
+                .select('answers')
+                .eq('id', questionId)
+
+            if (error) throw error;
+
+            if (data) {
+                const answersData = data.map((item: any) => item.answers);
+                return answersData.flat();
+            }
+
+            return [];
         },
 
         async compareUserAnswers(userAnswerJson: Answer[], questionId: string) {
