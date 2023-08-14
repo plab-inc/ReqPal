@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-container>
-      <h2>Multiple Choice Test</h2>
+      <h2>Multiple Choice</h2>
 
       <div v-if="answers">
 
         <p>{{ props.question.description }}</p>
-        <p v-if="submitted">Lösung:</p>
+        <p v-if="submitted">Solution:</p>
 
         <v-checkbox v-for="(answer, index) in answers"
                     :key="index"
@@ -50,13 +50,13 @@ async function submitAnswers(): Promise<void> {
       };
     });
 
-    await lessonStore.compareUserAnswers(userAnswers, props.question.id);
+    await lessonStore.compareUserMCAnswers(userAnswers, props.question.id);
     submitted.value = true;
   }
 }
 
 onBeforeMount(async () => {
-  answers.value = await lessonStore.fetchAnswersForQuestion(props.question.id);
+  answers.value = await lessonStore.fetchMCAnswersForQuestion(props.question.id);
   if (answers.value) selectedAnswers.value = answers.value.map(() => false);
 });
 
