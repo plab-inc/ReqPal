@@ -18,11 +18,6 @@ export interface Question {
     userResults: Result | null;
 }
 
-export interface MultipleChoice {
-    id: string;
-    questionId: string;
-}
-
 export interface Answer {
     id: string,
     description: string;
