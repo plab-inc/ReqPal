@@ -45,10 +45,6 @@ export const useLessonStore = defineStore('lesson', {
     },
 
     actions: {
-        init() {
-            this.fetchLessons();
-        },
-
         async fetchLessons() {
             if (this.lessonsLoaded) return;
 
@@ -101,7 +97,7 @@ export const useLessonStore = defineStore('lesson', {
             this.currentQuestions = [];
 
             const questionsFromStorage = useStorage('questions',
-                [{ id: '', lessonId: '', questionType: null, description: '', userResults: null}]);
+                [{id: '', lessonId: '', questionType: null, description: '', userResults: null}]);
             const questions: Question[] = questionsFromStorage.value;
             if (questions) {
                 if (questions.length > 0) {
@@ -141,12 +137,12 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        async fetchAnswersForQuestion(questionId: string) {
+        async fetchMCAnswersForQuestion(questionId: string) {
 
             const {data, error} = await supabase
-                .from('questions')
+                .from('multiple_choice_questions')
                 .select('answers')
-                .eq('id', questionId)
+                .eq('questionId', questionId)
 
             if (error) throw error;
 
@@ -158,7 +154,25 @@ export const useLessonStore = defineStore('lesson', {
             return [];
         },
 
-        async compareUserAnswers(userAnswerJson: Answer[], questionId: string) {
+        async fetchTrueFalseAnswersForQuestion(questionId: string) {
+
+            const {data, error} = await supabase
+                .from('true_false_questions')
+                .select('solution')
+                .eq('questionId', questionId)
+                .single()
+
+            if (error) throw error;
+
+            if (data) {
+                return data.solution;
+            }
+
+            return null;
+        },
+
+
+        async compareUserMCAnswers(userAnswerJson: Answer[], questionId: string) {
 
             const {data, error} = await supabase.rpc('mc_compare_solution', {
                 answer_json: userAnswerJson,
