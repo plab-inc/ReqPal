@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
-import {Answer, Lesson, Question} from "@/types/lesson.types";
+import {Answer, Lesson, Question, questionTypes} from "@/types/lesson.types";
 import {useStorage} from "@vueuse/core";
 
 interface LessonState {
@@ -29,6 +29,18 @@ export const useLessonStore = defineStore('lesson', {
 
         getAllQuestions: state => {
             return state.currentQuestions;
+        },
+
+        getMultipleChoiceQuestions: state => {
+            return state.currentQuestions.filter(question => question.questionType === questionTypes.MultipleChoice);
+        },
+
+        getTrueOrFalseQuestions: state => {
+            return state.currentQuestions.filter(question => question.questionType === questionTypes.TrueOrFalse);
+        },
+
+        getDragAndDropQuestions: state => {
+            return state.currentQuestions.filter(question => question.questionType === questionTypes.DragAndDrop);
         },
     },
 
@@ -61,11 +73,11 @@ export const useLessonStore = defineStore('lesson', {
 
         async fetchLessonById(lessonId: string) {
 
-            const lessonFromLocalStorage = useStorage('lesson', { id: '', title: '', description: '' });
+            const lessonFromLocalStorage = useStorage('lesson', {id: '', title: '', description: ''});
             const lesson: Lesson = lessonFromLocalStorage.value;
 
             if (lesson) {
-                if(lesson.id.toString() === lessonId) {
+                if (lesson.id.toString() === lessonId) {
                     this.currentLesson = lesson;
                     return;
                 }
@@ -88,8 +100,8 @@ export const useLessonStore = defineStore('lesson', {
         async fetchQuestionsForLesson(lessonId: string) {
             this.currentQuestions = [];
 
-            const questionsFromStorage = useStorage('questions', [{ id: '', lessonId: '', type: '', description: '',
-                userResults: null}]);
+            const questionsFromStorage = useStorage('questions',
+                [{ id: '', lessonId: '', questionType: null, description: '', userResults: null}]);
             const questions: Question[] = questionsFromStorage.value;
             if (questions) {
                 if (questions.length > 0) {
@@ -105,7 +117,7 @@ export const useLessonStore = defineStore('lesson', {
 
             const {data, error} = await supabase
                 .from('questions')
-                .select('id, description, type')
+                .select('id, description, question_type')
                 .eq('lesson_id', lessonId)
 
             if (error) throw error;
@@ -113,11 +125,12 @@ export const useLessonStore = defineStore('lesson', {
             if (data) {
                 if (data) {
                     const newQuestions = data.map((questionData: any) => {
+
                         return {
                             id: questionData.id,
                             lessonId: lessonId,
-                            type: questionData.type,
                             description: questionData.description,
+                            questionType: questionData.question_type,
                             userResults: null,
                         };
                     });
