@@ -147,8 +147,18 @@ export const useLessonStore = defineStore('lesson', {
             if (error) throw error;
 
             if (data) {
-                const answersData = data.map((item: any) => item.answers);
-                return answersData.flat();
+                let answers: Answer[] = [];
+                data.forEach(d => {
+                    d.answers.forEach((a: Answer) => {
+                        let answer: Answer = {
+                            id: a.id,
+                            description: a.description
+                        }
+                        answers.push(answer);
+                    })
+                })
+
+                return answers;
             }
 
             return [];
@@ -174,7 +184,7 @@ export const useLessonStore = defineStore('lesson', {
 
         async compareUserMCAnswers(userAnswerJson: Answer[], questionId: string) {
 
-            const {data, error} = await supabase.rpc('mc_compare_solution', {
+            const {data, error} = await supabase.rpc('mc_compare_solution_new', {
                 answer_json: userAnswerJson,
                 question_id: questionId,
             })
