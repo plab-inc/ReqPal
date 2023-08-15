@@ -21,7 +21,6 @@ export interface Question {
 export interface Answer {
     id: string,
     description: string;
-    solution: boolean;
 }
 
 export interface Result {
