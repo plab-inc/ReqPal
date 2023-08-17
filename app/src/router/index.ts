@@ -2,12 +2,12 @@ import {
     createRouter,
     createWebHistory,
     NavigationGuardNext,
-    RouteLocationNormalized,
-    RouteParamValue,
+    RouteLocationNormalized, RouteLocationRaw,
     Router
 } from "vue-router";
-import {supabase} from '@/plugins/supabase';
-import {useLessonStore} from "@/stores/lesson.store";
+
+import { requiresAuth } from "@/middlewares/auth.middleware";
+import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
 
 const routes = [
     {
@@ -23,32 +23,21 @@ const routes = [
                 path: "/lessons",
                 name: "AllLessons",
                 component: () => import("@/views/lesson/Lessons.view.vue"),
-                beforeEnter: async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-                    try {
-                        await fetchLessons();
-                        next();
-                    } catch (error) {
-                        next("/error");
-                    }
-                },
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
             },
             {
                 path: "/lessons/:lessonId",
                 name: "LessonDetails",
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
-                beforeEnter: async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-                    const lessonId = to.params.lessonId;
-                    try {
-                        const lessonData = await fetchLessonById(lessonId);
-                        if (!lessonData) {
-                            next("/error");
-                            return;
-                        }
-                        next();
-                    } catch (error) {
-                        next("/error");
-                    }
-                },
+                meta: {
+                    middleware: [
+                        fetchLessonById
+                    ]
+                }
             },
             {
                 path: "/szenario",
@@ -64,18 +53,15 @@ const routes = [
                 path: "/login",
                 name: "LogIn",
                 component: () => import("@/views/auth/LogIn.view.vue"),
-                meta: {requiresNoSession: true},
             },
             {
                 path: "/signup",
                 name: "SignUp",
-                meta: {requiresNoSession: true},
                 component: () => import("@/views/auth/SignUp.view.vue"),
             },
             {
                 path: "/resetPassword",
                 name: "ResetPassword",
-                meta: {requiresNoSession: true},
                 component: () => import("@/views/auth/ResetPassword.view.vue"),
             },
             {
@@ -87,19 +73,21 @@ const routes = [
                 path: "/profile",
                 name: "Profile",
                 component: () => import("@/views/auth/Profile.view.vue"),
-                meta: {requiresAuth: true},
+                meta: {
+                    middleware: [
+                        requiresAuth
+                    ]
+                },
             },
             {
                 path: "/error",
                 name: "Error",
                 component: () => import("@/views/Error.view.vue"),
-                meta: {requiresNoSession: true},
             },
             {
                 path: "/:pathMatch(.*)*",
                 name: "Error",
                 component: () => import("@/views/Error.view.vue"),
-                meta: {requiresNoSession: true},
             }
         ],
     },
@@ -110,35 +98,25 @@ const router: Router = createRouter({
     routes,
 });
 
-async function isAuthenticated() {
-    const {data, error} = await supabase.auth.getSession();
-    if (error) throw error;
-    return data.session !== null;
-}
+router.beforeEach((to, from, next) => {
+    if (to.meta.middleware) {
+        const middlewares = Array.isArray(to.meta.middleware) ? to.meta.middleware : [to.meta.middleware];
+        return runMiddleware(middlewares, to, from, next);
+    }
 
-router.beforeEach(async (to, from) => {
-    if (
-        to.name !== "Login" && to.meta.requiresAuth && !(await isAuthenticated())) {
-        return {name: "Home"};
-    }
-    if (
-        to.meta.requiresNoSession && (await isAuthenticated())) {
-        return {name: "Home"};
-    }
+    return next();
 });
 
-async function fetchLessons() {
-    const lessonStore = useLessonStore();
-    return lessonStore.fetchLessons();
-}
+function runMiddleware(middlewares: Function[], to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    const [middleware, ...rest] = middlewares;
 
-async function fetchLessonById(lessonId: string | RouteParamValue[]) {
-    const lessonStore = useLessonStore();
-    await lessonStore.fetchLessonById(<string>lessonId);
-    if (lessonStore.currentLesson) {
-        await lessonStore.fetchQuestionsForLesson(<string>lessonId);
+    if (!middleware) {
+        return next();
     }
-    return lessonStore.currentLesson;
+
+    middleware(to, from, (nextRoute: RouteLocationRaw | undefined) => {
+        runMiddleware(rest, to, from, nextRoute ? () => next(nextRoute) : next);
+    });
 }
 
 export default router;
