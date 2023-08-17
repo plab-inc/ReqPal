@@ -4,10 +4,16 @@ export interface Lesson {
     description: string;
 }
 
+export enum questionTypes {
+    MultipleChoice = "MultipleChoice",
+    DragAndDrop = "DragAndDrop",
+    TrueOrFalse = "TrueOrFalse"
+}
+
 export interface Question {
     id: string;
     lessonId: string;
-    type: string;
+    type: Question | null;
     description: string;
     userResults: Result | null;
 }
