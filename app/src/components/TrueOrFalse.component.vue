@@ -43,7 +43,7 @@ async function submitAnswers(): Promise<void> {
     return;
   }
 
-  result = await lessonStore.fetchTrueFalseAnswersForQuestion(props.question.id);
+  result = await lessonStore.fetchTrueFalseSolutionForQuestion(props.question.id);
   submitted.value = true;
   triedToSubmit.value = false;
 }
