@@ -121,7 +121,6 @@ export const useLessonStore = defineStore('lesson', {
             if (data) {
                 if (data) {
                     const newQuestions = data.map((questionData: any) => {
-
                         return {
                             id: questionData.id,
                             lessonId: lessonId,
