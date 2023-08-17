@@ -88,7 +88,7 @@ export const useLessonStore = defineStore('lesson', {
         async fetchQuestionsForLesson(lessonId: string) {
             this.currentQuestions = [];
 
-            const questionsFromStorage = useStorage('questions', [{ id: '', lessonId: '', type: '', description: '',
+            const questionsFromStorage = useStorage('questions', [{ id: '', lessonId: '', type: null, description: '',
                 userResults: null}]);
             const questions: Question[] = questionsFromStorage.value;
             if (questions) {
@@ -105,7 +105,7 @@ export const useLessonStore = defineStore('lesson', {
 
             const {data, error} = await supabase
                 .from('questions')
-                .select('id, description, type')
+                .select('id, description, question_type')
                 .eq('lesson_id', lessonId)
 
             if (error) throw error;
@@ -116,7 +116,7 @@ export const useLessonStore = defineStore('lesson', {
                         return {
                             id: questionData.id,
                             lessonId: lessonId,
-                            type: questionData.type,
+                            type: questionData.question_type,
                             description: questionData.description,
                             userResults: null,
                         };
