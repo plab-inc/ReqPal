@@ -140,9 +140,9 @@ export const useLessonStore = defineStore('lesson', {
         async fetchMCAnswersForQuestion(questionId: string) {
 
             const {data, error} = await supabase
-                .from('multiple_choice_questions')
+                .from('questions')
                 .select('answers')
-                .eq('questionId', questionId)
+                .eq('id', questionId)
 
             if (error) throw error;
 
@@ -164,18 +164,18 @@ export const useLessonStore = defineStore('lesson', {
             return [];
         },
 
-        async fetchTrueFalseAnswersForQuestion(questionId: string) {
+        async fetchTrueFalseSolutionForQuestion(questionId: string) {
 
             const {data, error} = await supabase
-                .from('true_false_questions')
-                .select('solution')
-                .eq('questionId', questionId)
+                .from('questions')
+                .select('answers')
+                .eq('id', questionId)
                 .single()
 
             if (error) throw error;
 
             if (data) {
-                return data.solution;
+                return data.answers.solution;
             }
 
             return null;
@@ -184,14 +184,12 @@ export const useLessonStore = defineStore('lesson', {
 
         async compareUserMCAnswers(userAnswerJson: Answer[], questionId: string) {
 
-            const {data, error} = await supabase.rpc('mc_compare_solution_new', {
+            const {data, error} = await supabase.rpc('mc_compare_solution', {
                 answer_json: userAnswerJson,
                 question_id: questionId,
             })
 
-            if (error) {
-                console.error(error)
-            }
+            if (error) throw error;
 
             if (data) {
                 const question = this.currentQuestions.find((q) => q.id === questionId);
