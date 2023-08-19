@@ -27,7 +27,22 @@
             etwas dabei ist.
           </v-card-text>
         </v-card>
+      </v-col>
 
+      <v-col md="4">
+        <v-img
+            src="@/assets/images/tim-mossholder-WE_Kv_ZB1l0-unsplash.jpg"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col md="4">
+        <v-img
+            src="@/assets/images/maya-maceka-yW-Qgw_IJXg-unsplash.jpg"
+        />
+      </v-col>
+      <v-col md="8">
         <v-card class="mb-6">
           <v-card-title class="text-h6 text-md-h5">Merkmale</v-card-title>
           <v-card-text class="text-subtitle-1">
@@ -42,19 +57,6 @@
             Ein Account kann hier kostenlos angelegt werden, so dass direkt durchgestartet werden kann!
           </v-card-text>
         </v-card>
-      </v-col>
-
-      <v-col md="4">
-        <v-row>
-          <v-img
-              src="@/assets/images/tim-mossholder-WE_Kv_ZB1l0-unsplash.jpg"
-          />
-        </v-row>
-        <v-row class="mt-4">
-          <v-img
-              src="@/assets/images/maya-maceka-yW-Qgw_IJXg-unsplash.jpg"
-          />
-        </v-row>
       </v-col>
     </v-row>
   </v-container>
