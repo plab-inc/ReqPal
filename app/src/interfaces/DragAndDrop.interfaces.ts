@@ -4,3 +4,8 @@ export interface DragItem {
     top: number
     left: number
 }
+export interface Box {
+    title: string;
+    left: number;
+    top: number;
+}

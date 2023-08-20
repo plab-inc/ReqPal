@@ -9,7 +9,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   dropFields: () => ['TestA', 'TestB', 'TestC'],
-  answers: () => ['TestA'],
+  answers: () => ['TestA', 'TestB'],
 });
 
 </script>
@@ -20,16 +20,16 @@ const props = withDefaults(defineProps<Props>(), {
     <v-card>
       <v-container ref="containerRef">
 
-        <Container class="above-fields"/>
+        <Container :titles=answers :containerId="1" :answers="answers" class="above-fields"/>
 
         <div class="drop-fields">
-          <div
+          <Container :containerId="'drop-field-' + index"
               v-for="(field, index) in dropFields"
               :key="index"
               class="drop-field"
           >
-            {{ index }}
-          </div>
+
+          </Container>
         </div>
       </v-container>
     </v-card>
