@@ -7,7 +7,7 @@ export const defaults: DefaultsInstance = {
         color: "primary",
     },
     VTabs: {
-        color: colors.sky["300"]
+        color: "primary"
     },
     VTab: {
         elevation: 0,
