@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <v-row class="mt-4">
-      <v-parallax style="max-height: 500px" src="@/assets/images/janko-ferlic-sfL_QOnmy00-unsplash.jpg">
+      <v-parallax style="max-height: 550px" src="@/assets/images/janko-ferlic-sfL_QOnmy00-unsplash.jpg">
         <div class="d-flex flex-column fill-height justify-center align-center text-white">
-          <h1 class="text-h4 font-weight-thin mb-4">
+          <h1 class="text-h4 font-weight-medium mb-4">
             Willkommen auf der Lernplattform
           </h1>
           <h4 class="subheading">
@@ -15,18 +15,12 @@
 
     <v-row class="my-12">
       <v-col md="8">
-        <v-card class="mb-6">
-          <v-card-title class="text-h6 text-md-h5 text-lg-h4">Eine interaktive Lernplattform!</v-card-title>
-          <v-card-text class="text-subtitle-1">
-            Diese Lernplattform bietet eine moderne und benutzerfreundliche Umgebung, um Wissen auf eine unterhaltsame
-            und
-            interaktive Weise zu vermitteln. Hier werden spannende Möglichkeiten angeboten, um Fähigkeiten im Bereich
-            der
-            Wirtschaftsinformatik zu erweitern und neue Horizonte zu entdecken.
-            Die verschiedenen Aufgaben richten sich an Lernende mit unterschiedlichen Vorkenntnissen, so dass für jeden
-            etwas dabei ist.
-          </v-card-text>
-        </v-card>
+        <v-sheet :elevation="9" height="100%" rounded>
+          <div class="mx-sm-3">
+            <h2 class="text-h4 font-weight-black text-primary" v-text="main_headline"></h2>
+            <div class="text-h5 mt-4" v-text="main_text"></div>
+          </div>
+        </v-sheet>
       </v-col>
 
       <v-col md="4">
@@ -37,33 +31,44 @@
     </v-row>
 
     <v-row>
-      <v-col md="4">
+      <v-col md="4" order-sm="2" order-md="1">
         <v-img
             src="@/assets/images/maya-maceka-yW-Qgw_IJXg-unsplash.jpg"
         />
       </v-col>
-      <v-col md="8">
-        <v-card class="mb-6">
-          <v-card-title class="text-h6 text-md-h5">Merkmale</v-card-title>
-          <v-card-text class="text-subtitle-1">
-            <ul class="list-disc pl-6 mb-4 text-subtitle-1">
-              <li>Vielfältige Kursauswahl</li>
-              <li>Interaktive Lernmethoden</li>
-              <li>Flexible Lernzeiten</li>
-              <li>Kostenlos</li>
-            </ul>
-            Beachte, dass für die volle Funktionalität der Anwendung, ein Account mit Nutzernamen und Passwort benötigt
-            wird.
-            Ein Account kann hier kostenlos angelegt werden, so dass direkt durchgestartet werden kann!
-          </v-card-text>
-        </v-card>
+      <v-col md="8" order-sm="1" order-md="2">
+        <v-sheet :elevation="9" height="100%" rounded>
+          <div class="mx-sm-3">
+            <h2 class="text-h4 font-weight-black text-primary" v-text="feature_headline"></h2>
+            <div class="text-h5 mb-2">
+              <ul class="pl-6 mt-4 mb-4">
+                <li>Vielfältige Kursauswahl</li>
+                <li>Interaktive Lernmethoden</li>
+                <li>Flexible Lernzeiten</li>
+                <li>Kostenlos</li>
+              </ul>
+              <div v-text="feature_subtitle"></div>
+              <v-btn v-if="!authStore.session" block color="primary" class="mt-5" @click="$router.push('signup')">
+                Get started
+              </v-btn>
+            </div>
+          </div>
+        </v-sheet>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-</script>
+import {useAuthStore} from "@/stores/auth.store";
 
-<style scoped>
-</style>
+const authStore = useAuthStore();
+
+const main_headline = "Eine interaktive Lernplattform!"
+const main_text = "Diese Lernplattform bietet eine moderne und benutzerfreundliche Umgebung, " +
+    "um Wissen auf eine unterhaltsame undinteraktive Weise zu vermitteln. Hier werden spannende Möglichkeiten angeboten," +
+    " um Fähigkeiten im Bereich der Wirtschaftsinformatik zu erweitern und neue Horizonte zu entdecken."
+const feature_headline = "Merkmale"
+const feature_subtitle = "Beachte, dass für die volle Funktionalität der Anwendung, ein Account mit Nutzernamen und Passwort " +
+    "benötigt wird. Ein Account kann hier kostenlos angelegt werden, so dass direkt durchgestartet werden kann!"
+</script>
