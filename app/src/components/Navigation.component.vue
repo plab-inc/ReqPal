@@ -1,7 +1,8 @@
 <template>
   <v-app-bar color="surface" class="px-3" flat>
-    <v-app-bar-title @click="$router.push('/')"> Lernplattform</v-app-bar-title>
-
+    <v-app-bar-title>
+      <RouterLink :to="{name: 'Home'}" class="text-h5 text-decoration-none text-primary">Lernplattform</RouterLink>
+    </v-app-bar-title>
     <v-tabs centered>
       <v-tab v-for="(link, index) in links" :key="index" :to="{ name: link.name}">
         {{ link.title }}
@@ -20,20 +21,9 @@
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
 import {useProfileStore} from "@/stores/profile.store";
+import {links} from "@/types/navigationLinks.types";
 
 import router from "@/router";
-
-interface Link {
-  title: string,
-  name: string
-}
-
-const links: Link[] = [
-  {title: "Dashboard", name: "Dashboard"},
-  {title: "Lektionen", name: "AllLessons"},
-  {title: "Szenario", name: "Szenario"},
-  {title: "Feedback", name: "Feedback"}
-];
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -46,6 +36,6 @@ onMounted(() => {
 
 const logout = () => {
   authStore.signOut();
-  router.push("/")
+  router.push('/')
 }
 </script>
