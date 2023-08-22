@@ -1,26 +1,29 @@
 import { defineStore } from 'pinia';
-import { Box } from '@/interfaces/DragAndDrop.interfaces';
 
-type BoxState = {
-    boxes: Record<string, Box>;
-}
-
-export const useBoxStore = defineStore({id: 'boxStore',
-    state: (): BoxState => ({
-        boxes: {}
+export const useBoxStore = defineStore('boxStore', {
+    state: () => ({
+        boxes: {} as {
+            [key: string]: {
+                top: number;
+                left: number;
+                title: string;
+                containerId: string;
+            };
+        },
     }),
     actions: {
-        addBox(id: string, title: string, left: number, top: number) {
-            this.boxes[id] = { title, left, top };
+        moveBox(id: string, left: number, top: number, containerId: string) {
+            Object.assign(this.boxes[id], { left, top, containerId });
         },
-        moveBox(id: string, left: number, top: number) {
-            if (this.boxes[id]) {
-                this.boxes[id].left = left;
-                this.boxes[id].top = top;
-            }
+        getAllBoxesWithContainerIds() {
+            return Object.entries(this.boxes)
+                .map(
+                    ([key, box]) => `Box Key: ${key}, Title: ${box.title}, Container ID: ${box.containerId || 'None'}`
+                )
+                .join('\n');
         },
-        removeBox(id: string) {
-            delete this.boxes[id];
+        addBox(id: string, boxData: { top: number; left: number; title: string; containerId: string }) {
+            this.boxes[id] = boxData;
         }
-    }
+    },
 });
