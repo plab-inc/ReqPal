@@ -3,27 +3,22 @@ import { useDrop, XYCoord } from 'vue3-dnd';
 import { ItemTypes } from '@/types/dragAndDrop.types';
 import Box from './Box.component.vue';
 import type { DragItem } from '@/interfaces/DragAndDrop.interfaces';
+import { useBoxStore } from '@/stores/dndBoxStore.store';
 
 const props = defineProps({
   boxTitles: Array as () => string[],
+  containerId: {
+    type: String,
+    required: true
+  },
 });
 
-const boxes = reactive<{
-  [key: string]: {
-    top: number;
-    left: number;
-    title: string;
-  };
-}>({});
+const boxStore = useBoxStore();
 
 props.boxTitles?.forEach((title, index) => {
   const boxKey = `box_${index}`;
-  boxes[boxKey] = { top: 50 + index * 100, left: 80, title };
+  boxStore.addBox(boxKey, { top: 50 + index * 100, left: 80, title, containerId: props.containerId });
 });
-
-const moveBox = (id: string, left: number, top: number) => {
-  Object.assign(boxes[id], { left, top })
-}
 
 
 const [, drop] = useDrop(() => ({
@@ -32,17 +27,17 @@ const [, drop] = useDrop(() => ({
     const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
     const left = Math.round(item.left + delta.x)
     const top = Math.round(item.top + delta.y)
-    moveBox(item.id, left, top)
+    boxStore.moveBox(item.id, left, top, props.containerId);
     return undefined
   },
-}))
+}));
 
 </script>
 
 <template>
   <div :ref="drop" class="container">
     <Box
-        v-for="(value, key) in boxes"
+        v-for="(value, key) in boxStore.boxes"
         :id="key"
         :key="key"
         :left="value.left"

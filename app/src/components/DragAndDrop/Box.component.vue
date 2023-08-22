@@ -20,12 +20,15 @@ const { isDragging } = toRefs(collect)
 </script>
 
 <template>
-  <div v-if="isDragging" :ref="drag" />
+  <div :ref="drag" />
   <div
-      v-else
       :ref="drag"
       class="box"
-      :style="{ left: `${left}px`, top: `${top}px` }"
+      :style="{
+        left: `${left}px`,
+        top: `${top}px`,
+        borderColor: isDragging ? 'transparent' : '',
+      }"
       role="Box"
       data-testid="box"
   >
@@ -40,5 +43,6 @@ const { isDragging } = toRefs(collect)
   border: 1px dashed gray;
   border-radius: 5px;
   cursor: move;
+  user-select: none;
 }
 </style>
