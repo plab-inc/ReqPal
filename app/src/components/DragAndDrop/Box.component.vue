@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { useDrag } from 'vue3-dnd'
-import { ItemTypes } from '@/types/DragAndDrop.types'
+import { ItemTypes } from '@/types/dragAndDrop.types'
 import { toRefs } from '@vueuse/core'
 
 const props = defineProps<{
   id: any
   left: number
   top: number
-  hideSourceOnDrag?: boolean
 }>()
 
 const [collect, drag] = useDrag(() => ({
@@ -21,7 +20,7 @@ const { isDragging } = toRefs(collect)
 </script>
 
 <template>
-  <div v-if="isDragging && hideSourceOnDrag" :ref="drag" />
+  <div v-if="isDragging" :ref="drag" />
   <div
       v-else
       :ref="drag"
