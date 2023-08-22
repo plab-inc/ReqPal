@@ -20,16 +20,14 @@ const props = withDefaults(defineProps<Props>(), {
     <v-card>
       <v-container ref="containerRef">
 
-        <Container :titles=answers :containerId="1" :answers="answers" class="above-fields"/>
+        <Container :box-titles="answers" class="above-fields"/>
 
         <div class="drop-fields">
-          <Container :containerId="'drop-field-' + index"
+          <Container
               v-for="(field, index) in dropFields"
               :key="index"
               class="drop-field"
-          >
-
-          </Container>
+          />
         </div>
       </v-container>
     </v-card>
