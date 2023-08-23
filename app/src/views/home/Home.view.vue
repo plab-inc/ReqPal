@@ -1,7 +1,7 @@
 <template>
   <h1>Willkommen auf der Lernplattform!</h1>
 
-  <DragNDrop />
+  <DragAndDrop />
 
 
 
@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 
-import DragNDrop from "@/components/DragNDrop.component.vue";
+import DragAndDrop from "@/components/DragAndDrop/DragAndDrop.component.vue";
 import Upload from "@/components/Upload.component.vue";
 
 </script>
