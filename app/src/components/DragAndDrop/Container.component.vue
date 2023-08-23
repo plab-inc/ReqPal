@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { useDrop, XYCoord } from 'vue3-dnd';
 import { ItemTypes } from '@/types/dragAndDrop.types';
-import Box from './Box.component.vue';
 import type { DragItem } from '@/interfaces/DragAndDrop.interfaces';
 import { useContainerStore } from '@/stores/DragAndDrop/container.store';
+import DraggableBox from './DraggableBox.component.vue';
+import {toRefs} from "@vueuse/core";
+
+import { useTheme } from "vuetify";
+const themeColors = useTheme().current.value.colors;
 
 const props = defineProps({
   boxTitles: Array as () => string[],
@@ -11,6 +15,7 @@ const props = defineProps({
     type: String,
     required: true
   },
+  title: String
 });
 
 const containerStore = useContainerStore();
@@ -20,29 +25,63 @@ props.boxTitles?.forEach((title, index) => {
   containerStore.addBox(props.containerId,50 + index * 100, 80, title);
 });
 
-const [, drop] = useDrop(() => ({
+const [collect, drop] = useDrop(() => ({
   accept: ItemTypes.BOX,
   drop(item: DragItem, monitor) {
-    const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+    const delta = monitor.getDifferenceFromInitialOffset() as {
+      x: number
+      y: number
+    }
     const newLeft = Math.round(item.left + delta.x)
     const newTop = Math.round(item.top + delta.y)
 
     containerStore.moveBox(item.containerId, props.containerId, item.id, newLeft, newTop);
   },
+  collect: (monitor: any) => ({
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
+  }),
 }));
+
+const {isOver} = toRefs(collect);
+
 
 </script>
 
 <template>
-  <div :ref="drop" class="container">
-    <Box
+  <div
+      :ref="drop"
+      class="container"
+      :style="{
+        borderColor: isOver ? themeColors.success : themeColors.primary,
+        }"
+  >
+    <div v-if="props.title" class="container-title">{{ props.title }}</div>
+    <DraggableBox
         v-for="(box) in containerStore.getBoxesFromContainer(props.containerId)"
         :id="box.id"
         :left="box.left"
         :top="box.top"
         :container-id="props.containerId"
+        :title="box.title"
     >
       {{ box.title }}
-    </Box>
+    </DraggableBox>
   </div>
 </template>
+
+<style scoped>
+
+.container {
+  display: flex;
+  border: 1px solid;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.container-title {
+  font-size: 30px;
+}
+
+</style>

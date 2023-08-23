@@ -1,7 +1,7 @@
 <template>
   <h1>Willkommen auf der Lernplattform!</h1>
 
-  <DragAndDrop />
+  <DragAndDrop/>
 
 
 
