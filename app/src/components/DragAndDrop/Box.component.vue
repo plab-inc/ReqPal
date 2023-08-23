@@ -4,33 +4,32 @@ import { ItemTypes } from '@/types/dragAndDrop.types'
 import { toRefs } from '@vueuse/core'
 
 const props = defineProps<{
-  id: any
-  left: number
-  top: number
-}>()
+  id: string;
+  left: number;
+  top: number;
+  containerId: string;
+}>();
 
 const [collect, drag] = useDrag(() => ({
   type: ItemTypes.BOX,
-  item: { id: props.id, left: props.left, top: props.top },
+  item: { id: props.id, left: props.left, top: props.top, containerId: props.containerId },
   collect: monitor => ({
     isDragging: monitor.isDragging(),
   }),
 }))
+
 const { isDragging } = toRefs(collect)
 </script>
 
 <template>
-  <div :ref="drag" />
-  <div
-      :ref="drag"
-      class="box"
-      :style="{
-        left: `${left}px`,
-        top: `${top}px`,
-        borderColor: isDragging ? 'transparent' : '',
+  <div v-if="isDragging" :ref="drag"/>
+  <div v-else
+       :ref="drag"
+       class="box"
+       :style="{
+        left: `${props.left}px`,
+        top: `${props.top}px`,
       }"
-      role="Box"
-      data-testid="box"
   >
     <slot></slot>
   </div>

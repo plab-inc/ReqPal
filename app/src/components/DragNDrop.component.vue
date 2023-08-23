@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 import Container from './DragAndDrop/Container.component.vue'
-import { useBoxStore } from "@/stores/dndBoxStore.store";
+import { useContainerStore } from "@/stores/DragAndDrop/container.store";
 
-const boxStore = useBoxStore();
+const boxStore = useContainerStore();
 
 interface Props {
   dropFields?: string[];
@@ -27,15 +27,12 @@ const props = withDefaults(defineProps<Props>(), {
 
         <div class="drop-fields">
           <Container
-              v-for="(field, index) in dropFields"
-              :key="index"
+              v-for="(field) in dropFields"
               :container-id="field"
               class="drop-field"
           />
         </div>
       </v-container>
-      <v-btn @click="console.log(boxStore.getAllBoxesWithContainerIds())">Log</v-btn>
-
     </v-card>
   </v-container>
 
