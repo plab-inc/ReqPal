@@ -31,12 +31,12 @@
     </v-row>
 
     <v-row>
-      <v-col md="4" order-sm="2" order-md="1">
+      <v-col md="4" order="2" order-md="1">
         <v-img
             src="@/assets/images/maya-maceka-yW-Qgw_IJXg-unsplash.jpg"
         />
       </v-col>
-      <v-col md="8" order-sm="1" order-md="2">
+      <v-col md="8" order="1" order-md="2">
         <v-sheet :elevation="9" height="100%" rounded>
           <div class="mx-sm-3">
             <h2 class="text-h4 font-weight-black text-primary" v-text="feature_headline"></h2>
@@ -50,6 +50,9 @@
               <div v-text="feature_subtitle"></div>
               <v-btn v-if="!authStore.session" block color="primary" class="mt-5" @click="$router.push('signup')">
                 Get started
+              </v-btn>
+              <v-btn v-else block color="primary" class="mt-5" @click="$router.push('dashboard')">
+                Continue learning
               </v-btn>
             </div>
           </div>
