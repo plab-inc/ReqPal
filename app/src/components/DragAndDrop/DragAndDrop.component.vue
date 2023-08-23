@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Container from './DragAndDrop/Container.component.vue'
+import Container from "@/components/DragAndDrop/Container.component.vue";
 import { useContainerStore } from "@/stores/DragAndDrop/container.store";
 
 const boxStore = useContainerStore();
@@ -43,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 .above-fields {
   width: 100%;
   text-align: center;
-  padding: 100px;
+  height: 300px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
 }
