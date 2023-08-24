@@ -3,17 +3,18 @@
     <v-container>
       <v-row>
         <v-col sm="6" md="2">
-          <div class="text-body-1">
-            <RouterLink :to="{name: 'Home'}" class="text-body-1 text-decoration-none text-primary">Lernplattform
+          <div>
+            <RouterLink :to="{name: 'Home'}" class="text-decoration-none text-primary">
+              Lernplattform
             </RouterLink>
             <p>&copy; Projektarbeit 2023</p>
           </div>
         </v-col>
         <v-col sm="6" md="10">
-          <p class="text-body-1">Menu</p>
-          <v-list>
+          <p>Menu</p>
+          <v-list density="compact">
             <v-list-item v-for="(link, index) in links" :key="index">
-              <RouterLink :to="{ name: link.name}" class="text-body-1 text-decoration-none text-primary">{{
+              <RouterLink :to="{ name: link.name}" class="text-decoration-none text-primary">{{
                   link.title
                 }}
               </RouterLink>
