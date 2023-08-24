@@ -1,23 +1,40 @@
 <template>
-    <v-container>
-      <v-row>
-        <v-col md="8">
-          <v-sheet>
+  <v-container>
+    <v-row>
+      <v-col md="8">
+        <v-sheet>
+          <v-container>
+            <h1>Dashboard</h1>
             <v-container>
-              <h1>Dashboard</h1>
+              <ul>
+                <li>
+                  <h2>Continue your lesson: </h2>
+                  <p>...</p>
+                </li>
+              </ul>
             </v-container>
-          </v-sheet>
-        </v-col>
+          </v-container>
+        </v-sheet>
+      </v-col>
 
-        <v-col md="4">
-          <v-sheet>
+      <v-col md="4">
+        <v-sheet>
+          <v-container>
+            <h1>Neuigkeiten</h1>
             <v-container>
-              <h1>Neuigkeiten</h1>
+              <ul>
+                <li>
+                  <h2>New Achievement!</h2>
+                  <p>...</p>
+                </li>
+              </ul>
             </v-container>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-container>
+          </v-container>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
