@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="mt-4">
       <v-parallax style="max-height: 550px" src="@/assets/images/janko-ferlic-sfL_QOnmy00-unsplash.jpg">
-        <div class="d-flex flex-column fill-height justify-center align-center text-white">
+        <div class="d-flex flex-column fill-height justify-center align-center text-white text-center">
           <h1 class="text-h4 font-weight-medium mb-4">
             Willkommen auf der Lernplattform
           </h1>
