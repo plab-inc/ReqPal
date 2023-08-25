@@ -42,6 +42,9 @@ export const useLessonStore = defineStore('lesson', {
         getDragAndDropQuestions: state => {
             return state.currentQuestions.filter(question => question.questionType === questionTypes.DragAndDrop);
         },
+        getSortableQuestions: state => {
+            return state.currentQuestions.filter(question => question.questionType === questionTypes.Sortable);
+        },
     },
 
     actions: {
