@@ -57,17 +57,19 @@ const setDragAndDropRef = (node: any) => {
 </script>
 
 <template>
-  <div :ref="setDragAndDropRef" class="card text-black">
+  <div :ref="setDragAndDropRef" class="card w-75">
     {{ text }}
   </div>
 </template>
 
-<style lang="less" scoped>
+<style scoped>
 .card {
-  margin-bottom: 0.5rem;
+  margin: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: white;
-  border: 1px dashed gray;
+  text-align: center;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  background-color: rgb(var(--v-theme-info));
   cursor: move;
 }
 </style>

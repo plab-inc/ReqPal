@@ -36,7 +36,7 @@ const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}))
 </script>
 
 <template>
-  <div :ref="drop" style="width: 400px" class="container bg-primary pa-5">
+  <div :ref="drop" class="container pa-5">
     <Card
         v-for="card in cards"
         :id="`${card.id}`"
@@ -51,8 +51,12 @@ const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}))
 <style scoped>
 
 .container {
-  border: 1px solid;
+  border: 1px solid rgb(var(--v-theme-primary));
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 </style>
