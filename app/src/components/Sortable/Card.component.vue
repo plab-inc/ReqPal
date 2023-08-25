@@ -57,7 +57,7 @@ const setDragAndDropRef = (node: any) => {
 </script>
 
 <template>
-  <div :ref="setDragAndDropRef" class="card w-75">
+  <div :ref="setDragAndDropRef" class="card w-75" :style="{opacity: isDragging ? 0 : 1}">
     {{ text }}
   </div>
 </template>
