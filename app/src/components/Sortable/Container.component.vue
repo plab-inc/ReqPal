@@ -1,0 +1,58 @@
+<script lang="ts" setup>
+import {useDrop} from 'vue3-dnd'
+import {ref} from 'vue'
+import {ItemTypes} from "@/types/sortable.types";
+import Card from "@/components/Sortable/Card.component.vue";
+import {DragItem} from "@/interfaces/Sortable.interfaces";
+
+interface Props {
+  answers?: DragItem[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  answers: () => [{id: 1, text: 'A'}, {id: 2, text: 'B'}, {id: 3, text: 'C'}]
+});
+
+const cards = ref(props.answers)
+
+const findCard = (id: string) => {
+  const card = cards.value.filter(c => `${c.id}` === id)[0] as {
+    id: number
+    text: string
+  }
+  return {
+    card,
+    index: cards.value.indexOf(card),
+  }
+}
+
+const moveCard = (id: string, atIndex: number) => {
+  const {card, index} = findCard(id)
+  cards.value.splice(index, 1)
+  cards.value.splice(atIndex, 0, card)
+}
+
+const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}))
+</script>
+
+<template>
+  <div :ref="drop" style="width: 400px" class="container bg-primary pa-5">
+    <Card
+        v-for="card in cards"
+        :id="`${card.id}`"
+        :key="card.id"
+        :text="card.text"
+        :move-card="moveCard"
+        :find-card="findCard"
+    />
+  </div>
+</template>
+
+<style scoped>
+
+.container {
+  border: 1px solid;
+  border-radius: 5px;
+}
+
+</style>
