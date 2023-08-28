@@ -6,33 +6,46 @@ import Card from "@/components/Sortable/Card.component.vue";
 import {DragItem} from "@/interfaces/Sortable.interfaces";
 
 interface Props {
-  answers?: DragItem[];
+  answers: DragItem[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  answers: () => [{id: 1, text: 'A'}, {id: 2, text: 'B'}, {id: 3, text: 'C'}]
+const props: Props = withDefaults(defineProps<Props>(), {
+  answers: () => [
+    {id: '12', text: 'A', order: 0},
+    {id: '41', text: 'B', order: 0},
+    {id: '23', text: 'C', order: 0}
+  ]
 });
 
 const cards = ref(props.answers)
 
 const findCard = (id: string) => {
-  const card = cards.value.filter(c => `${c.id}` === id)[0] as {
-    id: number
-    text: string
-  }
+  const card = cards.value.filter(c => c.id === id)[0];
   return {
     card,
     index: cards.value.indexOf(card),
-  }
-}
+  };
+};
 
 const moveCard = (id: string, atIndex: number) => {
-  const {card, index} = findCard(id)
-  cards.value.splice(index, 1)
-  cards.value.splice(atIndex, 0, card)
-}
+  const {card, index} = findCard(id);
+  cards.value.splice(index, 1);
+  cards.value.splice(atIndex, 0, card);
+  let answer = props.answers?.find(a => a.id === id);
+  if (answer) {
+    answer.order = atIndex;
+    console.log("Answer moved to: " + answer.text + " " + answer.order)
+  }
+  cards.value.forEach((card, newIndex) => {
+    const answerToUpdate = props.answers?.find(a => a.id === card.id);
+    if (answerToUpdate) {
+      answerToUpdate.order = newIndex;
+      console.log("Updated order for: " + answerToUpdate.text + " " + answerToUpdate.order);
+    }
+  });
+};
 
-const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}))
+const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}));
 </script>
 
 <template>

@@ -24,6 +24,12 @@ export interface Answer {
     description: string;
 }
 
+export interface SortableAnswer {
+    id: string,
+    description: string;
+    order: number
+}
+
 export interface Result {
     wholeAnswerIsCorrect: boolean;
     results: answerResults[];
