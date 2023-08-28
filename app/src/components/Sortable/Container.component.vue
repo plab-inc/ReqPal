@@ -7,6 +7,7 @@ import {DragItem} from "@/interfaces/Sortable.interfaces";
 
 interface Props {
   answers: DragItem[];
+  allowDragAndDrop: boolean;
 }
 
 const props: Props = withDefaults(defineProps<Props>(), {
@@ -45,6 +46,7 @@ const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}));
         :text="card.text"
         :move-card="moveCard"
         :find-card="findCard"
+        :allow-drag-and-drop="allowDragAndDrop"
     />
   </div>
 </template>
