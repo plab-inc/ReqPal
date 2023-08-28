@@ -11,9 +11,9 @@ interface Props {
 
 const props: Props = withDefaults(defineProps<Props>(), {
   answers: () => [
-    {id: '12', text: 'A', order: 0},
-    {id: '41', text: 'B', order: 0},
-    {id: '23', text: 'C', order: 0}
+    {id: '12', text: 'A'},
+    {id: '41', text: 'B'},
+    {id: '23', text: 'C'}
   ]
 });
 
@@ -31,18 +31,6 @@ const moveCard = (id: string, atIndex: number) => {
   const {card, index} = findCard(id);
   cards.value.splice(index, 1);
   cards.value.splice(atIndex, 0, card);
-  let answer = props.answers?.find(a => a.id === id);
-  if (answer) {
-    answer.order = atIndex;
-    console.log("Answer moved to: " + answer.text + " " + answer.order)
-  }
-  cards.value.forEach((card, newIndex) => {
-    const answerToUpdate = props.answers?.find(a => a.id === card.id);
-    if (answerToUpdate) {
-      answerToUpdate.order = newIndex;
-      console.log("Updated order for: " + answerToUpdate.text + " " + answerToUpdate.order);
-    }
-  });
 };
 
 const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}));
