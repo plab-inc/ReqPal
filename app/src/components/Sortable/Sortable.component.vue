@@ -2,26 +2,38 @@
 import {HTML5Backend} from "react-dnd-html5-backend";
 import Container from "@/components/Sortable/Container.component.vue";
 import {DndProvider} from "vue3-dnd";
-import {Question} from "@/types/lesson.types";
+import {Question, SortableAnswer} from "@/types/lesson.types";
 import {DragItem} from "@/interfaces/Sortable.interfaces";
 import {shuffleArray} from "@/utils/helper";
+import {useLessonStore} from "@/stores/lesson.store";
+import {ref} from "vue";
 
 interface Props {
   question: Question;
 }
 
 const props = defineProps<Props>();
+const lessonStore = useLessonStore();
+const submitted = ref(false);
 
-const answers: DragItem[] = [{id: '123', text: 'Aussage 1'},
-  {id: '32', text: 'Aussage 2'},
-  {id: '54', text: 'Aussage 3'},
-  {id: '12', text: 'Aussage 4'}];
+const answers: DragItem[] = [{id: '1', text: 'Aussage 1'},
+  {id: '2', text: 'Aussage 2'},
+  {id: '3', text: 'Aussage 3'},
+  {id: '4', text: 'Aussage 4'}];
 
 const submitAnswers = () => {
   console.log("ERGEBNISSE:");
+  const results: SortableAnswer[] = [];
   answers.forEach((answer, index) => {
+    results.push({
+      id: answer.id,
+      description: answer.text,
+      order: index
+    });
     console.log("Antwort: " + answer.text + ' Index: ' + index);
   });
+  lessonStore.compareUserSortableAnswers(results, props.question.id);
+  submitted.value = true;
 };
 
 onBeforeMount(() => {
@@ -33,13 +45,14 @@ onBeforeMount(() => {
 
   <v-card>
     <v-container>
+      <h3 v-if="submitted">Lösung:</h3>
       <v-row>
         <v-col order="1" order-md="2" md="6" align-self="center" class="text-center">
           <h3>{{ question.description }}</h3>
         </v-col>
         <v-col order="2" order-md="1" md="6">
           <DndProvider :backend="HTML5Backend">
-            <Container :answers="answers"></Container>
+            <Container :answers="answers" :allow-drag-and-drop="!submitted"></Container>
           </DndProvider>
         </v-col>
       </v-row>
@@ -53,6 +66,5 @@ onBeforeMount(() => {
 
 </template>
 
-<style lang="ts" scoped>
-
+<style scoped>
 </style>

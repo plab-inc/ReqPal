@@ -9,6 +9,7 @@ const props = defineProps<{
   text: string
   moveCard: (id: string, to: number) => void
   findCard: (id: string) => { index: number }
+  allowDragAndDrop: boolean
 }>()
 
 interface Item {
@@ -57,7 +58,10 @@ const setDragAndDropRef = (node: any) => {
 </script>
 
 <template>
-  <div :ref="setDragAndDropRef" class="card w-75" :style="{opacity: isDragging ? 0 : 1}">
+  <div v-if="allowDragAndDrop" :ref="setDragAndDropRef" class="card w-75" :style="{opacity: isDragging ? 0 : 1}">
+    {{ text }}
+  </div>
+  <div v-else class="card w-75">
     {{ text }}
   </div>
 </template>

@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
-import {Answer, Lesson, Question, questionTypes} from "@/types/lesson.types";
+import {Answer, Lesson, Question, questionTypes, SortableAnswer} from "@/types/lesson.types";
 import {useStorage} from "@vueuse/core";
 
 interface LessonState {
@@ -187,6 +187,22 @@ export const useLessonStore = defineStore('lesson', {
         async compareUserMCAnswers(userAnswerJson: Answer[], questionId: string) {
 
             const {data, error} = await supabase.rpc('mc_compare_solution', {
+                answer_json: userAnswerJson,
+                question_id: questionId,
+            })
+
+            if (error) throw error;
+
+            if (data) {
+                const question = this.currentQuestions.find((q) => q.id === questionId);
+                if (question) {
+                    question.userResults = data;
+                }
+            }
+        },
+
+        async compareUserSortableAnswers(userAnswerJson: SortableAnswer[], questionId: string) {
+            const {data, error} = await supabase.rpc('sortable_compare_solution', {
                 answer_json: userAnswerJson,
                 question_id: questionId,
             })
