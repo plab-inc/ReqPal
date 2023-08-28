@@ -12,22 +12,20 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const answers : DragItem[] = [{id: '123', text: 'Aussage 1', order: 0}, {id: '32', text: 'Aussage 2', order: 0}, {id: '54', text: 'Aussage 3', order: 0},
-  {id: '12', text: 'Aussage 4', order: 0}];
+const answers: DragItem[] = [{id: '123', text: 'Aussage 1'},
+  {id: '32', text: 'Aussage 2'},
+  {id: '54', text: 'Aussage 3'},
+  {id: '12', text: 'Aussage 4'}];
 
 const submitAnswers = () => {
   console.log("ERGEBNISSE:");
-  answers.forEach(answer => {
-    console.log(answer.text + ' ' + answer.order);
+  answers.forEach((answer, index) => {
+    console.log("Antwort: " + answer.text + ' Index: ' + index);
   });
 };
 
 onBeforeMount(() => {
   shuffleArray(answers);
-  answers.forEach((answer, index) => {
-    answer.order = index;
-    console.log(answer?.text + " " + answer?.order)
-  });
 })
 </script>
 
