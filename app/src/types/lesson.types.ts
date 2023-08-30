@@ -7,7 +7,8 @@ export interface Lesson {
 export enum questionTypes {
     MultipleChoice = "MultipleChoice",
     DragAndDrop = "DragAndDrop",
-    TrueOrFalse = "TrueOrFalse"
+    TrueOrFalse = "TrueOrFalse",
+    Sortable = "Sortable",
 }
 
 export interface Question {
@@ -21,6 +22,12 @@ export interface Question {
 export interface Answer {
     id: string,
     description: string;
+}
+
+export interface SortableAnswer {
+    id: string,
+    description: string;
+    order: number
 }
 
 export interface Result {
