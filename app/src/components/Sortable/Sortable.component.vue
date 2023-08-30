@@ -22,7 +22,6 @@ const answers: DragItem[] = [{id: '1', text: 'Aussage 1'},
   {id: '4', text: 'Aussage 4'}];
 
 const submitAnswers = () => {
-  console.log("ERGEBNISSE:");
   const results: SortableAnswer[] = [];
   answers.forEach((answer, index) => {
     results.push({
@@ -30,7 +29,6 @@ const submitAnswers = () => {
       description: answer.text,
       order: index
     });
-    console.log("Antwort: " + answer.text + ' Index: ' + index);
   });
   lessonStore.compareUserSortableAnswers(results, props.question.id);
   submitted.value = true;
@@ -42,10 +40,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-
   <v-card>
     <v-container>
-      <h3 v-if="submitted">Lösung:</h3>
+      <h3 v-if="submitted">Whole answer is correct: {{ question.userResults?.wholeAnswerIsCorrect }}</h3>
       <v-row>
         <v-col order="1" order-md="2" md="6" align-self="center" class="text-center">
           <h3>{{ question.description }}</h3>
@@ -63,7 +60,6 @@ onBeforeMount(() => {
       </v-row>
     </v-container>
   </v-card>
-
 </template>
 
 <style scoped>
