@@ -32,7 +32,6 @@ async function submitQuestion(): Promise<void> {
 
 <template>
   <h1>Aufgabenerstellung True False</h1>
-  <h2>{{ lesson?.title }}</h2>
 
   <v-form v-model="isFormValid" @submit.prevent="submitQuestion" ref="signUpForm" fast-fail>
     <v-text-field
