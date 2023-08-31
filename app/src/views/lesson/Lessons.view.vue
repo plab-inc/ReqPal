@@ -10,10 +10,17 @@
       <div v-else>
         <ul>
           <li v-for="lesson in lessons">
-            <router-link :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }">
-              {{ lesson.title }}
-              {{ lesson.description }}
-            </router-link>
+            <v-row>
+              <v-col md="8">
+                <router-link :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }">
+                  {{ lesson.title }}
+                  {{ lesson.description }}
+                </router-link>
+              </v-col>
+              <v-col md="4">
+                <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Add Question</v-btn>
+              </v-col>
+            </v-row>
           </li>
         </ul>
       </div>
