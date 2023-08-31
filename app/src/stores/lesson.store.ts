@@ -48,6 +48,16 @@ export const useLessonStore = defineStore('lesson', {
     },
 
     actions: {
+        addCurrentQuestion(id: string, lessonId: string, description: string, questionType: questionTypes) {
+            this.currentQuestions.push({
+                id: id,
+                lessonId: lessonId,
+                description: description,
+                questionType: questionType,
+                userResults: null
+            })
+        },
+
         async fetchLessons() {
             if (this.lessonsLoaded) return;
 
@@ -213,6 +223,30 @@ export const useLessonStore = defineStore('lesson', {
                 const question = this.currentQuestions.find((q) => q.id === questionId);
                 if (question) {
                     question.userResults = data;
+                }
+            }
+        },
+
+        async addTrueOrFalseQuestion(lessonId: string, questionText: string, solutionOfQuestion: boolean) {
+
+            const {data, error} = await supabase
+                .from('questions')
+                .insert([
+                    {
+                        description: questionText,
+                        lesson_id: lessonId,
+                        answers: {solution: solutionOfQuestion},
+                        question_type: questionTypes.TrueOrFalse
+                    },
+                ])
+                .select()
+                .single()
+
+            if (error) throw error;
+
+            if (data) {
+                if (this.currentLesson?.id === lessonId) {
+                    this.addCurrentQuestion(data.id, data.lesson_id, data.description, data.question_type);
                 }
             }
         }
