@@ -6,7 +6,7 @@ import {
     Router
 } from "vue-router";
 
-import { requiresAuth } from "@/middlewares/auth.middleware";
+import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
 
 const routes = [
@@ -33,6 +33,16 @@ const routes = [
                 path: "/lessons/:lessonId",
                 name: "LessonDetails",
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchLessonById
+                    ]
+                }
+            },
+            {
+                path: "/lessons/:lessonId/tasks/create",
+                name: "LessonForm",
+                component: () => import("@/views/lesson/LessonForm.view.vue"),
                 meta: {
                     middleware: [
                         fetchLessonById
