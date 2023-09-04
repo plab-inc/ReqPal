@@ -1,5 +1,4 @@
 import {DefaultsInstance} from "vuetify/lib/framework.mjs";
-import {colors} from "@/utils/colors";
 
 export const defaults: DefaultsInstance = {
     VAppBar: {
@@ -18,10 +17,6 @@ export const defaults: DefaultsInstance = {
         color: "primary",
         variant: "solo-filled",
         density: "comfortable",
-    },
-    VAvatar: {
-        color: colors.slate[900],
-        size: "32"
     },
     VCol: {
         cols: "12"
