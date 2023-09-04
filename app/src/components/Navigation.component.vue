@@ -17,9 +17,18 @@
     </v-tabs>
     <v-spacer class="hidden-sm-and-down"></v-spacer>
 
-    <div v-if="authStore.session" class="hidden-sm-and-down">
-      <span @click="$router.push('/profile')">{{ profileStore.username }}</span>
-    </div>
+    <v-btn color="primary" variant="plain" end rounded="false">
+      Theme
+
+      <v-menu activator="parent">
+        <v-list>
+            <v-list-item variant="plain" v-for="(theme, index) in themeOptions" :key="index" @click="themeStore.setUserTheme(theme.toLocaleLowerCase())">
+              {{ theme }}
+            </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-btn>
+
     <v-btn v-if="authStore.session" variant="outlined" @click="logout()"> Logout</v-btn>
     <v-btn v-if="!authStore.session" variant="outlined" @click="$router.push('login')"> Login</v-btn>
   </v-app-bar>
@@ -43,15 +52,18 @@
 </template>
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/auth.store";
-import {useProfileStore} from "@/stores/profile.store";
-import {links} from "@/types/navigationLinks.types";
+import { useAuthStore } from "@/stores/auth.store";
+import { useProfileStore } from "@/stores/profile.store";
+import { useThemeStore } from "@/stores/theme.store"
+import { links } from "@/types/navigationLinks.types";
 import router from "@/router";
-import {ref} from "vue";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
+const themeStore = useThemeStore();
+
 const drawer = ref<boolean>(false);
+const themeOptions = ref(["Light", "Dark"]);
 
 onMounted(() => {
   if (authStore.session && authStore.user) {
