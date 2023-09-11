@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {supabase} from "@/plugins/supabase";
-import {Answer, Lesson, Question, questionTypes, SortableAnswer} from "@/types/lesson.types";
+import {Answer, Lesson, Question, questionTypes, SortableAnswer, mcAnswer} from "@/types/lesson.types";
 import {useStorage} from "@vueuse/core";
 
 interface LessonState {
@@ -237,6 +237,32 @@ export const useLessonStore = defineStore('lesson', {
                         lesson_id: lessonId,
                         answers: {solution: solutionOfQuestion},
                         question_type: questionTypes.TrueOrFalse
+                    },
+                ])
+                .select()
+                .single()
+
+            if (error) throw error;
+
+            if (data) {
+                if (this.currentLesson?.id === lessonId) {
+                    this.addCurrentQuestion(data.id, data.lesson_id, data.description, data.question_type);
+                }
+            }
+        },
+
+        async addMultipleChoiceQuestion(lessonId: string, questionText: string, answers: mcAnswer[]) {
+
+            if(answers.length <= 0) throw new Error("Answers cannot be 0");
+
+            const {data, error} = await supabase
+                .from('questions')
+                .insert([
+                    {
+                        description: questionText,
+                        lesson_id: lessonId,
+                        answers: answers,
+                        question_type: questionTypes.MultipleChoice
                     },
                 ])
                 .select()
