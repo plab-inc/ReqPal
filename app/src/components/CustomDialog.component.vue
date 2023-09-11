@@ -18,13 +18,20 @@ import {ref} from 'vue';
 
 const openDialog = ref<boolean>(true);
 
-interface Props {
-  title: String,
-  message: String,
-  confirmLabel: String,
-}
-
-const props = defineProps<Props>();
+const props = defineProps({
+  title: {
+    type: String,
+    default: "Warning"
+  },
+  message: {
+    type: String,
+    default: "Are you sure you want to proceed?"
+  },
+  confirmLabel: {
+    type: String,
+    default: "Confirm"
+  }
+});
 const emit = defineEmits();
 
 function cancel() {
