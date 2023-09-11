@@ -12,6 +12,7 @@ const lessonStore = useLessonStore();
 const lesson = lessonStore.getLessonById;
 const question = ref("");
 const minAnswers = 3;
+const maxAnswers = 10;
 
 const isFormValid = ref(false);
 const rules = {
@@ -25,7 +26,7 @@ for (let i = 0; i < minAnswers; i++) {
 }
 
 function addAnswer() {
-  answers.value.push({id: answers.value.length, description: "", solution: false});
+  answers.value.push({id: -1, description: "", solution: false});
 }
 
 function removeAnswer(index: number) {
@@ -35,6 +36,7 @@ function removeAnswer(index: number) {
 async function submitQuestion(): Promise<void> {
   try {
     if (lesson) {
+      answers.value.forEach((a, index) => a.id = index)
       await lessonStore.addMultipleChoiceQuestion(lesson.id, question.value, answers.value);
       addSuccessAlert("Question added to lesson " + lesson.id + ": " + lesson.title);
       await router.push({name: "AllLessons"})
@@ -84,7 +86,7 @@ async function submitQuestion(): Promise<void> {
         </v-col>
       </v-row>
     </div>
-    <v-btn @click="addAnswer" class="mt-4">
+    <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4">
       <v-icon>
         mdi-plus
       </v-icon>
