@@ -4,11 +4,35 @@ import TrueOrFalseForm from "@/components/TrueOrFalse/TrueOrFalseForm.component.
 import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {questionTypes} from "@/types/lesson.types";
+import customDialog from "@/components/CustomDialog.component.vue";
+import Router from "@/router";
+import {RouteLocationNormalized} from "vue-router";
 
 const lessonStore = useLessonStore();
 const lesson = lessonStore.getLessonById;
 const selectedType = ref<string>('');
-const openDialog = ref<boolean>(false);
+const openChangeTypeDialog = ref<boolean>(false);
+const openRouteLeaveDialog = ref<boolean>(false);
+const proceed = ref<boolean>(false);
+let toRoute: RouteLocationNormalized;
+
+onBeforeRouteLeave((to, from, next) => {
+  if (selectedType.value && proceed.value == false) {
+    openRouteLeaveDialog.value = true;
+    toRoute = to;
+  } else {
+    next();
+  }
+});
+
+function proceedToRoute() {
+  proceed.value = true;
+  openRouteLeaveDialog.value = false;
+  if (toRoute) {
+    Router.push(toRoute);
+  }
+}
+
 </script>
 
 <template>
@@ -31,19 +55,26 @@ const openDialog = ref<boolean>(false);
     </v-row>
     <v-row>
       <v-col>
-        <v-dialog v-model="openDialog" max-width="800px">
-          <v-card>
-            <v-card-title>Warning</v-card-title>
-            <v-card-text>
-              You have unsaved content. Changing question type will discard this content. Are you sure?
-            </v-card-text>
-            <v-card-actions>
-              <v-btn @click="openDialog = false">Cancel</v-btn>
-              <v-btn color="error" @click="selectedType=''; openDialog = false;">Change Question Type</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-btn @click="openDialog = true">Change Question Type</v-btn>
+
+        <custom-dialog
+            v-if="openRouteLeaveDialog"
+            title="Warning"
+            message="You have unsaved content. Leaving the page will delete this content. Are you sure?"
+            confirmLabel="Proceed"
+            @cancel="openRouteLeaveDialog = false"
+            @confirm="proceedToRoute"
+        ></custom-dialog>
+
+        <custom-dialog
+            v-if="openChangeTypeDialog"
+            title="Warning"
+            message="You have unsaved content. Changing the question type will discard this content. Are you sure?"
+            confirmLabel="Change Question Type"
+            @cancel="openChangeTypeDialog = false"
+            @confirm="selectedType=''; openChangeTypeDialog = false;"
+        ></custom-dialog>
+
+        <v-btn @click="openChangeTypeDialog = true">Change Question Type</v-btn>
       </v-col>
     </v-row>
   </div>
