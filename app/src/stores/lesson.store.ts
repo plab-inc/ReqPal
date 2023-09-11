@@ -253,7 +253,7 @@ export const useLessonStore = defineStore('lesson', {
 
         async addMultipleChoiceQuestion(lessonId: string, questionText: string, answers: mcAnswer[]) {
 
-            if(answers.length <= 0) throw new Error("Answers cannot be 0");
+            if (answers.length <= 0) throw new Error("Answers cannot be 0");
 
             const {data, error} = await supabase
                 .from('questions')
