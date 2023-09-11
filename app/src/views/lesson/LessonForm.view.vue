@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import TrueOrFalseForm from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
+import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {questionTypes} from "@/types/lesson.types";
 
@@ -17,7 +18,7 @@ const openDialog = ref<boolean>(false);
     <h2>Choose Question Type</h2>
     <v-radio-group v-model="selectedType" label="Type of question">
       <v-radio label="True or False" value="TrueOrFalse"></v-radio>
-      <v-radio label="..." value=""></v-radio>
+      <v-radio label="Multiple Choice" value="MultipleChoice"></v-radio>
     </v-radio-group>
   </div>
 
@@ -25,6 +26,7 @@ const openDialog = ref<boolean>(false);
     <v-row>
       <v-col>
         <TrueOrFalseForm v-if="selectedType === questionTypes.TrueOrFalse"></TrueOrFalseForm>
+        <MultipleChoiceForm v-if="selectedType === questionTypes.MultipleChoice"></MultipleChoiceForm>
       </v-col>
     </v-row>
     <v-row>
