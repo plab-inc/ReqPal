@@ -33,7 +33,7 @@ async function submitQuestion(): Promise<void> {
 <template>
   <h1>Aufgabenerstellung True False</h1>
 
-  <v-form v-model="isFormValid" @submit.prevent="submitQuestion" ref="signUpForm" fast-fail>
+  <v-form v-model="isFormValid" @submit.prevent="submitQuestion" fast-fail>
     <v-text-field
         v-model="question"
         label="Question"
@@ -45,7 +45,7 @@ async function submitQuestion(): Promise<void> {
       <v-radio label="False" v-bind:value="false"></v-radio>
     </v-radio-group>
 
-    <v-btn block type="submit" :disabled="!isFormValid">Add question</v-btn>
+    <v-btn class="mt-8" block type="submit" :disabled="!isFormValid">Add question</v-btn>
   </v-form>
 </template>
 
