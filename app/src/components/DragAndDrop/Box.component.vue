@@ -23,7 +23,7 @@ const props = defineProps<{
   font-size: 0.875em;
   padding: 0.5rem 1rem;
   border: 1px solid lightgray;
-  background-color: rgb(var(--v-theme-info));
+  background-color: rgb(var(--v-theme-primary));
   border-radius: 5px;
   cursor: move;
   user-select: none;
