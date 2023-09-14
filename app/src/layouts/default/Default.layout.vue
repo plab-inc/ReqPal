@@ -8,11 +8,15 @@
         </v-alert>
       </div>
       <v-container>
-        <v-sheet min-height="70vh" rounded="lg">
-          <v-container>
-            <router-view></router-view>
-          </v-container>
-        </v-sheet>
+        <v-row>
+          <v-col>  <!-- Passt die Breite des Haupt-v-sheet an, je nachdem ob das kleine v-sheet angezeigt wird oder nicht -->
+            <v-sheet min-height="80vh" rounded="lg">
+              <v-container>
+                <router-view></router-view>
+              </v-container>
+            </v-sheet>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
 
