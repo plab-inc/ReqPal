@@ -39,3 +39,9 @@ export interface answerResults {
     id: string,
     answerIsCorrect: boolean;
 }
+
+export interface mcAnswer {
+    id: number,
+    description: string,
+    solution: boolean
+}
