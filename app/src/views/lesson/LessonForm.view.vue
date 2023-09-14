@@ -5,33 +5,11 @@ import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.c
 import {useLessonStore} from "@/stores/lesson.store";
 import {questionTypes} from "@/types/lesson.types";
 import customDialog from "@/components/CustomDialog.component.vue";
-import Router from "@/router";
-import {RouteLocationNormalized} from "vue-router";
 
 const lessonStore = useLessonStore();
 const lesson = lessonStore.getLessonById;
 const selectedType = ref<string>('');
 const openChangeTypeDialog = ref<boolean>(false);
-const openRouteLeaveDialog = ref<boolean>(false);
-const proceed = ref<boolean>(false);
-let toRoute: RouteLocationNormalized;
-
-onBeforeRouteLeave((to, from, next) => {
-  if (selectedType.value && proceed.value == false) {
-    openRouteLeaveDialog.value = true;
-    toRoute = to;
-  } else {
-    next();
-  }
-});
-
-function proceedToRoute() {
-  proceed.value = true;
-  openRouteLeaveDialog.value = false;
-  if (toRoute) {
-    Router.push(toRoute);
-  }
-}
 
 </script>
 
@@ -57,15 +35,6 @@ function proceedToRoute() {
       <v-col>
 
         <custom-dialog
-            v-if="openRouteLeaveDialog"
-            title="Warning"
-            message="You have unsaved content. Leaving the page will delete this content. Are you sure?"
-            confirmLabel="Proceed"
-            @cancel="openRouteLeaveDialog = false"
-            @confirm="proceedToRoute"
-        ></custom-dialog>
-
-        <custom-dialog
             v-if="openChangeTypeDialog"
             title="Warning"
             message="You have unsaved content. Changing the question type will discard this content. Are you sure?"
@@ -78,9 +47,7 @@ function proceedToRoute() {
       </v-col>
     </v-row>
   </div>
-
 </template>
 
 <style scoped>
-
 </style>
