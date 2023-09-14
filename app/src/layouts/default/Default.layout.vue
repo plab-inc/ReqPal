@@ -9,44 +9,11 @@
       </div>
       <v-container>
         <v-row>
-          <v-col :cols="9">  <!-- Passt die Breite des Haupt-v-sheet an, je nachdem ob das kleine v-sheet angezeigt wird oder nicht -->
+          <v-col>  <!-- Passt die Breite des Haupt-v-sheet an, je nachdem ob das kleine v-sheet angezeigt wird oder nicht -->
             <v-sheet min-height="80vh" rounded="lg">
               <v-container>
                 <router-view></router-view>
               </v-container>
-            </v-sheet>
-          </v-col>
-          <v-col v-if="true" cols="3"> <!-- Sie können die cols-Zahl ändern, um die Breite anzupassen -->
-            <v-sheet min-height="80vh" rounded="lg">
-
-              <v-sheet min-height="80vh" rounded="lg" class="pa-3">
-                <v-row align="center"> <!-- Die align="center" Eigenschaft stellt sicher, dass das Avatar und der Name vertikal zentriert sind -->
-                  <v-col cols="4">
-                    <v-avatar :style="{
-                      border: '5px solid white',
-                    }"
-                    image="@/assets/images/tom.jpg" size="75px"/>
-                  </v-col>
-
-                  <!-- Name -->
-                  <v-col cols="8">
-                    <h3>Max Mustermann</h3>
-                  </v-col>
-                </v-row>
-
-                <!-- Verschiedene Progress Bars -->
-                <div class="mt-3">
-                  <div class="caption">Fähigkeit 1</div>
-                  <v-progress-linear model-value="40" color="primary" height="8"></v-progress-linear>
-
-                  <div class="caption mt-2">Fähigkeit 2</div>
-                  <v-progress-linear model-value="20" color="primary" height="8"></v-progress-linear>
-
-                  <div class="caption mt-2">Fähigkeit 3</div>
-                  <v-progress-linear model-value="10" color="primary" height="8"></v-progress-linear>
-                </div>
-              </v-sheet>
-
             </v-sheet>
           </v-col>
         </v-row>
