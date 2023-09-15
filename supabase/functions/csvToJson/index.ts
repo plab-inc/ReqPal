@@ -55,8 +55,8 @@ serve(async (req)=>{
             status: 400
         });
     }
-    
-    const json = convertCSVtoJSONString(csvString, csvFile.name);
+    const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
+    const json = convertCSVtoJSONString(csvString, fileNameWithoutExtension);
     const response = new Response(JSON.stringify(json, null, 2), {
         headers: {
             'Content-Type': 'application/json'
