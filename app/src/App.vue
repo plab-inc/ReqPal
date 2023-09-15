@@ -3,6 +3,7 @@ import { supabase } from "@/plugins/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { useThemeStore } from '@/stores/theme.store';
 import { useTheme } from "vuetify";
+import {Ref} from "vue";
 
 const themeStore = useThemeStore();
 const theme = useTheme()
