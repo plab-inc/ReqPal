@@ -13,7 +13,8 @@ interface Requirement {
 }
 
 interface RequirementsJSON {
-  requirements: Requirement[];
+    catalog_name: string;
+    requirements: Requirement[];
 }
 
 serve(async (req)=>{
@@ -55,7 +56,7 @@ serve(async (req)=>{
         });
     }
     
-    const json = convertCSVtoJSONString(csvString);
+    const json = convertCSVtoJSONString(csvString, csvFile.name);
     const response = new Response(JSON.stringify(json, null, 2), {
         headers: {
             'Content-Type': 'application/json'
@@ -115,10 +116,11 @@ function checkRequirementColumns(line: string, products: number) {
     }
     return true;
 }
-function convertCSVtoJSONString(csvString: string): RequirementsJSON {
+function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
     const products = lines[0].split(";;;")[1].split(";;");
     const requirementsJson: RequirementsJSON = {
+        catalog_name: fileName,
         requirements: []
     };
     for(let i = 2; i < lines.length; i++){
