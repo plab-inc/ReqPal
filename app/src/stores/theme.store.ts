@@ -3,8 +3,8 @@ import { useLocalStorage } from '@vueuse/core';
 import { Ref } from "vue";
 
 interface ThemeState {
-    browserTheme: Ref;
-    userTheme: Ref;
+    browserTheme: Ref<string>;
+    userTheme: Ref<string>;
 }
 
 export const useThemeStore = defineStore('theme', {
@@ -13,15 +13,21 @@ export const useThemeStore = defineStore('theme', {
         userTheme: useLocalStorage('userTheme', 'init'),
     }),
     getters: {
-        currentTheme: (state): Ref<string> => (state.userTheme === 'init' ? state.browserTheme : state.userTheme),
-        hasStoredUserTheme: (state): boolean => state.userTheme !== 'init',
-        getStoredUserTheme: (state): string => state.userTheme.value,
+        currentTheme(): string {
+            return this.userTheme === 'init' ? this.browserTheme : this.userTheme;
+        },
+        hasStoredUserTheme(): boolean {
+            return this.userTheme !== 'init';
+        },
+        getStoredUserTheme(): string {
+            return this.userTheme;
+        },
     },
     actions: {
-        syncWithBrowserSettings() {
+        syncWithBrowserSettings(): void {
             this.browserTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         },
-        setUserTheme(theme: string) {
+        setUserTheme(theme: string): void {
             this.userTheme = theme;
         },
     },
