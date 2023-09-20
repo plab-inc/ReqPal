@@ -6,7 +6,6 @@ on:
       - develop
     paths:
       - 'app/src/database/functions/*.sql'
-  workflow_dispatch:
 
 jobs:
   run_script:
