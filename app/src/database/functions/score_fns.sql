@@ -1,4 +1,5 @@
 CREATE FUNCTION calculate_user_score_mc(question_id INTEGER, user_results JSON, id_user UUID) RETURNS INTEGER
+    LANGUAGE plpgsql
 AS $$
 DECLARE
     correctAnswers INT := 0;
@@ -46,6 +47,7 @@ END;
 $$;
 
 CREATE FUNCTION calculate_user_score_true_false(question_id INTEGER, user_result BOOLEAN, id_user UUID) RETURNS INTEGER
+    LANGUAGE plpgsql
 AS $$
 DECLARE
     maxPoints INT := 0;
