@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - 'app/src/database/functions/*.sql'
+      - 'app/src/database/**/*.sql'
 
 jobs:
   run_script:
@@ -24,7 +24,7 @@ jobs:
       run: |
           changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
           for file in $changed_files; do
-            if [[ $file == "app/src/database/functions/"*".sql" ]]; then
+            if [[ $file == "app/src/database/"*".sql" ]]; then
                 echo "Executing $file"
                 PGPASSWORD=${{ secrets.SUPABASE_DATABASE_PASSWORD }} psql --host ${{ secrets.SUPABASE_DATABASE_HOST }} --port ${{ secrets.SUPABASE_DATABASE_PORT }} --username ${{ secrets.SUPABASE_DATABASE_USER }} --dbname ${{ secrets.SUPABASE_DATABASE_NAME }} -f $file
             fi
