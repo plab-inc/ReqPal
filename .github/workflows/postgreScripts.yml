@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'app/src/database/**/*.sql'
+  workflow_dispatch:
 
 jobs:
   run_script:
@@ -22,10 +23,13 @@ jobs:
 
     - name: Identify changed SQL files and run them
       run: |
-          changed_files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }})
-          for file in $changed_files; do
-            if [[ $file == "app/src/database/"*".sql" ]]; then
-                echo "Executing $file"
-                PGPASSWORD=${{ secrets.SUPABASE_DATABASE_PASSWORD }} psql --host ${{ secrets.SUPABASE_DATABASE_HOST }} --port ${{ secrets.SUPABASE_DATABASE_PORT }} --username ${{ secrets.SUPABASE_DATABASE_USER }} --dbname ${{ secrets.SUPABASE_DATABASE_NAME }} -f $file
-            fi
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            files_to_process="app/src/database/**/*.sql"
+          else
+            files_to_process=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep "app/src/database/.*\.sql")
+          fi
+
+          for file in $files_to_process; do
+            echo "Executing $file"
+            PGPASSWORD=${{ secrets.SUPABASE_DATABASE_PASSWORD }} psql --host ${{ secrets.SUPABASE_DATABASE_HOST }} --port ${{ secrets.SUPABASE_DATABASE_PORT }} --username ${{ secrets.SUPABASE_DATABASE_USER }} --dbname ${{ secrets.SUPABASE_DATABASE_NAME }} -f $file
           done
