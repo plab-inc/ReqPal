@@ -21,10 +21,9 @@ jobs:
 
     - name: Identify changed SQL files and run them
       run: |
-        changed_files=$(git diff --name-only HEAD~1 HEAD)
-        for file in $changed_files
+        for file in ${{ toJson(github.event.commits[0].added) }} ${{ toJson(github.event.commits[0].modified) }}
         do
-          if [[ $file == src/database/functions/*.sql ]]
+          if [[ $file == "src/database/functions/"*".sql" ]]
           then
             PGPASSWORD=${{ secrets.DB_PASSWORD }} psql --host ${{ secrets.DB_HOST }} --port ${{ secrets.DB_PORT }} --username ${{ secrets.DB_USER }} --dbname ${{ secrets.DB_NAME }} -f $file
           fi
