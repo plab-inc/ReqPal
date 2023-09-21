@@ -1,7 +1,7 @@
 <template>
- <div :class="'container bg-'+color">
-    <h1>{{text}}</h1>
- </div>
+  <div :class="'bg-'+color" class="rounded-pill pa-3 ma-3 item">
+    <h1>{{ text }}</h1>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -11,19 +11,16 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-let color : String = 'info';
-if(props.highlight) {
+let color: String = 'info';
+if (props.highlight) {
   color = 'primary';
 }
 
 </script>
 <style scoped>
 
-.container {
-  border: 1px solid black;
-  border-radius: 10px;
-  padding: 10px 10px 10px 10px;
-  margin: 10px 10px 10px 10px;
+.item {
+  border: 2px solid white;
 }
 
 </style>
