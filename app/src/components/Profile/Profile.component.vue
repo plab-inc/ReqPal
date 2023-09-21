@@ -1,4 +1,5 @@
 <template>
+  <h1>Profile</h1>
   <v-container class="border">
     <UserData></UserData>
   </v-container>
