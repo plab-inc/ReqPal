@@ -4,23 +4,25 @@
     <UserDetails class="mx-md-16"></UserDetails>
   </v-container>
 
-  <v-divider class="mt-4"></v-divider>
+  <v-divider class="my-8"></v-divider>
 
-  <v-container class="mt-8">
-    <ProgressSlide class="mx-md-16"></ProgressSlide>
+  <v-container class="my-8">
+    <ProgressSlide class="mx-lg-16"></ProgressSlide>
   </v-container>
 
-  <v-divider class="mt-4"></v-divider>
+  <v-divider></v-divider>
 
-  <v-container class="mt-8">
-    <StatisticList class="mx-md-16"></StatisticList>
+  <v-container class="my-8">
+    <v-row>
+      <v-col lg="6">
+        <StatisticList class="mx-lg-16"></StatisticList>
+      </v-col>
+      <v-col lg="6">
+        <AchievementList class="mx-lg-16"></AchievementList>
+      </v-col>
+    </v-row>
   </v-container>
 
-  <v-divider class="mt-4"></v-divider>
-
-  <v-container class="mt-8">
-    <AchievementList class="mx-md-16"></AchievementList>
-  </v-container>
 </template>
 
 <script setup lang="ts">
