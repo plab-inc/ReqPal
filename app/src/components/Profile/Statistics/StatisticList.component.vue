@@ -1,13 +1,17 @@
 <template>
-  <h1>Statistics</h1>
-  <div class="itemContainer">
-    <StatisticItem
-        v-for="(item, index) in items"
-        :key="index"
-        :highlight="index % 2 === 0"
-        :text="item">
-    </StatisticItem>
-  </div>
+  <v-row>
+    <v-col>
+      <h1>Statistics</h1>
+    </v-col>
+    <v-col class="d-flex align-center justify-space-evenly flex-wrap">
+      <StatisticItem
+          v-for="(item, index) in items"
+          :key="index"
+          :highlight="index % 2 === 0"
+          :text="item">
+      </StatisticItem>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -18,15 +22,4 @@ const items = ['1000 Punkte', '20 Lektionen', '35 ohne Fehler', '20 Lektionen', 
 
 </script>
 <style scoped>
-
-.itemContainer {
-  border: 1px solid black;
-  padding: 10px 20px 10px 20px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-flow: wrap;
-}
-
 </style>
