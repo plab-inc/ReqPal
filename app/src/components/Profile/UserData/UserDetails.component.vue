@@ -36,7 +36,7 @@ if (isoDateString) {
 <style scoped>
 
 .profileData {
-  margin: 5px 0px 5px 0px;
+  margin: 5px 0 5px 0;
 }
 
 </style>
