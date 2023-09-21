@@ -27,7 +27,7 @@
 import AchievementList from "@/components/Profile/Achievements/AchievementList.component.vue";
 import UserDetails from "@/components/Profile/UserData/UserDetails.component.vue";
 import StatisticList from "@/components/Profile/Statistics/StatisticList.component.vue";
-import ProgressSlide from "@/components/Profile/Statistics/ProgressSlide.component.vue";
+import ProgressSlide from "@/components/Profile/ProgressSlide.component.vue";
 
 </script>
 <style scoped>
