@@ -8,7 +8,9 @@
     "build": "vue-tsc --noEmit && vite build",
     "type-check": "vue-tsc --noEmit",
     "preview": "vite preview",
-    "lint": "eslint .. --fix --ignore-path .gitignore"
+    "lint": "eslint .. --fix --ignore-path .gitignore",
+    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > types/supabase.ts"
+
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
