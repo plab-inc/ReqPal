@@ -1,18 +1,18 @@
 <template>
-  <h1>Profile</h1>
-  <v-container class="border">
+
+  <v-container>
     <UserData></UserData>
   </v-container>
 
   <v-divider class="ma-4"></v-divider>
 
-  <v-container class="border">
+  <v-container>
     <StatisticList></StatisticList>
   </v-container>
 
   <v-divider class="ma-4"></v-divider>
 
-  <v-container class="border">
+  <v-container>
     <AchievementList></AchievementList>
   </v-container>
 </template>
@@ -24,9 +24,4 @@ import StatisticList from "@/components/Profile/Statistics/StatisticList.compone
 
 </script>
 <style scoped>
-
-.border {
-  border: 1px solid black
-}
-
 </style>
