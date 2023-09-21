@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 16
       - run: npm run update-types
+        working-directory: ./app
       - name: check for file changes
         id: git_status
         run: |
