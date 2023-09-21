@@ -1,11 +1,11 @@
 <template>
   <v-row class="pa-3 ma-3 item d-flex align-center justify-center">
-    <v-col sm="2" class="d-flex justify-center">
+    <v-col sm="1" class="d-flex justify-center">
       <v-icon size="x-large">
         mdi-trophy
       </v-icon>
     </v-col>
-    <v-col sm="10">
+    <v-col sm="11">
       <h1 class="text-center">{{ text }}</h1>
     </v-col>
   </v-row>

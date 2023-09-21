@@ -1,20 +1,7 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col lg="6">
-        <v-sheet>
-          <Profile></Profile>
-        </v-sheet>
-      </v-col>
-
-      <v-col lg="6">
-        <v-sheet>
-          <v-container>
-            <h1>Company Data</h1>
-          </v-container>
-        </v-sheet>
-      </v-col>
-    </v-row>
+    <h1>Profile</h1>
+    <Profile></Profile>
   </v-container>
 </template>
 

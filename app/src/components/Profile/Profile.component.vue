@@ -1,25 +1,25 @@
 <template>
 
   <v-container>
-    <UserDetails></UserDetails>
+    <UserDetails class="mx-md-16"></UserDetails>
   </v-container>
 
   <v-divider class="mt-4"></v-divider>
 
-  <v-container>
-    <UserProgress></UserProgress>
+  <v-container class="mt-8">
+    <ProgressSlide class="mx-md-16"></ProgressSlide>
   </v-container>
 
   <v-divider class="mt-4"></v-divider>
 
-  <v-container>
-    <StatisticList></StatisticList>
+  <v-container class="mt-8">
+    <StatisticList class="mx-md-16"></StatisticList>
   </v-container>
 
   <v-divider class="mt-4"></v-divider>
 
-  <v-container>
-    <AchievementList></AchievementList>
+  <v-container class="mt-8">
+    <AchievementList class="mx-md-16"></AchievementList>
   </v-container>
 </template>
 
@@ -27,7 +27,7 @@
 import AchievementList from "@/components/Profile/Achievements/AchievementList.component.vue";
 import UserDetails from "@/components/Profile/UserData/UserDetails.component.vue";
 import StatisticList from "@/components/Profile/Statistics/StatisticList.component.vue";
-import UserProgress from "@/components/Profile/Statistics/Progress.component.vue";
+import ProgressSlide from "@/components/Profile/Statistics/ProgressSlide.component.vue";
 
 </script>
 <style scoped>
