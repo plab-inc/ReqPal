@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="d-flex align-center justify-space-between flex-wrap">
-      <h1>Progress</h1>
+      <h1>User Progress</h1>
       <v-btn variant="plain">Details</v-btn>
     </v-col>
     <v-col>
