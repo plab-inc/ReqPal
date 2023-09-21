@@ -9,21 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      catalogs: {
-        Row: {
-          catalog_id: number
-          catalog_name: string | null
-        }
-        Insert: {
-          catalog_id?: number
-          catalog_name?: string | null
-        }
-        Update: {
-          catalog_id?: number
-          catalog_name?: string | null
-        }
-        Relationships: []
-      }
       lessons: {
         Row: {
           description: string | null
