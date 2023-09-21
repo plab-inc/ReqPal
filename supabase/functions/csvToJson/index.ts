@@ -14,6 +14,7 @@ interface Requirement {
 
 interface RequirementsJSON {
     catalog_name: string;
+    products: string[]
     requirements: Requirement[];
 }
 
@@ -121,6 +122,7 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
     const products = lines[0].split(";;;")[1].split(";;");
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
+        products: products,
         requirements: []
     };
     for(let i = 2; i < lines.length; i++){
