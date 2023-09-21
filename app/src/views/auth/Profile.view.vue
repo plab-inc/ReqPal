@@ -3,10 +3,8 @@
     <v-row>
       <v-col md="6">
         <v-sheet>
-          <v-container>
-            <h1>Profile Data</h1>
-            <Upload/>
-          </v-container>
+          <h1>Profile</h1>
+          <Profile></Profile>
         </v-sheet>
       </v-col>
 
@@ -23,4 +21,5 @@
 
 <script setup lang="ts">
 import Upload from "@/components/Upload.component.vue";
+import Profile from "@/components/Profile/Profile.component.vue";
 </script>
