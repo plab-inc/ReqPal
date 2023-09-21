@@ -23,59 +23,80 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req)=>{
+serve(async (req) => {
 
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders })
     }
-    
-    const contentType = req.headers.get('Content-Type');
-    if (!contentType || !contentType.includes('multipart/form-data')) {
-        return new Response(JSON.stringify({
-            error: "Invalid Content-Type. Must be multipart/form-data."
-        }), {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            status: 415
-        });
-    }
 
-    const formData = await req.formData();
-    const csvFile: File = formData.get('csv') as File;
-    if (!csvFile) {
-        return new Response(JSON.stringify({
-            error: "No CSV file found in form data."
-        }), {
+    try {
+        const contentType = req.headers.get('Content-Type');
+
+        if (!contentType || !contentType.includes('multipart/form-data')) {
+            return new Response(JSON.stringify({
+                error: "Invalid Content-Type. Must be multipart/form-data."
+            }), {
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'application/json'
+                },
+                status: 415
+            });
+        }
+
+        const formData = await req.formData();
+        const csvFile: File = formData.get('csv') as File;
+        if (!csvFile) {
+            return new Response(JSON.stringify({
+                error: "No CSV file found in form data."
+            }), {
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'application/json'
+                },
+                status: 422
+            });
+        }
+
+        const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
+        if (!validateCSVFormat(csvString)) {
+            return new Response(JSON.stringify({
+                error: "Invalid CSV format"
+            }), {
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'application/json'
+                },
+                status: 400
+            });
+        }
+
+        const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
+        const json = convertCSVtoJSONString(csvString, fileNameWithoutExtension);
+
+        const response = new Response(JSON.stringify(json, null, 2), {
             headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json'
             },
-            status: 422
+            status: 200
         });
-    }
-    
-    const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
-    if (!validateCSVFormat(csvString)) {
-        return new Response(JSON.stringify({
-            error: "Invalid CSV format"
-        }), {
+
+        console.log('CSV to JSON conversion successful');
+        return response;
+
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message }), {
             headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json'
             },
-            status: 400
+            status: 500,
         });
     }
-    const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
-    const json = convertCSVtoJSONString(csvString, fileNameWithoutExtension);
-    const response = new Response(JSON.stringify(json, null, 2), {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        status: 200
-    });
-    console.log('CSV to JSON conversion successful');
-    return response;
 });
+
+
 function validateCSVFormat(csvString: string) {
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
     const productList = productCol.split(';').filter((product)=>product !== '');
