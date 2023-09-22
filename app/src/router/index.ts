@@ -90,16 +90,6 @@ const routes = [
                 },
             },
             {
-                path: "/profile/edit",
-                name: "ProfileEdit",
-                component: () => import("@/views/auth/ProfileEdit.view.vue"),
-                meta: {
-                    middleware: [
-                        requiresAuth
-                    ]
-                },
-            },
-            {
                 path: "/error",
                 name: "Error",
                 component: () => import("@/views/Error.view.vue"),
