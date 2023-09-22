@@ -149,7 +149,7 @@ function checkRequirementColumns(line: string, products: number) {
 }
 function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
-    const products = lines[0].split(";;;")[1].split(";;");
+    const products = lines[0].slice(3, -1).split(";;");
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
         products: products,
