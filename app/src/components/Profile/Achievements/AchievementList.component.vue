@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import AchievementItem from "@/components/Profile/Achievements/AchievementItem.component.vue";
 
-const items = ['1000 Punkte', '20 Lektionen', '35 ohne Fehler']
+const items = ['1000 Punkte', 'Erste Lektion', 'Fehlerfrei']
 
 </script>
 <style scoped>
