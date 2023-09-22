@@ -65,21 +65,21 @@ export interface Database {
           comment: string | null
           product_id: number | null
           product_requirement_id: number
-          qualification: number | null
+          qualification: string | null
           requirement_id: number | null
         }
         Insert: {
           comment?: string | null
           product_id?: number | null
           product_requirement_id?: number
-          qualification?: number | null
+          qualification?: string | null
           requirement_id?: number | null
         }
         Update: {
           comment?: string | null
           product_id?: number | null
           product_requirement_id?: number
-          qualification?: number | null
+          qualification?: string | null
           requirement_id?: number | null
         }
         Relationships: [
