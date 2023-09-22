@@ -13,7 +13,7 @@
       <h2 class="profileData">Joined {{ joinedDate }}</h2>
     </v-col>
     <v-col class="d-flex justify-end">
-      <v-btn class="profileData" @click="toEditProfile">Edit Profile</v-btn>
+      <v-btn class="profileData">Edit Profile</v-btn>
     </v-col>
   </v-row>
 </template>
@@ -21,7 +21,6 @@
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
 import {User} from "@supabase/supabase-js";
-import router from "@/router";
 
 const authStore = useAuthStore();
 const user: User | null = authStore.user;
@@ -33,9 +32,6 @@ if (isoDateString) {
   joinedDate = parsedDate.toLocaleString('default', {year: 'numeric', month: 'long'});
 }
 
-function toEditProfile() {
-  router.push({name: "ProfileEdit"})
-}
 </script>
 <style scoped>
 
