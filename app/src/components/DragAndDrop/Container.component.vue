@@ -79,6 +79,7 @@ const {isOver} = toRefs(collect);
   align-items: center;
   justify-content: center;
   text-align: center;
+  user-select: none;
 }
 .container-title {
   font-size: 30px;
