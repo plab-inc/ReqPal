@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "baseUrl": ".",
