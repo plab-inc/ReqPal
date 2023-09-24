@@ -24,9 +24,9 @@ jobs:
     - name: Identify changed SQL files and run them
       run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            files_to_process="app/src/database/**/*.sql"
+            files_to_process="supabase/database/**/*.sql"
           else
-            files_to_process=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep "app/src/database/.*\.sql")
+            files_to_process=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep "supabase/database/.*\.sql")
           fi
 
           for file in $files_to_process; do
