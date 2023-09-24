@@ -67,7 +67,7 @@ BEGIN
             'wholeAnswerIsCorrect', (user_result = correctResult)::BOOLEAN,
             'results', json_agg(
                     json_build_object(
-                            'id', CASE WHEN user_result = true AND correctResult = true THEN 'true' ELSE 'false' END,
+                            'id', CASE WHEN correctResult = true THEN 'true' ELSE 'false' END,
                             'answerIsCorrect', user_result = correctResult
                         )
                 )
