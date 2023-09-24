@@ -1,37 +1,46 @@
 <template>
   <v-card variant="outlined">
     <v-container>
-      <v-row align="center" >
+      <v-row align="center">
         <v-col
-          cols="12"
-          class="dashed-border"
-          @drop.prevent="handleDrop"
-          @dragover.prevent="handleDragOver"
-          @dragleave.prevent="handleDragLeave"
-          :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
+            cols="13"
+            class="dashed-border"
+            @drop.prevent="handleDrop"
+            @dragover.prevent="handleDragOver"
+            @dragleave.prevent="handleDragLeave"
+            :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
+            :class="{ 'loading': loading }"
         >
-            <v-card-text class="text-center">
-              <v-icon class="mr-2" size="32">mdi-file-upload</v-icon>
+          <v-card-text class="text-center">
+            <div v-if="loading">
+              <v-progress-circular indeterminate model-value="20" color="primary"></v-progress-circular>
+            </div>
+            <div v-else>
+              <v-icon  class="mr-2" size="32">mdi-file-upload</v-icon>
               <span>Datei hier ablegen</span>
-            </v-card-text>
+            </div>
+          </v-card-text>
+
         </v-col>
       </v-row>
       <v-row align="center">
         <v-col>
           <v-file-input
-            label="Datei auswählen"
-            color="secondary"
-            accept=".csv"
-            variant="outlined"
-            v-model="state.files"
-            show-icon="false"
-            multiple
+              label="Datei auswählen"
+              color="secondary"
+              accept=".csv"
+              variant="outlined"
+              v-model="state.files"
+              show-icon="false"
+              multiple
+              :disabled="loading"
           ></v-file-input>
         </v-col>
       </v-row>
       <v-row align="center">
         <v-col>
-          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block>Upload</v-btn>
+          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Upload</v-btn>
+          <v-btn color="primary" @click="CatalogService.pull.fetchRequirementsByCatalogId('26')" block :disabled="loading">Fetch</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -39,19 +48,43 @@
 </template>
 
 <script setup lang="ts">
-import { addWarningAlert } from "@/services/alert.service";
+import {addSuccessAlert, addWarningAlert} from "@/services/alert.service";
 import { useTheme } from "vuetify";
-import { useCatalogStore } from "@/stores/catalog.store";
+import { Catalog } from "@/types/catalog.types.ts";
 
-const catalogStore = useCatalogStore();
+import CatalogService from "@/services/database/catalog.service";
 
 interface Props {
   maxFileSize?: number;
   acceptedFileTypes?: string[];
 }
 
+const loading = ref(false);
+
 const handleFileUpload = (File: File) => {
-  catalogStore.convertCatalogToJson(File);
+
+  loading.value = true;
+  state.borderColor= 'transparent';
+
+
+  CatalogService.convertCSVToCatalog(File).then((catalog: Catalog) => {
+
+    CatalogService.push.uploadCatalogToDatabase(catalog)
+        .then(() => {
+          addSuccessAlert('Katalog erfolgreich hochgeladen.');
+        })
+        .catch((error: any) => {
+          addWarningAlert(error.message);
+          state.borderColor = themeColors.secondary;
+          state.files = [];
+          loading.value = false;
+        })
+        .finally(() => {
+          state.borderColor = themeColors.secondary;
+          state.files = [];
+          loading.value = false;
+        });
+  });
 }
 
 const themeColors = useTheme().current.value.colors;
@@ -105,7 +138,7 @@ const validateFile = (file: File) => {
 .dashed-border {
   border: 2px dashed;
   border-radius: 10px;
-  padding: 15px;
+  padding: 30px;
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 </style>
