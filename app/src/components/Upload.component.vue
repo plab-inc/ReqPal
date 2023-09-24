@@ -1,7 +1,7 @@
 <template>
-  <v-card>
+  <v-card variant="outlined">
     <v-container>
-      <v-row align="center">
+      <v-row align="center" >
         <v-col
           cols="12"
           class="dashed-border"
@@ -31,7 +31,7 @@
       </v-row>
       <v-row align="center">
         <v-col>
-          <v-btn color="primary" @click="props.handleFileUpload(state.files)" block>Upload</v-btn>
+          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block>Upload</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -41,11 +41,17 @@
 <script setup lang="ts">
 import { addWarningAlert } from "@/services/alert.service";
 import { useTheme } from "vuetify";
+import { useCatalogStore } from "@/stores/catalog.store";
+
+const catalogStore = useCatalogStore();
 
 interface Props {
-  handleFileUpload?: (files: File[]) => void;
   maxFileSize?: number;
   acceptedFileTypes?: string[];
+}
+
+const handleFileUpload = (File: File) => {
+  catalogStore.convertCatalogToJson(File);
 }
 
 const themeColors = useTheme().current.value.colors;
@@ -57,13 +63,8 @@ const state = reactive({
 });
 
 const props = withDefaults(defineProps<Props>(), {
-  handleFileUpload: (files?: File[]) => {
-    if (Array.isArray(files)) {
-      console.log(files);
-    }
-  },
   maxFileSize: 1048576,
-  acceptedFileTypes: () => ['.png','.jpg']
+  acceptedFileTypes: () => ['.csv']
 });
 const handleDragOver = () => {
   state.borderColor = themeColors.info;
