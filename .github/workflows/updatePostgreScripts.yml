@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'app/src/database/**/*.sql'
+      - 'supabase/database/**/*.sql'
   workflow_dispatch:
 
 jobs:
