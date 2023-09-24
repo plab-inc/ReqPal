@@ -43,9 +43,6 @@
       <v-list-item v-for="(link, index) in links" :key="index" :to="{ name: link.name}">
         {{ link.title }}
       </v-list-item>
-      <v-list-item v-if="authStore.session" :to="{ name: 'Profile'}">
-        Profile
-      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 
