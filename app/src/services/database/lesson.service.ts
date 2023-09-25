@@ -1,6 +1,5 @@
 import {supabase} from "@/plugins/supabase";
 import {Answer, mcAnswer, Question, questionTypes, SortableAnswer} from "@/types/lesson.types.ts";
-import {Json} from "@/types/supabase.types.ts";
 
 class LessonServiceClass {
 
