@@ -142,7 +142,7 @@ class LessonServiceClass {
 
     private async compareUserSortableAnswers(userAnswers: SortableAnswer[], questionId: number) {
         const {data, error} = await supabase.rpc('sortable_compare_solution', {
-            answer_json: userAnswers as unknown as Json,
+            answer_json: userAnswers,
             question_id: questionId,
         })
 
