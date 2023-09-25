@@ -1,4 +1,4 @@
-import {NavigationGuardNext, RouteLocationNormalized, RouteParamValue} from "vue-router";
+import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import {useLessonStore} from "@/stores/lesson.store";
 
 export async function fetchLessonById(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
