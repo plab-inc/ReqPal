@@ -1,8 +1,6 @@
-export interface Lesson {
-    id: string;
-    title: string;
-    description: string;
-}
+import {Database} from "@/types/supabase.types.ts";
+
+export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
 
 export enum questionTypes {
     MultipleChoice = "MultipleChoice",
@@ -11,16 +9,16 @@ export enum questionTypes {
     Sortable = "Sortable",
 }
 
-export interface Question {
-    id: string;
-    lessonId: string;
+export type Question = {
+    id: number;
+    lessonId: number;
     description: string;
     questionType: questionTypes | null;
     userResults: Result | null;
 }
 
-export interface Answer {
-    id: string,
+export type Answer = {
+    id: number,
     description: string;
 }
 
@@ -30,17 +28,17 @@ export interface SortableAnswer {
     order: number
 }
 
-export interface Result {
+export type Result = {
     wholeAnswerIsCorrect: boolean;
     results: answerResults[];
 }
 
-export interface answerResults {
-    id: string,
+export type answerResults = {
+    id: number,
     answerIsCorrect: boolean;
 }
 
-export interface mcAnswer {
+export type mcAnswer = {
     id: number,
     description: string,
     solution: boolean
