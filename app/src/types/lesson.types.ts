@@ -22,7 +22,7 @@ export type Answer = {
     description: string;
 }
 
-export interface SortableAnswer {
+export type SortableAnswer = {
     id: string,
     description: string;
     order: number
