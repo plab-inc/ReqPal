@@ -1,20 +1,24 @@
 import {serve} from "https://deno.land/std@0.168.0/http/server.ts";
 
-interface Product {
+interface ProductDetails {
   qualification: string;
   comment: string;
+}
+
+export type Product = {
+    product_name: string;
 }
 
 interface Requirement {
   reqId: string;
   title: string;
   description: string;
-  products: { [key: string]: Product };
+  products: { [key: string]: ProductDetails };
 }
 
 interface RequirementsJSON {
     catalog_name: string;
-    products: string[]
+    products: Product[]
     requirements: Requirement[];
 }
 
@@ -149,7 +153,7 @@ function checkRequirementColumns(line: string, products: number) {
 }
 function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
-    const products = lines[0].slice(3, -1).split(";;");
+    const products = lines[0].slice(3, -1).split(";;").map((productString: string) => ({ product_name: productString }));
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
         products: products,
@@ -167,7 +171,7 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
             const product = products[k];
             const qualification = currentLine[k * 2 + 3];
             const comment = currentLine[k * 2 + 4];
-            item.products[product] = {
+            item.products[product.product_name] = {
                 "qualification": qualification,
                 "comment": comment
             };
