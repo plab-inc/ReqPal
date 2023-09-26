@@ -3,7 +3,7 @@
     <v-col class="d-flex flex-column align-center justify-center">
       <v-avatar
           color="secondary"
-          image="@/assets/images/profile-test.jpg"
+          image="@/assets/images/tom.jpg"
           alt="profilePicture"
           size="160"></v-avatar>
     </v-col>
