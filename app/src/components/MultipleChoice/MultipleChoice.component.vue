@@ -3,7 +3,7 @@
     <v-container>
       <h2>Multiple Choice</h2>
 
-      <v-form v-if="answers" v-model="isFormValid" @submit.prevent="submitAnswers" fast-fail>
+      <v-form v-if="answers" @submit.prevent="submitAnswers" fast-fail>
 
         <p>{{ props.question.description }}</p>
         <p v-if="submitted">Solution:</p>
@@ -28,7 +28,6 @@
 import {ref} from "vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {Answer, Question} from "@/types/lesson.types";
-import {booleanValueRule, requiredRule} from "@/utils/validationRules";
 
 interface Props {
   question: Question;
@@ -39,8 +38,6 @@ const selectedAnswers = ref<boolean[]>([]);
 const submitted = ref(false);
 const lessonStore = useLessonStore();
 const answers = ref<Answer[]>();
-
-const isFormValid = ref(false);
 
 async function submitAnswers(): Promise<void> {
   if (submitted.value) return;

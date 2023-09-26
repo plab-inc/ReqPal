@@ -5,17 +5,17 @@
 
       <p>{{ props.question.description }}</p>
       <p v-if="submitted">Solution:</p>
+      <v-form v-model="isFormValid" @submit.prevent="submitAnswers" fast-fail>
 
-      <v-radio-group v-model="selectedAnswer">
-        <v-radio label="True" value="true"
-                 :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
-        <v-radio label="False" value="false"
-                 :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
-        <p v-if="triedToSubmit">Please choose an answer before submitting!</p>
-      </v-radio-group>
+        <v-radio-group v-model="selectedAnswer" :rules="[rules.requiredBool]">
+          <v-radio label="True" v-bind:value="true"
+                   :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
+          <v-radio label="False" v-bind:value="false"
+                   :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
+        </v-radio-group>
 
-      <v-btn @click="submitAnswers">Submit</v-btn>
-
+        <v-btn type="submit" class="mt-4" :disabled="submitted">Submit</v-btn>
+      </v-form>
     </v-container>
   </v-card>
 </template>
@@ -25,6 +25,7 @@
 import {ref} from "vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {Question} from "@/types/lesson.types";
+import {booleanValueRule} from "@/utils/validationRules.ts";
 
 interface Props {
   question: Question;
@@ -33,19 +34,19 @@ interface Props {
 const props = defineProps<Props>();
 const selectedAnswer = ref<boolean>();
 const submitted = ref(false);
-const triedToSubmit = ref(false);
 const lessonStore = useLessonStore();
 let result: boolean | null;
 
-async function submitAnswers(): Promise<void> {
-  if (!selectedAnswer.value) {
-    triedToSubmit.value = true;
-    return;
-  }
+const isFormValid = ref(false);
+const rules = {
+  requiredBool: booleanValueRule
+};
 
-  result = await lessonStore.fetchTrueFalseSolutionForQuestion(props.question.id);
-  submitted.value = true;
-  triedToSubmit.value = false;
+async function submitAnswers(): Promise<void> {
+  if (isFormValid.value) {
+    result = await lessonStore.fetchTrueFalseSolutionForQuestion(props.question.id);
+    submitted.value = true;
+  }
 }
 
 </script>
