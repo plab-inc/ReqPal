@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
-import {supabase} from "@/plugins/supabase";
-import {Answer, Lesson, Question, questionTypes, SortableAnswer, mcAnswer} from "@/types/lesson.types";
-import {useStorage} from "@vueuse/core";
+import {Answer, Lesson, mcAnswer, Question, questionTypes, SortableAnswer} from "@/types/lesson.types";
+import lessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
     lessons: Lesson[];
@@ -48,7 +47,7 @@ export const useLessonStore = defineStore('lesson', {
     },
 
     actions: {
-        addCurrentQuestion(id: string, lessonId: string, description: string, questionType: questionTypes) {
+        addCurrentQuestion(id: number, lessonId: number, description: string, questionType: questionTypes) {
             this.currentQuestions.push({
                 id: id,
                 lessonId: lessonId,
@@ -59,220 +58,81 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async fetchLessons() {
-            if (this.lessonsLoaded) return;
-
-            const {data, error} = await supabase
-                .from('lessons')
-                .select('id, title, description')
-
-            if (error) throw error;
-
-            if (data) {
-                this.lessons = data.map((lessonData: any) => {
-
-                    return {
-                        id: lessonData.id,
-                        title: lessonData.title,
-                        description: lessonData.description
-                    };
-                });
+            const lessons = await lessonService.pull.fetchLessons();
+            if (lessons) {
+                this.lessons = lessons;
             }
-            this.lessonsLoaded = true;
         },
 
-        async fetchLessonById(lessonId: string) {
+        async fetchLessonById(lessonId: number) {
 
-            const lessonFromLocalStorage = useStorage('lesson', {id: '', title: '', description: ''});
-            const lesson: Lesson = lessonFromLocalStorage.value;
-
+            const lesson = await lessonService.pull.fetchLessonById(lessonId);
             if (lesson) {
-                if (lesson.id.toString() === lessonId) {
-                    this.currentLesson = lesson;
-                    return;
+                this.currentLesson = lesson;
+            }
+        },
+
+        async fetchQuestionsForLesson(lessonId: number) {
+            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
+            if (questions) {
+                this.currentQuestions = questions;
+            }
+        },
+
+        async fetchMCAnswersForQuestion(questionId: number) {
+            return await lessonService.pull.fetchMCAnswersForQuestion(questionId);
+        },
+
+        async fetchTrueFalseSolutionForQuestion(questionId: number) {
+            return await lessonService.pull.fetchTFSolutionForQuestion(questionId);
+        },
+
+
+        async compareUserMCAnswers(userAnswers: Answer[], questionId: number) {
+
+            const results = await lessonService.pull.compareUserMCAnswers(userAnswers, questionId);
+            if (results) {
+                const question = this.currentQuestions.find((q) => q.id === questionId);
+                if (question) {
+                    question.userResults = results;
                 }
             }
+        },
 
-            const {data, error} = await supabase
-                .from('lessons')
-                .select('id, title, description')
-                .eq('id', lessonId)
-                .single()
-
-            if (error) throw error;
-
-            if (data) {
-                this.currentLesson = data;
-                lessonFromLocalStorage.value = data;
+        async compareUserSortableAnswers(userAnswers: SortableAnswer[], questionId: number) {
+            const results = await lessonService.pull.compareUserSortableAnswers(userAnswers, questionId);
+            if (results) {
+                const question = this.currentQuestions.find((q) => q.id === questionId);
+                if (question) {
+                    question.userResults = results;
+                }
             }
         },
 
-        async fetchQuestionsForLesson(lessonId: string) {
-            this.currentQuestions = [];
+        async addTrueOrFalseQuestion(lessonId: number, questionText: string, solutionOfQuestion: boolean) {
 
-            const questionsFromStorage = useStorage('questions',
-                [{id: '', lessonId: '', questionType: null, description: '', userResults: null}]);
-            const questions: Question[] = questionsFromStorage.value;
-            if (questions) {
-                if (questions.length > 0) {
-                    const result = questions?.every(question => {
-                        return question.lessonId === lessonId;
-                    });
-                    if (result === true) {
-                        this.currentQuestions = questions;
-                        return;
+            const newQuestion = await lessonService.push.uploadTFQuestionToDatabase(lessonId, questionText, solutionOfQuestion);
+
+            if (newQuestion) {
+                if (this.currentLesson?.id === lessonId) {
+                    if (newQuestion.lesson_id && newQuestion.description) {
+                        this.addCurrentQuestion(newQuestion.id, newQuestion.lesson_id, newQuestion.description, questionTypes.TrueOrFalse);
                     }
                 }
             }
-
-            const {data, error} = await supabase
-                .from('questions')
-                .select('id, description, question_type')
-                .eq('lesson_id', lessonId)
-
-            if (error) throw error;
-
-            if (data) {
-                if (data) {
-                    const newQuestions = data.map((questionData: any) => {
-                        return {
-                            id: questionData.id,
-                            lessonId: lessonId,
-                            description: questionData.description,
-                            questionType: questionData.question_type,
-                            userResults: null,
-                        };
-                    });
-
-                    this.currentQuestions = newQuestions;
-                    questionsFromStorage.value = newQuestions;
-                }
-            }
         },
 
-        async fetchMCAnswersForQuestion(questionId: string) {
-
-            const {data, error} = await supabase
-                .from('questions')
-                .select('answers')
-                .eq('id', questionId)
-
-            if (error) throw error;
-
-            if (data) {
-                let answers: Answer[] = [];
-                data.forEach(d => {
-                    d.answers.forEach((a: Answer) => {
-                        let answer: Answer = {
-                            id: a.id,
-                            description: a.description
-                        }
-                        answers.push(answer);
-                    })
-                })
-
-                return answers;
-            }
-
-            return [];
-        },
-
-        async fetchTrueFalseSolutionForQuestion(questionId: string) {
-
-            const {data, error} = await supabase
-                .from('questions')
-                .select('answers')
-                .eq('id', questionId)
-                .single()
-
-            if (error) throw error;
-
-            if (data) {
-                return data.answers.solution;
-            }
-
-            return null;
-        },
-
-
-        async compareUserMCAnswers(userAnswerJson: Answer[], questionId: string) {
-
-            const {data, error} = await supabase.rpc('mc_compare_solution', {
-                answer_json: userAnswerJson,
-                question_id: questionId,
-            })
-
-            if (error) throw error;
-
-            if (data) {
-                const question = this.currentQuestions.find((q) => q.id === questionId);
-                if (question) {
-                    question.userResults = data;
-                }
-            }
-        },
-
-        async compareUserSortableAnswers(userAnswerJson: SortableAnswer[], questionId: string) {
-            const {data, error} = await supabase.rpc('sortable_compare_solution', {
-                answer_json: userAnswerJson,
-                question_id: questionId,
-            })
-
-            if (error) throw error;
-
-            if (data) {
-                const question = this.currentQuestions.find((q) => q.id === questionId);
-                if (question) {
-                    question.userResults = data;
-                }
-            }
-        },
-
-        async addTrueOrFalseQuestion(lessonId: string, questionText: string, solutionOfQuestion: boolean) {
-
-            const {data, error} = await supabase
-                .from('questions')
-                .insert([
-                    {
-                        description: questionText,
-                        lesson_id: lessonId,
-                        answers: {solution: solutionOfQuestion},
-                        question_type: questionTypes.TrueOrFalse
-                    },
-                ])
-                .select()
-                .single()
-
-            if (error) throw error;
-
-            if (data) {
-                if (this.currentLesson?.id === lessonId) {
-                    this.addCurrentQuestion(data.id, data.lesson_id, data.description, data.question_type);
-                }
-            }
-        },
-
-        async addMultipleChoiceQuestion(lessonId: string, questionText: string, answers: mcAnswer[]) {
+        async addMultipleChoiceQuestion(lessonId: number, questionText: string, answers: mcAnswer[]) {
 
             if (answers.length <= 0) throw new Error("Answers cannot be 0");
 
-            const {data, error} = await supabase
-                .from('questions')
-                .insert([
-                    {
-                        description: questionText,
-                        lesson_id: lessonId,
-                        answers: answers,
-                        question_type: questionTypes.MultipleChoice
-                    },
-                ])
-                .select()
-                .single()
+            const newQuestion = await lessonService.push.uploadMCQuestionToDatabase(lessonId, questionText, answers);
 
-            if (error) throw error;
-
-            if (data) {
+            if (newQuestion) {
                 if (this.currentLesson?.id === lessonId) {
-                    this.addCurrentQuestion(data.id, data.lesson_id, data.description, data.question_type);
+                    if (newQuestion.lesson_id && newQuestion.description) {
+                        this.addCurrentQuestion(newQuestion.id, newQuestion.lesson_id, newQuestion.description, questionTypes.MultipleChoice);
+                    }
                 }
             }
         }
