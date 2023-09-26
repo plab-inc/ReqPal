@@ -40,7 +40,6 @@
       <v-row align="center">
         <v-col>
           <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Upload</v-btn>
-          <v-btn color="primary" @click="CatalogService.pull.fetchRequirementsByCatalogId('26')" block :disabled="loading">Fetch</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -66,25 +65,29 @@ const handleFileUpload = (File: File) => {
   loading.value = true;
   state.borderColor= 'transparent';
 
-
-  CatalogService.convertCSVToCatalog(File).then((catalog: Catalog) => {
-
-    CatalogService.push.uploadCatalogToDatabase(catalog)
-        .then(() => {
-          addSuccessAlert('Katalog erfolgreich hochgeladen.');
-        })
+  CatalogService.convertCSVToCatalog(File)
+      .then((catalog: Catalog) => {
+        CatalogService.push.uploadCatalogToDatabase(catalog)
         .catch((error: any) => {
           addWarningAlert(error.message);
           state.borderColor = themeColors.secondary;
           state.files = [];
           loading.value = false;
         })
+        .then(() => {
+          addSuccessAlert('Katalog erfolgreich hochgeladen.');
+        })
         .finally(() => {
           state.borderColor = themeColors.secondary;
           state.files = [];
           loading.value = false;
-        });
-  });
+        });})
+      .catch((error: any) => {
+        addWarningAlert(error.message);
+        state.borderColor = themeColors.secondary;
+        state.files = [];
+        loading.value = false;
+      });
 }
 
 const themeColors = useTheme().current.value.colors;
