@@ -17,21 +17,40 @@ class CatalogServiceClass{
     };
 
     public pull = {
-        fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this)
+        fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
+        fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this)
     }
 
-    private async fetchRequirementsByCatalogId(catalogId: string) {
+    private async fetchRequirementsByCatalogId(catalogId: number) {
         const {data, error} = await supabase
             .from('catalogs')
-            .select('requirements(reqid,title,desciption)')
+            .select('requirements(reqid, title, description)')
             .eq('catalog_id', catalogId);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-            console.log(data);
+            return data;
         }
     }
+
+    private async fetchProductDetailsByRequirement(productName: string, requirementId: number) {
+        const {data, error} = await supabase
+            .from('product_requirements')
+            .select('products(product_name), qualification, comment)')
+            .eq('requirement_id', requirementId)
+
+        if (error) throw error;
+
+        if(!productName && data && data.length > 0) {
+            return data;
+        }
+
+        if (data && data.length > 0) {
+            return data.find((item: any) => item.products.product_name === productName) || null;
+        }
+    }
+
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 
