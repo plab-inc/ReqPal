@@ -3,7 +3,7 @@
     <v-container>
       <h2>Multiple Choice</h2>
 
-      <div v-if="answers">
+      <v-form v-if="answers" @submit.prevent="submitAnswers" fast-fail>
 
         <p>{{ props.question.description }}</p>
         <p v-if="submitted">Solution:</p>
@@ -17,8 +17,8 @@
                 'wrong': submitted && !(props.question.userResults?.results[index]?.answerIsCorrect ?? false)}">
         </v-checkbox>
 
-        <v-btn @click="submitAnswers">Submit</v-btn>
-      </div>
+        <v-btn type="submit" :disabled="submitted">Submit</v-btn>
+      </v-form>
     </v-container>
   </v-card>
 </template>
