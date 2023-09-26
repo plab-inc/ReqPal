@@ -43,21 +43,23 @@ onBeforeMount(() => {
   <v-card>
     <v-container>
       <h3 v-if="submitted">Whole answer is correct: {{ question.userResults?.wholeAnswerIsCorrect }}</h3>
-      <v-row>
-        <v-col order="1" order-md="2" md="6" align-self="center" class="text-center">
-          <h3>{{ question.description }}</h3>
-        </v-col>
-        <v-col order="2" order-md="1" md="6">
-          <DndProvider :backend="HTML5Backend">
-            <Container :answers="answers" :allow-drag-and-drop="!submitted"></Container>
-          </DndProvider>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn @click="submitAnswers">Submit</v-btn>
-        </v-col>
-      </v-row>
+      <v-form @submit.prevent="submitAnswers" fast-fail>
+        <v-row>
+          <v-col order="1" order-md="2" md="6" align-self="center" class="text-center">
+            <h3>{{ question.description }}</h3>
+          </v-col>
+          <v-col order="2" order-md="1" md="6">
+            <DndProvider :backend="HTML5Backend">
+              <Container :answers="answers" :allow-drag-and-drop="!submitted"></Container>
+            </DndProvider>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn type="submit" :disabled="submitted">Submit</v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-container>
   </v-card>
 </template>
