@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy project to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -36,6 +36,9 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm install
+        working-directory: ./app
+      - name: Typecheck
+        run: npm run type-check
         working-directory: ./app
       - name: Build
         run: npm run build
