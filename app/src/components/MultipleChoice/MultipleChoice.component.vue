@@ -3,7 +3,7 @@
     <v-container>
       <h2>Multiple Choice</h2>
 
-      <div v-if="answers">
+      <v-form v-if="answers" v-model="isFormValid" @submit.prevent="submitAnswers" fast-fail>
 
         <p>{{ props.question.description }}</p>
         <p v-if="submitted">Solution:</p>
@@ -17,8 +17,8 @@
                 'wrong': submitted && !(props.question.userResults?.results[index]?.answerIsCorrect ?? false)}">
         </v-checkbox>
 
-        <v-btn @click="submitAnswers">Submit</v-btn>
-      </div>
+        <v-btn type="submit" :disabled="submitted">Submit</v-btn>
+      </v-form>
     </v-container>
   </v-card>
 </template>
@@ -28,6 +28,7 @@
 import {ref} from "vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {Answer, Question} from "@/types/lesson.types";
+import {booleanValueRule, requiredRule} from "@/utils/validationRules";
 
 interface Props {
   question: Question;
@@ -38,6 +39,8 @@ const selectedAnswers = ref<boolean[]>([]);
 const submitted = ref(false);
 const lessonStore = useLessonStore();
 const answers = ref<Answer[]>();
+
+const isFormValid = ref(false);
 
 async function submitAnswers(): Promise<void> {
   if (submitted.value) return;
