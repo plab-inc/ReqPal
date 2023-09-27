@@ -7,8 +7,12 @@ import autoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
+//Base path
+const base = process.env.NODE_ENV === 'production' ? '/Projektarbeit2023/' : '/';
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: base,
   plugins: [
     vue({
       template: { transformAssetUrls }
