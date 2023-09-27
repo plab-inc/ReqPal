@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-4">
-      <v-parallax style="max-height: 550px" src="@/assets/images/janko-ferlic-sfL_QOnmy00-unsplash.jpg">
+      <v-parallax style="max-height: 550px" src="@/assets/images/lamps.jpg">
         <div class="d-flex flex-column fill-height justify-center align-center text-white text-center">
           <h1 class="text-h4 font-weight-medium mb-4">
             Willkommen auf der Lernplattform
@@ -25,7 +25,7 @@
 
       <v-col md="4">
         <v-img
-            src="@/assets/images/tim-mossholder-WE_Kv_ZB1l0-unsplash.jpg"
+            src="@/assets/images/loveToLearn.jpg"
         />
       </v-col>
     </v-row>
@@ -33,7 +33,7 @@
     <v-row>
       <v-col md="4" order="2" order-md="1">
         <v-img
-            src="@/assets/images/maya-maceka-yW-Qgw_IJXg-unsplash.jpg"
+            src="@/assets/images/laptop.jpg"
         />
       </v-col>
       <v-col md="8" order="1" order-md="2">
