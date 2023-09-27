@@ -5,6 +5,7 @@ on:
     branches:
       - '**'
     paths:
+      - 'supabase/permissions/**'
       - 'supabase/functions/**'
   workflow_dispatch:
 
