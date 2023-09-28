@@ -348,6 +348,13 @@ export interface Database {
         }
         Returns: Json
       }
+      role_has_permission: {
+        Args: {
+          role: string
+          permission: number
+        }
+        Returns: boolean
+      }
       set_claim: {
         Args: {
           uid: string
