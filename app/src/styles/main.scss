@@ -1,0 +1,5 @@
+$family: 'Quicksand';
+
+@use 'vuetify' with (
+  $body-font-family: $family
+);
