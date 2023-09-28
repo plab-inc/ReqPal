@@ -7,12 +7,19 @@
           {{ alert.message }}
         </v-alert>
       </div>
-      <v-container>
+      <v-container fluid>
         <v-row>
-          <v-col>  <!-- Passt die Breite des Haupt-v-sheet an, je nachdem ob das kleine v-sheet angezeigt wird oder nicht -->
+          <v-col :cols="10">
             <v-sheet min-height="80vh" rounded="lg">
               <v-container>
                 <router-view></router-view>
+              </v-container>
+            </v-sheet>
+          </v-col>
+          <v-col v-if="true" :cols="2" style="elevation: below">
+            <v-sheet min-height="80vh" rounded="lg">
+              <v-container>
+                <!-- TODO -->
               </v-container>
             </v-sheet>
           </v-col>
