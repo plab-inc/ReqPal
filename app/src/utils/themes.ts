@@ -2,9 +2,10 @@ import { ThemeDefinition } from "vuetify";
 export const LIGHT_THEME = "light";
 export const light: ThemeDefinition = {
   colors: {
-    surface: '#575757',
-    primary: '#E53265',
-    secondary: '#D1CFCD',
+    surface: '#FFFFFF',
+    background: '#FFFFFF',
+    primary: '#6e4aff',
+    secondary: '#00d2fc',
     error: '#DC3251',
     info: '#239ECE',
     success: '#1EA885',
@@ -16,13 +17,13 @@ export const DARK_THEME = "dark";
 export const dark: ThemeDefinition = {
   dark: true,
   colors: {
-    background: '#16141C',
-    surface: '#25283A',
-    primary: '#E53265',
-    secondary: '#34384E',
-    error: '#F5680A',
-    info: '#28ACF6',
-    success: '#2FD6B5',
-    warning: '#F5D922',
+    background: '#1A1523',
+    surface: '#2C2541',
+    primary: '#6e4aff',
+    secondary: '#120034',
+    error: '#FF6D0A',
+    info: '#4497E2',
+    success: '#3ED6C3',
+    warning: '#FFC93C',
   },
 };
