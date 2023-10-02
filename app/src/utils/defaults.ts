@@ -2,8 +2,11 @@ import {DefaultsInstance} from "vuetify/lib/framework.mjs";
 
 export const defaults: DefaultsInstance = {
     VAppBar: {
-        elevation: 3,
+        elevation: 11,
         color: "primary",
+    },
+    VContainer: {
+        fluid: true,
     },
     VTabs: {
         color: "primary"
@@ -20,5 +23,11 @@ export const defaults: DefaultsInstance = {
     },
     VCol: {
         cols: "12"
+    },
+    VCard: {
+        variant: "tonal"
+    },
+    VSheet: {
+        elevation: 8,
     }
 };
