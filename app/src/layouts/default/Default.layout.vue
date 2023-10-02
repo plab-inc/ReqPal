@@ -7,20 +7,34 @@
           {{ alert.message }}
         </v-alert>
       </div>
-      <v-container fluid>
+      <v-container>
         <v-row>
-          <v-col :cols="10">
+          <v-col :cols="mainContainerCols">
             <v-sheet min-height="80vh" rounded="lg">
               <v-container>
                 <router-view></router-view>
               </v-container>
             </v-sheet>
           </v-col>
-          <v-col v-if="true" :cols="2" style="elevation: below">
-            <v-sheet min-height="80vh" rounded="lg">
+          <v-col :cols="profileContainerCols" v-if="showProfileContainer">
+            <v-sheet min-height="80vh" rounded="lg" elevation="16">
               <v-container>
-                <!-- TODO -->
+
               </v-container>
+            </v-sheet>
+            <v-sheet rounded="lg" class="my-2" elevation="7">
+              <v-btn
+                  variant="plain"
+                  block
+                  rounded="0"
+                  @click="toggleSmallContainer()"
+              >
+                <template v-slot:default>
+                  <v-icon>
+                    {{ expandProfileContainer ? 'mdi-chevron-right' : 'mdi-chevron-left' }}
+                  </v-icon>
+                </template>
+              </v-btn>
             </v-sheet>
           </v-col>
         </v-row>
@@ -37,4 +51,14 @@ import Footer from "@/components/Footer.component.vue";
 import { useAlertStore } from "@/stores/alert.store";
 
 const alertStore = useAlertStore();
+const expandProfileContainer = ref(false);
+const showProfileContainer = ref(true);
+const mainContainerCols = ref(11);
+const profileContainerCols = ref(1);
+
+const toggleSmallContainer = () => {
+  expandProfileContainer.value = !expandProfileContainer.value;
+  profileContainerCols.value = expandProfileContainer.value ? 2 : 1;
+  mainContainerCols.value = expandProfileContainer.value ? 10 : 11;
+};
 </script>
