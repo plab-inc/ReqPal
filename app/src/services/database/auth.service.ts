@@ -4,7 +4,8 @@ class AuthServiceClass {
 
     public push = {
         signUp: this.signUp.bind(this),
-        resetPassword: this.resetPassword.bind(this)
+        resetPassword: this.resetPassword.bind(this),
+        updatePermissions: this.updatePermissions.bind(this),
     };
 
     public pull = {
@@ -47,6 +48,19 @@ class AuthServiceClass {
             redirectTo: 'https://google.com/',
         });
         if (error) throw error;
+    }
+
+    private async updatePermissions(uuid: string) {
+
+        //Kann nur von Nutzern aufgerufen werden, die den admin claim besitzen
+        //TODO: Auslagern in permission service, schnittstellen für die einzelnen permissions, zuweisen von rollen
+
+        const { data, error } = await supabase
+            .rpc('update_user_permissions', {
+                user_uuid: uuid
+            })
+
+        if (error) console.error(error)
     }
 
 }

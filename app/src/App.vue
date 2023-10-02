@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useThemeStore } from '@/stores/theme.store';
 import { useTheme } from "vuetify";
 import {Ref} from "vue";
+import AuthService from "@/services/database/auth.service.ts";
 
 const themeStore = useThemeStore();
 const theme = useTheme()
@@ -20,6 +21,8 @@ watch(() => themeStore.currentTheme, (newTheme) => {
 supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
     useAuthStore().setSession(session);
+
+    AuthService.push.updatePermissions(session.user?.id)
   }
 });
 
