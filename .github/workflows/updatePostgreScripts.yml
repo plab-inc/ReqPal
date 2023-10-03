@@ -1,11 +1,6 @@
 name: Run PostgreSQL Scripts
 
 on: 
-  push:
-    branches:
-      - main
-    paths:
-      - 'supabase/database/**/*.sql'
   workflow_dispatch:
 
 jobs:
