@@ -10,11 +10,11 @@ begin
     v_user_roles := get_claim(uid, 'userroles');
 
     v_permissions := (
-        SELECT jsonb_agg(p.name)
+        SELECT jsonb_agg(DISTINCT p.name)
         FROM roles r
                  JOIN role_permissions rp ON r.id = rp.role_id
                  JOIN permissions p ON rp.permission_id = p.id
-        WHERE r.name = ANY(ARRAY(SELECT jsonb_array_elements_text(v_user_roles->'roles')))
+        WHERE r.name = ANY(ARRAY(SELECT jsonb_array_elements_text(v_user_roles)))
     );
 
     perform set_claim(uid, 'permissions', v_permissions);
@@ -32,6 +32,6 @@ begin
 
     v_user_roles := get_claim(uid, 'userroles');
 
-    RETURN role = ANY(ARRAY(SELECT jsonb_array_elements_text(v_user_roles->'roles')));
+    RETURN role = ANY(ARRAY(SELECT jsonb_array_elements_text(v_user_roles)));
 end;
 $$;
