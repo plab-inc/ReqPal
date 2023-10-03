@@ -4,7 +4,7 @@ class AuthServiceClass {
 
     public push = {
         signUp: this.signUp.bind(this),
-        resetPassword: this.resetPassword.bind(this)
+        resetPassword: this.resetPassword.bind(this),
     };
 
     public pull = {
@@ -48,7 +48,6 @@ class AuthServiceClass {
         });
         if (error) throw error;
     }
-
 }
 
 const AuthService = new AuthServiceClass();
