@@ -300,6 +300,13 @@ export interface Database {
         }
         Returns: number
       }
+      check_user_role: {
+        Args: {
+          uid: string
+          role: string
+        }
+        Returns: boolean
+      }
       delete_claim: {
         Args: {
           uid: string
@@ -379,7 +386,7 @@ export interface Database {
       }
       update_user_permissions: {
         Args: {
-          user_uuid: string
+          uid: string
         }
         Returns: undefined
       }
