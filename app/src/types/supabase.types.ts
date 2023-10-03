@@ -377,6 +377,12 @@ export interface Database {
         }
         Returns: Json
       }
+      update_user_permissions: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       question_type:
