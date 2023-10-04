@@ -390,6 +390,14 @@ export interface Database {
         }
         Returns: undefined
       }
+      upload_catalog_to_database: {
+        Args: {
+          p_catalog_name: string
+          p_products: Json
+          p_requirements: Json
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       question_type:
