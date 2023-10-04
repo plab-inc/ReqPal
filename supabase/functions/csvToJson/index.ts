@@ -13,7 +13,7 @@ interface Requirement {
   reqId: string;
   title: string;
   description: string;
-  products: { [key: string]: ProductDetails };
+  productDetails: { [key: string]: ProductDetails };
 }
 
 interface RequirementsJSON {
@@ -165,13 +165,13 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
             "reqId": currentLine[0],
             "title": currentLine[1],
             "description": currentLine[2],
-            "products": {}
+            "productDetails": {}
         };
         for(let k = 0; k < products.length; k++){
             const product = products[k];
             const qualification = currentLine[k * 2 + 3];
             const comment = currentLine[k * 2 + 4];
-            item.products[product.product_name] = {
+            item.productDetails[product.product_name] = {
                 "qualification": qualification,
                 "comment": comment
             };
