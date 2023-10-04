@@ -24,5 +24,14 @@ class ConversionError extends Error {
         this.code = code;
     }
 }
+class AuthenticationError extends Error {
+    private code: number;
+    constructor(message:string , code: number) {
+        super(message);
+        this.name = "AuthenticationError";
+        this.code = code;
+    }
+}
 
-export { PrivilegeError, DatabaseError, ConversionError };
+
+export { PrivilegeError, DatabaseError, ConversionError, AuthenticationError };

@@ -72,6 +72,7 @@ import AlertService from "@/services/alert.service";
 import { requiredRule, matchingPasswordsRule, emailRule } from "@/utils/validationRules";
 
 import router from "@/router";
+import {AuthenticationError} from "@/errors/custom.errors.ts";
 
 const authStore = useAuthStore();
 
@@ -90,8 +91,7 @@ const submit = async () => {
         }
       })
     } catch (error: any) {
-      console.error(error);
-      AlertService.addErrorAlert(error.message);
+      throw new AuthenticationError(error.message, error.code);
     }
   }
 };
