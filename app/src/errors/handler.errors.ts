@@ -4,11 +4,7 @@ import {AuthApiError} from "@supabase/supabase-js";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 
-
-
     const error = event.reason;
-
-    console.log(error);
 
     if (error instanceof PrivilegeError) {
         AlertService.addErrorAlert("Sie haben nicht die nötigen Rechte um diese Aktion auszuführen.");
