@@ -1,9 +1,14 @@
 import AlertService from "@/services/alert.service.ts";
-import { PrivilegeError, DatabaseError, ConversionError } from "@/errors/custom.errors.ts";
+import {PrivilegeError, DatabaseError, ConversionError, AuthenticationError} from "@/errors/custom.errors.ts";
+import {AuthApiError} from "@supabase/supabase-js";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 
+
+
     const error = event.reason;
+
+    console.log(error);
 
     if (error instanceof PrivilegeError) {
         AlertService.addErrorAlert("Sie haben nicht die nötigen Rechte um diese Aktion auszuführen.");
@@ -17,6 +22,11 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 
     if (error instanceof DatabaseError) {
         AlertService.addErrorAlert("Beim hochladen in die Datenbank ist ein Fehler aufgetreten.");
+        return;
+    }
+
+    if (error instanceof AuthenticationError) {
+        AlertService.addErrorAlert("Feher bei der Anmeldung/Registrierung/Zurücksetzen des Passworts.");
         return;
     }
 

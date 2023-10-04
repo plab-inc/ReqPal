@@ -37,6 +37,7 @@
 import { useAuthStore } from "@/stores/auth.store";
 import { requiredRule, emailRule } from "@/utils/validationRules";
 import AlertService from "@/services/alert.service";
+import {AuthenticationError} from "@/errors/custom.errors.ts";
 
 const authStore = useAuthStore();
 
@@ -51,8 +52,7 @@ const submit = async () => {
         AlertService.addInfoAlert("Falls die E-Mail-Adresse in unserer Datenbank existiert, haben wir dir eine E-Mail mit weiteren Anweisungen zum Zurücksetzen deines Passworts geschickt.");
       })
     } catch (error: any) {
-      console.error(error);
-      AlertService.addErrorAlert(error.message);
+      throw new AuthenticationError(error.message, error.code);
     }
   }
 }
