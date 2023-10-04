@@ -6,6 +6,7 @@
         <v-alert :type="alert.type" closable @click:close="alertStore.removeAlert(alert.id)" >
           {{ alert.message }}
         </v-alert>
+        {{ removeAlertWithDelay(alert.id) }}
       </div>
       <v-container>
         <v-row>
@@ -55,6 +56,12 @@ const expandProfileContainer = ref(false);
 const showProfileContainer = ref(true);
 const mainContainerCols = ref(11);
 const profileContainerCols = ref(1);
+
+const removeAlertWithDelay = (alertId: string, delay = 10000) => {
+  setTimeout(() => {
+    alertStore.removeAlert(alertId);
+  }, delay);
+};
 
 const toggleSmallContainer = () => {
   expandProfileContainer.value = !expandProfileContainer.value;

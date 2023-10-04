@@ -1,13 +1,6 @@
 import {supabase} from "@/plugins/supabase";
 import {
-    Catalog,
-    dbCatalog,
-    dbProduct,
-    dbProductRequirement,
-    dbRequirement,
-    Product,
-    ProductDetail,
-    Requirement
+    Catalog
 } from "@/types/catalog.types";
 
 class CatalogServiceClass{
@@ -51,17 +44,16 @@ class CatalogServiceClass{
         }
     }
 
-
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 
-        let { data, error } = await supabase
+        const { error: uploadError} = await supabase
             .rpc('upload_catalog_to_database', {
                 p_catalog_name: catalog.catalog_name,
                 p_products: catalog.products,
                 p_requirements: catalog.requirements
             })
 
-        if (error) console.error(error)
+        if (uploadError) throw uploadError;
 
     }
 
@@ -70,13 +62,13 @@ class CatalogServiceClass{
         const formData = new FormData();
         formData.append('csv', csvFile);
 
-        const {data, error} = await supabase.functions.invoke('csvToJson', {
+        const {data: catalogData, error: catalogError} = await supabase.functions.invoke('csvToJson', {
             body: formData
         });
 
-        if (error || !data) throw error;
+        if (catalogError || !catalogData) throw catalogError;
 
-        return data;
+        return catalogData;
     }
 
 }

@@ -86,7 +86,7 @@ const handleFileUpload = (File: File) => {
             });
       })
       .catch((error: any) => {
-        throw new ConversionError("Fehler beim Konvertieren der Datei.", error.code);
+        throw new ConversionError("Fehler im Format der CSV Datei.", error.code);
       })
       .finally(() => {
         state.borderColor = themeColors.secondary;
