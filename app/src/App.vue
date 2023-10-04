@@ -6,7 +6,7 @@ import { useTheme } from "vuetify";
 import { unhandledRejectionHandler, globalErrorHandler } from "@/errors/handler.errors.ts";
 
 const themeStore = useThemeStore();
-const theme = useTheme()
+const theme = useTheme();
 
 onMounted(() => {
   themeStore.syncWithBrowserSettings();

@@ -12,7 +12,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof ConversionError) {
-        AlertService.addErrorAlert("Beim konvertieren der Datei ist ein Fehler aufgetreten.");
+        AlertService.addErrorAlert("Fehler im Format der CSV Datei.");
         return;
     }
 
