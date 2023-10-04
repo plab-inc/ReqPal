@@ -1,19 +1,27 @@
 import { useAlertStore } from "@/stores/alert.store";
 
-const alertStore= useAlertStore();
+class AlertServiceClass {
+  private get store() {
+    return useAlertStore();
+  }
 
-export function addSuccessAlert(message: string) {
-  alertStore.addAlert(message, 'success');
+  addSuccessAlert(message: string) {
+    this.store.addAlert(message, 'success');
+  }
+
+  addErrorAlert(message: string) {
+    this.store.addAlert(message, 'error');
+  }
+
+  addInfoAlert(message: string) {
+    this.store.addAlert(message, 'info');
+  }
+
+  addWarningAlert(message: string) {
+    this.store.addAlert(message, 'warning');
+  }
 }
 
-export function addErrorAlert(message: string) {
-  alertStore.addAlert(message, 'error');
-}
+const AlertService = new AlertServiceClass();
 
-export function addInfoAlert(message: string) {
-  alertStore.addAlert(message, 'info');
-}
-
-export function addWarningAlert(message: string) {
-  alertStore.addAlert(message, 'warning');
-}
+export default AlertService;

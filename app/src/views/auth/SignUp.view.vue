@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth.store";
-import { addErrorAlert } from "@/services/alert.service";
+import AlertService from "@/services/alert.service";
 import { requiredRule, matchingPasswordsRule, emailRule } from "@/utils/validationRules";
 
 import router from "@/router";
@@ -91,7 +91,7 @@ const submit = async () => {
       })
     } catch (error: any) {
       console.error(error);
-      addErrorAlert(error.message);
+      AlertService.addErrorAlert(error.message);
     }
   }
 };
