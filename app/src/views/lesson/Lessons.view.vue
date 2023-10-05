@@ -25,15 +25,19 @@
         </ul>
       </div>
     </div>
+    <component v-for="component in componentsList" :is="component"></component>
   </v-container>
 </template>
 
 <script setup lang="ts">
 
 import {useLessonStore} from "@/stores/lesson.store";
+import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 
 const lessonStore = useLessonStore();
 const lessons = lessonStore.lessons;
+
+const componentsList = ref(['MultipleChoiceForm', 'MultipleChoiceForm']);
 
 </script>
   

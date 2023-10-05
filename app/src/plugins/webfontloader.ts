@@ -6,6 +6,7 @@ export async function loadFonts () {
             families: [
                 'Quicksand',
                 'Croissant+One',
+                'Ubuntu',
             ]
         },
         fontactive(familyName: string, fvd: string) {
