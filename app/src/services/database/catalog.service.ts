@@ -3,7 +3,7 @@ import {
     Catalog
 } from "@/types/catalog.types";
 
-class CatalogServiceClass{
+class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this)
@@ -11,18 +11,46 @@ class CatalogServiceClass{
 
     public pull = {
         fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
-        fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this)
+        fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
+        fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
+        fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this)
     }
 
     private async fetchRequirementsByCatalogId(catalogId: number) {
         const {data, error} = await supabase
             .from('catalogs')
-            .select('requirements(reqid, title, description)')
+            .select('requirements(requirement_id, reqid, title, description)')
             .eq('catalog_id', catalogId);
 
         if (error) throw error;
 
         if (data && data.length > 0) {
+            return data;
+        }
+    }
+
+    private async fetchCatalogById(catalogId: number) {
+        const {data, error} = await supabase
+            .from('catalogs')
+            .select('catalog_id, catalog_name')
+            .eq('catalog_id', catalogId);
+
+        if (error) throw error;
+
+        if (data) {
+            return data;
+        }
+    }
+
+    private async fetchProductsByRequirementId(requirementId: number) {
+        const {data, error} = await supabase
+            .from('product_requirements')
+            .select('products(product_id, product_name)')
+            .eq('requirement_id', requirementId)
+
+        if (error) throw error;
+
+        if (data) {
             return data;
         }
     }
@@ -35,7 +63,7 @@ class CatalogServiceClass{
 
         if (error) throw error;
 
-        if(!productName && data && data.length > 0) {
+        if (!productName && data && data.length > 0) {
             return data;
         }
 
@@ -46,7 +74,7 @@ class CatalogServiceClass{
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 
-        const { error: uploadError} = await supabase
+        const {error: uploadError} = await supabase
             .rpc('upload_catalog_to_database', {
                 p_catalog_name: catalog.catalog_name,
                 p_products: catalog.products,
