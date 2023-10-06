@@ -1,12 +1,13 @@
 import {supabase} from "@/plugins/supabase";
 import {
-    Catalog
+    Catalog, Requirement
 } from "@/types/catalog.types";
 
 class CatalogServiceClass {
 
     public push = {
-        uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this)
+        uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
+        setCatalogRequirementsToLesson: this.setCatalogRequirementsToLesson.bind(this)
     };
 
     public pull = {
@@ -75,6 +76,55 @@ class CatalogServiceClass {
        if (data && data.length > 0) {
            return data.find((item: any) => item.products.product_name === productName) || null;
        }*/
+    }
+
+    private async setCatalogRequirementsToLesson(catalogId: number, lessonId: number, requirements: Requirement[]) {
+
+        const {data, error} = await supabase
+            .from('lessons')
+            .update({catalog_id: catalogId})
+            .eq('id', lessonId)
+            .select()
+
+        if (error) throw error;
+
+        if (data) {
+
+            try {
+                for (const req of requirements) {
+                    await this.setRequirementsToLesson(lessonId, req.requirement_id);
+                }
+            } catch (error) {
+                throw error;
+            }
+
+            return data;
+        }
+    }
+
+    private async setRequirementsToLesson(lessonId: number, requirementId: number) {
+
+        const {data: existingData, error: existingError} = await supabase
+            .from('lesson_requirements')
+            .select('lesson_id, requirement_id')
+            .eq('lesson_id', lessonId)
+            .eq('requirement_id', requirementId)
+
+        if (existingError) throw existingError;
+
+        if (existingData?.length <= 0) {
+            const {data: updatedData, error: updateError} = await supabase
+                .from('lesson_requirements')
+                .insert({lesson_id: lessonId, requirement_id: requirementId}
+                )
+                .select()
+
+            if (updateError) throw updateError;
+
+            return updatedData;
+        } else {
+            throw Error("Daten existieren bereits.");
+        }
     }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {

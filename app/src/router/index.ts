@@ -57,7 +57,12 @@ const routes = [
             {
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
-                component: () => import("@/views/catalog/CatalogDetail.view.vue")
+                component: () => import("@/views/catalog/CatalogDetail.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
             },
             {
                 path: "/szenario",
