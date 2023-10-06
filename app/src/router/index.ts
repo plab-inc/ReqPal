@@ -50,6 +50,16 @@ const routes = [
                 }
             },
             {
+                path: "/catalogs",
+                name: "Catalogs",
+                component: () => import("@/views/catalog/Catalogs.view.vue")
+            },
+            {
+                path: "/catalogs/:catalogId",
+                name: "CatalogDetails",
+                component: () => import("@/views/catalog/CatalogDetail.view.vue")
+            },
+            {
                 path: "/szenario",
                 name: "Szenario",
                 component: () => import("@/views/lesson/Szenario.view.vue"),
