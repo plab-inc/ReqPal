@@ -58,18 +58,23 @@ class CatalogServiceClass {
     private async fetchProductDetailsByRequirement(productName: string, requirementId: number) {
         const {data, error} = await supabase
             .from('product_requirements')
-            .select('products(product_name), qualification, comment)')
+            .select('products(product_name), qualification, comment')
             .eq('requirement_id', requirementId)
 
         if (error) throw error;
 
-        if (!productName && data && data.length > 0) {
+        if (data) {
             return data;
         }
 
-        if (data && data.length > 0) {
-            return data.find((item: any) => item.products.product_name === productName) || null;
-        }
+        /*
+       if (!productName && data && data.length > 0) {
+           return data;
+       }
+
+       if (data && data.length > 0) {
+           return data.find((item: any) => item.products.product_name === productName) || null;
+       }*/
     }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {

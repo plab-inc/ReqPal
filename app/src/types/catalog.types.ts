@@ -7,11 +7,11 @@ export type ProductDetail = {
 
 export type Product = {
     product_id?: number;
-    product_name: string | null | undefined;
+    product_name: string;
 }
 
 export type Requirement = {
-    requirement_id?: number;
+    requirement_id: number;
     reqId: string | null;
     title: string | null;
     description: string | null;
