@@ -61,7 +61,7 @@ export const useCatalogStore = defineStore('catalog', {
                 }
             }
 
-            await this.getProductDetails();
+            // await this.getProductDetails();
         },
 
         async getProductDetails() {
@@ -83,6 +83,12 @@ export const useCatalogStore = defineStore('catalog', {
                         }
                     }
                 }
+            }
+        },
+
+        async setCatalogAndRequirementsToLesson(lessonId: number, requirements: Requirement[]) {
+            if (this.currentCatalog && this.currentCatalog.catalog_id) {
+                await catalogService.push.setCatalogRequirementsToLesson(this.currentCatalog.catalog_id, lessonId, requirements);
             }
         },
     }
