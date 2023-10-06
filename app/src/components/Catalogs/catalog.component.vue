@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
+import AlertService from "@/services/alert.service.ts";
 
 const catalog = ref<Catalog>();
 const catalogStore = useCatalogStore();
@@ -8,13 +9,7 @@ const loading = ref<boolean>(true);
 const items = ref<Requirement[]>([]);
 const themeColor = "#6e4aff";
 const itemsSelected = ref([]);
-
-const selectedProduct = ref("MIRO");
-let colSize = 3;
-let firstCol = 1;
-if (catalog.value?.products) {
-  colSize = (12 - firstCol) / catalog.value?.products.length;
-}
+const selectedProduct = ref();
 
 const headers = [
   {text: 'ID', value: 'requirement_id', sortable: true},
@@ -30,34 +25,42 @@ function onSelectProduct(name: string) {
 }
 
 onBeforeMount(async () => {
-  await catalogStore.getWholeCatalogById(171);
+
+  const route = useRoute();
+  const catalogId = route.params.catalogId as string;
+  const catalogIdAsNumber = parseInt(catalogId, 10);
+
+  await catalogStore.getWholeCatalogById(catalogIdAsNumber);
   if (catalogStore.currentCatalog) {
     catalog.value = catalogStore.currentCatalog;
     if (catalog.value?.requirements) {
       items.value = catalog.value.requirements;
       loading.value = false;
     }
+    if (catalog.value?.products && catalog.value?.products[0]) {
+      selectedProduct.value = catalog.value?.products[0];
+    }
+  } else {
+    loading.value = false;
+    AlertService.addWarningAlert("Kein Katalog gefunden mit der id: " + catalogId);
   }
 })
 </script>
 
 <template>
   <h1>{{ catalog?.catalog_name }}</h1>
-  <p>{{selectedProduct}}</p>
-
-<p> {{items[0].products[selectedProduct]}}</p>
 
   <v-item-group mandatory>
     <v-container>
       <v-row>
         <v-col
-            :md="firstCol">
-          Products:
+            :md="2" class="text-h5 d-flex justify-start align-center">
+          Choose details for product:
         </v-col>
         <v-col
             v-for="product in catalog?.products"
             :key="product.product_id"
-            :md="colSize"
+            :md="2"
         >
           <v-item v-slot="{ isSelected, toggle }">
             <v-card
@@ -69,7 +72,7 @@ onBeforeMount(async () => {
             >
               <v-scroll-y-transition>
                 <div
-                    class="text-h4 flex-grow-1 text-center"
+                    class="text-h5 flex-grow-1 text-center"
                 >
                   {{ product.product_name }}
                 </div>
@@ -87,6 +90,8 @@ onBeforeMount(async () => {
       :items="items"
       :loading="loading"
       :theme-color="themeColor"
+      :rows-items="[5, 10, 15, 25, 50]"
+      :rows-per-page="10"
       table-class-name="customize-table">
 
     <template #item-productQualification="item">
