@@ -24,23 +24,64 @@ export interface Database {
         }
         Relationships: []
       }
+      lesson_requirements: {
+        Row: {
+          lesson_id: number
+          lesson_requirement_id: number
+          requirement_id: number | null
+        }
+        Insert: {
+          lesson_id: number
+          lesson_requirement_id?: number
+          requirement_id?: number | null
+        }
+        Update: {
+          lesson_id?: number
+          lesson_requirement_id?: number
+          requirement_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_requirements_lesson_id_fkey"
+            columns: ["lesson_id"]
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_requirements_requirement_id_fkey"
+            columns: ["requirement_id"]
+            referencedRelation: "requirements"
+            referencedColumns: ["requirement_id"]
+          }
+        ]
+      }
       lessons: {
         Row: {
+          catalog_id: number | null
           description: string | null
           id: number
           title: string | null
         }
         Insert: {
+          catalog_id?: number | null
           description?: string | null
           id?: number
           title?: string | null
         }
         Update: {
+          catalog_id?: number | null
           description?: string | null
           id?: number
           title?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lessons_catalog_id_fkey"
+            columns: ["catalog_id"]
+            referencedRelation: "catalogs"
+            referencedColumns: ["catalog_id"]
+          }
+        ]
       }
       permissions: {
         Row: {
