@@ -7,7 +7,8 @@ class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
-        setCatalogRequirementsToLesson: this.setCatalogRequirementsToLesson.bind(this)
+        setCatalogRequirementsToLesson: this.setCatalogRequirementsToLesson.bind(this),
+        removeRequirementsFromLesson: this.removeRequirementsFromLesson.bind(this)
     };
 
     public pull = {
@@ -127,6 +128,19 @@ class CatalogServiceClass {
             throw Error("Daten existieren bereits.");
         }
     }
+
+    private async removeRequirementsFromLesson(lessonId: number, requirementId: number) {
+
+        const {data: deletedData, error: deleteError} = await supabase
+            .from('lesson_requirements')
+            .delete()
+            .eq('lesson_id', lessonId)
+            .eq('requirement_id', requirementId)
+            .select()
+
+        if (deleteError) throw deleteError;
+    }
+
 
     private async getRequirementsForLesson(lessonId: number) {
 

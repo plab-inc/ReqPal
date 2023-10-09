@@ -94,6 +94,12 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
+        async removeRequirementsFromLesson(lessonId: number, requirements: Requirement[]) {
+            for (const req of requirements) {
+                await catalogService.push.removeRequirementsFromLesson(lessonId, req.requirement_id);
+            }
+        },
+
         async getRequirementsForLesson(lessonId: number) {
             const data = await catalogService.pull.fetchRequirementsForLesson(lessonId);
 
