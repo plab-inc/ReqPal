@@ -9,7 +9,7 @@ interface Props {
   lessonId: number;
 }
 
-interface Note {
+interface ProductNote {
   id: string,
   text: string
 }
@@ -19,7 +19,7 @@ const requirements = ref<Requirement[]>([]);
 const catalog = ref<Catalog>();
 
 const currentProductName = ref<string>("");
-const productNotes = ref<Note[]>([]);
+const productNotes = ref<ProductNote[]>([]);
 const currentNotes = ref<string>("");
 
 function onSelectProduct(product: string) {
@@ -69,7 +69,7 @@ onBeforeMount(async () => {
 
 <template>
   <h1>{{ catalog?.catalog_name }}</h1>
-  {{ productNotes }}
+
   <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
 
   <h1>Requirements</h1>
