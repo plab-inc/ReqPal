@@ -9,14 +9,44 @@ interface Props {
   lessonId: number;
 }
 
+interface Note {
+  id: string,
+  text: string
+}
+
 const props = defineProps<Props>();
 const requirements = ref<Requirement[]>([]);
 const catalog = ref<Catalog>();
 
-const currentProductName = ref<String>();
+const currentProductName = ref<string>("");
+const productNotes = ref<Note[]>([]);
+const currentNotes = ref<string>("");
 
-function onSelectProduct(product: String) {
+function onSelectProduct(product: string) {
+  saveProductNotes(currentProductName.value);
   currentProductName.value = product;
+  setProductNotes(currentProductName.value);
+}
+
+function saveProductNotes(product: string) {
+  const note = productNotes.value.find(p => p.id === product)
+  if (note) {
+    note.text = currentNotes.value;
+  } else {
+    productNotes.value.push({
+      id: product,
+      text: currentNotes.value
+    })
+  }
+}
+
+function setProductNotes(product: string) {
+  const note = productNotes.value.find(p => p.id === product)
+  if (note) {
+    currentNotes.value = note.text;
+  } else {
+    currentNotes.value = "";
+  }
 }
 
 onBeforeMount(async () => {
@@ -25,7 +55,13 @@ onBeforeMount(async () => {
   requirements.value = catalogStore.currentLessonRequirements;
   if (catalogStore.currentCatalog) {
     catalog.value = catalogStore.currentCatalog;
-    currentProductName.value = catalog.value?.products[0].product_name;
+    catalog.value?.products.forEach(product => {
+      productNotes.value.push({
+        id: product.product_name,
+        text: "Notizen für: " + product.product_name
+      })
+    })
+    onSelectProduct(catalog.value?.products[0].product_name);
   }
 })
 
@@ -33,7 +69,7 @@ onBeforeMount(async () => {
 
 <template>
   <h1>{{ catalog?.catalog_name }}</h1>
-
+  {{ productNotes }}
   <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
 
   <h1>Requirements</h1>
@@ -46,7 +82,9 @@ onBeforeMount(async () => {
     </v-col>
     <v-col md="4">
       <div v-if="currentProductName">
-        <v-textarea :label="'Notes for product ' + currentProductName" variant="outlined"
+        <v-textarea v-model="currentNotes"
+                    :label="'Notes for product ' + currentProductName"
+                    variant="outlined"
                     auto-grow></v-textarea>
       </div>
     </v-col>
