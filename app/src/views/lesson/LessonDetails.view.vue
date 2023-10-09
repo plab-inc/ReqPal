@@ -28,7 +28,7 @@ import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalse.component.vue";
 import Sortable from "@/components/Sortable/Sortable.component.vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {storeToRefs} from 'pinia'
-import SmallCatalog from "@/components/Catalogs/smallCatalog.component.vue";
+import SmallCatalog from "@/components/Catalogs/SmallCatalog.component.vue";
 
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
