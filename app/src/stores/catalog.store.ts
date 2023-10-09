@@ -4,11 +4,13 @@ import {Catalog, Product, ProductDetail, Requirement} from "@/types/catalog.type
 
 interface CatalogState {
     currentCatalog: Catalog | null
+    currentLessonRequirements: Requirement[]
 }
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
-        currentCatalog: null
+        currentCatalog: null,
+        currentLessonRequirements: []
     }),
 
     getters: {
@@ -89,6 +91,26 @@ export const useCatalogStore = defineStore('catalog', {
         async setCatalogAndRequirementsToLesson(lessonId: number, requirements: Requirement[]) {
             if (this.currentCatalog && this.currentCatalog.catalog_id) {
                 await catalogService.push.setCatalogRequirementsToLesson(this.currentCatalog.catalog_id, lessonId, requirements);
+            }
+        },
+
+        async getRequirementsForLesson(lessonId: number) {
+            const data = await catalogService.pull.fetchRequirementsForLesson(lessonId);
+
+            if (data) {
+                data.forEach(d => {
+                    if (d.requirements) {
+                        this.currentLessonRequirements.push(
+                            {
+                                description: d.requirements.description,
+                                products: {},
+                                reqId: d.requirements.reqid,
+                                requirement_id: d.requirements.requirement_id,
+                                title: d.requirements.title
+                            }
+                        )
+                    }
+                })
             }
         },
     }

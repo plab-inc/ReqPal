@@ -14,7 +14,8 @@ class CatalogServiceClass {
         fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
-        fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this)
+        fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
+        fetchRequirementsForLesson: this.getRequirementsForLesson.bind(this)
     }
 
     private async fetchRequirementsByCatalogId(catalogId: number) {
@@ -125,6 +126,21 @@ class CatalogServiceClass {
         } else {
             throw Error("Daten existieren bereits.");
         }
+    }
+
+    private async getRequirementsForLesson(lessonId: number) {
+
+        const {data: existingData, error: existingError} = await supabase
+            .from('lesson_requirements')
+            .select('requirements(*)')
+            .eq('lesson_id', lessonId)
+
+        if (existingError) throw existingError;
+
+        if (existingData) {
+            return existingData;
+        }
+
     }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
