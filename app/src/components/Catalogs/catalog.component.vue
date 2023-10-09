@@ -30,21 +30,51 @@ const headers = [
   {text: 'Kommentar', value: 'productComment', sortable: true},
 ]
 
+/*
+async function onLessonChanged() {
+  if (selectedLesson.value) {
+    await catalogStore.getRequirementsForLesson(selectedLesson.value?.id)
+    const loadedReqs = catalogStore.currentLessonRequirements;
+
+    if (loadedReqs) {
+      loadedReqs.forEach(req => {
+        if (!itemsSelected.value.find(item => item.requirement_id === req.requirement_id)) {
+          itemsSelected.value.push(req);
+        }
+      })
+    }
+  }
+}
+
+watch(selectedLesson, (newLesson, oldLesson) => {
+  if (newLesson && oldLesson !== newLesson) {
+    onLessonChanged();
+  }
+});
+*/
+
 function onSelectProduct(name: string) {
   selectedProduct.value = name;
 }
 
-async function onSubmit() {
-
+async function removeRequirements() {
   if (isFormValid && itemsSelected.value.length > 0 && selectedLesson.value) {
-    console.log(itemsSelected.value)
-    console.log(selectedLesson.value)
-    console.log("submit")
+    try {
+      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, itemsSelected.value);
+      AlertService.addSuccessAlert("Requirements removed from " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
+      await router.push({name: "Catalogs"})
+    } catch (error: any) {
+      AlertService.addErrorAlert("Failed to remove catalog and requirements: " + error.message);
+    }
+  }
+}
 
+async function addRequirements() {
+  if (isFormValid && itemsSelected.value.length > 0 && selectedLesson.value) {
     try {
       await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, itemsSelected.value);
       AlertService.addSuccessAlert("Requirements added to " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
-      await router.push({name: "AllLessons"})
+      await router.push({name: "Catalogs"})
     } catch (error: any) {
       AlertService.addErrorAlert("Failed to add catalog and requirements: " + error.message);
     }
@@ -83,8 +113,7 @@ onBeforeMount(async () => {
 
 <template>
   <h1>{{ catalog?.catalog_name }}</h1>
-
-  <v-form v-model="isFormValid" @submit.prevent="onSubmit" fast-fail>
+  <v-form v-model="isFormValid" fast-fail>
     <v-item-group mandatory>
       <v-container>
         <v-row>
@@ -119,8 +148,12 @@ onBeforeMount(async () => {
       </v-container>
     </v-item-group>
 
-    <v-btn type="submit" class="my-2 pa-1">
+    <v-btn @click="addRequirements" :disabled="!isFormValid || !(itemsSelected.length > 0)" class="my-2 pa-1">
       Add Requirements to Lesson {{ selectedLesson?.title }}
+    </v-btn>
+
+    <v-btn @click="removeRequirements" :disabled="!isFormValid || !(itemsSelected.length > 0)" class="my-2 pa-1 ml-2">
+      Remove Requirements from Lesson {{ selectedLesson?.title }}
     </v-btn>
 
     <v-select
