@@ -5,6 +5,7 @@ import AlertService from "@/services/alert.service.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {Lesson} from "@/types/lesson.types.ts";
 import router from "@/router";
+import ProductChoice from "@/components/Catalogs/ProductChoice.component.vue"
 
 const catalog = ref<Catalog>();
 const catalogStore = useCatalogStore();
@@ -113,41 +114,10 @@ onBeforeMount(async () => {
 
 <template>
   <h1>{{ catalog?.catalog_name }}</h1>
-  <v-form v-model="isFormValid" fast-fail>
-    <v-item-group mandatory>
-      <v-container>
-        <v-row>
-          <v-col
-              :md="2" class="text-h5 d-flex justify-start align-center">
-            Choose details for product:
-          </v-col>
-          <v-col
-              v-for="product in catalog?.products"
-              :key="product.product_id"
-              :md="2"
-          >
-            <v-item v-slot="{ isSelected, toggle }">
-              <v-card
-                  :color="isSelected ? 'primary' : ''"
-                  class="d-flex align-center"
-                  dark
-                  height="75"
-                  @click="() => { if (toggle) { toggle(); } onSelectProduct(product.product_name); }"
-              >
-                <v-scroll-y-transition>
-                  <div
-                      class="text-h5 flex-grow-1 text-center"
-                  >
-                    {{ product.product_name }}
-                  </div>
-                </v-scroll-y-transition>
-              </v-card>
-            </v-item>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-item-group>
 
+  <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
+
+  <v-form>
     <v-btn @click="addRequirements" :disabled="!isFormValid || !(itemsSelected.length > 0)" class="my-2 pa-1">
       Add Requirements to Lesson {{ selectedLesson?.title }}
     </v-btn>
