@@ -102,7 +102,7 @@ export const useCatalogStore = defineStore('catalog', {
 
         async getRequirementsForLesson(lessonId: number) {
             const data = await catalogService.pull.fetchRequirementsForLesson(lessonId);
-
+            this.currentLessonRequirements = [];
             if (data) {
                 data.forEach(d => {
                     if (d.requirements) {
