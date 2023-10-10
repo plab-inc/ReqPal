@@ -50,11 +50,6 @@ const routes = [
                 }
             },
             {
-                path: "/szenario",
-                name: "Szenario",
-                component: () => import("@/views/lesson/Szenario.view.vue"),
-            },
-            {
                 path: "/feedback",
                 name: "Feedback",
                 component: () => import("@/views/Feedback.view.vue"),
@@ -73,11 +68,6 @@ const routes = [
                 path: "/resetPassword",
                 name: "ResetPassword",
                 component: () => import("@/views/auth/ResetPassword.view.vue"),
-            },
-            {
-                path: "/dashboard",
-                name: "Dashboard",
-                component: () => import("@/views/home/Dashboard.view.vue"),
             },
             {
                 path: "/profile",
