@@ -35,9 +35,5 @@ function applyTheme(selectedTheme: string){
 </script>
 
 <template>
-
-  <v-app>
-    <RouterView/>
-  </v-app>
-
+  <RouterView/>
 </template>
