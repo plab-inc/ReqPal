@@ -9,24 +9,24 @@ import ProductChoice from "@/components/Catalogs/ProductChoice.component.vue"
 
 const catalog = ref<Catalog>();
 const catalogStore = useCatalogStore();
-
+let catalogIdAsNumber: number = 0;
 const lessonStore = useLessonStore();
 
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
 const items = ref<Requirement[]>([]);
 const themeColor = "#6e4aff";
-
+const selectAll = ref<boolean>(false);
 const selectedProduct = ref();
 const lessons = ref<Lesson[]>();
-const selectedLesson = ref<Lesson>();
+const selectedLesson = ref<Lesson | null>();
 
 const selection = ref<number[]>([]);
 
 const isFormValid = ref(false);
 
 const headers = [
-  {text: 'Selection', value: 'select', sortable: true},
+  {text: 'Selection', value: 'select'},
   {text: 'ID', value: 'requirement_id', sortable: true},
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
@@ -46,6 +46,7 @@ async function onLessonChanged() {
       loadedReqs.forEach(req => {
         selection.value.push(req.requirement_id);
       })
+      items.value = loadedReqs;
     }
   }
   loadingBar.value = false;
@@ -59,6 +60,23 @@ watch(selectedLesson, (newLesson, oldLesson) => {
 
 function onSelectProduct(name: string) {
   selectedProduct.value = name;
+}
+
+function onReset() {
+  selectedLesson.value = null;
+  setUpCatalog();
+}
+
+function toggleSelection() {
+  selectAll.value = !selectAll.value;
+  if (selectAll.value) {
+    selection.value = [];
+    items.value.forEach(item => {
+      selection.value.push(item.requirement_id);
+    })
+  } else {
+    selection.value = [];
+  }
 }
 
 async function removeRequirements() {
@@ -95,23 +113,10 @@ onBeforeMount(async () => {
 
   const route = useRoute();
   const catalogId = route.params.catalogId as string;
-  const catalogIdAsNumber = parseInt(catalogId, 10);
+  catalogIdAsNumber = parseInt(catalogId, 10);
 
   await catalogStore.getWholeCatalogById(catalogIdAsNumber);
-  if (catalogStore.currentCatalog) {
-    catalog.value = catalogStore.currentCatalog;
-    if (catalog.value?.requirements) {
-      items.value = catalog.value.requirements;
-      loading.value = false;
-    }
-    if (catalog.value?.products && catalog.value?.products[0]) {
-      selectedProduct.value = catalog.value?.products[0];
-    }
-  } else {
-    loading.value = false;
-    AlertService.addWarningAlert("Kein Katalog gefunden mit der id: " + catalogId);
-  }
-
+  setUpCatalog();
   if (lessonStore.lessons) {
     lessons.value = lessonStore.lessons;
   } else {
@@ -119,6 +124,21 @@ onBeforeMount(async () => {
     AlertService.addWarningAlert("Keine Lektionen gefunden.");
   }
 })
+
+function setUpCatalog() {
+  if (catalogStore.currentCatalog) {
+    catalog.value = catalogStore.currentCatalog;
+    if (catalog.value?.requirements) {
+      items.value = catalog.value.requirements;
+    }
+    if (catalog.value?.products && catalog.value?.products[0]) {
+      selectedProduct.value = catalog.value?.products[0];
+    }
+  } else {
+    AlertService.addWarningAlert("Kein Katalog gefunden mit der id: " + catalogIdAsNumber);
+  }
+  loading.value = false;
+}
 </script>
 
 <template>
@@ -137,6 +157,7 @@ onBeforeMount(async () => {
       Remove Requirements from Lesson {{ selectedLesson?.title }}
     </v-btn>
 
+    <v-btn @click="onReset">Whole Catalog</v-btn>
     <v-select
         v-model="selectedLesson"
         :items="lessons"
@@ -156,6 +177,13 @@ onBeforeMount(async () => {
         :rows-items="[5, 10, 15, 25, 50]"
         :rows-per-page="10"
         table-class-name="customize-table">
+
+      <template #header-select="header">
+        <div>
+          {{ header.text }}
+          <v-checkbox @click="toggleSelection" :label="selectAll ? 'Remove All' : 'Select All'"></v-checkbox>
+        </div>
+      </template>
 
       <template #item-select="item">
         <v-checkbox v-model="selection" :value="item.requirement_id"
