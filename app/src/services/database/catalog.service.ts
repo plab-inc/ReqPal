@@ -1,6 +1,6 @@
 import {supabase} from "@/plugins/supabase";
 import {
-    Catalog, Requirement
+    Catalog
 } from "@/types/catalog.types";
 
 class CatalogServiceClass {
