@@ -2,15 +2,14 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
 import AlertService from "@/services/alert.service.ts";
-import {useLessonStore} from "@/stores/lesson.store.ts";
 import {Lesson} from "@/types/lesson.types.ts";
 import router from "@/router";
 import ProductChoice from "@/components/Catalogs/ProductChoice.component.vue"
+import {checkBoxMinimumRule, requiredRule} from "@/utils/validationRules.ts";
 
 const catalog = ref<Catalog>();
 const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
-const lessonStore = useLessonStore();
 
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
@@ -20,13 +19,26 @@ const selectAll = ref<boolean>(false);
 const selectedProduct = ref();
 const lessons = ref<Lesson[]>();
 const selectedLesson = ref<Lesson | null>();
-
-const selection = ref<number[]>([]);
+const selectedRequirement = ref<Requirement>();
+const reqGroupSelection = ref<number[]>([]);
 
 const isFormValid = ref(false);
+const rules = {
+  required: requiredRule,
+  minimumCheckbox: checkBoxMinimumRule,
+};
+
+const headersForLesson = [
+  {text: 'Selection', value: 'select'},
+  {text: 'ID', value: 'requirement_id', sortable: true},
+  {text: 'Requirement', value: 'reqId', sortable: true},
+  {text: 'Titel', value: 'title', sortable: true},
+  {text: 'Beschreibung', value: 'description', sortable: true},
+  {text: 'Qualifizierung', value: 'productQualification', sortable: true},
+  {text: 'Kommentar', value: 'productComment', sortable: true},
+]
 
 const headers = [
-  {text: 'Selection', value: 'select'},
   {text: 'ID', value: 'requirement_id', sortable: true},
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
@@ -42,9 +54,9 @@ async function onLessonChanged() {
     const loadedReqs = catalogStore.currentLessonRequirements;
 
     if (loadedReqs) {
-      selection.value = [];
+      reqGroupSelection.value = [];
       loadedReqs.forEach(req => {
-        selection.value.push(req.requirement_id);
+        reqGroupSelection.value.push(req.requirement_id);
       })
       items.value = loadedReqs;
       selectAll.value = true;
@@ -59,46 +71,54 @@ watch(selectedLesson, (newLesson, oldLesson) => {
   }
 });
 
+function onRowClick(item: Requirement) {
+  if (item) {
+    selectedRequirement.value = item;
+  }
+}
+
 function onSelectProduct(name: string) {
   selectedProduct.value = name;
 }
 
 function onReset() {
   selectedLesson.value = null;
+  selectAll.value = false;
+  reqGroupSelection.value = [];
   setUpCatalog();
 }
 
 function toggleSelection() {
   selectAll.value = !selectAll.value;
   if (selectAll.value) {
-    selection.value = [];
+    reqGroupSelection.value = [];
     items.value.forEach(item => {
-      selection.value.push(item.requirement_id);
+      reqGroupSelection.value.push(item.requirement_id);
     })
   } else {
-    selection.value = [];
+    reqGroupSelection.value = [];
   }
 }
 
 async function removeRequirements() {
   loadingBar.value = true;
-  if (selection.value.length > 0 && selectedLesson.value) {
+  if (isFormValid && reqGroupSelection.value.length > 0 && selectedLesson.value) {
     try {
-      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, selection.value);
+      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, reqGroupSelection.value);
       AlertService.addSuccessAlert("Requirements removed from " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
       await router.push({name: "Catalogs"})
     } catch (error: any) {
       AlertService.addErrorAlert("Failed to remove catalog and requirements: " + error.message);
     }
-    loadingBar.value = false;
   }
+  loadingBar.value = false;
 }
 
 async function addRequirements() {
   loadingBar.value = true;
-  if (selection.value.length > 0 && selectedLesson.value) {
+  if (reqGroupSelection.value.length > 0 && selectedLesson.value) {
     try {
-      await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, selection.value);
+      await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, reqGroupSelection.value);
       AlertService.addSuccessAlert("Requirements added to " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
       await router.push({name: "Catalogs"})
     } catch (error: any) {
@@ -149,50 +169,58 @@ function setUpCatalog() {
 
 <template>
   <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
-
+  {{ isFormValid }}
   <h1>{{ catalog?.catalog_name }}</h1>
 
-  <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
+  <div class="d-flex flex-column flex-md-row">
+    <ProductChoice class="flex-grow-1" v-if="catalog" :products="catalog?.products"
+                   @onSelectProduct="onSelectProduct"></ProductChoice>
+    <v-card :title="selectedRequirement?.title ? selectedRequirement.title : 'Title'"
+            :text="selectedRequirement?.description ? selectedRequirement.description : 'Description'" class="my-2">
+    </v-card>
+  </div>
 
-  <v-form>
-    <v-btn @click="addRequirements" class="my-2 pa-1">
-      Add Requirements to Lesson {{ selectedLesson?.title }}
-    </v-btn>
+  <v-form v-model="isFormValid" validate-on="lazy blur">
 
-    <v-btn @click="removeRequirements" class="my-2 pa-1 ml-2">
-      Remove Requirements from Lesson {{ selectedLesson?.title }}
-    </v-btn>
-
-    <v-btn @click="onReset">Whole Catalog</v-btn>
-    <v-select
-        v-model="selectedLesson"
-        :items="lessons"
-        :rules="[v => !!v || 'Eine Lektion wird benötigt.']"
-        label="Lesson"
-        :item-title="item => item.title"
-        :item-value="item => item"
-        required
-    ></v-select>
+    <div class="d-flex flex-column-reverse flex-md-row">
+      <v-select
+          v-model="selectedLesson"
+          :items="lessons"
+          label="Lesson"
+          :item-title="item => item.title"
+          :item-value="item => item"
+          required
+      ></v-select>
+      <v-btn type="submit" v-if="selectedLesson" @click="removeRequirements" class="my-2 pa-2 ml-4">
+        Remove from Lesson
+      </v-btn>
+      <v-btn type="button" v-if="!selectedLesson" class="my-2 pa-2 ml-4">
+        Add new lesson to catalog
+      </v-btn>
+      <v-btn type="button" @click="onReset" class="my-2 pa-2 ml-4">Whole Catalog</v-btn>
+    </div>
 
     <EasyDataTable
-        :headers="headers"
+        :headers="selectedLesson ? headersForLesson : headers"
         :items="items"
         :loading="loading"
         :theme-color="themeColor"
         :rows-items="[5, 10, 15, 25, 50]"
         :rows-per-page="10"
-        table-class-name="customize-table">
+        table-class-name="customize-table"
+        @click-row="onRowClick">
 
       <template #header-select="header">
         <div>
           {{ header.text }}
-          <v-checkbox v-model="selectAll" @click="toggleSelection" :label="selectAll ? 'Remove All' : 'Select All'"></v-checkbox>
+          <v-checkbox v-model="selectAll" @click="toggleSelection"
+                      :label="selectAll ? 'Deselect All' : 'Select All'"></v-checkbox>
         </div>
       </template>
 
       <template #item-select="item">
-        <v-checkbox v-model="selection" :value="item.requirement_id"
-                    label=""></v-checkbox>
+        <v-checkbox v-model="reqGroupSelection" :value="item.requirement_id"
+                    label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
       </template>
 
       <template #item-productQualification="item">
