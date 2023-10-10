@@ -13,16 +13,20 @@ const catalogStore = useCatalogStore();
 const lessonStore = useLessonStore();
 
 const loading = ref<boolean>(true);
+const loadingBar = ref<boolean>(false);
 const items = ref<Requirement[]>([]);
 const themeColor = "#6e4aff";
-const itemsSelected = ref([]);
+
 const selectedProduct = ref();
 const lessons = ref<Lesson[]>();
 const selectedLesson = ref<Lesson>();
 
+const selection = ref<number[]>([]);
+
 const isFormValid = ref(false);
 
 const headers = [
+  {text: 'Selection', value: 'select', sortable: true},
   {text: 'ID', value: 'requirement_id', sortable: true},
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
@@ -31,20 +35,20 @@ const headers = [
   {text: 'Kommentar', value: 'productComment', sortable: true},
 ]
 
-/*
 async function onLessonChanged() {
+  loadingBar.value = true;
   if (selectedLesson.value) {
     await catalogStore.getRequirementsForLesson(selectedLesson.value?.id)
     const loadedReqs = catalogStore.currentLessonRequirements;
 
     if (loadedReqs) {
+      selection.value = [];
       loadedReqs.forEach(req => {
-        if (!itemsSelected.value.find(item => item.requirement_id === req.requirement_id)) {
-          itemsSelected.value.push(req);
-        }
+        selection.value.push(req.requirement_id);
       })
     }
   }
+  loadingBar.value = false;
 }
 
 watch(selectedLesson, (newLesson, oldLesson) => {
@@ -52,34 +56,39 @@ watch(selectedLesson, (newLesson, oldLesson) => {
     onLessonChanged();
   }
 });
-*/
 
 function onSelectProduct(name: string) {
   selectedProduct.value = name;
 }
 
 async function removeRequirements() {
-  if (isFormValid && itemsSelected.value.length > 0 && selectedLesson.value) {
+  loadingBar.value = true;
+  if (selection.value.length > 0 && selectedLesson.value) {
     try {
-      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, itemsSelected.value);
+      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, selection.value);
       AlertService.addSuccessAlert("Requirements removed from " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
       await router.push({name: "Catalogs"})
     } catch (error: any) {
       AlertService.addErrorAlert("Failed to remove catalog and requirements: " + error.message);
     }
+    loadingBar.value = false;
   }
 }
 
 async function addRequirements() {
-  if (isFormValid && itemsSelected.value.length > 0 && selectedLesson.value) {
+  loadingBar.value = true;
+  if (selection.value.length > 0 && selectedLesson.value) {
     try {
-      await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, itemsSelected.value);
+      await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, selection.value);
       AlertService.addSuccessAlert("Requirements added to " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
       await router.push({name: "Catalogs"})
     } catch (error: any) {
       AlertService.addErrorAlert("Failed to add catalog and requirements: " + error.message);
     }
+  } else {
+    AlertService.addWarningAlert("Es fehlen Daten.");
   }
+  loadingBar.value = false;
 }
 
 onBeforeMount(async () => {
@@ -113,16 +122,18 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
+
   <h1>{{ catalog?.catalog_name }}</h1>
 
   <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
 
   <v-form>
-    <v-btn @click="addRequirements" :disabled="!isFormValid || !(itemsSelected.length > 0)" class="my-2 pa-1">
+    <v-btn @click="addRequirements" class="my-2 pa-1">
       Add Requirements to Lesson {{ selectedLesson?.title }}
     </v-btn>
 
-    <v-btn @click="removeRequirements" :disabled="!isFormValid || !(itemsSelected.length > 0)" class="my-2 pa-1 ml-2">
+    <v-btn @click="removeRequirements" class="my-2 pa-1 ml-2">
       Remove Requirements from Lesson {{ selectedLesson?.title }}
     </v-btn>
 
@@ -138,7 +149,6 @@ onBeforeMount(async () => {
 
     <p v-if="!isFormValid">Es müssen Requirements gewählt werden.</p>
     <EasyDataTable
-        v-model:itemsSelected="itemsSelected"
         :headers="headers"
         :items="items"
         :loading="loading"
@@ -146,6 +156,11 @@ onBeforeMount(async () => {
         :rows-items="[5, 10, 15, 25, 50]"
         :rows-per-page="10"
         table-class-name="customize-table">
+
+      <template #item-select="item">
+        <v-checkbox v-model="selection" :value="item.requirement_id"
+                    label=""></v-checkbox>
+      </template>
 
       <template #item-productQualification="item">
         {{ item.products[selectedProduct]?.qualification }}
