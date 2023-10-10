@@ -47,6 +47,7 @@ async function onLessonChanged() {
         selection.value.push(req.requirement_id);
       })
       items.value = loadedReqs;
+      selectAll.value = true;
     }
   }
   loadingBar.value = false;
@@ -117,12 +118,17 @@ onBeforeMount(async () => {
 
   await catalogStore.getWholeCatalogById(catalogIdAsNumber);
   setUpCatalog();
-  if (lessonStore.lessons) {
-    lessons.value = lessonStore.lessons;
-  } else {
-    lessons.value = [];
-    AlertService.addWarningAlert("Keine Lektionen gefunden.");
+
+  if (catalog.value) {
+    await catalogStore.getAllLessonsForCatalog(catalogIdAsNumber)
+    if (catalogStore.currentCatalogLessons.length > 0) {
+      lessons.value = catalogStore.currentCatalogLessons;
+    } else {
+      lessons.value = [];
+      AlertService.addInfoAlert("Zu diesem Katalog gehören noch keine Lektionen.");
+    }
   }
+
 })
 
 function setUpCatalog() {
@@ -168,7 +174,6 @@ function setUpCatalog() {
         required
     ></v-select>
 
-    <p v-if="!isFormValid">Es müssen Requirements gewählt werden.</p>
     <EasyDataTable
         :headers="headers"
         :items="items"
@@ -181,7 +186,7 @@ function setUpCatalog() {
       <template #header-select="header">
         <div>
           {{ header.text }}
-          <v-checkbox @click="toggleSelection" :label="selectAll ? 'Remove All' : 'Select All'"></v-checkbox>
+          <v-checkbox v-model="selectAll" @click="toggleSelection" :label="selectAll ? 'Remove All' : 'Select All'"></v-checkbox>
         </div>
       </template>
 

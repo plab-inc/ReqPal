@@ -16,7 +16,8 @@ class CatalogServiceClass {
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
-        fetchRequirementsForLesson: this.getRequirementsForLesson.bind(this)
+        fetchRequirementsForLesson: this.getRequirementsForLesson.bind(this),
+        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this)
     }
 
     private async fetchRequirementsByCatalogId(catalogId: number) {
@@ -182,6 +183,20 @@ class CatalogServiceClass {
         if (catalogError || !catalogData) throw catalogError;
 
         return catalogData;
+    }
+
+    async fetchLessonsForCatalog(catalogId: number) {
+        const {data, error} = await supabase
+            .from('lessons')
+            .select('*')
+            .eq('catalog_id', catalogId)
+            .select()
+
+        if (error) throw error;
+
+        if(data) {
+            return data;
+        }
     }
 
 }
