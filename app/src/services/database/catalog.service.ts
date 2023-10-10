@@ -80,7 +80,7 @@ class CatalogServiceClass {
        }*/
     }
 
-    private async setCatalogRequirementsToLesson(catalogId: number, lessonId: number, requirements: Requirement[]) {
+    private async setCatalogRequirementsToLesson(catalogId: number, lessonId: number, requirementIds: number[]) {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -93,8 +93,8 @@ class CatalogServiceClass {
         if (data) {
 
             try {
-                for (const req of requirements) {
-                    await this.setRequirementsToLesson(lessonId, req.requirement_id);
+                for (const req of requirementIds) {
+                    await this.setRequirementsToLesson(lessonId, req);
                 }
             } catch (error) {
                 throw error;
@@ -125,7 +125,7 @@ class CatalogServiceClass {
 
             return updatedData;
         } else {
-            throw Error("Daten existieren bereits.");
+            return null;
         }
     }
 
