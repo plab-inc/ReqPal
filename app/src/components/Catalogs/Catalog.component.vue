@@ -219,7 +219,7 @@ function setUpCatalog() {
 <template>
   <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
 
-  <h1>{{ catalog?.catalog_name }}</h1>
+  <h1 class="my-md-8 my-4 text-center text-md-left">{{ catalog?.catalog_name }}</h1>
 
   <div>
     <v-row>
@@ -254,6 +254,16 @@ function setUpCatalog() {
 
   <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
 
+    <div class="d-flex justify-center flex-column flex-md-row justify-md-start">
+      <v-btn type="button" @click="onReset" class="my-2 pa-2">Whole Catalog</v-btn>
+      <v-btn type="button" @click="toggleAllLessons" class="my-2 pa-2 ml-md-4">
+        {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
+      </v-btn>
+      <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-md-4">
+        {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
+      </v-btn>
+    </div>
+
     <div class="d-flex flex-column-reverse flex-md-row">
       <v-select
           v-model="selectedLesson"
@@ -264,20 +274,13 @@ function setUpCatalog() {
           required
       ></v-select>
       <v-btn type="submit" v-if="selectedLesson && !showNewReqsForLesson"
-             class="my-2 pa-2 ml-4">
+             class="my-2 pa-2 ml-md-4">
         Remove from Lesson
       </v-btn>
       <v-btn type="submit" v-if="selectedLesson && showNewReqsForLesson"
-             class="my-2 pa-2 ml-4">
+             class="my-2 pa-2 ml-md-4">
         Add to Lesson
       </v-btn>
-      <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-4">
-        {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
-      </v-btn>
-      <v-btn type="button" v-if="!selectedLesson" @click="toggleAllLessons" class="my-2 pa-2 ml-4">
-        {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
-      </v-btn>
-      <v-btn type="button" @click="onReset" class="my-2 pa-2 ml-4">Whole Catalog</v-btn>
     </div>
 
     <EasyDataTable
