@@ -12,7 +12,7 @@ import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
 const routes = [
     {
         path: "/",
-        component: () => import("@/layouts/default/Default.layout.vue"),
+        component: () => import("@/layouts/Default.layout.vue"),
         children: [
             {
                 path: "",
@@ -21,7 +21,7 @@ const routes = [
             },
             {
                 path: "/lessons",
-                name: "AllLessons",
+                name: "Lessons",
                 component: () => import("@/views/lesson/Lessons.view.vue"),
                 meta: {
                     middleware: [
