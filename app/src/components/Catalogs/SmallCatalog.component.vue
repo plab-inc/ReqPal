@@ -51,7 +51,7 @@ function setProductNotes(product: string) {
 
 onBeforeMount(async () => {
   await catalogStore.getRequirementsForLesson(props.lessonId);
-  await catalogStore.getWholeCatalogById(171);
+  await catalogStore.getCatalogById(171);
   requirements.value = catalogStore.currentLessonRequirements;
   if (catalogStore.currentCatalog) {
     catalog.value = catalogStore.currentCatalog;

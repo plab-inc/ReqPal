@@ -67,18 +67,10 @@ class CatalogServiceClass {
 
         if (error) throw error;
 
-        if (data) {
-            return data;
+        if (data && data.length > 0) {
+            return data.find((item: any) => item.products.product_name === productName) || null;
         }
 
-        /*
-       if (!productName && data && data.length > 0) {
-           return data;
-       }
-
-       if (data && data.length > 0) {
-           return data.find((item: any) => item.products.product_name === productName) || null;
-       }*/
     }
 
     private async setCatalogRequirementsToLesson(catalogId: number, lessonId: number, requirementIds: number[]) {
@@ -194,7 +186,7 @@ class CatalogServiceClass {
 
         if (error) throw error;
 
-        if(data) {
+        if (data) {
             return data;
         }
     }
