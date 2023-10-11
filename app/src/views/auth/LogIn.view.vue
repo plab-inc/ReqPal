@@ -48,7 +48,8 @@ import router from "@/router";
 
 import { useAuthStore } from "@/stores/auth.store";
 import { requiredRule, emailRule } from "@/utils/validationRules";
-import { addErrorAlert } from "@/services/alert.service";
+import AlertService from "@/services/alert.service";
+import {AuthenticationError} from "@/errors/custom.errors.ts";
 
 const authStore = useAuthStore();
 
@@ -66,8 +67,7 @@ const submit = async () => {
         }
       })
     } catch (error: any) {
-      console.error(error);
-      addErrorAlert(error.message);
+      throw new AuthenticationError(error.message, error.code);
     }
   }
 }

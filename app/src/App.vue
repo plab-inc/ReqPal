@@ -3,14 +3,18 @@ import { supabase } from "@/plugins/supabase";
 import { useAuthStore } from "@/stores/auth.store";
 import { useThemeStore } from '@/stores/theme.store';
 import { useTheme } from "vuetify";
-import {Ref} from "vue";
+import { unhandledRejectionHandler, globalErrorHandler } from "@/errors/handler.errors.ts";
 
 const themeStore = useThemeStore();
-const theme = useTheme()
+const theme = useTheme();
 
 onMounted(() => {
   themeStore.syncWithBrowserSettings();
   applyTheme(themeStore.currentTheme);
+
+  window.addEventListener('unhandledrejection', unhandledRejectionHandler);
+  window.addEventListener('error', globalErrorHandler);
+
 });
 
 watch(() => themeStore.currentTheme, (newTheme) => {
@@ -20,6 +24,7 @@ watch(() => themeStore.currentTheme, (newTheme) => {
 supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
     useAuthStore().setSession(session);
+    console.log(session?.user?.app_metadata)
   }
 });
 
@@ -30,9 +35,5 @@ function applyTheme(selectedTheme: string){
 </script>
 
 <template>
-
-  <v-app>
-    <RouterView/>
-  </v-app>
-
+  <RouterView/>
 </template>

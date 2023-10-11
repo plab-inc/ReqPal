@@ -11,17 +11,17 @@ export type Product = {
 }
 
 export type Requirement = {
-    requirement_id?: number;
-    reqId: string;
-    title: string;
-    description: string;
+    requirement_id: number;
+    reqId: string | null;
+    title: string | null;
+    description: string | null;
     products: {
         [key: string]: ProductDetail;
     };
 }
 
 export type Catalog = {
-    catalog_id?: string;
+    catalog_id?: number;
     catalog_name: string;
     products: Product[];
     requirements: Requirement[];

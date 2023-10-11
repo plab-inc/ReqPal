@@ -8,23 +8,23 @@
       </div>
 
       <div v-else>
-        <ul>
-          <li v-for="lesson in lessons">
-            <v-row>
-              <v-col md="8">
-                <router-link :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }">
-                  {{ lesson.title }}
-                  {{ lesson.description }}
-                </router-link>
-              </v-col>
-              <v-col md="4">
+        <v-list dense>
+            <v-list-item
+                v-for="lesson in lessons"
+                :key="lesson.id"
+                :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }"
+            >
+              <template v-slot:prepend>
+                {{ lesson.title }}
+              </template>
+              <template v-slot:append>
                 <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Add Question</v-btn>
-              </v-col>
-            </v-row>
-          </li>
-        </ul>
+              </template>
+            </v-list-item>
+        </v-list>
       </div>
     </div>
+    <component v-for="component in componentsList" :is="component"></component>
   </v-container>
 </template>
 
@@ -34,6 +34,8 @@ import {useLessonStore} from "@/stores/lesson.store";
 
 const lessonStore = useLessonStore();
 const lessons = lessonStore.lessons;
+
+const componentsList = ref(['MultipleChoiceForm', 'MultipleChoiceForm']);
 
 </script>
   
