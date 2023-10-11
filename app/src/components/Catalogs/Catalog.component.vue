@@ -15,7 +15,6 @@ const lessonStore = useLessonStore();
 
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
-const themeColor = "#6e4aff";
 
 const requirementItems = ref<Requirement[]>([]);
 
@@ -223,21 +222,34 @@ function setUpCatalog() {
   <h1>{{ catalog?.catalog_name }}</h1>
 
   <div>
-    <h4 class="text-right">Produkte und Produkt Details</h4>
-    <div v-for="product in catalog?.products"
-         class="d-flex justify-end align-center my-2">
-      <v-card width="400">
-        <v-card-item>
-          <v-card-title>{{ product.product_name }}</v-card-title>
-        </v-card-item>
-        <v-card-text>
-          <div v-if="selectedRequirement?.products[product.product_name]">
-            <p> {{ selectedRequirement?.products[product.product_name].qualification }}</p>
-            <p> {{ selectedRequirement?.products[product.product_name].comment }}</p>
-          </div>
-        </v-card-text>
-      </v-card>
-    </div>
+    <v-row>
+      <v-col md="6">
+        <h4 class="text-center text-md-left">Selected Requirement</h4>
+        <div class="d-flex align-center my-2">
+          <v-card :title="selectedRequirement?.title ? selectedRequirement?.title : 'Requirement'"
+                  :text="selectedRequirement?.description ? selectedRequirement?.description : 'Wähle eine Anforderung'"
+                  variant="outlined">
+          </v-card>
+        </div>
+      </v-col>
+      <v-col md="6">
+        <h4 class="text-center text-md-right">Produkte und Produkt Details</h4>
+        <div v-for="product in catalog?.products"
+             class="d-flex justify-center justify-md-end align-center my-2">
+          <v-card class="flex-grow-1 flex-md-grow-0" min-width="400" min-height="120">
+            <v-card-item>
+              <v-card-title>{{ product.product_name }}</v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <div v-if="selectedRequirement?.products[product.product_name]">
+                <p> {{ selectedRequirement?.products[product.product_name].qualification }}</p>
+                <p> {{ selectedRequirement?.products[product.product_name].comment }}</p>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </v-col>
+    </v-row>
   </div>
 
   <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
@@ -272,7 +284,6 @@ function setUpCatalog() {
         :headers="selectedLesson ? headersForLesson : headers"
         :items="requirementItems"
         :loading="loading"
-        :theme-color="themeColor"
         :rows-items="[5, 10, 15, 25, 50]"
         :rows-per-page="10"
         table-class-name="customize-table"
@@ -281,13 +292,13 @@ function setUpCatalog() {
       <template #header-select="header">
         <div>
           {{ header.text }}
-          <v-checkbox v-model="selectAll" @click="toggleSelection"
+          <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
                       :label="selectAll ? 'Deselect All' : 'Select All'"></v-checkbox>
         </div>
       </template>
 
       <template #item-select="item">
-        <v-checkbox v-model="reqGroupSelection" :value="item.requirement_id"
+        <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
                     label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
       </template>
     </EasyDataTable>
@@ -297,31 +308,31 @@ function setUpCatalog() {
 <style scoped>
 
 .customize-table {
-  --easy-table-border: 1px solid #445269;
-  --easy-table-row-border: 1px solid #445269;
+  --easy-table-border: 1px solid rgb(var(--v-theme-primary));
+  --easy-table-row-border: 1px solid rgb(var(--v-theme-primary));
 
   --easy-table-header-font-size: 14px;
   --easy-table-header-height: 50px;
-  --easy-table-header-font-color: #c1cad4;
-  --easy-table-header-background-color: #2d3a4f;
+  --easy-table-header-font-color: white;
+  --easy-table-header-background-color: rgb(var(--v-theme-primary));
 
   --easy-table-header-item-padding: 10px 15px;
 
   --easy-table-body-even-row-font-color: #fff;
   --easy-table-body-even-row-background-color: #4c5d7a;
 
-  --easy-table-body-row-font-color: #c0c7d2;
-  --easy-table-body-row-background-color: #2d3a4f;
+  --easy-table-body-row-font-color: rgb(var(--v-theme-textColor));
+  --easy-table-body-row-background-color: rgb(var(--v-theme-background));
   --easy-table-body-row-height: 50px;
   --easy-table-body-row-font-size: 14px;
 
   --easy-table-body-row-hover-font-color: #2d3a4f;
-  --easy-table-body-row-hover-background-color: #eee;
+  --easy-table-body-row-hover-background-color: rgb(var(--v-theme-highlightColor));
 
   --easy-table-body-item-padding: 10px 15px;
 
-  --easy-table-footer-background-color: #2d3a4f;
-  --easy-table-footer-font-color: #c0c7d2;
+  --easy-table-footer-background-color: rgb(var(--v-theme-primary));
+  --easy-table-footer-font-color: white;
   --easy-table-footer-font-size: 14px;
   --easy-table-footer-padding: 0px 10px;
   --easy-table-footer-height: 50px;
@@ -335,6 +346,6 @@ function setUpCatalog() {
   --easy-table-scrollbar-thumb-color: #4c5d7a;;
   --easy-table-scrollbar-corner-color: #2d3a4f;
 
-  --easy-table-loading-mask-background-color: #2d3a4f;
+  --easy-table-loading-mask-background-color: rgb(var(--v-theme-surface));
 }
 </style>
