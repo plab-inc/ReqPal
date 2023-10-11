@@ -8,6 +8,10 @@
       <p>No questions yet!</p>
     </div>
 
+    <div v-if="currentLesson">
+      <small-catalog :lesson-id="currentLesson.id"></small-catalog>
+    </div>
+
     <div v-if="currentQuestions.length > 0">
       <MultipleChoice v-for="question in multipleChoiceQuestions" :key="question.id"
                       :question="question"></MultipleChoice>
@@ -24,6 +28,7 @@ import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalse.component.vue";
 import Sortable from "@/components/Sortable/Sortable.component.vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {storeToRefs} from 'pinia'
+import SmallCatalog from "@/components/Catalogs/SmallCatalog.component.vue";
 
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)

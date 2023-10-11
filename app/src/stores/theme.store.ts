@@ -30,5 +30,8 @@ export const useThemeStore = defineStore('theme', {
         setUserTheme(theme: string): void {
             this.userTheme = theme;
         },
+        toggleUserTheme(): void {
+            this.userTheme = this.userTheme === 'dark' ? 'light' : 'dark';
+        }
     },
 });

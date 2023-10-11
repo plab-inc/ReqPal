@@ -12,7 +12,7 @@ import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
 const routes = [
     {
         path: "/",
-        component: () => import("@/layouts/default/Default.layout.vue"),
+        component: () => import("@/layouts/Default.layout.vue"),
         children: [
             {
                 path: "",
@@ -21,7 +21,7 @@ const routes = [
             },
             {
                 path: "/lessons",
-                name: "AllLessons",
+                name: "Lessons",
                 component: () => import("@/views/lesson/Lessons.view.vue"),
                 meta: {
                     middleware: [
@@ -50,9 +50,19 @@ const routes = [
                 }
             },
             {
-                path: "/szenario",
-                name: "Szenario",
-                component: () => import("@/views/lesson/Szenario.view.vue"),
+                path: "/catalogs",
+                name: "Catalogs",
+                component: () => import("@/views/catalog/Catalogs.view.vue")
+            },
+            {
+                path: "/catalogs/:catalogId",
+                name: "CatalogDetails",
+                component: () => import("@/views/catalog/CatalogDetail.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
             },
             {
                 path: "/feedback",
@@ -73,11 +83,6 @@ const routes = [
                 path: "/resetPassword",
                 name: "ResetPassword",
                 component: () => import("@/views/auth/ResetPassword.view.vue"),
-            },
-            {
-                path: "/dashboard",
-                name: "Dashboard",
-                component: () => import("@/views/home/Dashboard.view.vue"),
             },
             {
                 path: "/profile",
