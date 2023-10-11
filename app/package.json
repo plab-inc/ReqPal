@@ -10,7 +10,6 @@
     "preview": "vite preview",
     "lint": "eslint .. --fix --ignore-path .gitignore",
     "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/types/supabase.types.ts"
-
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
@@ -22,6 +21,7 @@
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
     "vue3-dnd": "^2.0.3",
+    "vue3-easy-data-table": "^1.5.47",
     "vuetify": "^3.3.8",
     "webfontloader": "^1.6.28"
   },
