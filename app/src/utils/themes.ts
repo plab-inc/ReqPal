@@ -10,6 +10,8 @@ export const light: ThemeDefinition = {
     info: '#239ECE',
     success: '#1EA885',
     warning: '#FF9900',
+    textColor: '#363636',
+    highlightColor: '#edd9ff'
   },
 };
 
@@ -25,5 +27,7 @@ export const dark: ThemeDefinition = {
     info: '#4497E2',
     success: '#3ED6C3',
     warning: '#FFC93C',
+    textColor: '#e8e8e8',
+    highlightColor: '#edd9ff'
   },
 };
