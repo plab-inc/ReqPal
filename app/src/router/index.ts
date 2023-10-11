@@ -90,11 +90,6 @@ const routes = [
                 component: () => import("@/views/auth/ResetPassword.view.vue"),
             },
             {
-                path: "/dashboard",
-                name: "Dashboard",
-                component: () => import("@/views/home/Dashboard.view.vue"),
-            },
-            {
                 path: "/profile",
                 name: "Profile",
                 component: () => import("@/views/auth/Profile.view.vue"),
