@@ -65,11 +65,6 @@ const routes = [
                 }
             },
             {
-                path: "/szenario",
-                name: "Szenario",
-                component: () => import("@/views/lesson/Szenario.view.vue"),
-            },
-            {
                 path: "/feedback",
                 name: "Feedback",
                 component: () => import("@/views/Feedback.view.vue"),
