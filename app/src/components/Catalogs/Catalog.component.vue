@@ -183,7 +183,7 @@ onBeforeMount(async () => {
   const catalogId = route.params.catalogId as string;
   catalogIdAsNumber = parseInt(catalogId, 10);
 
-  await catalogStore.getCatalogById(catalogIdAsNumber);
+  await catalogStore.getCatalogWithProductsById(catalogIdAsNumber);
   setUpCatalog();
 
   await lessonStore.fetchLessons();

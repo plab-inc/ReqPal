@@ -13,6 +13,7 @@ class CatalogServiceClass {
 
     public pull = {
         fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
+        fetchAllCatalogs: this.fetchAllCatalogs.bind(this),
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
@@ -183,6 +184,18 @@ class CatalogServiceClass {
             .select('*')
             .eq('catalog_id', catalogId)
             .select()
+
+        if (error) throw error;
+
+        if (data) {
+            return data;
+        }
+    }
+
+    async fetchAllCatalogs() {
+        const {data, error} = await supabase
+            .from('catalogs')
+            .select('*')
 
         if (error) throw error;
 
