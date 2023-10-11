@@ -61,6 +61,17 @@ function onSubmit() {
   }
 }
 
+const getProgressColor = (qualification: string) => {
+  switch (parseInt(qualification)) {
+    case 5: return 'green';
+    case 4: return 'light-green';
+    case 3: return 'yellow';
+    case 2: return 'orange';
+    case 1: return 'red';
+    default: return 'grey'; // default color in case of any unforeseen values
+  }
+};
+
 async function onLessonChanged() {
   loadingBar.value = true;
   if (selectedLesson.value) {
@@ -217,99 +228,129 @@ function setUpCatalog() {
 </script>
 
 <template>
-  <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
+    <v-container>
+      <v-row>
+        <h1>{{ catalog?.catalog_name }}</h1>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-col>
+            <v-card :title="selectedRequirement?.title ? selectedRequirement?.title : 'Requirement'"
+                    :text="selectedRequirement?.description ? selectedRequirement?.description : 'Wähle eine Anforderung'"
+                    variant="outlined">
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-expansion-panels>
+              <v-expansion-panel v-if="selectedRequirement">
+                <v-expansion-panel-title>
+                      Produktdetails zu Requirement
+                </v-expansion-panel-title>
+                <v-expansion-panel-text>
+                  <v-row v-if="selectedRequirement">
+                    <v-col v-for="product in catalog?.products" :key="product.product_name" cols="12" md="6" lg="4">
+                      <v-card class="ma-2 pa-2" max-height="200" max-width="500">
+                        <v-container :fluid="false">
+                          <v-row no-gutters>
+                            <v-col cols="8" class="d-flex align-center">
+                              {{ product.product_name }}
+                            </v-col>
+                            <v-col cols="4" class="d-flex align-center justify-end">
+                              <v-progress-circular
+                                  v-if="selectedRequirement?.products[product.product_name]?.qualification"
+                                  :size="50"
+                                  :width="7"
+                                  :color="getProgressColor(selectedRequirement?.products[product.product_name].qualification)"
+                                  :model-value="(parseInt(selectedRequirement?.products[product.product_name].qualification) / 5 ) * 100"
+                              >
+                                {{ selectedRequirement?.products[product.product_name].qualification }}
+                              </v-progress-circular>
+                            </v-col>
+                          </v-row>
 
-  <h1 class="my-md-8 my-4 text-center text-md-left">{{ catalog?.catalog_name }}</h1>
+                          <v-row>
+                            <v-col>
+                              <div v-if="selectedRequirement?.products[product.product_name]">
+                                <p>{{ selectedRequirement?.products[product.product_name].comment }}</p>
+                              </div>
+                            </v-col>
+                          </v-row>
 
-  <div>
-    <v-row>
-      <v-col md="6">
-        <h4 class="text-center text-md-left">Selected Requirement</h4>
-        <div class="d-flex align-center my-2">
-          <v-card :title="selectedRequirement?.title ? selectedRequirement?.title : 'Requirement'"
-                  :text="selectedRequirement?.description ? selectedRequirement?.description : 'Wähle eine Anforderung'"
-                  variant="outlined">
-          </v-card>
-        </div>
-      </v-col>
-      <v-col md="6">
-        <h4 class="text-center text-md-right">Produkte und Produkt Details</h4>
-        <div v-for="product in catalog?.products"
-             class="d-flex justify-center justify-md-end align-center my-2">
-          <v-card class="flex-grow-1 flex-md-grow-0" min-width="400" min-height="120">
-            <v-card-item>
-              <v-card-title>{{ product.product_name }}</v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <div v-if="selectedRequirement?.products[product.product_name]">
-                <p> {{ selectedRequirement?.products[product.product_name].qualification }}</p>
-                <p> {{ selectedRequirement?.products[product.product_name].comment }}</p>
-              </div>
-            </v-card-text>
-          </v-card>
-        </div>
-      </v-col>
-    </v-row>
-  </div>
+                        </v-container>
+                      </v-card>
+                    </v-col>
+                  </v-row>
 
-  <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
 
-    <div class="d-flex justify-center flex-column flex-md-row justify-md-start">
-      <v-btn type="button" @click="onReset" class="my-2 pa-2">Whole Catalog</v-btn>
-      <v-btn type="button" @click="toggleAllLessons" class="my-2 pa-2 ml-md-4">
-        {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
-      </v-btn>
-      <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-md-4">
-        {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
-      </v-btn>
-    </div>
+          </v-col>
+        </v-col>
 
-    <div class="d-flex flex-column-reverse flex-md-row">
-      <v-select
-          v-model="selectedLesson"
-          :items="showAllLessons ? allLessons : catalogLessons"
-          label="Lesson"
-          :item-title="item => item.title"
-          :item-value="item => item"
-          required
-      ></v-select>
-      <v-btn type="submit" v-if="selectedLesson && !showNewReqsForLesson"
-             class="my-2 pa-2 ml-md-4">
-        Remove from Lesson
-      </v-btn>
-      <v-btn type="submit" v-if="selectedLesson && showNewReqsForLesson"
-             class="my-2 pa-2 ml-md-4">
-        Add to Lesson
-      </v-btn>
-    </div>
+        <v-col>
+          <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
 
-    <EasyDataTable
-        :headers="selectedLesson ? headersForLesson : headers"
-        :items="requirementItems"
-        :loading="loading"
-        :rows-items="[5, 10, 15, 25, 50]"
-        :rows-per-page="10"
-        table-class-name="customize-table"
-        @click-row="onRowClick">
+            <div class="d-flex justify-center flex-column flex-md-row justify-md-start">
+              <v-btn type="button" @click="onReset" class="my-2 pa-2">Whole Catalog</v-btn>
+              <v-btn type="button" @click="toggleAllLessons" class="my-2 pa-2 ml-md-4">
+                {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
+              </v-btn>
+              <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-md-4">
+                {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
+              </v-btn>
+            </div>
 
-      <template #header-select="header">
-        <div>
-          <div class="d-flex flex-column justify-center align-center">
-            <p>{{ selectAll ? 'Deselect All' : 'Select All' }}</p>
-            <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
-            ></v-checkbox>
-          </div>
-        </div>
-      </template>
+            <div class="d-flex flex-column-reverse flex-md-row">
+              <v-select
+                  v-model="selectedLesson"
+                  :items="showAllLessons ? allLessons : catalogLessons"
+                  label="Lesson"
+                  :item-title="item => item.title"
+                  :item-value="item => item"
+                  required
+              ></v-select>
+              <v-btn type="submit" v-if="selectedLesson && !showNewReqsForLesson"
+                     class="my-2 pa-2 ml-md-4">
+                Remove from Lesson
+              </v-btn>
+              <v-btn type="submit" v-if="selectedLesson && showNewReqsForLesson"
+                     class="my-2 pa-2 ml-md-4">
+                Add to Lesson
+              </v-btn>
+            </div>
 
-      <template #item-select="item">
-        <div class="d-flex flex-column justify-center align-center">
-          <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
-                      label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
-        </div>
-      </template>
-    </EasyDataTable>
-  </v-form>
+            <EasyDataTable
+                :headers="selectedLesson ? headersForLesson : headers"
+                :items="requirementItems"
+                :loading="loading"
+                :rows-items="[5, 10, 15, 25, 50]"
+                :rows-per-page="10"
+                table-class-name="customize-table"
+                @click-row="onRowClick">
+
+              <template #header-select="header">
+                <div>
+                  <div class="d-flex flex-column justify-center align-center">
+                    <p>{{ selectAll ? 'Deselect All' : 'Select All' }}</p>
+                    <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
+                    ></v-checkbox>
+                  </div>
+                </div>
+              </template>
+
+              <template #item-select="item">
+                <div class="d-flex flex-column justify-center align-center">
+                  <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
+                              label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
+                </div>
+              </template>
+            </EasyDataTable>
+          </v-form>
+        </v-col>
+      </v-row>
+    </v-container>
+
 </template>
 
 <style scoped>
