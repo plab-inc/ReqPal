@@ -27,7 +27,7 @@ CREATE POLICY "policy_user_points"
 
 --------------------------------------------
 -- Catalog related policies
--- TODO: Teacher can edit/view all catalogs rn, should be only their own -> Change DB Model
+-- TODO: Teacher can edit/view all catalog rn, should be only their own -> Change DB Model
 --------------------------------------------
 
 CREATE POLICY "policy_catalogs"
@@ -72,6 +72,18 @@ CREATE POLICY "policy_questions"
 
 CREATE POLICY "policy_questions_teacher"
     ON public.questions
+    FOR ALL
+    TO authenticated
+    USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+
+CREATE POLICY "policy_lesson_requirements_teacher"
+    ON public.lesson_requirements
+    FOR ALL
+    TO authenticated
+    USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+
+CREATE POLICY "policy_lesson_teacher"
+    ON public.lessons
     FOR ALL
     TO authenticated
     USING ((select check_user_role(auth.uid(), 'teacher')) = true);
