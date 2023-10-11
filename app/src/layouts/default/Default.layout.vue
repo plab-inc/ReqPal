@@ -28,6 +28,7 @@
         <v-list-item prepend-icon="mdi-home" title="Home" to="/" :active="false"></v-list-item>
         <div v-if="authStore.user">
           <v-list-item prepend-icon="mdi-school" title="Lektionen" to="Lessons"></v-list-item>
+          <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="Catalogs"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Profil" to="Profile"></v-list-item>
         </div>
         <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="Feedback"></v-list-item>
