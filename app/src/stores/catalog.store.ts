@@ -1,9 +1,10 @@
 import {defineStore} from 'pinia';
 import catalogService from "@/services/database/catalog.service.ts";
-import {Catalog, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
+import {Catalog, dbCatalog, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
 import {Lesson} from "@/types/lesson.types.ts";
 
 interface CatalogState {
+    allCatalogs: dbCatalog[]
     currentCatalog: Catalog | null
     currentLessonRequirements: Requirement[]
     currentCatalogLessons: Lesson[]
@@ -11,6 +12,7 @@ interface CatalogState {
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
+        allCatalogs: [],
         currentCatalog: null,
         currentLessonRequirements: [],
         currentCatalogLessons: []
@@ -23,7 +25,17 @@ export const useCatalogStore = defineStore('catalog', {
     },
 
     actions: {
-        async getCatalogById(id: number) {
+        async getAllCatalogs() {
+
+            const catalogData = await catalogService.pull.fetchAllCatalogs();
+
+            if (catalogData) {
+                this.allCatalogs = catalogData;
+            }
+
+        },
+
+        async getCatalogWithProductsById(id: number) {
 
             const catalogData = await catalogService.pull.fetchCatalogByCatalogId(id);
             const requirementsData = await catalogService.pull.fetchRequirementsByCatalogId(id);
