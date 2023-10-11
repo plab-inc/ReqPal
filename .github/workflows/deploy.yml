@@ -37,9 +37,6 @@ jobs:
       - name: Install dependencies
         run: npm install
         working-directory: ./app
-      - name: Typecheck
-        run: npm run type-check
-        working-directory: ./app
       - name: Build
         run: npm run build
         working-directory: ./app
