@@ -22,7 +22,7 @@ class LessonServiceClass {
 
         const {data, error} = await supabase
             .from('lessons')
-            .select('id, title, description')
+            .select('*')
 
         if (error) throw error;
 
@@ -35,7 +35,7 @@ class LessonServiceClass {
 
         const {data, error} = await supabase
             .from('lessons')
-            .select('id, title, description')
+            .select('*')
             .eq('id', lessonId)
             .single()
 
