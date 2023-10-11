@@ -294,15 +294,19 @@ function setUpCatalog() {
 
       <template #header-select="header">
         <div>
-          {{ header.text }}
-          <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
-                      :label="selectAll ? 'Deselect All' : 'Select All'"></v-checkbox>
+          <div class="d-flex flex-column justify-center align-center">
+            <p>{{ selectAll ? 'Deselect All' : 'Select All' }}</p>
+            <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
+            ></v-checkbox>
+          </div>
         </div>
       </template>
 
       <template #item-select="item">
-        <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
-                    label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
+        <div class="d-flex flex-column justify-center align-center">
+          <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
+                      label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
+        </div>
       </template>
     </EasyDataTable>
   </v-form>
