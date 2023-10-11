@@ -2,7 +2,7 @@
 
 import {useLessonStore} from "@/stores/lesson.store";
 import {booleanValueRule, requiredRule} from "@/utils/validationRules";
-import {addErrorAlert, addSuccessAlert} from "@/services/alert.service";
+import AlertService from "@/services/alert.service";
 import router from "@/router";
 
 const lessonStore = useLessonStore();
@@ -19,13 +19,13 @@ async function submitQuestion(): Promise<void> {
   try {
     if (lesson) {
       await lessonStore.addTrueOrFalseQuestion(lesson.id, question.value, solution.value);
-      addSuccessAlert("Question added to lesson " + lesson.id + ": " + lesson.title);
+      AlertService.addSuccessAlert("Question added to lesson " + lesson.id + ": " + lesson.title);
       await router.push({name: "AllLessons"})
     } else {
-      addErrorAlert("Lesson not found.");
+      AlertService.addErrorAlert("Lesson not found.");
     }
   } catch (error: any) {
-    addErrorAlert("Failed to create question: " + error.message);
+    AlertService.addErrorAlert("Failed to create question: " + error.message);
   }
 }
 </script>

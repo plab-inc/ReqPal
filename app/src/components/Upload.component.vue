@@ -47,11 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import {addSuccessAlert, addWarningAlert} from "@/services/alert.service";
+import AlertService from "@/services/alert.service";
 import { useTheme } from "vuetify";
 import { Catalog } from "@/types/catalog.types.ts";
 
 import CatalogService from "@/services/database/catalog.service";
+import {ConversionError, DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
 
 interface Props {
   maxFileSize?: number;
@@ -63,27 +64,31 @@ const loading = ref(false);
 const handleFileUpload = (File: File) => {
 
   loading.value = true;
-  state.borderColor= 'transparent';
+  state.borderColor = 'transparent';
 
   CatalogService.convertCSVToCatalog(File)
       .then((catalog: Catalog) => {
         CatalogService.push.uploadCatalogToDatabase(catalog)
-        .catch((error: any) => {
-          addWarningAlert(error.message);
-          state.borderColor = themeColors.secondary;
-          state.files = [];
-          loading.value = false;
-        })
-        .then(() => {
-          addSuccessAlert('Katalog erfolgreich hochgeladen.');
-        })
-        .finally(() => {
-          state.borderColor = themeColors.secondary;
-          state.files = [];
-          loading.value = false;
-        });})
+            .then(() => {
+              AlertService.addSuccessAlert('Katalog erfolgreich hochgeladen.');
+            })
+            .catch((error: any) => {
+              if(error.code == 42501){
+                throw new PrivilegeError("Rechte zum Hochladen fehlen.",error.code);
+              }else{
+                throw new DatabaseError("Fehler beim Hochladen des Katalogs.",error.code);
+              }
+            })
+            .finally(() => {
+              state.borderColor = themeColors.secondary;
+              state.files = [];
+              loading.value = false;
+            });
+      })
       .catch((error: any) => {
-        addWarningAlert(error.message);
+        throw new ConversionError("Fehler im Format der CSV Datei.", error.code);
+      })
+      .finally(() => {
         state.borderColor = themeColors.secondary;
         state.files = [];
         loading.value = false;
@@ -125,11 +130,11 @@ const validateFile = (file: File) => {
   const fileSize = file.size;
 
   if (!props.acceptedFileTypes.includes(fileType)) {
-    addWarningAlert(`Dateityp ${fileType} wird nicht unterstützt.`);
+    AlertService.addWarningAlert(`Dateityp ${fileType} wird nicht unterstützt.`);
   }
 
   if (fileSize > props.maxFileSize) {
-    addWarningAlert(`Datei ist zu groß. Maximale Dateigröße: ${props.maxFileSize / 1024 / 1024}MB`);
+    AlertService.addWarningAlert(`Datei ist zu groß. Maximale Dateigröße: ${props.maxFileSize / 1024 / 1024}MB`);
   }
 
   return props.acceptedFileTypes.includes(fileType) && fileSize <= props.maxFileSize;
