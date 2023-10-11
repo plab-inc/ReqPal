@@ -38,8 +38,8 @@ BEGIN
                     INSERT INTO product_requirements (product_id, requirement_id, qualification, comment)
                     VALUES (v_product_ids[v_product_ids_index],
                             v_requirement_id,
-                            v_details -> 'qualification',
-                            v_details -> 'comment');
+                            v_details ->> 'qualification',
+                            v_details ->> 'comment');
                     v_product_ids_index := v_product_ids_index + 1;
                 END LOOP;
 
