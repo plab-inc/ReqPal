@@ -23,7 +23,7 @@ export const useCatalogStore = defineStore('catalog', {
     },
 
     actions: {
-        async getWholeCatalogById(id: number) {
+        async getCatalogById(id: number) {
 
             const catalogData = await catalogService.pull.fetchCatalogByCatalogId(id);
             const requirementsData = await catalogService.pull.fetchRequirementsByCatalogId(id);
@@ -65,26 +65,21 @@ export const useCatalogStore = defineStore('catalog', {
                     requirements: catalogRequirements
                 }
             }
-
-            // await this.getProductDetails();
         },
 
-        async getProductDetails() {
-            if (this.currentCatalog) {
-                for (const req of this.currentCatalog.requirements) {
-                    for (const product of this.currentCatalog?.products) {
-                        if (product.product_name) {
-                            const productDetail = await catalogService.pull.fetchProductDetailsByRequirement(product.product_name, req.requirement_id);
+        async getProductDetailsForRequirement(req: Requirement) {
 
-                            if (productDetail) {
-                                productDetail.forEach(p => {
-                                    const reqProduct: ProductDetail = {
-                                        qualification: p.qualification ? p.qualification : "",
-                                        comment: p.comment ? p.comment : "",
-                                    }
-                                    if ((product.product_name)) req.products[product.product_name] = reqProduct;
-                                })
+            if (this.currentCatalog) {
+                for (const product of this.currentCatalog?.products) {
+                    if (product.product_name) {
+                        const productDetail = await catalogService.pull.fetchProductDetailsByRequirement(product.product_name, req.requirement_id);
+
+                        if (productDetail) {
+                            const reqProduct: ProductDetail = {
+                                qualification: productDetail.qualification ? productDetail.qualification : "",
+                                comment: productDetail.comment ? productDetail.comment : "",
                             }
+                            if ((product.product_name)) req.products[product.product_name] = reqProduct;
                         }
                     }
                 }
@@ -126,7 +121,7 @@ export const useCatalogStore = defineStore('catalog', {
         async getAllLessonsForCatalog(catalogId: number) {
             const data = await catalogService.pull.fetchLessonsForCatalog(catalogId);
 
-            if(data) {
+            if (data) {
                 this.currentCatalogLessons = data;
             }
         },
