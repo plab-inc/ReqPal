@@ -4,20 +4,29 @@ import {Catalog, Requirement} from "@/types/catalog.types.ts";
 import AlertService from "@/services/alert.service.ts";
 import {Lesson} from "@/types/lesson.types.ts";
 import router from "@/router";
-import ProductChoice from "@/components/Catalogs/ProductChoice.component.vue"
 import {checkBoxMinimumRule, requiredRule} from "@/utils/validationRules.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 const catalog = ref<Catalog>();
 const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
 
+const lessonStore = useLessonStore();
+
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
-const items = ref<Requirement[]>([]);
 const themeColor = "#6e4aff";
+
+const requirementItems = ref<Requirement[]>([]);
+
 const selectAll = ref<boolean>(false);
-const selectedProduct = ref();
-const lessons = ref<Lesson[]>();
+
+const showAllLessons = ref<boolean>(false);
+const allLessons = ref<Lesson[]>();
+const catalogLessons = ref<Lesson[]>();
+
+const showNewReqsForLesson = ref<boolean>(false);
+
 const selectedLesson = ref<Lesson | null>();
 const selectedRequirement = ref<Requirement>();
 const reqGroupSelection = ref<number[]>([]);
@@ -34,8 +43,6 @@ const headersForLesson = [
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
   {text: 'Beschreibung', value: 'description', sortable: true},
-  {text: 'Qualifizierung', value: 'productQualification', sortable: true},
-  {text: 'Kommentar', value: 'productComment', sortable: true},
 ]
 
 const headers = [
@@ -43,9 +50,17 @@ const headers = [
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
   {text: 'Beschreibung', value: 'description', sortable: true},
-  {text: 'Qualifizierung', value: 'productQualification', sortable: true},
-  {text: 'Kommentar', value: 'productComment', sortable: true},
 ]
+
+function onSubmit() {
+  if (isFormValid) {
+    if (showNewReqsForLesson.value) {
+      addRequirements();
+    } else {
+      removeRequirements();
+    }
+  }
+}
 
 async function onLessonChanged() {
   loadingBar.value = true;
@@ -58,7 +73,7 @@ async function onLessonChanged() {
       loadedReqs.forEach(req => {
         reqGroupSelection.value.push(req.requirement_id);
       })
-      items.value = loadedReqs;
+      requirementItems.value = loadedReqs;
       selectAll.value = true;
     }
   }
@@ -71,14 +86,25 @@ watch(selectedLesson, (newLesson, oldLesson) => {
   }
 });
 
-function onRowClick(item: Requirement) {
-  if (item) {
-    selectedRequirement.value = item;
-  }
+function toggleAllLessons() {
+  showAllLessons.value = !showAllLessons.value;
 }
 
-function onSelectProduct(name: string) {
-  selectedProduct.value = name;
+async function onRowClick(item: Requirement) {
+  selectedRequirement.value = item;
+  await getProductDetails();
+}
+
+async function getProductDetails() {
+  loadingBar.value = true;
+  try {
+    if (selectedRequirement.value) {
+      await catalogStore.getProductDetailsForRequirement(selectedRequirement.value);
+    }
+  } catch (error: any) {
+    AlertService.addErrorAlert("Failed to get product details: " + error.message);
+  }
+  loadingBar.value = false;
 }
 
 function onReset() {
@@ -88,11 +114,33 @@ function onReset() {
   setUpCatalog();
 }
 
+function toggleNewRequirements() {
+  loadingBar.value = true;
+  reqGroupSelection.value = [];
+  selectAll.value = false;
+  showNewReqsForLesson.value = !showNewReqsForLesson.value;
+  let allReqs: Requirement[] = [];
+  if (catalog.value) {
+    allReqs = catalog.value.requirements;
+  }
+
+  if (requirementItems.value.length <= 0) {
+    requirementItems.value = allReqs;
+  } else {
+    let newReqs: Requirement[] = allReqs.filter((req) => {
+      return !requirementItems.value.some((item) => item.requirement_id === req.requirement_id);
+    });
+    requirementItems.value = [];
+    requirementItems.value.push(...newReqs);
+  }
+  loadingBar.value = false;
+}
+
 function toggleSelection() {
   selectAll.value = !selectAll.value;
   if (selectAll.value) {
     reqGroupSelection.value = [];
-    items.value.forEach(item => {
+    requirementItems.value.forEach(item => {
       reqGroupSelection.value.push(item.requirement_id);
     })
   } else {
@@ -136,15 +184,20 @@ onBeforeMount(async () => {
   const catalogId = route.params.catalogId as string;
   catalogIdAsNumber = parseInt(catalogId, 10);
 
-  await catalogStore.getWholeCatalogById(catalogIdAsNumber);
+  await catalogStore.getCatalogById(catalogIdAsNumber);
   setUpCatalog();
+
+  await lessonStore.fetchLessons();
+  if (lessonStore.lessons) {
+    allLessons.value = lessonStore.lessons;
+  }
 
   if (catalog.value) {
     await catalogStore.getAllLessonsForCatalog(catalogIdAsNumber)
     if (catalogStore.currentCatalogLessons.length > 0) {
-      lessons.value = catalogStore.currentCatalogLessons;
+      catalogLessons.value = catalogStore.currentCatalogLessons;
     } else {
-      lessons.value = [];
+      catalogLessons.value = [];
       AlertService.addInfoAlert("Zu diesem Katalog gehören noch keine Lektionen.");
     }
   }
@@ -155,10 +208,7 @@ function setUpCatalog() {
   if (catalogStore.currentCatalog) {
     catalog.value = catalogStore.currentCatalog;
     if (catalog.value?.requirements) {
-      items.value = catalog.value.requirements;
-    }
-    if (catalog.value?.products && catalog.value?.products[0]) {
-      selectedProduct.value = catalog.value?.products[0];
+      requirementItems.value = catalog.value.requirements;
     }
   } else {
     AlertService.addWarningAlert("Kein Katalog gefunden mit der id: " + catalogIdAsNumber);
@@ -169,40 +219,58 @@ function setUpCatalog() {
 
 <template>
   <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
-  {{ isFormValid }}
+
   <h1>{{ catalog?.catalog_name }}</h1>
 
-  <div class="d-flex flex-column flex-md-row">
-    <ProductChoice class="flex-grow-1" v-if="catalog" :products="catalog?.products"
-                   @onSelectProduct="onSelectProduct"></ProductChoice>
-    <v-card :title="selectedRequirement?.title ? selectedRequirement.title : 'Title'"
-            :text="selectedRequirement?.description ? selectedRequirement.description : 'Description'" class="my-2">
-    </v-card>
+  <div>
+    <h4 class="text-right">Produkte und Produkt Details</h4>
+    <div v-for="product in catalog?.products"
+         class="d-flex justify-end align-center my-2">
+      <v-card width="400">
+        <v-card-item>
+          <v-card-title>{{ product.product_name }}</v-card-title>
+        </v-card-item>
+        <v-card-text>
+          <div v-if="selectedRequirement?.products[product.product_name]">
+            <p> {{ selectedRequirement?.products[product.product_name].qualification }}</p>
+            <p> {{ selectedRequirement?.products[product.product_name].comment }}</p>
+          </div>
+        </v-card-text>
+      </v-card>
+    </div>
   </div>
 
-  <v-form v-model="isFormValid" validate-on="lazy blur">
+  <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
 
     <div class="d-flex flex-column-reverse flex-md-row">
       <v-select
           v-model="selectedLesson"
-          :items="lessons"
+          :items="showAllLessons ? allLessons : catalogLessons"
           label="Lesson"
           :item-title="item => item.title"
           :item-value="item => item"
           required
       ></v-select>
-      <v-btn type="submit" v-if="selectedLesson" @click="removeRequirements" class="my-2 pa-2 ml-4">
+      <v-btn type="submit" v-if="selectedLesson && !showNewReqsForLesson"
+             class="my-2 pa-2 ml-4">
         Remove from Lesson
       </v-btn>
-      <v-btn type="button" v-if="!selectedLesson" class="my-2 pa-2 ml-4">
-        Add new lesson to catalog
+      <v-btn type="submit" v-if="selectedLesson && showNewReqsForLesson"
+             class="my-2 pa-2 ml-4">
+        Add to Lesson
+      </v-btn>
+      <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-4">
+        {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
+      </v-btn>
+      <v-btn type="button" v-if="!selectedLesson" @click="toggleAllLessons" class="my-2 pa-2 ml-4">
+        {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
       </v-btn>
       <v-btn type="button" @click="onReset" class="my-2 pa-2 ml-4">Whole Catalog</v-btn>
     </div>
 
     <EasyDataTable
         :headers="selectedLesson ? headersForLesson : headers"
-        :items="items"
+        :items="requirementItems"
         :loading="loading"
         :theme-color="themeColor"
         :rows-items="[5, 10, 15, 25, 50]"
@@ -221,14 +289,6 @@ function setUpCatalog() {
       <template #item-select="item">
         <v-checkbox v-model="reqGroupSelection" :value="item.requirement_id"
                     label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
-      </template>
-
-      <template #item-productQualification="item">
-        {{ item.products[selectedProduct]?.qualification }}
-      </template>
-
-      <template #item-productComment="item">
-        {{ item.products[selectedProduct]?.comment }}
       </template>
     </EasyDataTable>
   </v-form>
