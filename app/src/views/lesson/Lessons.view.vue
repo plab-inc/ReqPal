@@ -32,7 +32,6 @@
 <script setup lang="ts">
 
 import {useLessonStore} from "@/stores/lesson.store";
-import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 
 const lessonStore = useLessonStore();
 const lessons = lessonStore.lessons;
