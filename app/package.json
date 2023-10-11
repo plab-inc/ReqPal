@@ -9,11 +9,11 @@
     "type-check": "vue-tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint .. --fix --ignore-path .gitignore",
-    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/types/supabase.types.ts"
+    "update-types": "npx supabase gen types typescript --project-id rouarbdbmlahwttlyspf > src/types/supabase.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@supabase/supabase-js": "^2.26.0",
+    "@supabase/supabase-js": "2.26.0",
     "@vueuse/components": "^10.3.0",
     "@vueuse/core": "^10.2.1",
     "pinia": "^2.1.4",
