@@ -2,6 +2,7 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
 import ProductChoice from "@/components/Catalogs/Product/ProductChoice.component.vue";
+import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
 
 const catalogStore = useCatalogStore();
 
@@ -75,9 +76,8 @@ onBeforeMount(async () => {
   <h1>Requirements</h1>
   <v-row>
     <v-col md="8">
-      <div>
-        <v-card v-for="req of requirements" :title="req.title ? req.title : 'Title'"
-                :text="req.description ? req.description : 'Description'" class="my-2"></v-card>
+      <div v-for="requirement of requirements">
+        <RequirementItem :requirement="requirement"></RequirementItem>
       </div>
     </v-col>
     <v-col md="4">
