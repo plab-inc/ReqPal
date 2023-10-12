@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
-import ProductChoice from "@/components/Catalogs/ProductChoice.component.vue";
+import ProductChoice from "@/components/Catalogs/Product/ProductChoice.component.vue";
 
 const catalogStore = useCatalogStore();
 
