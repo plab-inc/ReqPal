@@ -16,6 +16,7 @@ import { light, dark, LIGHT_THEME, DARK_THEME } from "@/utils/themes";
 //Blueprints
 import { md1, md2, md3 } from "vuetify/blueprints";
 import { mdi } from 'vuetify/iconsets/mdi'
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 export default createVuetify({
   defaults: defaults,
@@ -32,6 +33,9 @@ export default createVuetify({
       light,
       dark,
     },
+  },
+  components: {
+    VSkeletonLoader,
   },
   display: {
     thresholds:{

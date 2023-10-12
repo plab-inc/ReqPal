@@ -250,7 +250,8 @@ function setUpCatalog() {
                   <v-row v-if="selectedRequirement">
                     <v-col v-for="product in catalog?.products" :key="product.product_name" cols="12" md="6" lg="4">
                       <v-card class="ma-2 pa-2" max-height="200" max-width="500">
-                        <v-container :fluid="false">
+                        <v-skeleton-loader v-if="loadingBar" type="heading, list-item-two-line"></v-skeleton-loader>
+                        <v-container v-if="!loadingBar" :fluid="false">
                           <v-row no-gutters>
                             <v-col cols="8" class="d-flex align-center">
                               {{ product.product_name }}
