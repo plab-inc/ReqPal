@@ -7,6 +7,7 @@ import router from "@/router";
 import {checkBoxMinimumRule, requiredRule} from "@/utils/validationRules.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProdutDetailPanel from "@/components/Catalogs/Product/ProdutDetailPanel.component.vue";
+import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);
@@ -19,7 +20,6 @@ const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
 
 const requirementItems = ref<Requirement[]>([]);
-
 const selectAll = ref<boolean>(false);
 
 const showAllLessons = ref<boolean>(false);
@@ -224,15 +224,14 @@ function setUpCatalog() {
 <template>
   <v-container>
     <v-row>
-      <h1>{{ catalog?.catalog_name }}</h1>
+      <v-col>
+        <div class="text-md-h3 text-sm-h4 text-h6">{{ catalog?.catalog_name }}</div>
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
         <v-col>
-          <v-card :title="selectedRequirement?.title ? selectedRequirement?.title : 'Requirement'"
-                  :text="selectedRequirement?.description ? selectedRequirement?.description : 'Wähle eine Anforderung'"
-                  variant="outlined">
-          </v-card>
+          <RequirementItem :requirement="selectedRequirement"></RequirementItem>
         </v-col>
         <v-col>
           <ProdutDetailPanel :requirement="selectedRequirement" :products="catalogProducts"
@@ -298,6 +297,7 @@ function setUpCatalog() {
               </div>
             </template>
           </EasyDataTable>
+
         </v-form>
       </v-col>
     </v-row>
