@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
-import ProductChoice from "@/components/Catalogs/Product/ProductChoice.component.vue";
-import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
+import ProductSelect from "@/components/Catalogs/Product/ProductNotes/ProductSelect.component.vue";
+import RequirementPanel from "@/components/Catalogs/Requirement/RequirementPanel.component.vue";
+import ProductNotes from "@/components/Catalogs/Product/ProductNotes/ProductNotes.component.vue";
+import {Lesson} from "@/types/lesson.types.ts";
 
 const catalogStore = useCatalogStore();
 
 interface Props {
-  lessonId: number;
+  lesson: Lesson;
 }
 
 interface ProductNote {
@@ -51,45 +53,41 @@ function setProductNotes(product: string) {
 }
 
 onBeforeMount(async () => {
-  await catalogStore.getRequirementsForLesson(props.lessonId);
-  await catalogStore.getCatalogWithProductsById(171);
-  requirements.value = catalogStore.currentLessonRequirements;
-  if (catalogStore.currentCatalog) {
-    catalog.value = catalogStore.currentCatalog;
-    catalog.value?.products.forEach(product => {
-      productNotes.value.push({
-        id: product.product_name,
-        text: "Notizen für: " + product.product_name
+  await catalogStore.getRequirementsForLesson(props.lesson.id);
+  if (props.lesson.catalog_id) {
+    await catalogStore.getCatalogWithProductsById(props.lesson.catalog_id);
+    requirements.value = catalogStore.currentLessonRequirements;
+    if (catalogStore.currentCatalog) {
+      catalog.value = catalogStore.currentCatalog;
+      catalog.value?.products.forEach(product => {
+        productNotes.value.push({
+          id: product.product_name,
+          text: ""
+        })
       })
-    })
-    onSelectProduct(catalog.value?.products[0].product_name);
+      onSelectProduct(catalog.value?.products[0].product_name);
+    }
   }
 })
 
 </script>
 
 <template>
-  <h1>{{ catalog?.catalog_name }}</h1>
+  <div class="text-md-h4 text-sm-h5 text-h6">{{ catalog?.catalog_name }}</div>
 
-  <ProductChoice v-if="catalog" :products="catalog?.products" @onSelectProduct="onSelectProduct"></ProductChoice>
+  <ProductSelect v-if="catalog" :products="catalog?.products" :text-label="'Notizen für: '"
+                 @onSelectProduct="onSelectProduct"></ProductSelect>
 
-  <h1>Requirements</h1>
   <v-row>
     <v-col md="8">
-      <div v-for="requirement of requirements">
-        <RequirementItem :requirement="requirement"></RequirementItem>
-      </div>
+      <RequirementPanel :requirements="requirements"></RequirementPanel>
     </v-col>
     <v-col md="4">
       <div v-if="currentProductName">
-        <v-textarea v-model="currentNotes"
-                    :label="'Notes for product ' + currentProductName"
-                    variant="outlined"
-                    auto-grow></v-textarea>
+        <ProductNotes v-model="currentNotes" :textLabel="'Notizen für ' + currentProductName"></ProductNotes>
       </div>
     </v-col>
   </v-row>
-
 
 </template>
 

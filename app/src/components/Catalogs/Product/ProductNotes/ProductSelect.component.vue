@@ -3,6 +3,7 @@ import {Product} from "@/types/catalog.types.ts";
 
 interface Props {
   products: Product[];
+  textLabel: string
 }
 
 const props = defineProps<Props>();
@@ -18,8 +19,8 @@ function onSelectProduct(product: String) {
     <v-container>
       <v-row>
         <v-col
-            :md="2" class="text-h5 d-flex justify-start align-center">
-          Choose details for product:
+            :md="2" class="text-h5">
+          {{ textLabel }}
         </v-col>
         <v-col
             v-for="product in products"
@@ -29,17 +30,14 @@ function onSelectProduct(product: String) {
           <v-item v-slot="{ isSelected, toggle }">
             <v-card
                 :color="isSelected ? 'primary' : ''"
-                class="d-flex align-center"
                 dark
-                height="75"
                 @click="() => { if (toggle) { toggle(); } onSelectProduct(product.product_name); }"
             >
               <v-scroll-y-transition>
-                <div
-                    class="text-h5 flex-grow-1 text-center"
+                <v-card-text class="text-center"
                 >
                   {{ product.product_name }}
-                </div>
+                </v-card-text>
               </v-scroll-y-transition>
             </v-card>
           </v-item>
