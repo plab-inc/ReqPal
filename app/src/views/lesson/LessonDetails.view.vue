@@ -9,7 +9,7 @@
     </div>
 
     <div v-if="currentLesson">
-      <small-catalog :lesson-id="currentLesson.id"></small-catalog>
+      <LessonRequirements :lesson="currentLesson"></LessonRequirements>
     </div>
 
     <div v-if="currentQuestions.length > 0">
@@ -28,7 +28,7 @@ import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalse.component.vue";
 import Sortable from "@/components/Sortable/Sortable.component.vue";
 import {useLessonStore} from "@/stores/lesson.store";
 import {storeToRefs} from 'pinia'
-import SmallCatalog from "@/components/Catalogs/SmallCatalog.component.vue";
+import LessonRequirements from "@/components/Catalogs/LessonRequirements.component.vue";
 
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
