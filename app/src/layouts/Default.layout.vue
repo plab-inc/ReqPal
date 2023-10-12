@@ -1,5 +1,11 @@
 <template>
   <v-app>
+    <v-progress-linear style="position: fixed; z-index: 999;"
+                       indeterminate
+                       color="warning"
+                       :active="utilStore.showLoadingBar"
+
+    ></v-progress-linear>
     <v-navigation-drawer
         location="left"
         width="250"
@@ -30,11 +36,11 @@
           <v-list-item prepend-icon="mdi-school" title="Lektionen" to="/lessons"></v-list-item>
           <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalogs"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Profil" to="/profile"></v-list-item>
+          <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
+          <v-divider></v-divider>
         </div>
-        <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
       </v-list>
 
-      <v-divider></v-divider>
 
       <template v-slot:append>
         <v-divider></v-divider>
@@ -53,7 +59,7 @@
       <v-container>
         <v-row>
           <v-col>
-            <div v-for="alert in alertStore.alerts" :key="alert.id">
+            <div v-for="alert in utilStore.alerts" :key="alert.id">
               <v-alert
                   closable
                   class="mb-2"
@@ -61,7 +67,7 @@
                   border="top"
                   density="compact"
                   :type="alert.type"
-                  @click:close="alertStore.removeAlert(alert.id)"
+                  @click:close="utilStore.removeAlert(alert.id)"
               >
                 {{ alert.message }}
               </v-alert>
@@ -80,12 +86,12 @@
 </template>
 
 <script lang="ts" setup>
-import {useAlertStore} from "@/stores/alert.store";
-import {useAuthStore} from "@/stores/auth.store.ts";
 import router from "@/router/index.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
 
-const alertStore = useAlertStore();
+const utilStore = useUtilStore();
 const authStore = useAuthStore();
 const themeStore = useThemeStore();
 
@@ -94,7 +100,7 @@ const drawer = ref(null);
 
 const removeAlertWithDelay = (alertId: string, delay = 10000) => {
   setTimeout(() => {
-    alertStore.removeAlert(alertId);
+    utilStore.removeAlert(alertId);
   }, delay);
 };
 

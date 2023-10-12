@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <v-progress-linear v-if="loadingBar" indeterminate></v-progress-linear>
     <h1>Alle Kataloge</h1>
 
     <v-row v-for="catalog in catalogs">
@@ -24,23 +23,24 @@ import {useCatalogStore} from "@/stores/catalog.store.ts";
 import router from "@/router";
 import {dbCatalog} from "@/types/catalog.types.ts";
 import AlertService from "@/services/alert.service.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
+const utilStore = useUtilStore();
 const catalogStore = useCatalogStore();
 const catalogs = ref<dbCatalog[]>();
-const loadingBar = ref<boolean>(false);
 function redirectToCatalogDetails(catalogId: number) {
   router.push({name: 'CatalogDetails', params: {catalogId: catalogId}});
 }
 
 onBeforeMount(async () => {
-  loadingBar.value = true;
+  utilStore.toggleLoadingBar();
   try {
     await catalogStore.getAllCatalogs();
     catalogs.value = catalogStore.allCatalogs;
   } catch (error: any) {
     AlertService.addErrorAlert("Fehler beim Laden: + " + error.message)
   }
-  loadingBar.value = false;
+  utilStore.toggleLoadingBar();
 })
 
 </script>
