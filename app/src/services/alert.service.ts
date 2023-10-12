@@ -1,8 +1,8 @@
-import { useAlertStore } from "@/stores/alert.store";
+import { useUtilStore } from "@/stores/util.store.ts";
 
 class AlertServiceClass {
   private get store() {
-    return useAlertStore();
+    return useUtilStore();
   }
 
   addSuccessAlert(message: string) {
