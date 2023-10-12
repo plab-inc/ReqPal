@@ -13,7 +13,7 @@
         >
           <v-card-text class="text-center">
             <div v-if="loading">
-              <v-progress-circular indeterminate model-value="20" color="primary"></v-progress-circular>
+              <v-progress-circular indeterminate model-value="20" color="warning"></v-progress-circular>
             </div>
             <div v-else>
               <v-icon  class="mr-2" size="32">mdi-file-upload</v-icon>

@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia';
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
-interface AlertStore {
+interface IAlert {
   id: string;
   message: string;
   type: AlertType;
 }
 
-export const useAlertStore = defineStore({
-  id: 'alert',
+export const useUtilStore = defineStore({
+  id: 'util',
   state: () => ({
-    alerts: [] as AlertStore[],
+    alerts: [] as IAlert[],
+    showLoadingBar: false,
   }),
   actions: {
     addAlert(message: string, type: AlertType) {
@@ -19,6 +20,15 @@ export const useAlertStore = defineStore({
     },
     removeAlert(id: string) {
       this.alerts = this.alerts.filter(alert => alert.id !== id);
+    },
+    toggleLoadingBar() {
+      this.showLoadingBar = !this.showLoadingBar;
+    },
+    startLoadingBar() {
+      this.showLoadingBar = true;
+    },
+    stopLoadingBar() {
+      this.showLoadingBar = false;
     }
   }
 });

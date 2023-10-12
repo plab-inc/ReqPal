@@ -9,7 +9,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import '@/styles/main.scss'
 
 import { createVuetify } from "vuetify";
-// Defaults
+//Defaults
 import { defaults } from "@/utils/defaults";
 //Themes
 import { light, dark, LIGHT_THEME, DARK_THEME } from "@/utils/themes";
@@ -33,4 +33,13 @@ export default createVuetify({
       dark,
     },
   },
+  display: {
+    thresholds:{
+      xs: 0,
+      sm: 600,
+      md: Infinity,
+      lg: Infinity,
+      xl: Infinity,
+    }
+  }
 });
