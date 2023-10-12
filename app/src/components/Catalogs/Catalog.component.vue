@@ -4,10 +4,11 @@ import {Catalog, Product, Requirement} from "@/types/catalog.types.ts";
 import AlertService from "@/services/alert.service.ts";
 import {Lesson} from "@/types/lesson.types.ts";
 import router from "@/router";
-import {checkBoxMinimumRule, requiredRule} from "@/utils/validationRules.ts";
+import {requiredRule} from "@/utils/validationRules.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProdutDetailPanel from "@/components/Catalogs/Product/ProdutDetailPanel.component.vue";
 import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
+import CatalogTable from "@/components/Catalogs/CatalogTable.component.vue";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);
@@ -34,24 +35,8 @@ const reqGroupSelection = ref<number[]>([]);
 
 const isFormValid = ref(false);
 const rules = {
-  required: requiredRule,
-  minimumCheckbox: checkBoxMinimumRule,
+  required: requiredRule
 };
-
-const headersForLesson = [
-  {text: 'Selection', value: 'select'},
-  {text: 'ID', value: 'requirement_id', sortable: true},
-  {text: 'Requirement', value: 'reqId', sortable: true},
-  {text: 'Titel', value: 'title', sortable: true},
-  {text: 'Beschreibung', value: 'description', sortable: true},
-]
-
-const headers = [
-  {text: 'ID', value: 'requirement_id', sortable: true},
-  {text: 'Requirement', value: 'reqId', sortable: true},
-  {text: 'Titel', value: 'title', sortable: true},
-  {text: 'Beschreibung', value: 'description', sortable: true},
-]
 
 function onSubmit() {
   if (isFormValid) {
@@ -137,18 +122,6 @@ function toggleNewRequirements() {
   loadingBar.value = false;
 }
 
-function toggleSelection() {
-  selectAll.value = !selectAll.value;
-  if (selectAll.value) {
-    reqGroupSelection.value = [];
-    requirementItems.value.forEach(item => {
-      reqGroupSelection.value.push(item.requirement_id);
-    })
-  } else {
-    reqGroupSelection.value = [];
-  }
-}
-
 async function removeRequirements() {
   loadingBar.value = true;
   if (isFormValid && reqGroupSelection.value.length > 0 && selectedLesson.value) {
@@ -165,6 +138,9 @@ async function removeRequirements() {
 
 async function addRequirements() {
   loadingBar.value = true;
+  console.log(reqGroupSelection.value)
+  console.log(selectedLesson.value)
+
   if (reqGroupSelection.value.length > 0 && selectedLesson.value) {
     try {
       await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, reqGroupSelection.value);
@@ -174,7 +150,7 @@ async function addRequirements() {
       AlertService.addErrorAlert("Failed to add catalog and requirements: " + error.message);
     }
   } else {
-    AlertService.addWarningAlert("Es fehlen Daten.");
+    AlertService.addWarningAlert("Es fehlen Daten zum Abschicken.");
   }
   loadingBar.value = false;
 }
@@ -243,12 +219,12 @@ function setUpCatalog() {
         <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
 
           <div class="d-flex justify-center flex-column flex-md-row justify-md-start">
-            <v-btn type="button" @click="onReset" class="my-2 pa-2">Whole Catalog</v-btn>
+            <v-btn type="button" @click="onReset" class="my-2 pa-2">Zurücksetzen</v-btn>
             <v-btn type="button" @click="toggleAllLessons" class="my-2 pa-2 ml-md-4">
               {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
             </v-btn>
             <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-md-4">
-              {{ showNewReqsForLesson ? 'Current Requirements' : 'New Requirements' }}
+              {{ showNewReqsForLesson ? 'Zugeteilte Anforderungen' : 'Neue Anforderungen' }}
             </v-btn>
           </div>
 
@@ -271,32 +247,9 @@ function setUpCatalog() {
             </v-btn>
           </div>
 
-          <EasyDataTable
-              :headers="selectedLesson ? headersForLesson : headers"
-              :items="requirementItems"
-              :loading="loading"
-              :rows-items="[5, 10, 15, 25, 50]"
-              :rows-per-page="10"
-              table-class-name="customize-table"
-              @click-row="onRowClick">
-
-            <template #header-select="header">
-              <div>
-                <div class="d-flex flex-column justify-center align-center">
-                  <p>{{ selectAll ? 'Deselect All' : 'Select All' }}</p>
-                  <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
-                  ></v-checkbox>
-                </div>
-              </div>
-            </template>
-
-            <template #item-select="item">
-              <div class="d-flex flex-column justify-center align-center">
-                <v-checkbox color="rgb(var(--v-theme-primary))" v-model="reqGroupSelection" :value="item.requirement_id"
-                            label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
-              </div>
-            </template>
-          </EasyDataTable>
+          <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
+                        :show-headers-for-lesson="!!selectedLesson" @on-row-click="onRowClick"
+          ></CatalogTable>
 
         </v-form>
       </v-col>
@@ -304,48 +257,3 @@ function setUpCatalog() {
   </v-container>
 
 </template>
-
-<style scoped>
-
-.customize-table {
-  --easy-table-border: 1px solid rgb(var(--v-theme-primary));
-  --easy-table-row-border: 1px solid rgb(var(--v-theme-primary));
-
-  --easy-table-header-font-size: 14px;
-  --easy-table-header-height: 50px;
-  --easy-table-header-font-color: white;
-  --easy-table-header-background-color: rgb(var(--v-theme-primary));
-
-  --easy-table-header-item-padding: 10px 15px;
-
-  --easy-table-body-even-row-font-color: #fff;
-  --easy-table-body-even-row-background-color: #4c5d7a;
-
-  --easy-table-body-row-font-color: rgb(var(--v-theme-textColor));
-  --easy-table-body-row-background-color: rgb(var(--v-theme-background));
-  --easy-table-body-row-height: 50px;
-  --easy-table-body-row-font-size: 14px;
-
-  --easy-table-body-row-hover-font-color: #2d3a4f;
-  --easy-table-body-row-hover-background-color: rgb(var(--v-theme-highlightColor));
-
-  --easy-table-body-item-padding: 10px 15px;
-
-  --easy-table-footer-background-color: rgb(var(--v-theme-primary));
-  --easy-table-footer-font-color: white;
-  --easy-table-footer-font-size: 14px;
-  --easy-table-footer-padding: 0px 10px;
-  --easy-table-footer-height: 50px;
-
-  --easy-table-rows-per-page-selector-width: 70px;
-  --easy-table-rows-per-page-selector-option-padding: 10px;
-  --easy-table-rows-per-page-selector-z-index: 1;
-
-  --easy-table-scrollbar-track-color: #2d3a4f;
-  --easy-table-scrollbar-color: #2d3a4f;
-  --easy-table-scrollbar-thumb-color: #4c5d7a;;
-  --easy-table-scrollbar-corner-color: #2d3a4f;
-
-  --easy-table-loading-mask-background-color: rgb(var(--v-theme-surface));
-}
-</style>
