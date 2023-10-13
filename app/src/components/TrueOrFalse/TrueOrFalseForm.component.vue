@@ -19,13 +19,13 @@ async function submitQuestion(): Promise<void> {
   try {
     if (lesson) {
       await lessonStore.addTrueOrFalseQuestion(lesson.id, question.value, solution.value);
-      AlertService.addSuccessAlert("Question added to lesson " + lesson.id + ": " + lesson.title);
-      await router.push({name: "AllLessons"})
+      AlertService.addSuccessAlert("Frage wurde zur Lektion hinzugefügt " + lesson.id + ": " + lesson.title);
+      await router.push({name: "Lessons"})
     } else {
-      AlertService.addErrorAlert("Lesson not found.");
+      AlertService.addErrorAlert("Lektion nicht gefunden.");
     }
   } catch (error: any) {
-    AlertService.addErrorAlert("Failed to create question: " + error.message);
+    AlertService.addErrorAlert("Ein Fehler ist aufgetreten: " + error.message);
   }
 }
 </script>
