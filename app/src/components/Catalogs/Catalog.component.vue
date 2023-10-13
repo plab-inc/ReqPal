@@ -9,11 +9,14 @@ import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProdutDetailPanel from "@/components/Catalogs/Product/ProdutDetailPanel.component.vue";
 import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
 import CatalogTable from "@/components/Catalogs/CatalogTable.component.vue";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);
 const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
+
+const utilStore = useUtilStore();
 
 const lessonStore = useLessonStore();
 
@@ -49,7 +52,7 @@ function onSubmit() {
 }
 
 async function onLessonChanged() {
-  loadingBar.value = true;
+  utilStore.toggleLoadingBar();
   if (selectedLesson.value) {
     await catalogStore.getRequirementsForLesson(selectedLesson.value?.id)
     const loadedReqs = catalogStore.currentLessonRequirements;
@@ -63,7 +66,7 @@ async function onLessonChanged() {
       selectAll.value = true;
     }
   }
-  loadingBar.value = false;
+  utilStore.toggleLoadingBar();
 }
 
 watch(selectedLesson, (newLesson, oldLesson) => {
@@ -98,7 +101,7 @@ function onReset() {
 }
 
 function toggleNewRequirements() {
-  loadingBar.value = true;
+  utilStore.toggleLoadingBar();
   reqGroupSelection.value = [];
   selectAll.value = false;
   let allReqs: Requirement[] = [];
@@ -115,11 +118,11 @@ function toggleNewRequirements() {
     requirementItems.value = [];
     requirementItems.value.push(...newReqs);
   }
-  loadingBar.value = false;
+  utilStore.toggleLoadingBar();
 }
 
 async function removeRequirements() {
-  loadingBar.value = true;
+  utilStore.toggleLoadingBar();
   if (isFormValid && reqGroupSelection.value.length > 0 && selectedLesson.value) {
     try {
       await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, reqGroupSelection.value);
@@ -129,14 +132,11 @@ async function removeRequirements() {
       AlertService.addErrorAlert("Failed to remove catalog and requirements: " + error.message);
     }
   }
-  loadingBar.value = false;
+  utilStore.toggleLoadingBar();
 }
 
 async function addRequirements() {
-  loadingBar.value = true;
-  console.log(reqGroupSelection.value)
-  console.log(selectedLesson.value)
-
+  utilStore.toggleLoadingBar();
   if (reqGroupSelection.value.length > 0 && selectedLesson.value) {
     try {
       await catalogStore.setCatalogAndRequirementsToLesson(selectedLesson.value.id, reqGroupSelection.value);
@@ -148,11 +148,11 @@ async function addRequirements() {
   } else {
     AlertService.addWarningAlert("Es fehlen Daten zum Abschicken.");
   }
-  loadingBar.value = false;
+  utilStore.toggleLoadingBar();
 }
 
 onBeforeMount(async () => {
-
+  utilStore.toggleLoadingBar();
   const route = useRoute();
   const catalogId = route.params.catalogId as string;
   catalogIdAsNumber = parseInt(catalogId, 10);
@@ -175,9 +175,11 @@ onBeforeMount(async () => {
       AlertService.addInfoAlert("Zu diesem Katalog gehören noch keine Lektionen.");
     }
   }
+  utilStore.toggleLoadingBar();
 })
 
 function setUpCatalog() {
+  loading.value = true;
   if (catalogStore.currentCatalog) {
     catalog.value = catalogStore.currentCatalog;
     if (catalog.value) {
@@ -221,7 +223,7 @@ function setUpCatalog() {
                   <v-btn type="button" @click="onReset" class="pa-2">Zurücksetzen</v-btn>
                   <v-btn type="submit" v-if="selectedLesson"
                          class="pa-2 ml-sm-2">
-                    {{showNewReqsForLesson ? 'Anforderungen hinzufügen' : 'Anforderungen entfernen'}}
+                    {{ showNewReqsForLesson ? 'Anforderungen hinzufügen' : 'Anforderungen entfernen' }}
                   </v-btn>
                 </v-col>
               </v-row>
