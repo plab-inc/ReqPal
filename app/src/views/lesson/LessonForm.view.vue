@@ -17,8 +17,8 @@ const openChangeTypeDialog = ref<boolean>(false);
   <h1>{{ lesson?.title }}</h1>
 
   <div v-if="!selectedType">
-    <h2>Choose Question Type</h2>
-    <v-radio-group v-model="selectedType" label="Type of question">
+    <div class="text-h4">Wähle einen Fragetyp</div>
+    <v-radio-group v-model="selectedType" label="Fragetyp">
       <v-radio label="True or False" value="TrueOrFalse"></v-radio>
       <v-radio label="Multiple Choice" value="MultipleChoice"></v-radio>
     </v-radio-group>
@@ -37,13 +37,13 @@ const openChangeTypeDialog = ref<boolean>(false);
         <custom-dialog
             v-if="openChangeTypeDialog"
             title="Warning"
-            message="You have unsaved content. Changing the question type will discard this content. Are you sure?"
-            confirmLabel="Change Question Type"
+            message="Sie haben ungespeicherten Inhalt. Das Ändern des Fragetyps wird diesen Inhalt verwerfen. Sind Sie sicher?"
+            confirmLabel="Fragetyp ändern"
             @cancel="openChangeTypeDialog = false"
             @confirm="selectedType=''; openChangeTypeDialog = false;"
         ></custom-dialog>
 
-        <v-btn @click="openChangeTypeDialog = true">Change Question Type</v-btn>
+        <v-btn @click="openChangeTypeDialog = true">Fragetyp ändern</v-btn>
       </v-col>
     </v-row>
   </div>

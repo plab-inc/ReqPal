@@ -1,10 +1,10 @@
 <template>
   <v-card>
     <v-container>
-      <h2>True Or False?</h2>
+      <div class="text-h6 text-md-h5">True Or False?</div>
 
-      <p>{{ props.question.description }}</p>
-      <p v-if="submitted">Solution:</p>
+      <div class="text-h6">{{ props.question.description }}</div>
+      <div class="text-h6" v-if="submitted">Solution:</div>
       <v-form v-model="isFormValid" @submit.prevent="submitAnswers" fast-fail>
 
         <v-radio-group v-model="selectedAnswer" :rules="[rules.requiredBool]">

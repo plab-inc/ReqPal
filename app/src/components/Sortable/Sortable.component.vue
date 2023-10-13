@@ -42,7 +42,7 @@ onBeforeMount(() => {
 <template>
   <v-card>
     <v-container>
-      <h3 v-if="submitted">Whole answer is correct: {{ question.userResults?.wholeAnswerIsCorrect }}</h3>
+      <div class="text-h6" v-if="submitted">Whole answer is correct: {{ question.userResults?.wholeAnswerIsCorrect }}</div>
       <v-form @submit.prevent="submitAnswers" fast-fail>
         <v-row>
           <v-col order="1" order-md="2" md="6" align-self="center" class="text-center">
