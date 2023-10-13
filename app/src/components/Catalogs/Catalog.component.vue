@@ -25,7 +25,7 @@ const selectAll = ref<boolean>(false);
 
 const showAllLessons = ref<boolean>(false);
 const allLessons = ref<Lesson[]>();
-const catalogLessons = ref<Lesson[]>();
+const catalogLessons = ref<Lesson[]>([]);
 
 const showNewReqsForLesson = ref<boolean>(false);
 
@@ -72,10 +72,6 @@ watch(selectedLesson, (newLesson, oldLesson) => {
   }
 });
 
-function toggleAllLessons() {
-  showAllLessons.value = !showAllLessons.value;
-}
-
 async function onRowClick(item: Requirement) {
   selectedRequirement.value = item;
   await getProductDetails();
@@ -97,6 +93,7 @@ function onReset() {
   selectedLesson.value = null;
   selectAll.value = false;
   reqGroupSelection.value = [];
+  showAllLessons.value = false;
   setUpCatalog();
 }
 
@@ -104,7 +101,6 @@ function toggleNewRequirements() {
   loadingBar.value = true;
   reqGroupSelection.value = [];
   selectAll.value = false;
-  showNewReqsForLesson.value = !showNewReqsForLesson.value;
   let allReqs: Requirement[] = [];
   if (catalog.value) {
     allReqs = catalog.value.requirements;
@@ -175,10 +171,10 @@ onBeforeMount(async () => {
       catalogLessons.value = catalogStore.currentCatalogLessons;
     } else {
       catalogLessons.value = [];
+      showAllLessons.value = true;
       AlertService.addInfoAlert("Zu diesem Katalog gehören noch keine Lektionen.");
     }
   }
-
 })
 
 function setUpCatalog() {
@@ -199,6 +195,7 @@ function setUpCatalog() {
 
 <template>
   <v-container>
+
     <v-row>
       <v-col>
         <div class="text-md-h3 text-sm-h4 text-h6">{{ catalog?.catalog_name }}</div>
@@ -206,50 +203,72 @@ function setUpCatalog() {
     </v-row>
     <v-row>
       <v-col>
-        <v-col>
-          <RequirementItem :requirement="selectedRequirement"></RequirementItem>
-        </v-col>
-        <v-col>
-          <ProdutDetailPanel :requirement="selectedRequirement" :products="catalogProducts"
-                             :loading="loadingBar"></ProdutDetailPanel>
-        </v-col>
+        <RequirementItem :requirement="selectedRequirement"></RequirementItem>
       </v-col>
+      <v-col>
+        <ProdutDetailPanel :requirement="selectedRequirement" :products="catalogProducts"
+                           :loading="loadingBar"></ProdutDetailPanel>
+      </v-col>
+    </v-row>
 
+    <v-row>
       <v-col>
         <v-form v-model="isFormValid" validate-on="lazy blur" @submit.prevent="onSubmit">
+          <v-row>
+            <v-col md="8">
+              <v-row>
+                <v-col>
+                  <v-btn type="button" @click="onReset" class="pa-2">Zurücksetzen</v-btn>
+                  <v-btn type="submit" v-if="selectedLesson"
+                         class="pa-2 ml-sm-2">
+                    {{showNewReqsForLesson ? 'Anforderungen hinzufügen' : 'Anforderungen entfernen'}}
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
+                      v-model="selectedLesson"
+                      :items="showAllLessons ? allLessons : catalogLessons"
+                      :label="showAllLessons ? 'Alle Lektionen' : 'Lektionen zum Katalog'"
+                      :item-title="item => item.title"
+                      :item-value="item => item"
+                      required
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-col>
 
-          <div class="d-flex justify-center flex-column flex-md-row justify-md-start">
-            <v-btn type="button" @click="onReset" class="my-2 pa-2">Zurücksetzen</v-btn>
-            <v-btn type="button" @click="toggleAllLessons" class="my-2 pa-2 ml-md-4">
-              {{ showAllLessons ? 'Lektionen zum Katalog' : 'Alle Lektionen' }}
-            </v-btn>
-            <v-btn type="button" v-if="selectedLesson" @click="toggleNewRequirements" class="my-2 pa-2 ml-md-4">
-              {{ showNewReqsForLesson ? 'Zugeteilte Anforderungen' : 'Neue Anforderungen' }}
-            </v-btn>
-          </div>
+            <v-col md="4">
+              <v-row>
+                <v-col>
+                  <v-switch
+                      v-if="selectedLesson"
+                      v-model="showNewReqsForLesson"
+                      @change="toggleNewRequirements"
+                      hide-details
+                      inset
+                      :label="showNewReqsForLesson ? 'Neue Anforderungen' : 'Zugeteilte Anforderungen'"
+                  ></v-switch>
+                  <v-switch
+                      v-model="showAllLessons"
+                      hide-details
+                      inset
+                      :disabled="catalogLessons.length <= 0"
+                      :label="showAllLessons ? 'Alle Lektionen' : 'Lektionen zum Katalog'"
+                  ></v-switch>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
-          <div class="d-flex flex-column-reverse flex-md-row">
-            <v-select
-                v-model="selectedLesson"
-                :items="showAllLessons ? allLessons : catalogLessons"
-                label="Lesson"
-                :item-title="item => item.title"
-                :item-value="item => item"
-                required
-            ></v-select>
-            <v-btn type="submit" v-if="selectedLesson && !showNewReqsForLesson"
-                   class="my-2 pa-2 ml-md-4">
-              Remove from Lesson
-            </v-btn>
-            <v-btn type="submit" v-if="selectedLesson && showNewReqsForLesson"
-                   class="my-2 pa-2 ml-md-4">
-              Add to Lesson
-            </v-btn>
-          </div>
-
-          <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
-                        :show-headers-for-lesson="!!selectedLesson" @on-row-click="onRowClick"
-          ></CatalogTable>
+          <v-row>
+            <v-col>
+              <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
+                            :show-headers-for-lesson="!!selectedLesson" @on-row-click="onRowClick"
+              ></CatalogTable>
+            </v-col>
+          </v-row>
 
         </v-form>
       </v-col>
