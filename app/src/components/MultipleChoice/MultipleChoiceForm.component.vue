@@ -38,13 +38,13 @@ async function submitQuestion(): Promise<void> {
     if (lesson) {
       answers.value.forEach((a, index) => a.id = index)
       await lessonStore.addMultipleChoiceQuestion(lesson.id, question.value, answers.value);
-      AlertService.addSuccessAlert("Question added to lesson " + lesson.id + ": " + lesson.title);
-      await router.push({name: "AllLessons"})
+      AlertService.addSuccessAlert("Frage wurde zur Lektion hinzugefügt " + lesson.id + ": " + lesson.title);
+      await router.push({name: "Lessons"})
     } else {
-      AlertService.addErrorAlert("Lesson not found.");
+      AlertService.addErrorAlert("Lektion nicht gefunden.");
     }
   } catch (error: any) {
-    AlertService.addErrorAlert("Failed to create question: " + error.message);
+    AlertService.addErrorAlert("Ein Fehler ist aufgetreten: " + error.message);
   }
 }
 </script>
