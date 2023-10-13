@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-container>
-      <h2>Multiple Choice</h2>
+      <div class="text-h6 text-md-h5">Multiple Choice</div>
 
       <v-form v-if="answers" @submit.prevent="submitAnswers" fast-fail>
 
-        <p>{{ props.question.description }}</p>
-        <p v-if="submitted">Solution:</p>
+        <div class="text-h6">{{ props.question.description }}</div>
+        <div class="text-h6" v-if="submitted">Solution:</div>
 
         <v-checkbox v-for="(answer, index) in answers"
                     :key="index"
