@@ -156,17 +156,14 @@ export interface Database {
       profiles: {
         Row: {
           id: string
-          role: number | null
           username: string | null
         }
         Insert: {
           id: string
-          role?: number | null
           username?: string | null
         }
         Update: {
           id?: string
-          role?: number | null
           username?: string | null
         }
         Relationships: [
@@ -174,12 +171,6 @@ export interface Database {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profiles_role_fkey"
-            columns: ["role"]
-            referencedRelation: "roles"
             referencedColumns: ["id"]
           }
         ]
