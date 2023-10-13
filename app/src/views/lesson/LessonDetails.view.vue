@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <div>
-      <h1>{{ currentLesson?.title }}</h1>
+      <div class="text-md-h3 text-sm-h4 text-h6">{{ currentLesson?.title }}</div>
     </div>
 
     <div v-if="currentQuestions.length <= 0">
-      <p>No questions yet!</p>
+      <div class="text-subtitle-1">Noch keine Fragen!</div>
     </div>
 
     <div v-if="currentLesson">

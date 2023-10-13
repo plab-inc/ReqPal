@@ -4,7 +4,7 @@
 
     <div>
       <div v-if="!lessonStore.lessons.length">
-        <p>Looking for lessons...</p>
+        <p>Keine Lektionen!</p>
       </div>
 
       <div v-else>
@@ -18,7 +18,7 @@
                 {{ lesson.title }}
               </template>
               <template v-slot:append>
-                <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Add Question</v-btn>
+                <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Frage hinzufügen</v-btn>
               </template>
             </v-list-item>
         </v-list>
