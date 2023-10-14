@@ -3,7 +3,7 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 import Container from "@/components/Sortable/Container.component.vue";
 import {DndProvider} from "vue3-dnd";
 import {Question, SortableAnswer} from "@/types/lesson.types";
-import {DragItem} from "@/interfaces/Sortable.interfaces";
+import {SortableDragItem} from "@/interfaces/DragItems.interfaces";
 import {shuffleArray} from "@/utils/helper";
 import {useLessonStore} from "@/stores/lesson.store";
 import {ref} from "vue";
@@ -16,7 +16,7 @@ const props = defineProps<Props>();
 const lessonStore = useLessonStore();
 const submitted = ref(false);
 
-const answers: DragItem[] = [{id: '1', text: 'Aussage 1'},
+const answers: SortableDragItem[] = [{id: '1', text: 'Aussage 1'},
   {id: '2', text: 'Aussage 2'},
   {id: '3', text: 'Aussage 3'},
   {id: '4', text: 'Aussage 4'}];

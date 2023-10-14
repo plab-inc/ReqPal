@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useDrop, XYCoord } from 'vue3-dnd';
-import { ItemTypes } from '@/types/dragAndDrop.types';
-import type { DragItem } from '@/interfaces/DragAndDrop.interfaces';
+import { DragItemTypes } from '@/types/dragItem.types.ts';
+import type { DragAndDropItem } from '@/interfaces/DragItems.interfaces.ts';
 import { useContainerStore } from '@/stores/DragAndDrop/container.store';
 import DraggableBox from './DraggableBox.component.vue';
 import {toRefs} from "@vueuse/core";
@@ -26,8 +26,8 @@ props.boxTitles?.forEach((title, index) => {
 });
 
 const [collect, drop] = useDrop(() => ({
-  accept: ItemTypes.BOX,
-  drop(item: DragItem, monitor) {
+  accept: DragItemTypes.BOX,
+  drop(item: DragAndDropItem, monitor) {
     const delta = monitor.getDifferenceFromInitialOffset() as {
       x: number
       y: number
