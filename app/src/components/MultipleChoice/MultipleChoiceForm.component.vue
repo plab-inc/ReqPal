@@ -3,9 +3,8 @@
 import {ref} from "vue";
 import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules";
 
-import {mcAnswer} from "@/types/lesson.types";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import AlertService from "@/services/alert.service.ts";
+import {multipleChoiceAnswer} from "@/interfaces/Question.interfaces.ts";
 
 const minAnswers = 3;
 const maxAnswers = 10;
@@ -18,7 +17,7 @@ const rules = {
   requiredString: noEmptyStringRule
 };
 
-const answers = ref<mcAnswer[]>([]);
+const answers = ref<multipleChoiceAnswer[]>([]);
 for (let i = 0; i < minAnswers; i++) {
   addAnswer();
 }
@@ -33,9 +32,9 @@ function removeAnswer(index: number) {
 
 const lessonFormStore = useLessonFormStore();
 
-const fields = ref({
+const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
-  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint'),
 });
 
 watch(fields, (newFields) => {
@@ -44,25 +43,17 @@ watch(fields, (newFields) => {
 }, {deep: true});
 
 watch(answers, (newAnswers) => {
-  newAnswers.forEach((a, index) => a.id = index)
-  const filteredAnswers = newAnswers.filter(a => a.description.trim() !== '');
-  const newDataJson = JSON.stringify(filteredAnswers);
-  lessonFormStore.setComponentData(props.componentId, 'solution', newDataJson);
+  newAnswers.forEach((a, index) => a.id = index);
+  const filteredAnswers: multipleChoiceAnswer[] = newAnswers.filter(a => a.description.trim() !== '');
+  lessonFormStore.setComponentData(props.componentId, 'solution', filteredAnswers);
 }, {deep: true});
 
 onBeforeMount(() => {
-  const answerJson = lessonFormStore.getComponentFieldValues(props.componentId, 'solution');
-  if (typeof answerJson === 'string' && answerJson) {
-    try {
-      const parsedAnswers = JSON.parse(answerJson);
-      if (Array.isArray(parsedAnswers) && parsedAnswers.length > 0) {
-        answers.value = parsedAnswers;
-      }
-    } catch (error) {
-      AlertService.addErrorAlert('Antworten konnten nicht geladen werden: ' + error);
-    }
+  const storedAnswers = lessonFormStore.getComponentFieldValues(props.componentId, 'solution');
+  if (storedAnswers && Array.isArray(storedAnswers) && storedAnswers.length > 0) {
+    answers.value = storedAnswers;
   }
-})
+});
 
 </script>
 

@@ -5,7 +5,7 @@ import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 const props = defineProps<{ componentId: number }>();
 const lessonFormStore = useLessonFormStore();
 
-const fields = ref({
+const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
   solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution'),
   hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
