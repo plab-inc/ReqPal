@@ -1,47 +1,35 @@
 <template>
   <v-container>
-    <h1>Alle Kataloge</h1>
+    <div class="text-md-h3 text-sm-h4 text-h6">Alle Kataloge</div>
 
-    <v-row v-for="catalog in catalogs">
-      <v-col>
-        <v-card class="pa-5" @click="redirectToCatalogDetails(catalog.catalog_id)">
-          <v-card-title>
-            {{ catalog.catalog_name }}
-          </v-card-title>
-          <v-card-text>
-            {{ 'Katalog: ' + catalog.catalog_id }}
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <div>
+      <div v-if="catalogs.length < 0">
+        <div class="text-subtitle-1">Keine Kataloge!</div>
+      </div>
+
+      <div v-else>
+        <v-list dense>
+          <v-list-item
+              v-for="catalog in catalogs"
+              :key="catalog.catalog_id"
+              :to="{ name: 'CatalogDetails', params: { catalogId: catalog.catalog_id } }"
+          >
+            <template v-slot:prepend>
+              {{ catalog.catalog_name }}
+            </template>
+          </v-list-item>
+        </v-list>
+      </div>
+    </div>
   </v-container>
 </template>
 
 <script setup lang="ts">
 
 import {useCatalogStore} from "@/stores/catalog.store.ts";
-import router from "@/router";
-import {dbCatalog} from "@/types/catalog.types.ts";
-import AlertService from "@/services/alert.service.ts";
-import {useUtilStore} from "@/stores/util.store.ts";
 
-const utilStore = useUtilStore();
 const catalogStore = useCatalogStore();
-const catalogs = ref<dbCatalog[]>();
-function redirectToCatalogDetails(catalogId: number) {
-  router.push({name: 'CatalogDetails', params: {catalogId: catalogId}});
-}
-
-onBeforeMount(async () => {
-  utilStore.toggleLoadingBar();
-  try {
-    await catalogStore.getAllCatalogs();
-    catalogs.value = catalogStore.allCatalogs;
-  } catch (error: any) {
-    AlertService.addErrorAlert("Fehler beim Laden: + " + error.message)
-  }
-  utilStore.toggleLoadingBar();
-})
+const catalogs = catalogStore.allCatalogs;
 
 </script>
   

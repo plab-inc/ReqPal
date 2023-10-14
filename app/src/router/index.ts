@@ -8,6 +8,7 @@ import {
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
+import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 
 const routes = [
     {
@@ -62,7 +63,12 @@ const routes = [
             {
                 path: "/catalogs",
                 name: "Catalogs",
-                component: () => import("@/views/catalog/Catalogs.view.vue")
+                component: () => import("@/views/catalog/Catalogs.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchCatalogs
+                    ]
+                }
             },
             {
                 path: "/catalogs/:catalogId",
