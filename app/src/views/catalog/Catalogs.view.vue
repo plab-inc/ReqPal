@@ -1,7 +1,7 @@
 <template>
+  <h1>Meine Kataloge</h1>
+  <v-divider></v-divider>
   <v-container>
-    <div class="text-md-h3 text-sm-h4 text-h6">Alle Kataloge</div>
-
     <div>
       <div v-if="catalogs.length < 0">
         <div class="text-subtitle-1">Keine Kataloge!</div>
