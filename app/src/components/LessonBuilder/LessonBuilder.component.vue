@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useDrop } from 'vue3-dnd';
-import { DragItemTypes } from '@/types/dragItem.types.ts';
-import { toRefs } from '@vueuse/core';
-import { useTheme } from "vuetify";
+import {useDrop} from 'vue3-dnd';
+import {DragItemTypes} from '@/types/dragItem.types.ts';
+import {toRefs} from '@vueuse/core';
+import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.store";
 
 import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
 import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
 import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
-
-import { LessonBuilderDragItem } from "@/interfaces/DragItems.interfaces.ts";
+import TextInput from "@/components/Notes/TextInput.component.vue";
+import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -21,6 +21,7 @@ const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(RequirementItem),
   'Multiple Choice': markRaw(MultipleChoiceForm),
+  'Textfeld': markRaw(TextInput)
 };
 
 const lessonBuilderStore = useLessonFormStore();
@@ -41,7 +42,7 @@ const [collect, drop] = useDrop(() => ({
   }),
 }));
 
-const { canDrop, isOver } = toRefs(collect);
+const {canDrop, isOver} = toRefs(collect);
 const isActive = computed(() => unref(canDrop) && unref(isOver));
 
 </script>
@@ -83,7 +84,9 @@ const isActive = computed(() => unref(canDrop) && unref(isOver));
             <v-icon icon="mdi-tools"></v-icon>
           </v-col>
           <v-col>
-            {{ !components.length ? "Füge Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" }}
+            {{
+              !components.length ? "Füge Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst"
+            }}
           </v-col>
         </v-row>
       </v-container>
