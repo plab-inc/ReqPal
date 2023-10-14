@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {QuestionModel} from "@/interfaces/Question.interfaces.ts";
+import {multipleChoiceAnswer, QuestionModel, trueOrFalseAnswer} from "@/interfaces/Question.interfaces.ts";
 
 interface ComponentEntry {
     id: number;
@@ -8,6 +8,8 @@ interface ComponentEntry {
 }
 
 interface LessonFormState {
+    lessonTitle: string;
+    lessonPoints: number;
     components: ComponentEntry[];
     nextId: number;
 }
@@ -16,6 +18,8 @@ export const useLessonFormStore = defineStore('lessonForm', {
     state: (): LessonFormState => ({
         components: [],
         nextId: 1,
+        lessonTitle: '',
+        lessonPoints: 250
     }),
     getters: {
         getComponentValues: (state) => (componentId: number) => {
@@ -25,7 +29,13 @@ export const useLessonFormStore = defineStore('lessonForm', {
         getComponentFieldValues: (state) => (componentId: number, field: string) => {
             const component = state.components.find(comp => comp.id === componentId);
             return component ? component.data[field] : null;
-        }
+        },
+        getLessonFormTitle: (state) => {
+            return state.lessonTitle;
+        },
+        getLessonFormPoints: (state) => {
+            return state.lessonPoints;
+        },
     },
     actions: {
         addComponent(componentName: string) {
@@ -35,17 +45,23 @@ export const useLessonFormStore = defineStore('lessonForm', {
             const indexToRemove = this.components.findIndex((component) => component.id === id);
             this.components.splice(indexToRemove, 1);
         },
-        setComponentData(componentId: number, field: string, value: string | boolean | number | null | JSON | undefined) {
+        setComponentData(componentId: number, field: string, value: string | boolean | number | null | undefined | trueOrFalseAnswer | multipleChoiceAnswer | multipleChoiceAnswer[]) {
             const component = this.components.find(comp => comp.id === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
             }
         },
-        componentsToJSON() {
-            return JSON.stringify(this.components);
+        setLessonPoints(points: number) {
+            this.lessonPoints = points;
+        },
+        setLessonTitle(title: string) {
+            this.lessonTitle = title;
         },
         clearComponents() {
             this.components = [];
+        },
+        componentsToJSON() {
+            return JSON.stringify(this.components);
         }
     }
 });
