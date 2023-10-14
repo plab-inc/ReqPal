@@ -7,7 +7,7 @@ import { useTheme } from "vuetify";
 import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
 import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
-
+import TextInput from "@/components/Notes/TextInput.component.vue"
 interface ComponentEntry {
   id: number;
   component: Component;
@@ -22,6 +22,7 @@ const themeColors = useTheme().current.value.colors;
 const componentsMap: ComponentsMap = {
   'True Or False': TrueOrFalse,
   'Requirement': CatalogRequirementSelection,
+  'Textfeld': TextInput
 };
 
 const components = ref<ComponentEntry[]>([]);

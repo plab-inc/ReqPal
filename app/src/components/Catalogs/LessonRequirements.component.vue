@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Requirement} from "@/types/catalog.types.ts";
-import ProductSelect from "@/components/Catalogs/Product/ProductNotes/ProductSelect.component.vue";
+import ProductSelect from "@/components/Catalogs/Product/ProductSelect.component.vue";
 import RequirementPanel from "@/components/Catalogs/Requirement/RequirementPanel.component.vue";
-import ProductNotes from "@/components/Catalogs/Product/ProductNotes/ProductNotes.component.vue";
+import Notes from "@/components/Notes/Notes.component.vue";
 import {Lesson} from "@/types/lesson.types.ts";
 
 const catalogStore = useCatalogStore();
@@ -84,13 +84,9 @@ onBeforeMount(async () => {
     </v-col>
     <v-col md="4">
       <div v-if="currentProductName">
-        <ProductNotes v-model="currentNotes" :textLabel="'Notizen für ' + currentProductName"></ProductNotes>
+        <Notes v-model="currentNotes" :textLabel="'Notizen für ' + currentProductName"></Notes>
       </div>
     </v-col>
   </v-row>
 
 </template>
-
-<style scoped>
-
-</style>
