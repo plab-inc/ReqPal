@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useDrag} from 'vue3-dnd'
-import {ItemTypes} from '@/types/dragAndDrop.types'
+import {DragItemTypes} from '@/types/dragItem.types.ts'
 import {toRefs} from '@vueuse/core'
 import {getEmptyImage} from "react-dnd-html5-backend";
 import Box from "@/components/DragAndDrop/Box.component.vue";
@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 
 const [collect, drag, preview] = useDrag(() => ({
-  type: ItemTypes.BOX,
+  type: DragItemTypes.BOX,
   item: props,
   collect: monitor => ({
     isDragging: monitor.isDragging(),

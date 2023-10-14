@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { XYCoord, useDragLayer } from 'vue3-dnd'
-import { ItemTypes } from '@/types/dragAndDrop.types'
+import { DragItemTypes } from '@/types/dragItem.types.ts'
 import BoxDragPreview from "@/components/DragAndDrop/BoxDragPreview.component.vue";
 import { toRefs } from '@vueuse/core'
 
@@ -37,7 +37,7 @@ const { itemType, isDragging, item, initialOffset, currentOffset } =
 <template>
   <div class="layer">
     <div :style="getItemStyles(initialOffset, currentOffset)">
-      <BoxDragPreview v-if="itemType === ItemTypes.BOX" :title="item.title" />
+      <BoxDragPreview v-if="itemType === DragItemTypes.BOX" :title="item.title" />
     </div>
   </div>
 </template>

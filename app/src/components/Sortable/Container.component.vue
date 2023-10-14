@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import {useDrop} from 'vue3-dnd'
 import {ref} from 'vue'
-import {ItemTypes} from "@/types/sortable.types";
+import {DragItemTypes} from "@/types/dragItem.types.ts";
+import {SortableDragItem} from "@/interfaces/DragItems.interfaces";
 import Card from "@/components/Sortable/Card.component.vue";
-import {DragItem} from "@/interfaces/Sortable.interfaces";
 
 interface Props {
-  answers: DragItem[];
+  answers: SortableDragItem[];
   allowDragAndDrop: boolean;
 }
 
@@ -34,7 +34,7 @@ const moveCard = (id: string, atIndex: number) => {
   cards.value.splice(atIndex, 0, card);
 };
 
-const [, drop] = useDrop(() => ({accept: ItemTypes.CARD}));
+const [, drop] = useDrop(() => ({accept: DragItemTypes.CARD}));
 </script>
 
 <template>
