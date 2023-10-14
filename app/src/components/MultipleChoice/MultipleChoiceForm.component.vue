@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {booleanValueRule, requiredRule} from "@/utils/validationRules";
+import {booleanValueRule, noEmptyStringRule, requiredRule} from "@/utils/validationRules";
 
 import {mcAnswer} from "@/types/lesson.types";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
@@ -16,6 +16,7 @@ const isFormValid = ref(false);
 const rules = {
   required: requiredRule,
   requiredBool: booleanValueRule,
+  requiredString: noEmptyStringRule
 };
 
 const answers = ref<mcAnswer[]>([]);
@@ -73,7 +74,7 @@ onBeforeMount(() => {
       <v-text-field
           v-model="fields.question"
           label="Question"
-          :rules="[rules.required]"
+          :rules="[rules.requiredString]"
       ></v-text-field>
 
       <h3>Answers</h3>
@@ -85,7 +86,7 @@ onBeforeMount(() => {
                 <v-text-field
                     v-model="answer.description"
                     :label="'Answer ' + (index + 1)"
-                    :rules="[rules.required]"
+                    :rules="[rules.requiredString]"
                 ></v-text-field>
               </v-col>
               <v-col md="3" sm="8">
