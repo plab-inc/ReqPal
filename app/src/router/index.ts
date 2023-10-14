@@ -30,6 +30,16 @@ const routes = [
                 }
             },
             {
+                path: "/builder",
+                name: "LessonBuilder",
+                component: () => import("@/views/lesson/LessonBuilder.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
+            },
+            {
                 path: "/lessons/:lessonId",
                 name: "LessonDetails",
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),

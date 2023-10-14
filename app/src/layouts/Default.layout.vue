@@ -37,10 +37,10 @@
           <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalogs"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Profil" to="/profile"></v-list-item>
           <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
+          <v-list-item prepend-icon="mdi-tools" title="Builder" to="/builder"></v-list-item>
           <v-divider></v-divider>
         </div>
       </v-list>
-
 
       <template v-slot:append>
         <v-divider></v-divider>
@@ -56,7 +56,7 @@
     </v-navigation-drawer>
 
     <v-main>
-      <v-container>
+      <v-container fluid>
         <v-row>
           <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
@@ -74,7 +74,7 @@
               {{ removeAlertWithDelay(alert.id) }}
             </div>
             <v-sheet min-height="80vh" rounded="lg">
-              <v-container>
+              <v-container fluid>
                 <router-view></router-view>
               </v-container>
             </v-sheet>
@@ -90,6 +90,7 @@ import router from "@/router/index.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
+import Overview from "@/components/Profile/Overview.component.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
