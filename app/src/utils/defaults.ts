@@ -5,9 +5,6 @@ export const defaults: DefaultsInstance = {
         elevation: 11,
         color: "primary",
     },
-    VContainer: {
-        fluid: true,
-    },
     VTabs: {
         color: "primary"
     },
