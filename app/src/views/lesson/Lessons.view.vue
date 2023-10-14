@@ -1,26 +1,26 @@
 <template>
   <v-container>
-    <h1>Alle Lektionen</h1>
+    <div class="text-md-h3 text-sm-h4 text-h6">Alle Lektionen</div>
 
     <div>
       <div v-if="!lessonStore.lessons.length">
-        <p>Keine Lektionen!</p>
+        <div class="text-subtitle-1">Keine Lektionen!</div>
       </div>
 
       <div v-else>
         <v-list dense>
-            <v-list-item
-                v-for="lesson in lessons"
-                :key="lesson.id"
-                :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }"
-            >
-              <template v-slot:prepend>
-                {{ lesson.title }}
-              </template>
-              <template v-slot:append>
-                <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Frage hinzufügen</v-btn>
-              </template>
-            </v-list-item>
+          <v-list-item
+              v-for="lesson in lessons"
+              :key="lesson.id"
+              :to="{ name: 'LessonDetails', params: { lessonId: lesson.id } }"
+          >
+            <template v-slot:prepend>
+              {{ lesson.title }}
+            </template>
+            <template v-slot:append>
+              <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Frage hinzufügen</v-btn>
+            </template>
+          </v-list-item>
         </v-list>
       </div>
     </div>
