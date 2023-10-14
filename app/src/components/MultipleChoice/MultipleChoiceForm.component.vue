@@ -1,18 +1,16 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {useLessonStore} from "@/stores/lesson.store";
 import {booleanValueRule, requiredRule} from "@/utils/validationRules";
-import AlertService from "@/services/alert.service";
 
-import router from "@/router";
 import {mcAnswer} from "@/types/lesson.types";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import AlertService from "@/services/alert.service.ts";
 
-const lessonStore = useLessonStore();
-const lesson = lessonStore.getLessonById;
-const question = ref("");
 const minAnswers = 3;
 const maxAnswers = 10;
+
+const props = defineProps<{ componentId: number }>();
 
 const isFormValid = ref(false);
 const rules = {
@@ -33,67 +31,96 @@ function removeAnswer(index: number) {
   answers.value.splice(index, 1);
 }
 
-async function submitQuestion(): Promise<void> {
-  try {
-    if (lesson) {
-      answers.value.forEach((a, index) => a.id = index)
-      await lessonStore.addMultipleChoiceQuestion(lesson.id, question.value, answers.value);
-      AlertService.addSuccessAlert("Frage wurde zur Lektion hinzugefügt " + lesson.id + ": " + lesson.title);
-      await router.push({name: "Lessons"})
-    } else {
-      AlertService.addErrorAlert("Lektion nicht gefunden.");
+const lessonFormStore = useLessonFormStore();
+
+const fields = ref({
+  question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
+  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+});
+
+watch(fields, (newFields) => {
+  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
+  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
+}, {deep: true});
+
+watch(answers, (newAnswers) => {
+  newAnswers.forEach((a, index) => a.id = index)
+  const filteredAnswers = newAnswers.filter(a => a.description.trim() !== '');
+  const newDataJson = JSON.stringify(filteredAnswers);
+  lessonFormStore.setComponentData(props.componentId, 'solution', newDataJson);
+}, {deep: true});
+
+onBeforeMount(() => {
+  const answerJson = lessonFormStore.getComponentFieldValues(props.componentId, 'solution');
+  if (typeof answerJson === 'string' && answerJson) {
+    try {
+      const parsedAnswers = JSON.parse(answerJson);
+      if (Array.isArray(parsedAnswers) && parsedAnswers.length > 0) {
+        answers.value = parsedAnswers;
+      }
+    } catch (error) {
+      AlertService.addErrorAlert('Antworten konnten nicht geladen werden: ' + error);
     }
-  } catch (error: any) {
-    AlertService.addErrorAlert("Ein Fehler ist aufgetreten: " + error.message);
   }
-}
+})
+
 </script>
 
 <template>
-  <h1>Aufgabenerstellung Multiple Choice</h1>
+  <v-container>
+    <v-form v-model="isFormValid">
+      <h3>Question</h3>
+      <v-text-field
+          v-model="fields.question"
+          label="Question"
+          :rules="[rules.required]"
+      ></v-text-field>
 
-  <v-form v-model="isFormValid" @submit.prevent="submitQuestion" fast-fail>
-    <h3>Question</h3>
-    <v-text-field
-        v-model="question"
-        label="Question"
-        :rules="[rules.required]"
-    ></v-text-field>
-
-    <h3>Answers</h3>
-    <div v-for="(answer, index) in answers" :key="index">
+      <h3>Answers</h3>
       <v-row>
-        <v-col md="7">
+        <v-col md="10" order="2" order-md="1">
+          <div v-for="(answer, index) in answers" :key="index">
+            <v-row>
+              <v-col md="7">
+                <v-text-field
+                    v-model="answer.description"
+                    :label="'Answer ' + (index + 1)"
+                    :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
+              <v-col md="3" sm="8">
+                <v-radio-group v-model="answer.solution" :rules="[rules.requiredBool]" label="Solution of the answer:">
+                  <v-radio label="True" v-bind:value="true"></v-radio>
+                  <v-radio label="False" v-bind:value="false"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <v-col md="2" sm="4">
+                <v-btn v-if="index >= minAnswers" @click="removeAnswer(index)">
+                  <v-icon>
+                    mdi-delete
+                  </v-icon>
+                  Remove
+                </v-btn>
+              </v-col>
+            </v-row>
+          </div>
+        </v-col>
+        <v-col md="2" order="1" order-md="2">
           <v-text-field
-              v-model="answer.description"
-              :label="'Answer ' + (index + 1)"
-              :rules="[rules.required]"
+              label="Hinweis"
+              v-model="fields.hint"
           ></v-text-field>
         </v-col>
-        <v-col md="3" sm="8">
-          <v-radio-group v-model="answer.solution" :rules="[rules.requiredBool]" label="Solution of the answer:">
-            <v-radio label="True" v-bind:value="true"></v-radio>
-            <v-radio label="False" v-bind:value="false"></v-radio>
-          </v-radio-group>
-        </v-col>
-        <v-col md="2" sm="4">
-          <v-btn v-if="index >= minAnswers" @click="removeAnswer(index)">
-            <v-icon>
-              mdi-delete
-            </v-icon>
-            Remove
-          </v-btn>
-        </v-col>
       </v-row>
-    </div>
-    <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4">
-      <v-icon>
-        mdi-plus
-      </v-icon>
-      Answer
-    </v-btn>
-    <v-btn class="mt-8" block type="submit" :disabled="!isFormValid">Add question</v-btn>
-  </v-form>
+
+      <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4">
+        <v-icon>
+          mdi-plus
+        </v-icon>
+        Answer
+      </v-btn>
+    </v-form>
+  </v-container>
 </template>
 
 <style scoped>
