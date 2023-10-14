@@ -45,7 +45,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
             return JSON.stringify(this.components);
         },
         clearComponents() {
-            //TODO Not working
             this.components = [];
         }
     }
