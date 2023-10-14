@@ -7,7 +7,7 @@ class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
-        setCatalogRequirementsToLesson: this.setCatalogRequirementsToLesson.bind(this),
+        setCatalogRequirementToLesson: this.setCatalogRequirementToLesson.bind(this),
         removeRequirementsFromLesson: this.removeRequirementsFromLesson.bind(this)
     };
 
@@ -74,7 +74,7 @@ class CatalogServiceClass {
 
     }
 
-    private async setCatalogRequirementsToLesson(catalogId: number, lessonId: number, requirementIds: number[]) {
+    private async setCatalogRequirementToLesson(catalogId: number, lessonId: number, requirementId: number) {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -87,9 +87,7 @@ class CatalogServiceClass {
         if (data) {
 
             try {
-                for (const req of requirementIds) {
-                    await this.setRequirementsToLesson(lessonId, req);
-                }
+                await this.setRequirementsToLesson(lessonId, requirementId);
             } catch (error) {
                 throw error;
             }

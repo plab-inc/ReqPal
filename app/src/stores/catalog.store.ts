@@ -98,15 +98,17 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async setCatalogAndRequirementsToLesson(lessonId: number, requirementsIds: number[]) {
+        async setCatalogAndRequirementsToLesson(lessonId: number, requirements: Requirement[]) {
             if (this.currentCatalog && this.currentCatalog.catalog_id) {
-                await catalogService.push.setCatalogRequirementsToLesson(this.currentCatalog.catalog_id, lessonId, requirementsIds);
+                for (const req of requirements) {
+                    await catalogService.push.setCatalogRequirementToLesson(this.currentCatalog.catalog_id, lessonId, req.requirement_id);
+                }
             }
         },
 
-        async removeRequirementsFromLesson(lessonId: number, requirementIds: number[]) {
-            for (const id of requirementIds) {
-                await catalogService.push.removeRequirementsFromLesson(lessonId, id);
+        async removeRequirementsFromLesson(lessonId: number, requirements: Requirement[]) {
+            for (const req of requirements) {
+                await catalogService.push.removeRequirementsFromLesson(lessonId, req.requirement_id);
             }
         },
 
