@@ -34,7 +34,7 @@ const showNewReqsForLesson = ref<boolean>(false);
 
 const selectedLesson = ref<Lesson | null>();
 const selectedRequirement = ref<Requirement>();
-const reqGroupSelection = ref<number[]>([]);
+const reqGroupSelection = ref<Requirement[]>([]);
 
 const isFormValid = ref(false);
 const rules = {
@@ -42,11 +42,16 @@ const rules = {
 };
 
 function onSubmit() {
+  console.log(isFormValid.value)
   if (isFormValid) {
-    if (showNewReqsForLesson.value) {
-      addRequirements();
+    if (reqGroupSelection.value.length <= 0) {
+      AlertService.addWarningAlert("Es wurden keine Anforderungen ausgewählt!")
     } else {
-      removeRequirements();
+      if (showNewReqsForLesson.value) {
+        addRequirements();
+      } else {
+        removeRequirements();
+      }
     }
   }
 }
@@ -60,7 +65,7 @@ async function onLessonChanged() {
     if (loadedReqs) {
       reqGroupSelection.value = [];
       loadedReqs.forEach(req => {
-        reqGroupSelection.value.push(req.requirement_id);
+        reqGroupSelection.value.push(req);
       })
       requirementItems.value = loadedReqs;
       selectAll.value = true;
@@ -197,7 +202,6 @@ function setUpCatalog() {
 
 <template>
   <v-container>
-
     <v-row>
       <v-col>
         <div class="text-md-h3 text-sm-h4 text-h6">{{ catalog?.catalog_name }}</div>
@@ -267,7 +271,8 @@ function setUpCatalog() {
           <v-row>
             <v-col>
               <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
-                            :show-headers-for-lesson="!!selectedLesson" @on-row-click="onRowClick"
+                            :selectable="!!selectedLesson"
+                            @on-row-click="onRowClick"
               ></CatalogTable>
             </v-col>
           </v-row>

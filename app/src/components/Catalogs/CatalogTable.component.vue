@@ -1,30 +1,14 @@
 <script setup lang="ts">
 import {Requirement} from "@/types/catalog.types.ts";
 
-import {checkBoxMinimumRule} from "@/utils/validationRules.ts";
-
-const selectAll = ref<boolean>(false);
-
-const rules = {
-  minimumCheckbox: checkBoxMinimumRule
-};
-
 interface Props {
-  showHeadersForLesson: boolean,
-  modelValue: number[],
+  selectable: boolean,
+  modelValue: Requirement[],
   requirementItems: Requirement[],
   loading: boolean
 }
 
 const props = defineProps<Props>();
-
-const headersForLesson = [
-  {text: 'Selection', value: 'select'},
-  {text: 'ID', value: 'requirement_id', sortable: true},
-  {text: 'Requirement', value: 'reqId', sortable: true},
-  {text: 'Titel', value: 'title', sortable: true},
-  {text: 'Beschreibung', value: 'description', sortable: true},
-]
 
 const headers = [
   {text: 'ID', value: 'requirement_id', sortable: true},
@@ -39,58 +23,37 @@ async function onRowClick(item: Requirement) {
   emit('onRowClick', item)
 }
 
-function toggleSelection() {
-  selectAll.value = !selectAll.value;
-  if (selectAll.value) {
-    selectionValue.value = props.requirementItems.map(item => item.requirement_id);
-  } else {
-    selectionValue.value = [];
-  }
-}
-
-const selectionValue = computed({
+const selectedItems = computed({
   get() {
     return props.modelValue;
   },
   set(newValue) {
     emit('update:modelValue', newValue);
-    selectAll.value = (newValue.length >= props.requirementItems.length);
   }
 })
 
-onBeforeMount(() => {
-  selectAll.value = (props.modelValue.length >= props.requirementItems.length)
-})
 </script>
 
 <template>
-  <EasyDataTable
-      :headers="showHeadersForLesson ? headersForLesson : headers"
-      :items="requirementItems"
-      :loading="loading"
-      :rows-items="[5, 10, 15, 25, 50]"
-      :rows-per-page="10"
-      table-class-name="customize-table"
-      @click-row="onRowClick">
+  <EasyDataTable v-if="selectable"
+                 :headers="headers"
+                 :items="requirementItems"
+                 :loading="loading"
+                 :rows-items="[5, 10, 15, 25, 50]"
+                 :rows-per-page="10"
+                 v-model:items-selected="selectedItems"
+                 table-class-name="customize-table"
+                 @click-row="onRowClick">
+  </EasyDataTable>
 
-    <template #header-select="header">
-      <v-row>
-        <v-col>
-          {{ selectAll ? 'Keine' : 'Alle' }}
-        </v-col>
-        <v-col>
-          <v-checkbox color="rgb(var(--v-theme-secondary))" v-model="selectAll" @click="toggleSelection"
-          ></v-checkbox>
-        </v-col>
-      </v-row>
-    </template>
-
-    <template #item-select="item">
-      <div>
-        <v-checkbox color="rgb(var(--v-theme-primary))" v-model="selectionValue" :value="item.requirement_id"
-                    label="" :rules="[checkBoxMinimumRule]"></v-checkbox>
-      </div>
-    </template>
+  <EasyDataTable v-if="!selectable"
+                 :headers="headers"
+                 :items="requirementItems"
+                 :loading="loading"
+                 :rows-items="[5, 10, 15, 25, 50]"
+                 :rows-per-page="10"
+                 table-class-name="customize-table"
+                 @click-row="onRowClick">
   </EasyDataTable>
 </template>
 
