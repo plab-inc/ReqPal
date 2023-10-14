@@ -24,8 +24,8 @@ const componentsMap: ComponentsMap = {
   'Textfeld': markRaw(TextInput)
 };
 
-const lessonBuilderStore = useLessonFormStore();
-const components = computed(() => lessonBuilderStore.components);
+const lessonFormStore = useLessonFormStore();
+const components = computed(() => lessonFormStore.components);
 
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
@@ -34,7 +34,7 @@ const getComponentInstance = (componentName: string): Component => {
 const [collect, drop] = useDrop(() => ({
   accept: DragItemTypes.COMPONENT,
   drop: (item: LessonBuilderDragItem) => {
-    lessonBuilderStore.addComponent(item.name);
+    lessonFormStore.addComponent(item.name);
   },
   collect: monitor => ({
     isOver: monitor.isOver(),
@@ -44,59 +44,100 @@ const [collect, drop] = useDrop(() => ({
 
 const {canDrop, isOver} = toRefs(collect);
 const isActive = computed(() => unref(canDrop) && unref(isOver));
+const form = ref<any>(null);
+
+const fields = ref<any>({
+  title: lessonFormStore.getLessonFormTitle,
+  points: lessonFormStore.getLessonFormPoints
+});
+
+const checkValidity = () => {
+  return form.value ? form.value.validate() : false;
+};
+
+defineExpose({
+  checkValidity
+});
+
+watch(fields, (newFields) => {
+  lessonFormStore.setLessonTitle(newFields.title);
+  lessonFormStore.setLessonPoints(newFields.points);
+}, {deep: true});
 
 </script>
 
 <template>
-  <div
-      :ref="drop"
-      class="container"
-      :style="{
-      borderColor: isActive ? themeColors.success : themeColors.primary,
-    }"
-  >
-    <v-container>
-      <v-container class="scrollable-rows" v-if="components">
-        <v-form @submit.prevent>
-          <v-row v-for="componentEntry in components">
-            <v-col cols="1" align-self="center">
-              <v-btn
-                  class="ma-2"
-                  icon="mdi-delete"
-                  @click="lessonBuilderStore.removeComponentById(componentEntry.id)"
-              ></v-btn>
-            </v-col>
-            <v-col cols="11">
-              <v-sheet class="pa-5" rounded>
-                <component
-                    :is="getComponentInstance(componentEntry.name)"
-                    :key="componentEntry.id"
-                    :componentId="componentEntry.id"
-                ></component>
-              </v-sheet>
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-container>
-      <v-container>
-        <v-row>
-          <v-col v-if="!components.length">
-            <v-icon icon="mdi-tools"></v-icon>
-          </v-col>
-          <v-col>
-            {{
-              !components.length ? "Füge Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst"
-            }}
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-container>
-  </div>
+  <v-container>
+    <v-form @submit.prevent ref="form">
+      <v-row>
+        <v-col cols="10">
+          <v-text-field
+              clearable
+              label="Titel der Lektion"
+              variant="outlined"
+              v-model="fields.title"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+              label="Punktzahl bei Abschluss"
+              variant="outlined"
+              type="number"
+              v-model="fields.points"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <div
+              :ref="drop"
+              class="container"
+              :style="{borderColor: isActive ? themeColors.success : themeColors.primary}"
+          >
+            <v-container>
+              <v-container class="scrollable-rows" v-if="components">
+                <v-row v-for="componentEntry in components">
+                  <v-col cols="1" align-self="center">
+                    <v-btn
+                        class="ma-2"
+                        icon="mdi-delete"
+                        @click="lessonFormStore.removeComponentById(componentEntry.id)"
+                    ></v-btn>
+                  </v-col>
+                  <v-col cols="11">
+                    <v-sheet class="pa-5" rounded>
+                      <component
+                          :is="getComponentInstance(componentEntry.name)"
+                          :key="componentEntry.id"
+                          :componentId="componentEntry.id"
+                      ></component>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-container>
+                <v-row>
+                  <v-col v-if="!components.length">
+                    <v-icon icon="mdi-tools"></v-icon>
+                  </v-col>
+                  <v-col>
+                    {{
+                      !components.length ? "Füge Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst"
+                    }}
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-container>
+          </div>
+        </v-col>
+      </v-row>
+    </v-form>
+  </v-container>
 </template>
 
 <style scoped>
 .scrollable-rows {
-  max-height: 750px;
+  max-height: 600px;
   overflow-y: auto;
 }
 
@@ -107,6 +148,6 @@ const isActive = computed(() => unref(canDrop) && unref(isOver));
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 750px;
+  min-height: 650px;
 }
 </style>

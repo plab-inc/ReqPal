@@ -7,18 +7,20 @@
   import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
   const templates = ['Requirement','TrueOrFalse', 'Multiple Choice', 'Textfeld']
-  const LessonBuilderRef = ref<InstanceType<typeof LessonBuilder> | null>(null);
+  const lessonBuilderRef = ref<InstanceType<typeof LessonBuilder> | null>(null);
 
   const lessonBuilderStore = useLessonFormStore();
 
 </script>
 
 <template>
+  <h1>Neue Lektion erstellen</h1>
+  <v-divider></v-divider>
   <DndProvider :backend="HTML5Backend">
     <v-container>
       <v-row>
         <v-col cols="10">
-          <LessonBuilder ref="LessonBuilderRef"/>
+          <LessonBuilder ref="lessonBuilderRef"/>
         </v-col>
         <v-col cols="2">
           <v-card>
