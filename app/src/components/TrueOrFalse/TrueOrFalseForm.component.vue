@@ -36,6 +36,7 @@ const rules = {
         <v-radio-group
             label="Lösung zur Frage:"
             v-model="fields.solution"
+            :rules="[rules.requiredBool]"
         >
           <v-radio label="Richtig" :value="true"></v-radio>
           <v-radio label="Falsch" :value="false"></v-radio>

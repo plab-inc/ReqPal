@@ -24,7 +24,7 @@ const componentsMap: ComponentsMap = {
 };
 
 const lessonBuilderStore = useLessonFormStore();
-const components = lessonBuilderStore.components;
+const components = computed(() => lessonBuilderStore.components);
 
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
