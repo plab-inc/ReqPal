@@ -1,7 +1,7 @@
 <template>
+  <h1>Meine Lektionen</h1>
+  <v-divider></v-divider>
   <v-container>
-    <div class="text-md-h3 text-sm-h4 text-h6">Alle Lektionen</div>
-
     <div>
       <div v-if="!lessonStore.lessons.length">
         <div class="text-subtitle-1">Keine Lektionen!</div>

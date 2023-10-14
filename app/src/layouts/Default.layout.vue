@@ -35,9 +35,9 @@
         <div v-if="authStore.user">
           <v-list-item prepend-icon="mdi-school" title="Lektionen" to="/lessons"></v-list-item>
           <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalogs"></v-list-item>
+          <v-list-item prepend-icon="mdi-tools" title="Lektions Builder" to="/builder"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Profil" to="/profile"></v-list-item>
           <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
-          <v-list-item prepend-icon="mdi-tools" title="Builder" to="/builder"></v-list-item>
           <v-divider></v-divider>
         </div>
       </v-list>
