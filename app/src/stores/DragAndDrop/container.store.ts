@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import { DragItem } from "@/interfaces/DragAndDrop.interfaces";
+import { DragAndDropItem } from "@/interfaces/DragItems.interfaces";
 
 export const useContainerStore = defineStore('containerStore', {
     state: () => ({
         boxCounter: 0,
-        containers: new Map<string, DragItem[]>()
+        containers: new Map<string, DragAndDropItem[]>()
     }),
     actions: {
         createContainer(id: string) {
@@ -15,7 +15,7 @@ export const useContainerStore = defineStore('containerStore', {
             if(!this.containers.get(containerId)) return;
             const id = `box_${this.boxCounter++}`;
 
-            this.containers.get(containerId)?.push({ id, top, left, title: title, containerId } as DragItem);
+            this.containers.get(containerId)?.push({ id, top, left, title: title, containerId } as DragAndDropItem);
 
         },
         moveBox(oldContainerId: string, newContainerId: string, id: string, left: number, top: number) {

@@ -2,7 +2,7 @@
 import {useDrag, useDrop} from 'vue3-dnd'
 import {computed, unref} from 'vue'
 import {toRefs} from '@vueuse/core'
-import {ItemTypes} from "@/types/sortable.types";
+import {DragItemTypes} from "@/types/dragItem.types.ts";
 
 const props = defineProps<{
   id: string
@@ -19,7 +19,7 @@ interface Item {
 
 const originalIndex = computed(() => props.findCard(props.id).index)
 const [collect, drag] = useDrag(() => ({
-  type: ItemTypes.CARD,
+  type: DragItemTypes.CARD,
   item: () => ({id: props.id, originalIndex: originalIndex.value}),
   collect: monitor => ({
     isDragging: monitor.isDragging(),
@@ -34,7 +34,7 @@ const [collect, drag] = useDrag(() => ({
 }))
 
 const [, drop] = useDrop(() => ({
-  accept: ItemTypes.CARD,
+  accept: DragItemTypes.CARD,
   hover({id: draggedId}: Item) {
     if (draggedId !== props.id) {
       const {index: overIndex} = props.findCard(props.id)
