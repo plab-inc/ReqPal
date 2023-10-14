@@ -1,54 +1,53 @@
 <script setup lang="ts">
-
-import {useLessonStore} from "@/stores/lesson.store";
 import {booleanValueRule, requiredRule} from "@/utils/validationRules";
-import AlertService from "@/services/alert.service";
-import router from "@/router";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
-const lessonStore = useLessonStore();
-const lesson = lessonStore.getLessonById;
-const solution = ref<boolean>(true);
-const question = ref("");
-const isFormValid = ref(false);
+const props = defineProps<{componentId: number}>();
+const lessonFormStore = useLessonFormStore();
+
+const fields = ref({
+  question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
+  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution'),
+  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+});
+
+watch(fields, (newFields) => {
+  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
+  lessonFormStore.setComponentData(props.componentId, 'solution', newFields.solution);
+  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
+}, { deep: true });
+
 const rules = {
   required: requiredRule,
   requiredBool: booleanValueRule,
 };
-
-async function submitQuestion(): Promise<void> {
-  try {
-    if (lesson) {
-      await lessonStore.addTrueOrFalseQuestion(lesson.id, question.value, solution.value);
-      AlertService.addSuccessAlert("Frage wurde zur Lektion hinzugefügt " + lesson.id + ": " + lesson.title);
-      await router.push({name: "Lessons"})
-    } else {
-      AlertService.addErrorAlert("Lektion nicht gefunden.");
-    }
-  } catch (error: any) {
-    AlertService.addErrorAlert("Ein Fehler ist aufgetreten: " + error.message);
-  }
-}
 </script>
 
 <template>
-  <h1>Aufgabenerstellung True False</h1>
-
-  <v-form v-model="isFormValid" @submit.prevent="submitQuestion" fast-fail>
+  <v-container>
     <v-text-field
-        v-model="question"
-        label="Question"
+        label="Frage"
+        v-model="fields.question"
         :rules="[rules.required]"
     ></v-text-field>
 
-    <v-radio-group v-model="solution" :rules="[rules.requiredBool]" label="Solution of the question:">
-      <v-radio label="True" v-bind:value="true"></v-radio>
-      <v-radio label="False" v-bind:value="false"></v-radio>
-    </v-radio-group>
+    <v-row>
+      <v-col cols="6">
+        <v-radio-group
+            label="Lösung zur Frage:"
+            v-model="fields.solution"
+        >
+          <v-radio label="Richtig" :value="true"></v-radio>
+          <v-radio label="Falsch" :value="false"></v-radio>
+        </v-radio-group>
+      </v-col>
 
-    <v-btn class="mt-8" block type="submit" :disabled="!isFormValid">Add question</v-btn>
-  </v-form>
+      <v-col cols="6">
+        <v-text-field
+            label="Hinweis"
+            v-model="fields.hint"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-
-<style scoped>
-
-</style>
