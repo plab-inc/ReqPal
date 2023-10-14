@@ -5,7 +5,7 @@ import { toRefs } from '@vueuse/core'
 import { useTheme } from "vuetify";
 
 import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
-import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
+import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 
 interface ComponentEntry {
@@ -21,7 +21,7 @@ const themeColors = useTheme().current.value.colors;
 
 const componentsMap: ComponentsMap = {
   'True Or False': TrueOrFalse,
-  'Requirement': RequirementItem,
+  'Requirement': CatalogRequirementSelection,
 };
 
 const components = ref<ComponentEntry[]>([]);
