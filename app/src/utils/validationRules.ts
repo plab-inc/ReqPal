@@ -1,6 +1,6 @@
 export const requiredRule = (value: string): boolean | string => !!value || "Benötigt.";
 export const noEmptyStringRule = (value: string | null): boolean | string =>
-    (value && !!value.trim()) || "Feld darf nicht leer sein.";
+    (value && !!value.trim()) || "Benötigt.";
 export const booleanValueRule = (value: boolean | null): boolean | string => {
     if (value === true || value === false) {
         return true;

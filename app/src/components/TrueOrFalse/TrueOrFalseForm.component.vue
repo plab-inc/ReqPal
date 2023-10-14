@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {booleanValueRule, requiredRule} from "@/utils/validationRules";
+import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
-const props = defineProps<{componentId: number}>();
+const props = defineProps<{ componentId: number }>();
 const lessonFormStore = useLessonFormStore();
 
 const fields = ref({
@@ -15,20 +15,20 @@ watch(fields, (newFields) => {
   lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
   lessonFormStore.setComponentData(props.componentId, 'solution', newFields.solution);
   lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
-}, { deep: true });
+}, {deep: true});
 
 const rules = {
-  required: requiredRule,
   requiredBool: booleanValueRule,
+  requiredString: noEmptyStringRule
 };
 </script>
 
 <template>
   <v-container>
     <v-text-field
-        label="Frage"
+        label="True or False Frage"
         v-model="fields.question"
-        :rules="[rules.required]"
+        :rules="[rules.requiredString]"
     ></v-text-field>
 
     <v-row>

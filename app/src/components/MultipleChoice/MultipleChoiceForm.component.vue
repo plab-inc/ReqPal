@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {booleanValueRule, noEmptyStringRule, requiredRule} from "@/utils/validationRules";
+import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules";
 
 import {mcAnswer} from "@/types/lesson.types";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
@@ -14,7 +14,6 @@ const props = defineProps<{ componentId: number }>();
 
 const isFormValid = ref(false);
 const rules = {
-  required: requiredRule,
   requiredBool: booleanValueRule,
   requiredString: noEmptyStringRule
 };
@@ -70,14 +69,12 @@ onBeforeMount(() => {
 <template>
   <v-container>
     <v-form v-model="isFormValid">
-      <h3>Question</h3>
       <v-text-field
           v-model="fields.question"
-          label="Question"
+          label="Multiple Choice Frage"
           :rules="[rules.requiredString]"
       ></v-text-field>
 
-      <h3>Answers</h3>
       <v-row>
         <v-col md="10" order="2" order-md="1">
           <div v-for="(answer, index) in answers" :key="index">
@@ -85,14 +82,14 @@ onBeforeMount(() => {
               <v-col md="7">
                 <v-text-field
                     v-model="answer.description"
-                    :label="'Answer ' + (index + 1)"
+                    :label="'Antwort ' + (index + 1)"
                     :rules="[rules.requiredString]"
                 ></v-text-field>
               </v-col>
               <v-col md="3" sm="8">
-                <v-radio-group v-model="answer.solution" :rules="[rules.requiredBool]" label="Solution of the answer:">
-                  <v-radio label="True" v-bind:value="true"></v-radio>
-                  <v-radio label="False" v-bind:value="false"></v-radio>
+                <v-radio-group v-model="answer.solution" :rules="[rules.requiredBool]" label="Lösung der Antwort:">
+                  <v-radio label="Richtig" v-bind:value="true"></v-radio>
+                  <v-radio label="Falsch" v-bind:value="false"></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col md="2" sm="4">
@@ -100,7 +97,7 @@ onBeforeMount(() => {
                   <v-icon>
                     mdi-delete
                   </v-icon>
-                  Remove
+                  Entfernen
                 </v-btn>
               </v-col>
             </v-row>
@@ -118,7 +115,7 @@ onBeforeMount(() => {
         <v-icon>
           mdi-plus
         </v-icon>
-        Answer
+        Antwort
       </v-btn>
     </v-form>
   </v-container>
