@@ -20,7 +20,7 @@ import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 export default createVuetify({
   defaults: defaults,
-  blueprint: md3,
+  blueprint: md2,
   icons: {
     defaultSet: "mdi",
     sets: {
@@ -36,14 +36,5 @@ export default createVuetify({
   },
   components: {
     VSkeletonLoader,
-  },
-  display: {
-    thresholds:{
-      xs: 0,
-      sm: 600,
-      md: Infinity,
-      lg: Infinity,
-      xl: Infinity,
-    }
   }
 });

@@ -32,7 +32,7 @@ const getProgressColor = (qualification: string) => {
 <template>
   <v-card class="ma-2 pa-2" max-height="200" max-width="500">
     <v-skeleton-loader v-if="loading" type="heading, list-item-two-line"></v-skeleton-loader>
-    <v-container v-if="!loading" :fluid="false">
+    <v-container v-if="!loading">
       <v-row no-gutters>
         <v-col cols="8" class="d-flex align-center">
           {{ product.product_name }}
