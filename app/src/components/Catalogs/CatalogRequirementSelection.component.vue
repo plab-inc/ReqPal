@@ -6,7 +6,7 @@ import CatalogSelect from "@/components/Catalogs/CatalogSelect.component.vue";
 import RequirementSelect from "@/components/Catalogs/Requirement/RequirementSelect.component.vue";
 
 const catalogId = ref<number>();
-const requirementId = ref<number>();
+const requirementId = ref<Requirement>();
 const requirements = ref<Requirement[]>([]);
 const catalogStore = useCatalogStore();
 const loadingReqs = ref<boolean>(false);
