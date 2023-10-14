@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {noEmptyStringRule, requiredRule} from "@/utils/validationRules.ts";
+import {noEmptyStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const text = ref<string>("");
