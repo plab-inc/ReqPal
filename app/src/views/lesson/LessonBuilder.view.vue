@@ -33,7 +33,7 @@
           <v-container>
             <v-row>
               <v-col>
-                <v-btn block disabled @click="lessonBuilderStore.clearComponents()">Reset</v-btn>
+                <v-btn block @click="lessonBuilderStore.clearComponents()">Reset</v-btn>
               </v-col>
               <v-col>
                 <v-btn block @click="console.log(lessonBuilderStore.componentsToJSON())">Save</v-btn>
