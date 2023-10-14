@@ -1,16 +1,16 @@
 <script setup lang="ts">
 
-  import LessonBuilder from "@/components/LessonBuilder/LessonBuilder.component.vue";
-  import {HTML5Backend} from "react-dnd-html5-backend";
-  import {DndProvider} from "vue3-dnd";
-  import LessonModuleBox from "@/components/LessonBuilder/LessonModuleBox.component.vue";
+import LessonBuilder from "@/components/LessonBuilder/LessonBuilder.component.vue";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {DndProvider} from "vue3-dnd";
+import LessonModuleBox from "@/components/LessonBuilder/LessonModuleBox.component.vue";
 
-  const templates = ['Requirement','True Or False']
-  const LessonBuilderRef = ref<InstanceType<typeof LessonBuilder> | null>(null);
+const templates = ['Requirement', 'True Or False', 'Textfeld']
+const LessonBuilderRef = ref<InstanceType<typeof LessonBuilder> | null>(null);
 
-  const invokeResetLessonBuilder = () => {
-    LessonBuilderRef.value?.clearComponents();
-  };
+const invokeResetLessonBuilder = () => {
+  LessonBuilderRef.value?.clearComponents();
+};
 
 </script>
 
