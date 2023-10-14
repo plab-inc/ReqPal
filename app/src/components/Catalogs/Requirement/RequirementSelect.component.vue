@@ -5,7 +5,7 @@ import {Requirement} from "@/types/catalog.types.ts";
 interface Props {
   items: Requirement[],
   loading: boolean,
-  modelValue: number | undefined
+  modelValue: Requirement | undefined
 }
 
 const props = defineProps<Props>();
@@ -28,7 +28,7 @@ const selectedRequirement = computed({
       v-model="selectedRequirement"
       :items="items"
       :item-title="item => item.title"
-      :item-value="item => item.requirement_id"
+      :item-value="item => item"
       :loading="loading"
   ></v-select>
 </template>
