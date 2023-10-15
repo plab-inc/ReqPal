@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {requiredRule} from "@/utils/validationRules.ts";
 
