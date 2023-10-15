@@ -21,7 +21,4 @@ import {storeToRefs} from 'pinia'
 
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
-const multipleChoiceQuestions = computed(() => lessonStore.getMultipleChoiceQuestions);
-const trueOrFalseQuestions = computed(() => lessonStore.getTrueOrFalseQuestions);
-const sortableQuestions = computed(() => lessonStore.getSortableQuestions);
 </script>

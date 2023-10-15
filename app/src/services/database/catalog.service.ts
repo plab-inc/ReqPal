@@ -7,7 +7,6 @@ class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
-        removeRequirementsFromLesson: this.removeRequirementsFromLesson.bind(this)
     };
 
     public pull = {
@@ -16,7 +15,6 @@ class CatalogServiceClass {
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
-        fetchRequirementsForLesson: this.getRequirementsForLesson.bind(this),
         fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this)
     }
 
@@ -70,36 +68,8 @@ class CatalogServiceClass {
         if (data && data.length > 0) {
             return data.find((item: any) => item.products.product_name === productName) || null;
         }
-
     }
 
-    private async removeRequirementsFromLesson(lessonId: number, requirementId: number) {
-
-        const {data: deletedData, error: deleteError} = await supabase
-            .from('lesson_requirements')
-            .delete()
-            .eq('lesson_id', lessonId)
-            .eq('requirement_id', requirementId)
-            .select()
-
-        if (deleteError) throw deleteError;
-    }
-
-
-    private async getRequirementsForLesson(lessonId: number) {
-
-        const {data: existingData, error: existingError} = await supabase
-            .from('lesson_requirements')
-            .select('requirements(*)')
-            .eq('lesson_id', lessonId)
-
-        if (existingError) throw existingError;
-
-        if (existingData) {
-            return existingData;
-        }
-
-    }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 

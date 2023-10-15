@@ -30,7 +30,6 @@ const submitAnswers = () => {
       order: index
     });
   });
-  lessonStore.compareUserSortableAnswers(results, props.question.id);
   submitted.value = true;
 };
 

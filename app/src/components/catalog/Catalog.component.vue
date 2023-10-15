@@ -41,30 +41,6 @@ const rules = {
   required: requiredRule
 };
 
-async function onLessonChanged() {
-  utilStore.toggleLoadingBar();
-  if (selectedLesson.value) {
-    await catalogStore.getRequirementsForLesson(selectedLesson.value?.id)
-    const loadedReqs = catalogStore.currentLessonRequirements;
-
-    if (loadedReqs) {
-      reqGroupSelection.value = [];
-      loadedReqs.forEach(req => {
-        reqGroupSelection.value.push(req);
-      })
-      requirementItems.value = loadedReqs;
-      selectAll.value = true;
-    }
-  }
-  utilStore.toggleLoadingBar();
-}
-
-watch(selectedLesson, (newLesson, oldLesson) => {
-  if (newLesson && oldLesson !== newLesson) {
-    onLessonChanged();
-  }
-});
-
 async function onRowClick(item: Requirement) {
   selectedRequirement.value = item;
   await getProductDetails();
@@ -111,20 +87,6 @@ function toggleNewRequirements() {
   utilStore.toggleLoadingBar();
 }
 
-async function removeRequirements() {
-  utilStore.toggleLoadingBar();
-  if (isFormValid && reqGroupSelection.value.length > 0 && selectedLesson.value) {
-    try {
-      await catalogStore.removeRequirementsFromLesson(selectedLesson.value.id, reqGroupSelection.value);
-      AlertService.addSuccessAlert("Requirements removed from " + selectedLesson.value?.id + " " + selectedLesson.value?.title);
-      await router.push({name: "Catalogs"})
-    } catch (error: any) {
-      AlertService.addErrorAlert("Failed to remove catalog and requirements: " + error.message);
-    }
-  }
-  utilStore.toggleLoadingBar();
-}
-
 onBeforeMount(async () => {
   utilStore.toggleLoadingBar();
   const route = useRoute();
@@ -134,16 +96,6 @@ onBeforeMount(async () => {
   await catalogStore.getCatalogWithProductsById(catalogIdAsNumber);
   setUpCatalog();
 
-  if (catalog.value) {
-    //await catalogStore.getAllLessonsForCatalog(catalogIdAsNumber)
-    if (catalogStore.currentCatalogLessons.length > 0) {
-      catalogLessons.value = catalogStore.currentCatalogLessons;
-    } else {
-      catalogLessons.value = [];
-      showAllLessons.value = true;
-      AlertService.addInfoAlert("Zu diesem Katalog gehören noch keine Lektionen.");
-    }
-  }
   utilStore.toggleLoadingBar();
 })
 
