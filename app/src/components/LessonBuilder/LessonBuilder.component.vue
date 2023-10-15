@@ -6,11 +6,11 @@ import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.store";
 
 import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
-import RequirementItem from "@/components/Catalogs/Requirement/RequirementItem.component.vue";
 import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 import SliderForm from "@/components/Slider/SliderForm.component.vue";
 import TextInput from "@/components/Notes/TextInput.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
+import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue"
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -20,7 +20,7 @@ const themeColors = useTheme().current.value.colors;
 
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
-  'Requirement': markRaw(RequirementItem),
+  'Requirement': markRaw(CatalogRequirementSelection),
   'Multiple Choice': markRaw(MultipleChoiceForm),
   'Slider': markRaw(SliderForm),
   'Textfeld': markRaw(TextInput)
