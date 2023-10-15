@@ -11,6 +11,7 @@ import SliderForm from "@/components/Slider/SliderForm.component.vue";
 import TextInput from "@/components/Notes/TextInput.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue"
+import NotesForm from "@/components/Notes/NotesForm.component.vue";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -23,7 +24,8 @@ const componentsMap: ComponentsMap = {
   'Requirement': markRaw(CatalogRequirementSelection),
   'Multiple Choice': markRaw(MultipleChoiceForm),
   'Slider': markRaw(SliderForm),
-  'Textfeld': markRaw(TextInput)
+  'Textfeld': markRaw(TextInput),
+  'Notizen': markRaw(NotesForm),
 };
 
 const lessonFormStore = useLessonFormStore();
@@ -107,7 +109,7 @@ watch(fields, (newFields) => {
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
-                    <v-sheet class="pa-5" rounded>
+                    <v-sheet class="pa-3" rounded>
                       <component
                           :is="getComponentInstance(componentEntry.name)"
                           :key="componentEntry.id"
