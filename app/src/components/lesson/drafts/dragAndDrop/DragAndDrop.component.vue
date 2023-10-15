@@ -2,7 +2,7 @@
 
 import Container from "@/components/lesson/drafts/dragAndDrop/Container.component.vue";
 import CustomDragLayer from "@/components/lesson/drafts/dragAndDrop/CustomDragLayer.component.vue";
-import {useContainerStore} from "@/stores/DragAndDrop/container.store.ts";
+import {useContainerStore} from "@/stores/container.store.ts";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "vue3-dnd";
 

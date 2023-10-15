@@ -43,10 +43,7 @@ const rules = {
 };
 
 async function submitAnswers(): Promise<void> {
-  if (isFormValid.value) {
-    result = await lessonStore.fetchTrueFalseSolutionForQuestion(props.question.id);
-    submitted.value = true;
-  }
+  //TODO
 }
 
 </script>
