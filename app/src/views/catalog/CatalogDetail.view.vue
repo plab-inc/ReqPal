@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 
-import Catalog from "@/components/Catalogs/Catalog.component.vue";
+import Catalog from "@/components/catalog/Catalog.component.vue";
 
 </script>
   

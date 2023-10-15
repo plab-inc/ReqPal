@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.2.96",
-    "@supabase/supabase-js": "2.26.0",
+    "@supabase/supabase-js": "2.38.1",
     "@vueuse/components": "^10.3.0",
     "@vueuse/core": "^10.2.1",
     "pinia": "^2.1.4",
