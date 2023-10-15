@@ -90,7 +90,6 @@ import router from "@/router/index.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
-import Overview from "@/components/Profile/Overview.component.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
