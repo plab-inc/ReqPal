@@ -7,14 +7,20 @@ const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution'),
+  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || false,
   hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
 });
 
+updateStoreData(fields.value);
+
+function updateStoreData(fields: any) {
+  lessonFormStore.setComponentData(props.componentId, 'question', fields.question);
+  lessonFormStore.setComponentData(props.componentId, 'solution', fields.solution);
+  lessonFormStore.setComponentData(props.componentId, 'hint', fields.hint);
+}
+
 watch(fields, (newFields) => {
-  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
-  lessonFormStore.setComponentData(props.componentId, 'solution', newFields.solution);
-  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
+  updateStoreData(newFields)
 }, {deep: true});
 
 const rules = {
