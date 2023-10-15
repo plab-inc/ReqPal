@@ -117,6 +117,7 @@ onBeforeMount(() => {
             :max="fields.solutionValues.maxValue"
             :step="fields.solutionValues.steps"
             color="orange"
+            track-color="warning"
             thumb-label>
         </v-slider>
       </v-col>
@@ -128,6 +129,7 @@ onBeforeMount(() => {
             :max="fields.solutionValues.maxValue"
             :step="fields.solutionValues.steps"
             :color="betweenRange(previewValue) ? 'green' : 'orange'"
+            :track-color="betweenRange(previewValue) ? 'success' : 'warning'"
             thumb-label>
         </v-slider>
       </v-col>
