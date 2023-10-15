@@ -23,9 +23,11 @@ const selectedCatalog = computed({
 onBeforeMount(async () => {
   loading.value = true;
   const catalogStore = useCatalogStore();
-
   await catalogStore.getAllCatalogs();
   catalogs.value = catalogStore.allCatalogs;
+  if (props.modelValue) {
+    selectedCatalog.value = props.modelValue;
+  }
   loading.value = false;
 })
 </script>
