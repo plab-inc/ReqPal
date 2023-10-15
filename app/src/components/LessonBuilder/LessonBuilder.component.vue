@@ -12,6 +12,7 @@ import TextInput from "@/components/Notes/TextInput.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue"
 import NotesForm from "@/components/Notes/NotesForm.component.vue";
+import ProductChoiceForm from "@/components/Product/ProductChoiceForm.component.vue";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -26,6 +27,7 @@ const componentsMap: ComponentsMap = {
   'Slider': markRaw(SliderForm),
   'Textfeld': markRaw(TextInput),
   'Notizen': markRaw(NotesForm),
+  'Produkte': markRaw(ProductChoiceForm),
 };
 
 const lessonFormStore = useLessonFormStore();
