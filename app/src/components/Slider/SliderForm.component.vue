@@ -2,7 +2,7 @@
 
 import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {noEmptyStringRule} from "@/utils/validationRules.ts";
+import {noEmptyStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
 import {sliderAnswer} from "@/interfaces/Question.interfaces.ts";
 
 const previewValue = ref<number>(0);
@@ -37,7 +37,8 @@ watch(fields, (newFields) => {
 }, {deep: true});
 
 const rules = {
-  requiredString: noEmptyStringRule
+  requiredString: noEmptyStringRule,
+  requiredNumber: requiredNumberRule
 };
 
 onBeforeMount(() => {
@@ -69,6 +70,8 @@ onBeforeMount(() => {
                 v-model="fields.solutionValues.minValue"
                 variant="outlined"
                 type="number"
+                :max="fields.solutionValues.maxValue"
+                :rules="[rules.requiredNumber]"
             ></v-text-field>
           </v-col>
           <v-col md="3">
@@ -77,6 +80,8 @@ onBeforeMount(() => {
                 v-model="fields.solutionValues.maxValue"
                 variant="outlined"
                 type="number"
+                :min="fields.solutionValues.minValue"
+                :rules="[rules.requiredNumber]"
             ></v-text-field>
           </v-col>
           <v-col cols="6">
@@ -94,13 +99,18 @@ onBeforeMount(() => {
                 label="Richtiger Wert"
                 v-model="fields.solutionValues.correctValue"
                 variant="outlined"
+                :min="fields.solutionValues.minValue"
+                :max="fields.solutionValues.maxValue"
                 type="number"
+                :rules="[rules.requiredNumber]"
             ></v-text-field>
           </v-col>
           <v-col md="3">
             <v-text-field
                 label="Toleranzbereich"
                 v-model="fields.solutionValues.tolerance"
+                :min="0"
+                :max="fields.solutionValues.correctValue"
                 variant="outlined"
                 type="number"
             ></v-text-field>
