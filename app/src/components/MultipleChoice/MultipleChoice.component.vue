@@ -7,9 +7,9 @@ type Solution = { id: number, solution: boolean }
 
 interface Props {
   componentId: number,
-  question: string,
+  question: string | any,
   options: Option[] | any,
-  solution: Solution[] | any | undefined
+  solution: Solution[] | any
 }
 
 const props = defineProps<Props>();
