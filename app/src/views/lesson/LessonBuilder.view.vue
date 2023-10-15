@@ -6,7 +6,7 @@
   import LessonModuleBox from "@/components/LessonBuilder/LessonModuleBox.component.vue";
   import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
-  const templates = ['Requirement','TrueOrFalse','Multiple Choice','Textfeld','Notizen','Slider']
+  const templates = ['Requirement','Produkte','TrueOrFalse','Multiple Choice','Textfeld','Notizen','Slider']
   const lessonBuilderRef = ref<InstanceType<typeof LessonBuilder> | null>(null);
 
   const lessonBuilderStore = useLessonFormStore();
