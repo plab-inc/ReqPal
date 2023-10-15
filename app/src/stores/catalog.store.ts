@@ -98,14 +98,6 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async setCatalogAndRequirementsToLesson(lessonId: number, requirements: Requirement[]) {
-            if (this.currentCatalog && this.currentCatalog.catalog_id) {
-                for (const req of requirements) {
-                    await catalogService.push.setCatalogRequirementToLesson(this.currentCatalog.catalog_id, lessonId, req.requirement_id);
-                }
-            }
-        },
-
         async removeRequirementsFromLesson(lessonId: number, requirements: Requirement[]) {
             for (const req of requirements) {
                 await catalogService.push.removeRequirementsFromLesson(lessonId, req.requirement_id);
@@ -129,14 +121,6 @@ export const useCatalogStore = defineStore('catalog', {
                         )
                     }
                 })
-            }
-        },
-
-        async getAllLessonsForCatalog(catalogId: number) {
-            const data = await catalogService.pull.fetchLessonsForCatalog(catalogId);
-
-            if (data) {
-                this.currentCatalogLessons = data;
             }
         },
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import LessonBuilder from "@/components/LessonBuilder/LessonBuilder.component.vue";
+  import LessonBuilder from "@/components/lesson/lessonBuilder/LessonBuilder.component.vue";
   import {HTML5Backend} from "react-dnd-html5-backend";
   import {DndProvider} from "vue3-dnd";
 

@@ -34,6 +34,15 @@ export default createVuetify({
       dark,
     },
   },
+  display: {
+    thresholds: {
+      xs: 0,
+      sm: 600,
+      md: Infinity,
+      lg: Infinity,
+      xl: Infinity,
+    }
+  },
   components: {
     VSkeletonLoader,
   }

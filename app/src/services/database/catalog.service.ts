@@ -7,7 +7,6 @@ class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
-        setCatalogRequirementToLesson: this.setCatalogRequirementToLesson.bind(this),
         removeRequirementsFromLesson: this.removeRequirementsFromLesson.bind(this)
     };
 
@@ -72,53 +71,6 @@ class CatalogServiceClass {
             return data.find((item: any) => item.products.product_name === productName) || null;
         }
 
-    }
-
-    private async setCatalogRequirementToLesson(catalogId: number, lessonId: number, requirementId: number) {
-
-        const {data, error} = await supabase
-            .from('lessons')
-            .update({catalog_id: catalogId})
-            .eq('id', lessonId)
-            .select()
-
-        if (error) throw error;
-
-        if (data) {
-
-            try {
-                await this.setRequirementsToLesson(lessonId, requirementId);
-            } catch (error) {
-                throw error;
-            }
-
-            return data;
-        }
-    }
-
-    private async setRequirementsToLesson(lessonId: number, requirementId: number) {
-
-        const {data: existingData, error: existingError} = await supabase
-            .from('lesson_requirements')
-            .select('lesson_id, requirement_id')
-            .eq('lesson_id', lessonId)
-            .eq('requirement_id', requirementId)
-
-        if (existingError) throw existingError;
-
-        if (existingData?.length <= 0) {
-            const {data: updatedData, error: updateError} = await supabase
-                .from('lesson_requirements')
-                .insert({lesson_id: lessonId, requirement_id: requirementId}
-                )
-                .select()
-
-            if (updateError) throw updateError;
-
-            return updatedData;
-        } else {
-            return null;
-        }
     }
 
     private async removeRequirementsFromLesson(lessonId: number, requirementId: number) {
