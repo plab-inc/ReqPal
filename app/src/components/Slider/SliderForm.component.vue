@@ -5,48 +5,51 @@ import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {noEmptyStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
 import {sliderAnswer} from "@/interfaces/Question.interfaces.ts";
 
-const previewValue = ref<number>(0);
+const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: number }>();
 const lessonFormStore = useLessonFormStore();
-
-const defaults: sliderAnswer = {
-  id: props.componentId,
-  minValue: 0,
-  maxValue: 10,
-  correctValue: 5,
-  tolerance: 0,
-  steps: 1
-}
-
-function betweenRange(x: number) {
-  const min: number = (+fields.value.solutionValues.correctValue) - (+fields.value.solutionValues.tolerance);
-  const max: number = (+fields.value.solutionValues.correctValue) + (+fields.value.solutionValues.tolerance);
-  return x >= min && x <= max;
-}
-
-const fields = ref<any>({
-  question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
-  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint'),
-  solutionValues: defaults
-});
-
-watch(fields, (newFields) => {
-  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
-  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
-  lessonFormStore.setComponentData(props.componentId, 'solution', newFields.solutionValues);
-}, {deep: true});
 
 const rules = {
   requiredString: noEmptyStringRule,
   requiredNumber: requiredNumberRule
 };
 
-onBeforeMount(() => {
-  const data = lessonFormStore.getComponentFieldValues(props.componentId, 'solution');
-  if (data) {
-    fields.value.solutionValues = data;
-  }
-})
+function betweenRange(x: number) {
+  const min: number = (+sliderSolution.value.correctValue) - (+sliderSolution.value.toleranceValue);
+  const max: number = (+sliderSolution.value.correctValue) + (+sliderSolution.value.toleranceValue);
+  return x >= min && x <= max;
+}
+
+const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options') || {
+  minValue: 0,
+  maxValue: 10,
+  steps: 1
+};
+
+const storedSolution = lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {
+  correctValue: 5,
+  toleranceValue: 0
+};
+
+const sliderOptions = ref(storedOptions);
+const sliderSolution = ref(storedSolution);
+
+const fields = ref<any>({
+  question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
+  hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+});
+
+
+watch(fields, (newFields) => {
+  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
+  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
+}, {deep: true});
+
+watch([sliderOptions, sliderSolution], () => {
+  lessonFormStore.setComponentData(props.componentId, 'options', sliderOptions.value);
+  lessonFormStore.setComponentData(props.componentId, 'solution', sliderSolution.value);
+}, { deep: true });
+
 </script>
 
 <template>
@@ -67,20 +70,20 @@ onBeforeMount(() => {
           <v-col md="3">
             <v-text-field
                 label="Minimum"
-                v-model="fields.solutionValues.minValue"
+                v-model="sliderOptions.minValue"
                 variant="outlined"
                 type="number"
-                :max="fields.solutionValues.maxValue"
+                :max="sliderOptions.maxValue"
                 :rules="[rules.requiredNumber]"
             ></v-text-field>
           </v-col>
           <v-col md="3">
             <v-text-field
                 label="Maximum"
-                v-model="fields.solutionValues.maxValue"
+                v-model="sliderOptions.maxValue"
                 variant="outlined"
                 type="number"
-                :min="fields.solutionValues.minValue"
+                :min="sliderOptions.minValue"
                 :rules="[rules.requiredNumber]"
             ></v-text-field>
           </v-col>
@@ -97,10 +100,10 @@ onBeforeMount(() => {
           <v-col md="3">
             <v-text-field
                 label="Richtiger Wert"
-                v-model="fields.solutionValues.correctValue"
+                v-model="sliderSolution.correctValue"
                 variant="outlined"
-                :min="fields.solutionValues.minValue"
-                :max="fields.solutionValues.maxValue"
+                :min="sliderOptions.minValue"
+                :max="sliderOptions.maxValue"
                 type="number"
                 :rules="[rules.requiredNumber]"
             ></v-text-field>
@@ -108,9 +111,9 @@ onBeforeMount(() => {
           <v-col md="3">
             <v-text-field
                 label="Toleranzbereich"
-                v-model="fields.solutionValues.tolerance"
+                v-model="sliderSolution.toleranceValue"
                 :min="0"
-                :max="fields.solutionValues.correctValue"
+                :max="sliderSolution.correctValue"
                 variant="outlined"
                 type="number"
             ></v-text-field>
@@ -121,11 +124,12 @@ onBeforeMount(() => {
 
     <v-row>
       <v-col>
+        <div class="text-subtitle-1">Richtige Antwort:</div>
         <v-slider
-            v-model="fields.solutionValues.correctValue"
-            :min="fields.solutionValues.minValue"
-            :max="fields.solutionValues.maxValue"
-            :step="fields.solutionValues.steps"
+            v-model="sliderSolution.correctValue"
+            :min="sliderOptions.minValue"
+            :max="sliderOptions.maxValue"
+            :step="sliderOptions.steps"
             color="orange"
             track-color="warning"
             thumb-label>
@@ -135,9 +139,9 @@ onBeforeMount(() => {
         <div class="text-subtitle-1">Aufgaben Vorschau:</div>
         <v-slider
             v-model="previewValue"
-            :min="fields.solutionValues.minValue"
-            :max="fields.solutionValues.maxValue"
-            :step="fields.solutionValues.steps"
+            :min="sliderOptions.minValue"
+            :max="sliderOptions.maxValue"
+            :step="sliderOptions.steps"
             :color="betweenRange(previewValue) ? 'green' : 'orange'"
             :track-color="betweenRange(previewValue) ? 'success' : 'warning'"
             thumb-label>

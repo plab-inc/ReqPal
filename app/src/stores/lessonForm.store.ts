@@ -1,10 +1,10 @@
 import {defineStore} from 'pinia';
-import {multipleChoiceAnswer, QuestionModel, trueOrFalseAnswer} from "@/interfaces/Question.interfaces.ts";
+import {multipleChoiceAnswer, Question, trueOrFalseAnswer} from "@/interfaces/Question.interfaces.ts";
 
 interface ComponentEntry {
     id: number;
     name: string;
-    data: QuestionModel;
+    data: Question;
 }
 
 interface LessonFormState {
@@ -39,13 +39,13 @@ export const useLessonFormStore = defineStore('lessonForm', {
     },
     actions: {
         addComponent(componentName: string) {
-            this.components.push({name: componentName, id: this.nextId++, data: { question: null, solution: null, hint: null, requirement: null }});
+            this.components.push({name: componentName, id: this.nextId++, data: { question: null, options: null, solution: null, hint: null }});
         },
         removeComponentById(id: number) {
             const indexToRemove = this.components.findIndex((component) => component.id === id);
             this.components.splice(indexToRemove, 1);
         },
-        setComponentData(componentId: number, field: string, value: string | boolean | number | null | undefined | trueOrFalseAnswer | multipleChoiceAnswer | multipleChoiceAnswer[]) {
+        setComponentData(componentId: number, field: string, value: any) {
             const component = this.components.find(comp => comp.id === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
@@ -61,7 +61,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.components = [];
         },
         componentsToJSON() {
-            return JSON.stringify(this.components);
+            console.log(JSON.stringify(this.components));
         }
     }
 });

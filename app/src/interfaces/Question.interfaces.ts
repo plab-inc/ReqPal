@@ -1,15 +1,14 @@
-export interface QuestionModel {
-    [key: string]: undefined | null | string | boolean | number |  trueOrFalseAnswer | multipleChoiceAnswer | multipleChoiceAnswer[] | sliderAnswer;
+export interface Question {
+    [key: string]: any;
     question: string | null;
-    solution: trueOrFalseAnswer | null;
+    options: string[] | null;
+    solution: trueOrFalseAnswer | multipleChoiceAnswer | null;
     hint: string | null;
-    requirement?: string | null;
 }
 export interface trueOrFalseAnswer {
     id: number;
     true: boolean;
 }
-
 export interface multipleChoiceAnswer {
     id: number,
     description: string,
