@@ -2,8 +2,7 @@
 import {ref} from "vue";
 import {sliderAnswer} from "@/interfaces/Question.interfaces.ts";
 
-const startValue: number = 5;
-const value = ref<number>(startValue);
+const inputValue = ref<number>(0);
 
 const sliderValues = ref<sliderAnswer>({
   id: 1,
@@ -15,7 +14,7 @@ const sliderValues = ref<sliderAnswer>({
 });
 
 onBeforeMount(() => {
-
+  inputValue.value = (sliderValues.value.maxValue / 2);
 })
 </script>
 
@@ -32,7 +31,7 @@ onBeforeMount(() => {
         <v-col>
           <v-form>
             <v-slider
-                v-model="value"
+                v-model="inputValue"
                 :min="sliderValues.minValue"
                 :max="sliderValues.maxValue"
                 :step="sliderValues.steps"
