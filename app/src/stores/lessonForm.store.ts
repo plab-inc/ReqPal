@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {multipleChoiceAnswer, Question, trueOrFalseAnswer} from "@/interfaces/Question.interfaces.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 
 interface ComponentEntry {
     id: number;
@@ -9,6 +9,7 @@ interface ComponentEntry {
 
 interface LessonFormState {
     lessonTitle: string;
+    lessonDescription: string;
     lessonPoints: number;
     components: ComponentEntry[];
     nextId: number;
@@ -19,6 +20,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
         components: [],
         nextId: 1,
         lessonTitle: '',
+        lessonDescription: '',
         lessonPoints: 250
     }),
     getters: {
@@ -32,6 +34,9 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         getLessonFormTitle: (state) => {
             return state.lessonTitle;
+        },
+        getLessonFormDescription: (state) => {
+            return state.lessonDescription;
         },
         getLessonFormPoints: (state) => {
             return state.lessonPoints;
@@ -56,6 +61,9 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         setLessonTitle(title: string) {
             this.lessonTitle = title;
+        },
+        setLessonDescription(description: string) {
+            this.lessonDescription = description;
         },
         clearComponents() {
             this.components = [];
