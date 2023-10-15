@@ -12,12 +12,16 @@ import TextInput from "@/components/Notes/TextInput.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue"
 import NotesForm from "@/components/Notes/NotesForm.component.vue";
+import ProductChoiceForm from "@/components/Product/ProductChoiceForm.component.vue";
+import LessonModuleBox from "@/components/LessonBuilder/LessonModuleBox.component.vue";
 
 interface ComponentsMap {
   [key: string]: Component;
 }
 
 const themeColors = useTheme().current.value.colors;
+
+const templates = ['Requirement','Produkte','TrueOrFalse','Multiple Choice','Textfeld','Notizen','Slider']
 
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
@@ -26,6 +30,7 @@ const componentsMap: ComponentsMap = {
   'Slider': markRaw(SliderForm),
   'Textfeld': markRaw(TextInput),
   'Notizen': markRaw(NotesForm),
+  'Produkte': markRaw(ProductChoiceForm),
 };
 
 const lessonFormStore = useLessonFormStore();
@@ -52,7 +57,8 @@ const form = ref<any>(null);
 
 const fields = ref<any>({
   title: lessonFormStore.getLessonFormTitle,
-  points: lessonFormStore.getLessonFormPoints
+  points: lessonFormStore.getLessonFormPoints,
+  description: lessonFormStore.getLessonFormDescription,
 });
 
 const checkValidity = () => {
@@ -66,6 +72,7 @@ defineExpose({
 watch(fields, (newFields) => {
   lessonFormStore.setLessonTitle(newFields.title);
   lessonFormStore.setLessonPoints(newFields.points);
+  lessonFormStore.setLessonDescription(newFields.description);
 }, {deep: true});
 
 </script>
@@ -73,8 +80,8 @@ watch(fields, (newFields) => {
 <template>
   <v-container>
     <v-form @submit.prevent ref="form">
-      <v-row>
-        <v-col cols="10">
+      <v-row no no-gutters>
+        <v-col cols="10" class="pr-5">
           <v-text-field
               clearable
               label="Titel der Lektion"
@@ -88,11 +95,20 @@ watch(fields, (newFields) => {
               variant="outlined"
               type="number"
               v-model="fields.points"
+              clearable
           />
         </v-col>
-      </v-row>
-      <v-row>
         <v-col>
+          <v-text-field
+              clearable
+              label="Beschreibung der Lektion"
+              variant="outlined"
+              v-model="fields.description"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col cols="10">
           <div
               :ref="drop"
               class="container"
@@ -134,6 +150,41 @@ watch(fields, (newFields) => {
             </v-container>
           </div>
         </v-col>
+        <v-col cols="2">
+            <v-container>
+              <v-sheet elevation="0" border rounded>
+                <v-container>
+                  <v-row>
+                    <v-col v-for="template in templates" :key="template">
+                      <LessonModuleBox :title="template"/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-sheet>
+            </v-container>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-btn
+                      color="error"
+                      @click=""
+                      block
+                  >
+                    Reset
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn
+                      color="primary"
+                      @click="lessonFormStore.componentsToJSON()"
+                      block
+                  >
+                    Speichern
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+        </v-col>
       </v-row>
     </v-form>
   </v-container>
@@ -152,6 +203,6 @@ watch(fields, (newFields) => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 650px;
+  min-height: 700px;
 }
 </style>

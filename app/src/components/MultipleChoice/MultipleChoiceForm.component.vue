@@ -28,9 +28,6 @@ function init() {
   const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options') || [];
   const storedSolutions = lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || [];
 
-  console.log("Solutions")
-  console.log(storedSolutions);
-
   fields.value.question = lessonFormStore.getComponentFieldValues(props.componentId, 'question');
   fields.value.hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint');
 
@@ -43,8 +40,6 @@ function init() {
   while (initialAnswers.length < minAnswers) {
     initialAnswers.push(createNewAnswer(initialAnswers.length));
   }
-
-  console.log(initialAnswers);
 
   answers.value = initialAnswers;
   updateStoreData(answers.value);
