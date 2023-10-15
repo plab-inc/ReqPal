@@ -3,9 +3,9 @@ import {ref} from "vue";
 
 interface Props {
   componentId: number,
-  question: any,
-  options: { minValue: number, maxValue: number, steps: number },
-  solution: { correctValue: number, tolerance: number } | undefined
+  question: string,
+  options: { minValue: number, maxValue: number, steps: number } | any,
+  solution: { correctValue: number, tolerance: number } | any | undefined
 }
 
 const props = defineProps<Props>();
