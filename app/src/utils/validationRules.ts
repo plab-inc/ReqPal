@@ -8,6 +8,18 @@ export const booleanValueRule = (value: boolean | null): boolean | string => {
     return "Bitte wähle entweder 'true' oder 'false'.";
 };
 
+export const requiredNumberRule = (value: null | number | string): boolean | string => {
+    if (typeof value === 'number') {
+        return !Number.isNaN(value) ? true : 'Benötigt.';
+    } else if (typeof value === 'string') {
+        const numericValue = parseFloat(value);
+        return !isNaN(numericValue) ? true : 'Benötigt.';
+    } else {
+        return 'Benötigt';
+    }
+};
+
+
 export const matchingPasswordsRule = (value: string, password: string): boolean | string =>
     value === password || "Die Passwörter stimmen nicht überein";
 
