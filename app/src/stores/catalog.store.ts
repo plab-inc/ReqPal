@@ -1,21 +1,16 @@
 import {defineStore} from 'pinia';
 import catalogService from "@/services/database/catalog.service.ts";
 import {Catalog, dbCatalog, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
-import {Lesson} from "@/types/lesson.types.ts";
 
 interface CatalogState {
     allCatalogs: dbCatalog[]
     currentCatalog: Catalog | null
-    currentLessonRequirements: Requirement[]
-    currentCatalogLessons: Lesson[]
 }
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
         allCatalogs: [],
         currentCatalog: null,
-        currentLessonRequirements: [],
-        currentCatalogLessons: []
     }),
 
     getters: {
@@ -98,30 +93,5 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async removeRequirementsFromLesson(lessonId: number, requirements: Requirement[]) {
-            for (const req of requirements) {
-                await catalogService.push.removeRequirementsFromLesson(lessonId, req.requirement_id);
-            }
-        },
-
-        async getRequirementsForLesson(lessonId: number) {
-            const data = await catalogService.pull.fetchRequirementsForLesson(lessonId);
-            this.currentLessonRequirements = [];
-            if (data) {
-                data.forEach(d => {
-                    if (d.requirements) {
-                        this.currentLessonRequirements.push(
-                            {
-                                description: d.requirements.description,
-                                products: {},
-                                reqId: d.requirements.reqid,
-                                requirement_id: d.requirements.requirement_id,
-                                title: d.requirements.title
-                            }
-                        )
-                    }
-                })
-            }
-        },
     }
 });

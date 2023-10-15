@@ -2,7 +2,7 @@
 import { useDrop } from 'vue3-dnd';
 import { DragItemTypes } from '@/types/dragItem.types.ts';
 import type { DragAndDropItem } from '@/interfaces/DragItems.interfaces.ts';
-import { useContainerStore } from '@/stores/DragAndDrop/container.store.ts';
+import { useContainerStore } from '@/stores/container.store.ts';
 import DraggableBox from './DraggableBox.component.vue';
 import {toRefs} from "@vueuse/core";
 
