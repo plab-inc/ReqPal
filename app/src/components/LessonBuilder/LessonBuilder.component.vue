@@ -8,7 +8,7 @@ import {useLessonFormStore} from "@/stores/lessonForm.store";
 import TrueOrFalse from "@/components/TrueOrFalse/TrueOrFalseForm.component.vue";
 import MultipleChoiceForm from "@/components/MultipleChoice/MultipleChoiceForm.component.vue";
 import SliderForm from "@/components/Slider/SliderForm.component.vue";
-import TextInput from "@/components/Notes/TextInput.component.vue";
+import TextfieldForm from "@/components/Notes/TextfieldForm.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import CatalogRequirementSelection from "@/components/Catalogs/CatalogRequirementSelection.component.vue"
 import NotesForm from "@/components/Notes/NotesForm.component.vue";
@@ -28,7 +28,7 @@ const componentsMap: ComponentsMap = {
   'Requirement': markRaw(CatalogRequirementSelection),
   'Multiple Choice': markRaw(MultipleChoiceForm),
   'Slider': markRaw(SliderForm),
-  'Textfeld': markRaw(TextInput),
+  'Textfeld': markRaw(TextfieldForm),
   'Notizen': markRaw(NotesForm),
   'Produkte': markRaw(ProductChoiceForm),
 };
