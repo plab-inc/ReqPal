@@ -41,13 +41,6 @@ const routes = [
                 }
             },
             {
-                path: "/lessons/:lessonId/tasks/create",
-                name: "LessonForm",
-                component: () => import("@/views/lesson/LessonForm.view.vue"),
-                meta: {
-                }
-            },
-            {
                 path: "/catalogs",
                 name: "Catalogs",
                 component: () => import("@/views/catalog/Catalogs.view.vue"),
