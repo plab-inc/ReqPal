@@ -8,10 +8,6 @@
       <div class="text-subtitle-1">Noch keine Fragen!</div>
     </div>
 
-    <div v-if="currentLesson">
-      <LessonRequirements :lesson="currentLesson"></LessonRequirements>
-    </div>
-
     <div v-if="currentQuestions.length > 0">
 
     </div>
@@ -22,7 +18,6 @@
 
 import {useLessonStore} from "@/stores/lesson.store";
 import {storeToRefs} from 'pinia'
-import LessonRequirements from "@/components/catalog/LessonRequirements.component.vue";
 
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
