@@ -57,21 +57,6 @@ export const useLessonStore = defineStore('lesson', {
             })
         },
 
-        async fetchLessons() {
-            const lessons = await lessonService.pull.fetchLessons();
-            if (lessons) {
-                this.lessons = lessons;
-            }
-        },
-
-        async fetchLessonById(lessonId: number) {
-
-            const lesson = await lessonService.pull.fetchLessonById(lessonId);
-            if (lesson) {
-                this.currentLesson = lesson;
-            }
-        },
-
         async fetchQuestionsForLesson(lessonId: number) {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
             if (questions) {
