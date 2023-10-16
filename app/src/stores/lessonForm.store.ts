@@ -93,7 +93,23 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.components = [];
         },
         componentsToJSON() {
-            console.log(JSON.stringify(this.components));
+            console.log(this.generateLessonJSON());
         },
+        generateLessonJSON(){
+            return {
+                title: this.lessonTitle,
+                description: this.lessonDescription,
+                points: this.lessonPoints,
+                questions: this.components.map(component => {
+                    return {
+                        type: component.type,
+                        position: this.getComponentIndexById(component.id),
+                        question: component.data.question,
+                        solution: component.data.solution,
+                        options: component.data.options
+                    }
+                })
+            };
+        }
     }
 });
