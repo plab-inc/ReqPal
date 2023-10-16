@@ -14,7 +14,7 @@ export async function fetchLessons(to: RouteLocationNormalized, from: RouteLocat
 export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const catalogStore = useLessonStore();
-        await catalogStore.fetchQuestionsForLesson(parseInt(to.params.lessonId[0]));
+        await catalogStore.fetchQuestionsForLesson(parseInt(to.params.lessonId as string));
         return next();
     } catch (error) {
         return next({name: 'Error'});
