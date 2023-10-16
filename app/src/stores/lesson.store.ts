@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {Lesson, Question} from "@/types/lesson.types";
+import {Lesson} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
