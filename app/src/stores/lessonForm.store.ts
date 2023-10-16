@@ -3,6 +3,7 @@ import {Question} from "@/interfaces/Question.interfaces.ts";
 
 interface ComponentEntry {
     id: number;
+    position: number;
     name: string;
     data: Question;
 }
@@ -44,11 +45,30 @@ export const useLessonFormStore = defineStore('lessonForm', {
     },
     actions: {
         addComponent(componentName: string) {
-            this.components.push({name: componentName, id: this.nextId++, data: { question: null, options: null, solution: null, hint: null }});
+            this.components.push({
+                name: componentName,
+                position: 0,
+                id: this.nextId++,
+                data: {question: null, options: null, solution: null, hint: null}
+            });
         },
         removeComponentById(id: number) {
             const indexToRemove = this.components.findIndex((component) => component.id === id);
             this.components.splice(indexToRemove, 1);
+        },
+        switchComponentWithPrevById(id: number) {
+            const indexToSwitch = this.components.findIndex((component) => component.id === id);
+            if (indexToSwitch > -1 && indexToSwitch > 0) {
+                const prevIndex = indexToSwitch - 1;
+                this.switchComponentsByIndex(prevIndex, indexToSwitch);
+            }
+        },
+        switchComponentWithPostById(id: number) {
+            const indexToSwitch = this.components.findIndex((component) => component.id === id);
+            if (indexToSwitch > -1 && indexToSwitch < this.components.length) {
+                const postIndex = indexToSwitch + 1;
+                this.switchComponentsByIndex(postIndex, indexToSwitch);
+            }
         },
         setComponentData(componentId: number, field: string, value: any) {
             const component = this.components.find(comp => comp.id === componentId);
@@ -70,6 +90,18 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         componentsToJSON() {
             console.log(JSON.stringify(this.components));
+        },
+
+        switchComponentsByIndex(otherIndex: number, indexToSwitch: number) {
+            const prevComponent = this.components[otherIndex];
+            if (prevComponent) {
+                const currentComponent = this.components[indexToSwitch];
+                const prevId = prevComponent.id;
+                prevComponent.id = currentComponent.id;
+                currentComponent.id = prevId;
+                this.components[indexToSwitch] = prevComponent;
+                this.components[otherIndex] = currentComponent;
+            }
         }
     }
 });
