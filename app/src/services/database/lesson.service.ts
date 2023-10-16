@@ -4,7 +4,7 @@ import {Question} from "@/types/lesson.types.ts";
 class LessonServiceClass {
 
     public push = {
-
+        uploadLesson: this.uploadLesson.bind(this),
     };
 
     public pull = {
@@ -64,6 +64,15 @@ class LessonServiceClass {
                 return newQuestions;
             }
         }
+    }
+
+    private async uploadLesson(lessonJson: any){
+        const { error } = await supabase
+            .rpc('create_lesson_from_json', {
+                data: lessonJson
+            })
+
+        if (error) console.error(error)
     }
 
 }
