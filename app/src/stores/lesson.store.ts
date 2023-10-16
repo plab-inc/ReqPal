@@ -37,7 +37,6 @@ export const useLessonStore = defineStore('lesson', {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
             if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
-                console.log(questions);
             }
 
         },
