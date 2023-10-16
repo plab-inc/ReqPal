@@ -105,8 +105,9 @@ export const useLessonFormStore = defineStore('lessonForm', {
                         type: component.type,
                         position: this.getComponentIndexById(component.id),
                         question: component.data.question,
-                        solution: component.data.solution,
-                        options: component.data.options
+                        solution: toRaw(component.data.solution),
+                        options: toRaw(component.data.options),
+                        hint: toRaw(component.data.hint)
                     }
                 })
             };
