@@ -1,9 +1,10 @@
 import {defineStore} from 'pinia';
 import {Question} from "@/interfaces/Question.interfaces.ts";
+import {v1 as uuidv1} from 'uuid';
 
 interface ComponentEntry {
-    id: number;
-    name: string;
+    id: string;
+    type: string;
     data: Question;
 }
 
@@ -12,28 +13,29 @@ interface LessonFormState {
     lessonDescription: string;
     lessonPoints: number;
     components: ComponentEntry[];
-    nextId: number;
 }
 
 export const useLessonFormStore = defineStore('lessonForm', {
     state: (): LessonFormState => ({
         components: [],
-        nextId: 1,
         lessonTitle: '',
         lessonDescription: '',
         lessonPoints: 250
     }),
     getters: {
-        getComponentValues: (state) => (componentId: number) => {
+        getComponentValues: (state) => (componentId: string) => {
             const component = state.components.find(comp => comp.id === componentId);
             return component ? component.data : null;
         },
-        getComponentFieldValues: (state) => (componentId: number, field: string) => {
+        getComponentFieldValues: (state) => (componentId: string, field: string) => {
             const component = state.components.find(comp => comp.id === componentId);
             return component ? component.data[field] : null;
         },
         getLessonFormTitle: (state) => {
             return state.lessonTitle;
+        },
+        getComponentIndexById: (state) => (id: string) => {
+            return state.components.findIndex((component) => component.id === id);
         },
         getLessonFormDescription: (state) => {
             return state.lessonDescription;
@@ -44,13 +46,35 @@ export const useLessonFormStore = defineStore('lessonForm', {
     },
     actions: {
         addComponent(componentName: string) {
-            this.components.push({name: componentName, id: this.nextId++, data: { question: null, options: null, solution: null, hint: null }});
+            this.components.push({
+                type: componentName,
+                id: uuidv1(),
+                data: {question: null, options: null, solution: null, hint: null}
+            });
         },
-        removeComponentById(id: number) {
+        removeComponentById(id: string) {
             const indexToRemove = this.components.findIndex((component) => component.id === id);
             this.components.splice(indexToRemove, 1);
         },
-        setComponentData(componentId: number, field: string, value: any) {
+        switchComponentWithPrevById(id: string) {
+            const index = this.getComponentIndexById(id);
+
+            if (index > 0) {
+                const temp = this.components[index];
+                this.components[index] = this.components[index - 1];
+                this.components[index - 1] = temp;
+            }
+        },
+        switchComponentWithPostById(id: string) {
+            const index = this.getComponentIndexById(id);
+
+            if (index > -1 && index < this.components.length - 1) {
+                const temp = this.components[index];
+                this.components[index] = this.components[index + 1];
+                this.components[index + 1] = temp;
+            }
+        },
+        setComponentData(componentId: string, field: string, value: any) {
             const component = this.components.find(comp => comp.id === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
@@ -69,7 +93,23 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.components = [];
         },
         componentsToJSON() {
-            console.log(JSON.stringify(this.components));
+            console.log(this.generateLessonJSON());
+        },
+        generateLessonJSON(){
+            return {
+                title: this.lessonTitle,
+                description: this.lessonDescription,
+                points: this.lessonPoints,
+                questions: this.components.map(component => {
+                    return {
+                        type: component.type,
+                        position: this.getComponentIndexById(component.id),
+                        question: component.data.question,
+                        solution: component.data.solution,
+                        options: component.data.options
+                    }
+                })
+            };
         }
     }
 });

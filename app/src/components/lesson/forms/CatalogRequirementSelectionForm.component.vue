@@ -13,7 +13,7 @@ const requirements = ref<Requirement[]>([]);
 const catalogStore = useCatalogStore();
 const loadingReqs = ref<boolean>(false);
 
-const props = defineProps<{ componentId: number }>();
+const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({

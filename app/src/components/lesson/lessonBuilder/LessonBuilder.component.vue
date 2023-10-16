@@ -10,7 +10,7 @@ import MultipleChoiceForm from "@/components/lesson/forms/MultipleChoiceForm.com
 import SliderForm from "@/components/lesson/forms/SliderForm.component.vue";
 import TextfieldForm from "@/components/lesson/forms/TextfieldForm.component.vue";
 import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
-import CatalogRequirementSelection from "@/components/catalog/CatalogRequirementSelection.component.vue"
+import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequirementSelectionForm.component.vue"
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
@@ -21,7 +21,7 @@ interface ComponentsMap {
 
 const themeColors = useTheme().current.value.colors;
 
-const templates = ['Requirement','Produkte','TrueOrFalse','Multiple Choice','Textfeld','Notizen','Slider']
+const templates = ['Requirement', 'Produkte', 'TrueOrFalse', 'Multiple Choice', 'Textfeld', 'Notizen', 'Slider']
 
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
@@ -114,20 +114,30 @@ watch(fields, (newFields) => {
               class="container"
               :style="{borderColor: isActive ? themeColors.success : themeColors.primary}"
           >
-            <v-container>
-              <v-container class="scrollable-rows" v-if="components">
+            <v-container class="scrollcontainer">
+              <v-container v-if="components">
                 <v-row v-for="componentEntry in components">
-                  <v-col cols="1" align-self="center">
+                  <v-col cols="1" align-self="center" class="d-flex flex-column">
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) > 0"
+                           class="ma-2"
+                           icon="mdi-arrow-up"
+                           @click="lessonFormStore.switchComponentWithPrevById(componentEntry.id)"
+                    ></v-btn>
                     <v-btn
                         class="ma-2"
                         icon="mdi-delete"
                         @click="lessonFormStore.removeComponentById(componentEntry.id)"
                     ></v-btn>
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) !== components.length-1"
+                           class="ma-2"
+                           icon="mdi-arrow-down"
+                           @click="lessonFormStore.switchComponentWithPostById(componentEntry.id)"
+                    ></v-btn>
                   </v-col>
                   <v-col cols="11">
-                    <v-sheet class="pa-3" rounded>
+                    <v-sheet rounded class="pa-3">
                       <component
-                          :is="getComponentInstance(componentEntry.name)"
+                          :is="getComponentInstance(componentEntry.type)"
                           :key="componentEntry.id"
                           :componentId="componentEntry.id"
                       ></component>
@@ -151,39 +161,39 @@ watch(fields, (newFields) => {
           </div>
         </v-col>
         <v-col cols="2">
-            <v-container>
-              <v-sheet elevation="0" border rounded>
-                <v-container>
-                  <v-row>
-                    <v-col v-for="template in templates" :key="template">
-                      <LessonModuleBox :title="template"/>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-sheet>
-            </v-container>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-btn
-                      color="error"
-                      @click=""
-                      block
-                  >
-                    Reset
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn
-                      color="primary"
-                      @click="lessonFormStore.componentsToJSON()"
-                      block
-                  >
-                    Speichern
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
+          <v-container>
+            <v-sheet elevation="0" border rounded>
+              <v-container>
+                <v-row>
+                  <v-col v-for="template in templates" :key="template">
+                    <LessonModuleBox :title="template"/>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-sheet>
+          </v-container>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-btn
+                    color="error"
+                    @click="lessonFormStore.clearComponents()"
+                    block
+                >
+                  Reset
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                    color="primary"
+                    @click="lessonFormStore.componentsToJSON()"
+                    block
+                >
+                  Speichern
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-form>
@@ -191,9 +201,10 @@ watch(fields, (newFields) => {
 </template>
 
 <style scoped>
-.scrollable-rows {
-  max-height: 600px;
+
+.scrollcontainer {
   overflow-y: auto;
+  max-height: 70vh;
 }
 
 .container {
@@ -204,5 +215,6 @@ watch(fields, (newFields) => {
   justify-content: center;
   text-align: center;
   min-height: 700px;
+  height: 70vh;
 }
 </style>
