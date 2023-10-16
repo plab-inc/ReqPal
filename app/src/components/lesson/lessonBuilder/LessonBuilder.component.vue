@@ -117,11 +117,21 @@ watch(fields, (newFields) => {
             <v-container>
               <v-container class="scrollable-rows" v-if="components">
                 <v-row v-for="componentEntry in components">
-                  <v-col cols="1" align-self="center">
+                  <v-col cols="1" align-self="center" class="d-flex flex-column">
+                    <v-btn v-if="componentEntry.id > 1"
+                        class="ma-2"
+                        icon="mdi-arrow-up"
+                        @click="lessonFormStore.switchComponentWithPrevById(componentEntry.id)"
+                    ></v-btn>
                     <v-btn
                         class="ma-2"
                         icon="mdi-delete"
                         @click="lessonFormStore.removeComponentById(componentEntry.id)"
+                    ></v-btn>
+                    <v-btn v-if="componentEntry.id !== components.length"
+                        class="ma-2"
+                        icon="mdi-arrow-down"
+                        @click="lessonFormStore.switchComponentWithPostById(componentEntry.id)"
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
@@ -167,7 +177,7 @@ watch(fields, (newFields) => {
                 <v-col>
                   <v-btn
                       color="error"
-                      @click=""
+                      @click="lessonFormStore.clearComponents()"
                       block
                   >
                     Reset
