@@ -6,7 +6,7 @@ import { multipleChoiceAnswer } from "@/interfaces/Question.interfaces.ts";
 const minAnswers = 3;
 const maxAnswers = 6;
 
-const props = defineProps<{ componentId: number }>();
+const props = defineProps<{ componentId: string }>();
 const isFormValid = ref(false);
 const rules = {
   requiredBool: booleanValueRule,
