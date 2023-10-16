@@ -1,11 +1,11 @@
 import {defineStore} from 'pinia';
-import {Lesson, Question, questionTypes} from "@/types/lesson.types";
+import {Lesson, Question} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
     lessons: Lesson[];
     currentLesson: Lesson | null;
-    currentQuestions: Question[];
+    currentQuestions: any;
     lessonsLoaded: Boolean;
 }
 
@@ -18,15 +18,15 @@ export const useLessonStore = defineStore('lesson', {
     }),
 
     getters: {
-        getAllLessons: state => {
+        getLessons: state => {
             return state.lessons;
         },
 
-        getLessonById: (state) => {
-            return state.currentLesson;
+        getCurrentLesson: (state) => {
+            return state.lessons
         },
 
-        getAllQuestions: state => {
+        getCurrentQuestion: state => {
             return state.currentQuestions;
         },
 
@@ -35,9 +35,23 @@ export const useLessonStore = defineStore('lesson', {
     actions: {
         async fetchQuestionsForLesson(lessonId: number) {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
-            if (questions) {
+            if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
+                console.log(questions);
+            }
+
+        },
+        async fetchLessons() {
+            const lessons = await lessonService.pull.fetchLessons();
+            if (lessons) {
+                this.lessons = lessons;
             }
         },
+        loadLessonById(lessonId: number) {
+            const lesson = this.lessons.find(lesson => lesson.id === lessonId);
+            if (lesson) {
+                this.currentLesson = lesson;
+            }
+        }
     },
 });
