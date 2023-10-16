@@ -4,7 +4,6 @@
       <v-row>
         <v-col cols="10">
           <div class="text-h6 text-md-h5">True Or False?</div>
-
           <div class="text-h6">{{ question }}</div>
           <div class="text-h6" v-if="submitted">Solution:</div>
           <v-container>
@@ -29,7 +28,6 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {useLessonStore} from "@/stores/lesson.store.ts";
 import {booleanValueRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 
