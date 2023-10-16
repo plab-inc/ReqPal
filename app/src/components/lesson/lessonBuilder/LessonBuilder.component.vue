@@ -21,7 +21,7 @@ interface ComponentsMap {
 
 const themeColors = useTheme().current.value.colors;
 
-const templates = ['Requirement','Produkte','TrueOrFalse','Multiple Choice','Textfeld','Notizen','Slider']
+const templates = ['Requirement', 'Produkte', 'TrueOrFalse', 'Multiple Choice', 'Textfeld', 'Notizen', 'Slider']
 
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
@@ -118,20 +118,20 @@ watch(fields, (newFields) => {
               <v-container class="scrollable-rows" v-if="components">
                 <v-row v-for="componentEntry in components">
                   <v-col cols="1" align-self="center" class="d-flex flex-column">
-                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) > 1"
-                        class="ma-2"
-                        icon="mdi-arrow-up"
-                        @click="lessonFormStore.switchComponentWithPrevById(componentEntry.id)"
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) > 0"
+                           class="ma-2"
+                           icon="mdi-arrow-up"
+                           @click="lessonFormStore.switchComponentWithPrevById(componentEntry.id)"
                     ></v-btn>
                     <v-btn
                         class="ma-2"
                         icon="mdi-delete"
                         @click="lessonFormStore.removeComponentById(componentEntry.id)"
                     ></v-btn>
-                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) !== components.length"
-                        class="ma-2"
-                        icon="mdi-arrow-down"
-                        @click="lessonFormStore.switchComponentWithPostById(componentEntry.id)"
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) !== components.length-1"
+                           class="ma-2"
+                           icon="mdi-arrow-down"
+                           @click="lessonFormStore.switchComponentWithPostById(componentEntry.id)"
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
@@ -161,39 +161,39 @@ watch(fields, (newFields) => {
           </div>
         </v-col>
         <v-col cols="2">
-            <v-container>
-              <v-sheet elevation="0" border rounded>
-                <v-container>
-                  <v-row>
-                    <v-col v-for="template in templates" :key="template">
-                      <LessonModuleBox :title="template"/>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-sheet>
-            </v-container>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-btn
-                      color="error"
-                      @click="lessonFormStore.clearComponents()"
-                      block
-                  >
-                    Reset
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn
-                      color="primary"
-                      @click="lessonFormStore.componentsToJSON()"
-                      block
-                  >
-                    Speichern
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
+          <v-container>
+            <v-sheet elevation="0" border rounded>
+              <v-container>
+                <v-row>
+                  <v-col v-for="template in templates" :key="template">
+                    <LessonModuleBox :title="template"/>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-sheet>
+          </v-container>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-btn
+                    color="error"
+                    @click="lessonFormStore.clearComponents()"
+                    block
+                >
+                  Reset
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                    color="primary"
+                    @click="lessonFormStore.componentsToJSON()"
+                    block
+                >
+                  Speichern
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-form>
