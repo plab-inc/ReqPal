@@ -12,5 +12,5 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <v-card title="Beschreibung" :text="options" variant="outlined"></v-card>
+  <v-card title="" :text="options" variant="outlined"></v-card>
 </template>
