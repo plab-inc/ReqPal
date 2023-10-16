@@ -14,7 +14,7 @@ const icons = [
   {name: "Google", icon: "mdi-google"},
 ];
 
-const props = defineProps<{ componentId: number }>();
+const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
 const rules = {
   required: requiredRule,
