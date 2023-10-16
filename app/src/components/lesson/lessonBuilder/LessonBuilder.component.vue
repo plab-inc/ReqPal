@@ -114,7 +114,7 @@ watch(fields, (newFields) => {
               class="container"
               :style="{borderColor: isActive ? themeColors.success : themeColors.primary}"
           >
-            <v-container>
+            <v-container class="scrollcontainer">
               <v-container v-if="components">
                 <v-row v-for="componentEntry in components">
                   <v-col cols="1" align-self="center" class="d-flex flex-column">
@@ -135,7 +135,7 @@ watch(fields, (newFields) => {
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
-                    <v-sheet class="pa-3" rounded>
+                    <v-sheet rounded>
                       <component
                           :is="getComponentInstance(componentEntry.type)"
                           :key="componentEntry.id"
@@ -202,6 +202,11 @@ watch(fields, (newFields) => {
 
 <style scoped>
 
+.scrollcontainer {
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
 .container {
   display: flex;
   border: 1px solid;
@@ -211,6 +216,5 @@ watch(fields, (newFields) => {
   text-align: center;
   min-height: 700px;
   height: 70vh;
-  overflow-y: auto;
 }
 </style>
