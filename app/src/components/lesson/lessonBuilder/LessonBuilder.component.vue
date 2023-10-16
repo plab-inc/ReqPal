@@ -135,7 +135,7 @@ watch(fields, (newFields) => {
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
-                    <v-sheet rounded>
+                    <v-sheet rounded class="pa-3">
                       <component
                           :is="getComponentInstance(componentEntry.type)"
                           :key="componentEntry.id"
