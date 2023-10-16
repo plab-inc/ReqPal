@@ -12,6 +12,11 @@ const icons = [
   {name: "CreditCard", icon: "mdi-credit-card"},
   {name: "Cash", icon: "mdi-cash"},
   {name: "Google", icon: "mdi-google"},
+  {name: "Clipboard", icon: "mdi-clipboard"},
+  {name: "Pencil", icon: "mdi-pencil-box"},
+  {name: "Book", icon: "mdi-book-open"},
+  {name: "Board", icon: "mdi-developer-board"},
+
 ];
 
 const props = defineProps<{ componentId: string }>();
