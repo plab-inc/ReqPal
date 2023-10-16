@@ -1,18 +1,19 @@
 <script setup lang="ts">
 
 interface Props {
-  textLabel: string,
-  modelValue: string
+  componentId: number,
+  question: string | any,
+  options: any,
+  hint: string | any,
 }
 
 const props = defineProps<Props>();
-
+const textInput = ref<string>();
 </script>
 
 <template>
-  <v-textarea :value="modelValue"
-              @input="$emit('update:modelValue', $event.target.value)"
-              :label="textLabel"
+  <v-textarea v-model="textInput"
+              :label="typeof options === 'string' ? options : 'Notizen'"
               variant="outlined"
               auto-grow></v-textarea>
 </template>

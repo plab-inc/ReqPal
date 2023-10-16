@@ -4,7 +4,7 @@ interface Props {
   componentId: number,
   question: any,
   options: any,
-  solution: any
+  hint: string | any,
 }
 
 const props = defineProps<Props>();
@@ -12,5 +12,5 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <v-card title="Beschreibung" :text="options" variant="outlined"></v-card>
+  <v-card title="" :text="options" variant="outlined"></v-card>
 </template>

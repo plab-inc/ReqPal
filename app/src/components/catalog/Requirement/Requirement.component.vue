@@ -14,7 +14,6 @@ interface Props {
   componentId: number,
   question: any,
   options: Option | any,
-  solution: any
 }
 
 const props = defineProps<Props>();
