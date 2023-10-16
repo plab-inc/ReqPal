@@ -1,12 +1,12 @@
 import {defineStore} from 'pinia';
 import {Session, User} from '@supabase/supabase-js'
 import authService from "@/services/database/auth.service.ts";
-import {UserMetadata} from "@supabase/gotrue-js/src/lib/types.ts";
 
 interface AuthState {
     user: User | null;
     session: Session | null;
-    userMetadata: UserMetadata | null;
+    //userMetadata type from supabase/gotrue-js/src/lib/types.ts -> TS Error
+    userMetadata: any | null;
 }
 
 export const useAuthStore = defineStore('auth', {

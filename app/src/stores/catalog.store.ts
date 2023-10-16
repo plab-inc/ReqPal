@@ -1,21 +1,16 @@
 import {defineStore} from 'pinia';
 import catalogService from "@/services/database/catalog.service.ts";
 import {Catalog, dbCatalog, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
-import {Lesson} from "@/types/lesson.types.ts";
 
 interface CatalogState {
     allCatalogs: dbCatalog[]
     currentCatalog: Catalog | null
-    currentLessonRequirements: Requirement[]
-    currentCatalogLessons: Lesson[]
 }
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
         allCatalogs: [],
         currentCatalog: null,
-        currentLessonRequirements: [],
-        currentCatalogLessons: []
     }),
 
     getters: {
@@ -98,44 +93,5 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async setCatalogAndRequirementsToLesson(lessonId: number, requirementsIds: number[]) {
-            if (this.currentCatalog && this.currentCatalog.catalog_id) {
-                await catalogService.push.setCatalogRequirementsToLesson(this.currentCatalog.catalog_id, lessonId, requirementsIds);
-            }
-        },
-
-        async removeRequirementsFromLesson(lessonId: number, requirementIds: number[]) {
-            for (const id of requirementIds) {
-                await catalogService.push.removeRequirementsFromLesson(lessonId, id);
-            }
-        },
-
-        async getRequirementsForLesson(lessonId: number) {
-            const data = await catalogService.pull.fetchRequirementsForLesson(lessonId);
-            this.currentLessonRequirements = [];
-            if (data) {
-                data.forEach(d => {
-                    if (d.requirements) {
-                        this.currentLessonRequirements.push(
-                            {
-                                description: d.requirements.description,
-                                products: {},
-                                reqId: d.requirements.reqid,
-                                requirement_id: d.requirements.requirement_id,
-                                title: d.requirements.title
-                            }
-                        )
-                    }
-                })
-            }
-        },
-
-        async getAllLessonsForCatalog(catalogId: number) {
-            const data = await catalogService.pull.fetchLessonsForCatalog(catalogId);
-
-            if (data) {
-                this.currentCatalogLessons = data;
-            }
-        },
     }
 });

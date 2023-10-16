@@ -9,17 +9,18 @@ import "@mdi/font/css/materialdesignicons.css";
 import '@/styles/main.scss'
 
 import { createVuetify } from "vuetify";
-// Defaults
+//Defaults
 import { defaults } from "@/utils/defaults";
 //Themes
 import { light, dark, LIGHT_THEME, DARK_THEME } from "@/utils/themes";
 //Blueprints
 import { md1, md2, md3 } from "vuetify/blueprints";
 import { mdi } from 'vuetify/iconsets/mdi'
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 
 export default createVuetify({
   defaults: defaults,
-  blueprint: md3,
+  blueprint: md2,
   icons: {
     defaultSet: "mdi",
     sets: {
@@ -33,4 +34,16 @@ export default createVuetify({
       dark,
     },
   },
+  display: {
+    thresholds: {
+      xs: 0,
+      sm: 600,
+      md: Infinity,
+      lg: Infinity,
+      xl: Infinity,
+    }
+  },
+  components: {
+    VSkeletonLoader,
+  }
 });
