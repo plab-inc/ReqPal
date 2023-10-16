@@ -2,7 +2,7 @@
 import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
-const props = defineProps<{ componentId: number }>();
+const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({
