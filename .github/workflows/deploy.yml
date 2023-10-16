@@ -41,7 +41,7 @@ jobs:
         run: npm run type-check
         working-directory: ./app
       - name: Build
-        run: npm run build
+        run: npm run build:no-tsc
         working-directory: ./app
       - name: Setup Pages
         uses: actions/configure-pages@v3
