@@ -1,6 +1,5 @@
-import AlertService from "@/services/alert.service.ts";
+import AlertService from "@/services/util/alert.service.ts";
 import {PrivilegeError, DatabaseError, ConversionError, AuthenticationError} from "@/errors/custom.errors.ts";
-import {AuthApiError} from "@supabase/supabase-js";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 

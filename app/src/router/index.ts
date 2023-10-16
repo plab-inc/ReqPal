@@ -7,7 +7,7 @@ import {
 } from "vue-router";
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
-import {fetchLessonById, fetchLessons} from "@/middlewares/lessons.middleware";
+import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 
 const routes = [
     {
@@ -24,9 +24,13 @@ const routes = [
                 name: "Lessons",
                 component: () => import("@/views/lesson/Lessons.view.vue"),
                 meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
+                }
+            },
+            {
+                path: "/builder",
+                name: "LessonBuilder",
+                component: () => import("@/views/lesson/LessonBuilder.view.vue"),
+                meta: {
                 }
             },
             {
@@ -34,60 +38,49 @@ const routes = [
                 name: "LessonDetails",
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
-                    middleware: [
-                        fetchLessonById
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonId/tasks/create",
-                name: "LessonForm",
-                component: () => import("@/views/lesson/LessonForm.view.vue"),
-                meta: {
-                    middleware: [
-                        fetchLessonById
-                    ]
                 }
             },
             {
                 path: "/catalogs",
                 name: "Catalogs",
-                component: () => import("@/views/catalog/Catalogs.view.vue")
+                component: () => import("@/views/catalog/Catalogs.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchCatalogs
+                    ]
+                }
             },
             {
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.view.vue"),
                 meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
                 }
             },
             {
                 path: "/feedback",
                 name: "Feedback",
-                component: () => import("@/views/Feedback.view.vue"),
+                component: () => import("@/views/user/Feedback.view.vue"),
             },
             {
                 path: "/login",
                 name: "LogIn",
-                component: () => import("@/views/auth/LogIn.view.vue"),
+                component: () => import("@/views/user/LogIn.view.vue"),
             },
             {
                 path: "/signup",
                 name: "SignUp",
-                component: () => import("@/views/auth/SignUp.view.vue"),
+                component: () => import("@/views/user/SignUp.view.vue"),
             },
             {
                 path: "/resetPassword",
                 name: "ResetPassword",
-                component: () => import("@/views/auth/ResetPassword.view.vue"),
+                component: () => import("@/views/user/ResetPassword.view.vue"),
             },
             {
                 path: "/profile",
                 name: "Profile",
-                component: () => import("@/views/auth/Profile.view.vue"),
+                component: () => import("@/views/user/Profile.view.vue"),
                 meta: {
                     middleware: [
                         requiresAuth
@@ -97,12 +90,12 @@ const routes = [
             {
                 path: "/error",
                 name: "Error",
-                component: () => import("@/views/Error.view.vue"),
+                component: () => import("@/views/util/Error.view.vue"),
             },
             {
                 path: "/:pathMatch(.*)*",
                 name: "Error",
-                component: () => import("@/views/Error.view.vue"),
+                component: () => import("@/views/util/Error.view.vue"),
             }
         ],
     },
