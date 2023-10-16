@@ -7,21 +7,11 @@ import Slider from "@/components/lesson/modules/Slider.component.vue"
 import Textfield from "@/components/lesson/modules/Textfield.component.vue"
 import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
+import {useLessonStore} from "@/stores/lesson.store.ts";
+import {storeToRefs} from "pinia";
 
-let idNext = 0;
-
-const components = [
-  {
-    id: idNext++, question: 'Frage Slider', question_type: 'Slider',
-    options: {minValue: 0, maxValue: 20, steps: 1}, hint: 'Hinweis Test Test', position: 1
-  },
-  {
-    id: idNext++, question: '', question_type: 'Requirement',
-    options: {catalogId: 177, requirementId: 490}, hint: '', position: 0
-  }
-]
-
-components.sort((a, b) => a.position - b.position);
+const lessonStore = useLessonStore();
+const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -30,11 +20,11 @@ interface ComponentsMap {
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(Requirement),
-  'Multiple Choice': markRaw(MultipleChoice),
+  'MultipleChoice': markRaw(MultipleChoice),
   'Slider': markRaw(Slider),
-  'Textfeld': markRaw(Textfield),
-  'Notizen': markRaw(Notes),
-  'Produkte': markRaw(Product),
+  'Textfield': markRaw(Textfield),
+  'Note': markRaw(Notes),
+  'Products': markRaw(Product),
 };
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
@@ -42,13 +32,18 @@ const getComponentInstance = (componentName: string): Component => {
 </script>
 
 <template>
-  <v-container>
+  <v-container v-if="currentQuestions.length <= 0">
+    <div class="text-subtitle-1">Noch keine Fragen!</div>
+  </v-container>
+
+  <v-container v-else>
     <v-row class="mb-4">
       <v-col cols="10">
-        <div class="text-h3">Lektion Titel</div>
+        <div class="text-h3">{{ currentLesson?.title }}</div>
+        <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
       </v-col>
       <v-col cols="2" class="d-flex justify-space-between">
-        <div class="text-h6 text-lg-h4">200 Punkte</div>
+        <div class="text-h6 text-lg-h4">{{ currentLesson?.points }} Punkte</div>
         <v-progress-circular
             color="primary"
             model-value="20"
@@ -62,8 +57,8 @@ const getComponentInstance = (componentName: string): Component => {
 
     <v-row class="mt-4">
       <v-col>
-        <v-container v-if="components">
-          <v-row v-for="componentEntry in components">
+        <v-container v-if="currentQuestions">
+          <v-row v-for="componentEntry in currentQuestions">
             <v-col class="my-2">
               <v-sheet class="pa-3" rounded>
                 <component
