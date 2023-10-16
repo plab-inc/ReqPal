@@ -45,25 +45,27 @@ class LessonServiceClass {
 
         const {data, error} = await supabase
             .from('questions')
-            .select('id, description, question_type')
+            .select('id,lesson_id,question,question_type,options,hint,position')
             .eq('lesson_id', lessonId)
 
         if (error) throw error;
 
-        if (data) {
             if (data) {
                 const newQuestions: Question[] = data.map((questionData: any) => {
                     return {
                         id: questionData.id,
-                        lessonId: lessonId,
-                        description: questionData.description,
-                        questionType: questionData.question_type,
-                        userResults: null,
+                        hint: questionData.hint,
+                        options: questionData.options,
+                        lesson_id: lessonId,
+                        question: questionData.question,
+                        question_type: questionData.question_type,
+                        solution: null,
+                        position: questionData.position,
                     };
                 });
                 return newQuestions;
             }
-        }
+
     }
 
     private async uploadLesson(lessonJson: any){
