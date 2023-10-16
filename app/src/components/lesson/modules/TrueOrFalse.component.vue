@@ -3,7 +3,7 @@
     <v-container>
       <div class="text-h6 text-md-h5">True Or False?</div>
 
-      <div class="text-h6">{{ props.question.description }}</div>
+      <div class="text-h6">{{ props.question.question }}</div>
       <div class="text-h6" v-if="submitted">Solution:</div>
       <v-form v-model="isFormValid" @submit.prevent="submitAnswers" fast-fail>
 

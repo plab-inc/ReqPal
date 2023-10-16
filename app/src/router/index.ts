@@ -8,6 +8,7 @@ import {
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
+import {fetchLessons, fetchQuestionsForLesson} from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
     {
@@ -24,6 +25,9 @@ const routes = [
                 name: "Lessons",
                 component: () => import("@/views/lesson/Lessons.view.vue"),
                 meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
                 }
             },
             {
@@ -31,6 +35,7 @@ const routes = [
                 name: "LessonBuilder",
                 component: () => import("@/views/lesson/LessonBuilder.view.vue"),
                 meta: {
+
                 }
             },
             {
@@ -38,6 +43,9 @@ const routes = [
                 name: "LessonDetails",
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
+                    middleware: [
+                        fetchQuestionsForLesson
+                    ]
                 }
             },
             {
