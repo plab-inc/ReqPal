@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {Lesson, Question} from "@/types/lesson.types";
+import {Lesson} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
@@ -37,7 +37,6 @@ export const useLessonStore = defineStore('lesson', {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
             if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
-                console.log(questions);
             }
 
         },
