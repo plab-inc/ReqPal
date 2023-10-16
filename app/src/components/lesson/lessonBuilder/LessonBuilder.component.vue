@@ -14,6 +14,7 @@ import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequir
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
+import LessonService from "@/services/database/lesson.service.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -21,19 +22,20 @@ interface ComponentsMap {
 
 const themeColors = useTheme().current.value.colors;
 
-const templates = ['Requirement', 'Produkte', 'TrueOrFalse', 'Multiple Choice', 'Textfeld', 'Notizen', 'Slider']
+const templates = ['Requirement', 'Products', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
 
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(CatalogRequirementSelection),
-  'Multiple Choice': markRaw(MultipleChoiceForm),
+  'MultipleChoice': markRaw(MultipleChoiceForm),
   'Slider': markRaw(SliderForm),
-  'Textfeld': markRaw(TextfieldForm),
-  'Notizen': markRaw(NotesForm),
-  'Produkte': markRaw(ProductChoiceForm),
+  'Textfield': markRaw(TextfieldForm),
+  'Note': markRaw(NotesForm),
+  'Products': markRaw(ProductChoiceForm),
 };
 
 const lessonFormStore = useLessonFormStore();
+
 const components = computed(() => lessonFormStore.components);
 
 const getComponentInstance = (componentName: string): Component => {
@@ -64,6 +66,15 @@ const fields = ref<any>({
 const checkValidity = () => {
   return form.value ? form.value.validate() : false;
 };
+
+function uploadLesson() {
+
+  let lessonJson = lessonFormStore.generateLessonJSON();
+  console.log(lessonJson);
+
+  LessonService.push.uploadLesson(lessonJson);
+
+}
 
 defineExpose({
   checkValidity
@@ -186,7 +197,7 @@ watch(fields, (newFields) => {
               <v-col>
                 <v-btn
                     color="primary"
-                    @click="lessonFormStore.componentsToJSON()"
+                    @click="uploadLesson()"
                     block
                 >
                   Speichern
