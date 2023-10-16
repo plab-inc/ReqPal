@@ -57,29 +57,38 @@ export interface Database {
       }
       lessons: {
         Row: {
-          catalog_id: number | null
           description: string | null
           id: number
+          points: number | null
+          published: boolean
+          solution: Json
+          teacher_id: string | null
           title: string | null
         }
         Insert: {
-          catalog_id?: number | null
           description?: string | null
           id?: number
+          points?: number | null
+          published?: boolean
+          solution: Json
+          teacher_id?: string | null
           title?: string | null
         }
         Update: {
-          catalog_id?: number | null
           description?: string | null
           id?: number
+          points?: number | null
+          published?: boolean
+          solution?: Json
+          teacher_id?: string | null
           title?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "lessons_catalog_id_fkey"
-            columns: ["catalog_id"]
-            referencedRelation: "catalogs"
-            referencedColumns: ["catalog_id"]
+            foreignKeyName: "lessons_teacher_id_fkey"
+            columns: ["teacher_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -156,17 +165,14 @@ export interface Database {
       profiles: {
         Row: {
           id: string
-          role: number | null
           username: string | null
         }
         Insert: {
           id: string
-          role?: number | null
           username?: string | null
         }
         Update: {
           id?: string
-          role?: number | null
           username?: string | null
         }
         Relationships: [
@@ -174,12 +180,6 @@ export interface Database {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profiles_role_fkey"
-            columns: ["role"]
-            referencedRelation: "roles"
             referencedColumns: ["id"]
           }
         ]
