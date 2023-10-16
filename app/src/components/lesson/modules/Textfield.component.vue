@@ -4,7 +4,7 @@ interface Props {
   componentId: number,
   question: any,
   options: any,
-  solution: any
+  hint: string | any,
 }
 
 const props = defineProps<Props>();
