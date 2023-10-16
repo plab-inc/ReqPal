@@ -13,7 +13,7 @@ const textInput = ref<string>();
 
 <template>
   <v-textarea v-model="textInput"
-              :label="options"
+              :label="typeof options === 'string' ? options : 'Notizen'"
               variant="outlined"
               auto-grow></v-textarea>
 </template>
