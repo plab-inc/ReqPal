@@ -57,31 +57,28 @@ export interface Database {
       }
       lessons: {
         Row: {
-          description: string | null
+          description: string
           id: number
-          points: number | null
+          points: number
           published: boolean
-          solution: Json
-          teacher_id: string | null
-          title: string | null
+          teacher_id: string
+          title: string
         }
         Insert: {
-          description?: string | null
+          description: string
           id?: number
-          points?: number | null
+          points: number
           published?: boolean
-          solution: Json
-          teacher_id?: string | null
-          title?: string | null
+          teacher_id: string
+          title: string
         }
         Update: {
-          description?: string | null
+          description?: string
           id?: number
-          points?: number | null
+          points?: number
           published?: boolean
-          solution?: Json
-          teacher_id?: string | null
-          title?: string | null
+          teacher_id?: string
+          title?: string
         }
         Relationships: [
           {
@@ -186,28 +183,34 @@ export interface Database {
       }
       questions: {
         Row: {
-          answers: Json | null
-          description: string | null
+          hint: string | null
           id: number
-          lesson_id: number | null
-          points: number | null
-          question_type: Database["public"]["Enums"]["question_type"] | null
+          lesson_id: number
+          options: Json | null
+          position: number
+          question: string | null
+          question_type: string
+          solution: Json | null
         }
         Insert: {
-          answers?: Json | null
-          description?: string | null
+          hint?: string | null
           id?: number
-          lesson_id?: number | null
-          points?: number | null
-          question_type?: Database["public"]["Enums"]["question_type"] | null
+          lesson_id: number
+          options?: Json | null
+          position: number
+          question?: string | null
+          question_type: string
+          solution?: Json | null
         }
         Update: {
-          answers?: Json | null
-          description?: string | null
+          hint?: string | null
           id?: number
-          lesson_id?: number | null
-          points?: number | null
-          question_type?: Database["public"]["Enums"]["question_type"] | null
+          lesson_id?: number
+          options?: Json | null
+          position?: number
+          question?: string | null
+          question_type?: string
+          solution?: Json | null
         }
         Relationships: [
           {
@@ -348,6 +351,12 @@ export interface Database {
         }
         Returns: boolean
       }
+      create_lesson_from_json: {
+        Args: {
+          data: Json
+        }
+        Returns: undefined
+      }
       delete_claim: {
         Args: {
           uid: string
@@ -441,11 +450,7 @@ export interface Database {
       }
     }
     Enums: {
-      question_type:
-        | "MultipleChoice"
-        | "DragAndDrop"
-        | "Sortable"
-        | "TrueOrFalse"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never

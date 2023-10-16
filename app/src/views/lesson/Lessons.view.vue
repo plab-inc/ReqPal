@@ -17,14 +17,10 @@
             <template v-slot:prepend>
               {{ lesson.title }}
             </template>
-            <template v-slot:append>
-              <v-btn :to="{ name: 'LessonForm', params: { lessonId: lesson.id } }">Frage hinzufügen</v-btn>
-            </template>
           </v-list-item>
         </v-list>
       </div>
     </div>
-    <component v-for="component in componentsList" :is="component"></component>
   </v-container>
 </template>
 
@@ -33,9 +29,9 @@
 import {useLessonStore} from "@/stores/lesson.store";
 
 const lessonStore = useLessonStore();
-const lessons = lessonStore.lessons;
 
-const componentsList = ref(['MultipleChoiceForm', 'MultipleChoiceForm']);
+const lessons = lessonStore.getLessons;
+
 
 </script>
   
