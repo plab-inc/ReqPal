@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Requirement} from "@/types/catalog.types.ts";
-import RequirementItem from "@/components/catalog/Requirement/RequirementItem.component.vue"
+import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue"
 
 interface Props {
   requirements: Requirement[]
