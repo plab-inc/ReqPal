@@ -8,7 +8,11 @@ import {
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
-import {fetchLessons, fetchQuestionsForLesson, loadLessonbyId} from "@/middlewares/lesson.middleware.ts";
+import {
+    fetchLessons,
+    fetchQuestionsForLesson,
+    loadLessonById
+} from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
     {
@@ -34,9 +38,7 @@ const routes = [
                 path: "/builder",
                 name: "LessonBuilder",
                 component: () => import("@/views/lesson/LessonBuilder.view.vue"),
-                meta: {
-
-                }
+                meta: {}
             },
             {
                 path: "/lessons/:lessonId",
@@ -44,7 +46,7 @@ const routes = [
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
                     middleware: [
-                        loadLessonbyId,
+                        loadLessonById,
                         fetchQuestionsForLesson
                     ]
                 }
@@ -63,8 +65,7 @@ const routes = [
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.view.vue"),
-                meta: {
-                }
+                meta: {}
             },
             {
                 path: "/feedback",
