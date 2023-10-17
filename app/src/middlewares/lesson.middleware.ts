@@ -12,9 +12,12 @@ export async function fetchLessons(to: RouteLocationNormalized, from: RouteLocat
     }
 }
 
-export function loadLessonbyId(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function loadLessonById(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
+        if (lessonStore.lessons.length <= 0) {
+            await lessonStore.fetchLessons();
+        }
         lessonStore.loadLessonById(parseInt(to.params.lessonId as string));
         return next();
     } catch (error) {
