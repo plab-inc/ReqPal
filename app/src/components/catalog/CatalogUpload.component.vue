@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="outlined">
+  <v-card variant="flat">
     <v-container>
       <v-row align="center">
         <v-col
@@ -28,18 +28,17 @@
           <v-file-input
               label="Datei auswählen"
               color="secondary"
-              accept=".csv"
               variant="outlined"
               v-model="state.files"
               show-icon="false"
-              multiple
+              clearable
               :disabled="loading"
           ></v-file-input>
         </v-col>
       </v-row>
       <v-row align="center">
         <v-col>
-          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Upload</v-btn>
+          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Katalog Hochladen</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -47,12 +46,12 @@
 </template>
 
 <script setup lang="ts">
-import AlertService from "@/services/util/alert.service.ts";
-import { useTheme } from "vuetify";
-import { Catalog } from "@/types/catalog.types.ts";
-
-import CatalogService from "@/services/database/catalog.service.ts";
+import {useTheme} from "vuetify";
 import {ConversionError, DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
+import {Catalog} from "@/types/catalog.types.ts";
+import AlertService from "@/services/util/alert.service.ts";
+import CatalogService from "@/services/database/catalog.service.ts";
+import * as XLSX from "xlsx";
 
 interface Props {
   maxFileSize?: number;
@@ -61,9 +60,51 @@ interface Props {
 
 const loading = ref(false);
 
-const handleFileUpload = (File: File) => {
+async function readFileAsBinaryString(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
 
+    reader.onload = event => {
+      const result = event?.target?.result;
+      if (typeof result === 'string') {
+        resolve(result);
+      } else {
+        reject(new Error('Failed to read the file as a binary string.'));
+      }
+    };
+    reader.onerror = () => reject(new Error('Error reading the file.'));
+
+    reader.readAsBinaryString(file);
+  });
+}
+
+async function xlsxToCsv(xlsxFile: File): Promise<File> {
+  try {
+    const data = await readFileAsBinaryString(xlsxFile);
+    const workbook = XLSX.read(data, { type: 'binary' });
+    const wsname = workbook.SheetNames[0];
+    const ws = workbook.Sheets[wsname];
+    const csv = XLSX.utils.sheet_to_csv(ws, { FS: ';' });
+    const csvBlob = new Blob([csv], { type: 'text/csv' });
+    return new File([csvBlob], xlsxFile.name, {type: 'text/csv'});
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function handleFileUpload(file: File): Promise<void>{
   loading.value = true;
+
+  if (file) {
+    if (file.name.endsWith('.xlsx')) {
+      file = await xlsxToCsv(file);
+    }
+    uploadCSVToDB(file);
+  }
+}
+
+function uploadCSVToDB(File: File){
+
   state.borderColor = 'transparent';
 
   CatalogService.convertCSVToCatalog(File)
@@ -80,16 +121,16 @@ const handleFileUpload = (File: File) => {
               }
             })
             .finally(() => {
-              state.borderColor = themeColors.secondary;
+              state.borderColor = themeColors.info;
               state.files = [];
               loading.value = false;
             });
       })
       .catch((error: any) => {
-        throw new ConversionError("Fehler im Format der CSV Datei.", error.code);
+        throw new ConversionError("Fehler im Format der Datei.", error.code);
       })
       .finally(() => {
-        state.borderColor = themeColors.secondary;
+        state.borderColor = themeColors.info;
         state.files = [];
         loading.value = false;
       });
@@ -99,20 +140,20 @@ const themeColors = useTheme().current.value.colors;
 
 const state = reactive({
   files: [] as File[],
-  borderColor: themeColors.secondary,
+  borderColor: themeColors.info,
   backgroundColor: 'transparent',
 });
 
 const props = withDefaults(defineProps<Props>(), {
   maxFileSize: 1048576,
-  acceptedFileTypes: () => ['.csv']
+  acceptedFileTypes: () => ['.csv','.xlsx']
 });
 const handleDragOver = () => {
-  state.borderColor = themeColors.info;
+  state.borderColor = themeColors.warning;
   state.backgroundColor = 'rgba(0,0,0,0.3)';
 }
 const handleDragLeave = () => {
-  state.borderColor = themeColors.secondary;
+  state.borderColor = themeColors.info;
   state.backgroundColor = 'transparent';
 }
 const handleDrop = (e: DragEvent) => {
@@ -120,9 +161,13 @@ const handleDrop = (e: DragEvent) => {
   if(e.dataTransfer){
     const droppedFiles = Array.from(e.dataTransfer.files).filter(validateFile);
 
+    state.files = [droppedFiles[0]];
+
+    /* allow multiple files
     for (let i = 0; i < droppedFiles.length; i++) {
       state.files.push(droppedFiles[i]);
     }
+    */
   }
 }
 const validateFile = (file: File) => {
