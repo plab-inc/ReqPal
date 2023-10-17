@@ -25,7 +25,10 @@ const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(Requirement),
   'MultipleChoice': markRaw(MultipleChoice),
-
+  'Slider': markRaw(Slider),
+  'Textfield': markRaw(Textfield),
+  'Note': markRaw(Notes),
+  'Products': markRaw(Product),
 };
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
