@@ -2,29 +2,57 @@
 
 import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue"
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
-type Option = { id: number, description: string }
 type Solution = { id: number, solution: boolean }
 
 interface Props {
-  componentId: number,
-  question: string | any,
-  options: Option[] | any,
-  hint: string | any,
+  componentId: string,
 }
 
 const props = defineProps<Props>();
 const solution = ref<Solution[]>();
-const selectedAnswers = ref<Option[]>([]);
+const selectedAnswers = ref<any>([]);
 
 function checkSolution(id: number) {
-  if(solution.value) {
+  if (solution.value) {
     const found = solution.value.find(s => s.id === id);
     if (found) {
       return found.solution;
     } else return undefined;
   }
 }
+
+const lessonFormStore = useLessonFormStore();
+const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
+const hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+
+const fields = ref<any>({
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+});
+
+init();
+
+function init() {
+  fields.value.options.forEach((option: any) => {
+    selectedAnswers.value[option.id] = option.input !== undefined ? option.input : false;
+  })
+}
+
+function updateStoreData(fields: any) {
+  lessonFormStore.setComponentData(props.componentId, 'options', fields);
+}
+
+watch(selectedAnswers, (newAnswers) => {
+  const objects = fields.value.options.map((option: any) => ({
+    id: option.id,
+    description: option.description,
+    input: newAnswers[option.id] !== undefined ? newAnswers[option.id] : false
+  }));
+  fields.value.options = objects;
+  updateStoreData(objects)
+}, {deep: true});
+
 </script>
 
 <template>
@@ -38,10 +66,10 @@ function checkSolution(id: number) {
               <div class="text-h6">{{ question }}</div>
               <div class="text-h6" v-if="solution">Lösung:</div>
 
-              <v-checkbox v-for="(answer, index) in options"
+              <v-checkbox v-for="(answer) in fields.options"
                           :key="answer.id"
                           :label="answer.description"
-                          v-model="selectedAnswers[index]"
+                          v-model="selectedAnswers[answer.id]"
                           :class="{ 'right': (solution && checkSolution(answer.id)),
                 'disabled': solution,
                 'wrong': (solution && !checkSolution(answer.id))}">

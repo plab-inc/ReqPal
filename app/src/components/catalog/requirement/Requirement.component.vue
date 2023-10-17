@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Requirement} from "@/types/catalog.types.ts";
-
-type Option = {
-  catalogId: number,
-  requirementId: number
-}
+import {ref} from "vue";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
 
 interface Props {
-  componentId: number,
-  question: any,
-  options: Option | any,
+  componentId: string,
 }
 
 const props = defineProps<Props>();
+const lessonFormStore = useLessonFormStore();
+const fields = ref<any>({
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+});
 
 onBeforeMount(async () => {
   loading.value = true;
-  if (props.options) {
-    if (props.options.catalogId && props.options.requirementId) {
+  if (fields.value.options) {
+    if (fields.value.options.catalogId && fields.value.options.requirementId) {
       const catalogStore = useCatalogStore();
-      await catalogStore.getCatalogWithProductsById(props.options.catalogId);
+      await catalogStore.getCatalogWithProductsById(fields.value.options.catalogId);
       const reqs = catalogStore.currentCatalog?.requirements;
       if (reqs) {
-        requirement.value = reqs.find(r => r.requirement_id === props.options.requirementId);
+        requirement.value = reqs.find(r => r.requirement_id === fields.value.options.requirementId);
       }
     }
   }
