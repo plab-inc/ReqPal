@@ -52,7 +52,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                 data: {question: null, options: null, solution: null, hint: null}
             });
         },
-        addComponentWithData(componentName: string, data : {question: any, options: any, solution: any, hint: any}) {
+        addComponentWithData(componentName: string, data: { question: any, options: any, solution: any, hint: any }) {
             this.components.push({
                 type: componentName,
                 id: uuidv1(),
@@ -83,12 +83,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         setComponentData(componentId: string, field: string, value: any) {
             const component = this.components.find(comp => comp.id === componentId);
-            console.log("set data")
-            console.log(componentId)
-            console.log(this.components)
-            console.log(component)
             if (component && component.data.hasOwnProperty(field)) {
-                console.log(component)
                 component.data[field] = value;
             }
         },
@@ -107,7 +102,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
         componentsToJSON() {
             console.log(this.generateLessonJSON());
         },
-        generateLessonJSON(){
+        generateLessonJSON() {
             return {
                 title: this.lessonTitle,
                 description: this.lessonDescription,
