@@ -1,14 +1,60 @@
 <script setup lang="ts">
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+
 interface Props {
-  componentId: number,
-  question: string | any,
-  options: any,
-  hint: string | any,
+  componentId: string,
 }
 
 const props = defineProps<Props>();
 
 const textInput = ref<string[]>([]);
+
+const lessonFormStore = useLessonFormStore();
+
+const fields = ref<any>({
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+});
+
+function updateStoreData() {
+  lessonFormStore.setComponentData(props.componentId, 'options', fields.value.options);
+}
+
+init();
+
+function init() {
+  let newFields: any = [];
+  fields.value.options.forEach((option: any, index: number) => {
+    if (!option.hasOwnProperty('label') || !option.hasOwnProperty('id') || !option.hasOwnProperty('text')) {
+      newFields.push({
+        id: index,
+        label: option,
+        text: ""
+      });
+    } else {
+      newFields.push({
+        id: index,
+        label: option.label,
+        text: option.text
+      });
+    }
+  })
+  fields.value.options = newFields;
+
+  fields.value.options.forEach((option: any) => {
+    textInput.value[option.id] = option.text;
+  })
+}
+
+watch(textInput, (newTextInput) => {
+  fields.value.options = fields.value.options.map((option: any) => {
+    return {
+      id: option.id,
+      label: option.label,
+      text: newTextInput[option.id] ? newTextInput[option.id] : ""
+    }
+  });
+  updateStoreData()
+}, {deep: true});
 </script>
 
 <template>
@@ -20,10 +66,10 @@ const textInput = ref<string[]>([]);
       <v-expansion-panel-text>
         <v-container>
           <v-row>
-            <v-col v-for="(label, index) in options" :key="index" :cols="12/options.length">
-              <v-textarea v-model="textInput[index]"
+            <v-col v-for="(option, index) in fields.options" :key="index" :cols="12/fields.options.length">
+              <v-textarea v-model="textInput[option.id]"
                           class="mt-4"
-                          :label="label"
+                          :label="option.label"
                           variant="outlined"
                           auto-grow></v-textarea>
             </v-col>

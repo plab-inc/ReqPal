@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import ProductItem from "@/components/catalog/product/ProductItem.component.vue";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import {ref} from "vue";
 
 interface Props {
-  componentId: number,
-  question: string | any,
-  options: any,
-  hint: string | any,
+  componentId: string,
 }
 
 const props = defineProps<Props>();
 
+const lessonFormStore = useLessonFormStore();
+
+const fields = ref<any>({
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+});
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const props = defineProps<Props>();
       <v-expansion-panel-text>
           <v-container>
             <v-row>
-              <v-col v-for="product in options" :key="product.product_name" :cols="12/options.length">
+              <v-col v-for="product in fields.options" :key="product.product_name" :cols="12/fields.options.length">
                 <ProductItem :options="product"></ProductItem>
               </v-col>
             </v-row>

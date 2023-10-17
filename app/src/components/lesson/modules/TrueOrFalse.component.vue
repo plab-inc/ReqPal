@@ -1,30 +1,3 @@
-<template>
-  <v-card variant="flat">
-    <v-container>
-      <v-row>
-        <v-col cols="10">
-          <div class="text-h6 text-md-h5">True Or False?</div>
-          <div class="text-h6">{{ question }}</div>
-          <div class="text-h6" v-if="submitted">Solution:</div>
-          <v-container>
-            <v-form fast-fail>
-              <v-radio-group v-model="fields.options" :rules="[rules.requiredBool]">
-                <v-radio label="True" :value="true"
-                         :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
-                <v-radio label="False" :value="false"
-                         :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
-              </v-radio-group>
-            </v-form>
-          </v-container>
-        </v-col>
-        <v-col cols="2">
-          <Hint v-if="hint" :hint="hint"></Hint>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
-</template>
-
 <script setup lang="ts">
 
 import {ref} from "vue";
@@ -53,8 +26,6 @@ const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
-updateStoreData(fields.value);
-
 function updateStoreData(fields: any) {
   lessonFormStore.setComponentData(props.componentId, 'options', fields.options);
 }
@@ -64,6 +35,33 @@ watch(fields, (newFields) => {
 }, {deep: true});
 
 </script>
+
+<template>
+  <v-card variant="flat">
+    <v-container>
+      <v-row>
+        <v-col cols="10">
+          <div class="text-h6 text-md-h5">True Or False?</div>
+          <div class="text-h6">{{ question }}</div>
+          <div class="text-h6" v-if="submitted">Solution:</div>
+          <v-container>
+            <v-form fast-fail>
+              <v-radio-group v-model="fields.options" :rules="[rules.requiredBool]">
+                <v-radio label="True" :value="true"
+                         :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
+                <v-radio label="False" :value="false"
+                         :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
+              </v-radio-group>
+            </v-form>
+          </v-container>
+        </v-col>
+        <v-col cols="2">
+          <Hint v-if="hint" :hint="hint"></Hint>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
+</template>
 
 <style scoped>
 .right {
