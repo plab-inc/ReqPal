@@ -2,8 +2,8 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Product, Requirement} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
-import ProdutDetailPanel from "@/components/catalog/Product/ProdutDetailPanel.component.vue";
-import RequirementItem from "@/components/catalog/Requirement/RequirementItem.component.vue";
+import ProdutDetailPanel from "@/components/catalog/product/ProdutDetailPanel.component.vue";
+import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import CatalogTable from "@/components/catalog/CatalogTable.component.vue";
 import {useUtilStore} from "@/stores/util.store.ts";
 

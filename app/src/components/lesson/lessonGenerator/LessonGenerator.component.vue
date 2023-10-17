@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import TrueOrFalse from "@/components/lesson/modules/TrueOrFalse.component.vue"
-import Requirement from "@/components/catalog/Requirement/Requirement.component.vue"
+import Requirement from "@/components/catalog/requirement/Requirement.component.vue"
 import MultipleChoice from "@/components/lesson/modules/MultipleChoice.component.vue"
 import Slider from "@/components/lesson/modules/Slider.component.vue"
 import Textfield from "@/components/lesson/modules/Textfield.component.vue"
@@ -11,7 +11,9 @@ import {useLessonStore} from "@/stores/lesson.store.ts";
 import {storeToRefs} from "pinia";
 
 const lessonStore = useLessonStore();
-const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
+
+const sortedQuestions = lessonStore.getSortedCurrentQuestions;
+const currentLesson = lessonStore.getCurrentLesson;
 
 currentQuestions.value.sort((a: any, b: any) => a.position - b.position)
 
@@ -34,7 +36,7 @@ const getComponentInstance = (componentName: string): Component => {
 </script>
 
 <template>
-  <v-container v-if="currentQuestions.length <= 0">
+  <v-container v-if="sortedQuestions.length <= 0">
     <div class="text-subtitle-1">Noch keine Fragen!</div>
   </v-container>
 
@@ -59,8 +61,8 @@ const getComponentInstance = (componentName: string): Component => {
 
     <v-row class="mt-4">
       <v-col>
-        <v-container v-if="currentQuestions">
-          <v-row v-for="componentEntry in currentQuestions">
+        <v-container v-if="sortedQuestions">
+          <v-row v-for="componentEntry in sortedQuestions">
             <v-col class="my-2">
               <v-sheet class="pa-3" rounded>
                 <component

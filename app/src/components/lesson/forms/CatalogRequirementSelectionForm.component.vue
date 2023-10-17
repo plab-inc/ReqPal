@@ -3,8 +3,8 @@
 import {Requirement} from "@/types/catalog.types.ts";
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import CatalogSelect from "@/components/catalog/CatalogSelect.component.vue";
-import RequirementSelect from "@/components/catalog/Requirement/RequirementSelect.component.vue";
-import RequirementItem from "@/components/catalog/Requirement/RequirementItem.component.vue";
+import RequirementSelect from "@/components/catalog/requirement/RequirementSelect.component.vue";
+import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const selectedCatalogId = ref<number>();
