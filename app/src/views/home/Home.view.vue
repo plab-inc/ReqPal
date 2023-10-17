@@ -52,7 +52,7 @@
                 Get started
               </v-btn>
               <v-btn v-else block color="primary" class="mt-5" @click="$router.push('lessons')">
-                Continue learning
+                Lerne weiter
               </v-btn>
             </div>
           </div>
