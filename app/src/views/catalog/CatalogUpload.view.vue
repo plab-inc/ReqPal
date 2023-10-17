@@ -5,7 +5,7 @@
     <v-card variant="outlined" class="pa-5" color="primary">
       <v-row>
         <v-col>
-          <Upload></Upload>
+          <CatalogUpload></CatalogUpload>
         </v-col>
       </v-row>
       <v-row>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import Upload from "@/components/catalog/Upload.component.vue";
+import CatalogUpload from "@/components/catalog/CatalogUpload.component.vue";
 
 function downloadExample(type: string){
   const url = import.meta.env.BASE_URL + 'Example_Requirements_Catalog.' + type;
