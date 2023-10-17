@@ -13,20 +13,22 @@ const textInput = ref<string[]>([]);
 
 <template>
   <v-expansion-panels>
-    <v-expansion-panel>
+    <v-expansion-panel elevation="0">
       <v-expansion-panel-title>
         Notizen
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <v-row>
-          <v-col v-for="(label, index) in options" :key="index" cols="12" md="6" lg="4">
-            <v-textarea v-model="textInput[index]"
-                        class="mt-4"
-                        :label="label"
-                        variant="outlined"
-                        auto-grow></v-textarea>
-          </v-col>
-        </v-row>
+        <v-container>
+          <v-row>
+            <v-col v-for="(label, index) in options" :key="index" :cols="12/options.length">
+              <v-textarea v-model="textInput[index]"
+                          class="mt-4"
+                          :label="label"
+                          variant="outlined"
+                          auto-grow></v-textarea>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>

@@ -5,30 +5,35 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const openLink = () => {
+  window.open(props.options.link);
+}
 </script>
 
 <template>
   <v-hover>
     <template v-slot:default="{ isHovering, props }">
       <v-card
-          variant="flat"
+          variant="outlined"
           v-bind="props"
-          :color="isHovering ? 'info' : undefined">
-        <v-card-title>
-          <v-container>
-            <v-row>
-              <v-col class="d-flex justify-start align-center">
-                <v-icon :icon="options.icon.toLowerCase()" size="50px" class="mr-2"></v-icon>
-                <div class="text-h4">{{ options.name }}</div>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-title>
-        <v-card-text>
-          <v-chip prepend-icon="mdi-web" variant="text">
-            {{ options.link }}
-          </v-chip>
-        </v-card-text>
+          :color="isHovering ? 'info' : undefined"
+          @click="openLink"
+      >
+        <v-container>
+          <v-row>
+            <v-col cols="9">
+              <v-card-title class="text-h4">
+                {{ options.name }}
+              </v-card-title>
+              <v-card-text>
+                {{ options.link }}
+              </v-card-text>
+            </v-col>
+            <v-col cols="3">
+              <v-icon :icon="options.icon" size="100"></v-icon>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-card>
     </template>
   </v-hover>
