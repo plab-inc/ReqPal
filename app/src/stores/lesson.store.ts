@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {Lesson} from "@/types/lesson.types";
+import {Lesson, Question} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
@@ -23,11 +23,14 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         getCurrentLesson: (state) => {
-            return state.lessons
+            return state.currentLesson;
         },
 
         getCurrentQuestion: state => {
             return state.currentQuestions;
+        },
+        getSortedCurrentQuestions: (state) => {
+            return [...state.currentQuestions].sort((a, b) => a.position - b.position);
         },
 
     },
