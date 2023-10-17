@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Props {
   componentId: number,
   question: string | any,
@@ -8,12 +7,27 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const textInput = ref<string>();
+
+const textInput = ref<string[]>([]);
 </script>
 
 <template>
-  <v-textarea v-model="textInput"
-              :label="typeof options === 'string' ? options : 'Notizen'"
-              variant="outlined"
-              auto-grow></v-textarea>
+  <v-expansion-panels>
+    <v-expansion-panel>
+      <v-expansion-panel-title>
+        Notizen
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <v-row>
+          <v-col v-for="(label, index) in options" :key="index" cols="12" md="6" lg="4">
+            <v-textarea v-model="textInput[index]"
+                        class="mt-4"
+                        :label="label"
+                        variant="outlined"
+                        auto-grow></v-textarea>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
