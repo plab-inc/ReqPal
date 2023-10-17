@@ -8,10 +8,10 @@
           <div class="text-h6" v-if="submitted">Solution:</div>
           <v-container>
             <v-form fast-fail>
-              <v-radio-group v-model="selectedAnswer" :rules="[rules.requiredBool]">
-                <v-radio label="True" v-bind:value="true"
+              <v-radio-group v-model="fields.options" :rules="[rules.requiredBool]">
+                <v-radio label="True" :value="true"
                          :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
-                <v-radio label="False" v-bind:value="false"
+                <v-radio label="False" :value="false"
                          :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
               </v-radio-group>
             </v-form>
@@ -28,29 +28,40 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {booleanValueRule} from "@/utils/validationRules.ts";
+import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 interface Props {
-  componentId: number,
-  question: string | any,
-  options: any,
-  hint: string | any,
+  componentId: string,
 }
 
 const props = defineProps<Props>();
-const selectedAnswer = ref<boolean>();
 const submitted = ref(false);
 let result: boolean | null;
-
 const isFormValid = ref(false);
 const rules = {
-  requiredBool: booleanValueRule
+  requiredBool: booleanValueRule,
+  requiredString: noEmptyStringRule
 };
 
-async function submitAnswers(): Promise<void> {
-  //TODO
+const lessonFormStore = useLessonFormStore();
+const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
+const hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+
+const fields = ref<any>({
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+});
+
+updateStoreData(fields.value);
+
+function updateStoreData(fields: any) {
+  lessonFormStore.setComponentData(props.componentId, 'options', fields.options);
 }
+
+watch(fields, (newFields) => {
+  updateStoreData(newFields)
+}, {deep: true});
 
 </script>
 

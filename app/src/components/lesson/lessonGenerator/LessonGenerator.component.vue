@@ -8,12 +8,14 @@ import Textfield from "@/components/lesson/modules/Textfield.component.vue"
 import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
-import {storeToRefs} from "pinia";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const lessonStore = useLessonStore();
 
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
+
+const lessonFormStore = useLessonFormStore();
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -23,17 +25,32 @@ const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(Requirement),
   'MultipleChoice': markRaw(MultipleChoice),
-  'Slider': markRaw(Slider),
-  'Textfield': markRaw(Textfield),
-  'Note': markRaw(Notes),
-  'Products': markRaw(Product),
+
 };
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
 };
+
+if (lessonFormStore.components.length <= 0) {
+  sortedQuestions.forEach(q => {
+    lessonFormStore.addComponentWithData(q.question_type, {
+      question: q.question,
+      options: q.options,
+      solution: q.solution,
+      hint: q.hint
+    })
+  })
+}
+const questionComponents = lessonFormStore.components;
+const formValues = lessonFormStore.components;
+
+function submit() {
+  console.log("submit!")
+}
 </script>
 
 <template>
+  {{ sortedQuestions }}
   <v-container v-if="sortedQuestions.length <= 0">
     <div class="text-subtitle-1">Noch keine Fragen!</div>
   </v-container>
@@ -56,27 +73,32 @@ const getComponentInstance = (componentName: string): Component => {
     </v-row>
 
     <v-divider></v-divider>
-
-    <v-row class="mt-4">
-      <v-col>
-        <v-container v-if="sortedQuestions">
-          <v-row v-for="componentEntry in sortedQuestions">
-            <v-col class="my-2">
-              <v-sheet class="pa-3" rounded elevation="3">
-                <component
-                    :is="getComponentInstance(componentEntry.question_type)"
-                    :key="componentEntry.id"
-                    :componentId="componentEntry.id"
-                    :question="componentEntry.question"
-                    :options="componentEntry.options"
-                    :hint="componentEntry.hint"
-                ></component>
-              </v-sheet>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-col>
-    </v-row>
+    <v-form @submit.prevent="submit">
+      <v-row class="mt-4">
+        <v-col>
+          <v-container v-if="questionComponents">
+            <v-row v-for="question in questionComponents">
+              <v-col class="my-2">
+                <v-sheet class="pa-3" rounded elevation="3">
+                  <component
+                      :is="getComponentInstance(question.type)"
+                      :key="question.id"
+                      :componentId="question.id"
+                  ></component>
+                </v-sheet>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-container>
+            <v-btn type="submit">Submit</v-btn>
+          </v-container>
+        </v-col>
+      </v-row>
+    </v-form>
   </v-container>
 </template>
 
