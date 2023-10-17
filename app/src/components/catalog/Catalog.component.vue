@@ -2,12 +2,8 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Catalog, Product, Requirement} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
-import {Lesson} from "@/types/lesson.types.ts";
-import router from "@/router";
-import {requiredRule} from "@/utils/validationRules.ts";
-import {useLessonStore} from "@/stores/lesson.store.ts";
-import ProdutDetailPanel from "@/components/catalog/Product/ProdutDetailPanel.component.vue";
-import RequirementItem from "@/components/catalog/Requirement/RequirementItem.component.vue";
+import ProdutDetailPanel from "@/components/catalog/product/ProdutDetailPanel.component.vue";
+import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import CatalogTable from "@/components/catalog/CatalogTable.component.vue";
 import {useUtilStore} from "@/stores/util.store.ts";
 
@@ -17,29 +13,12 @@ const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
 
 const utilStore = useUtilStore();
-
-const lessonStore = useLessonStore();
-
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
 
 const requirementItems = ref<Requirement[]>([]);
-const selectAll = ref<boolean>(false);
-
-const showAllLessons = ref<boolean>(false);
-const allLessons = ref<Lesson[]>();
-const catalogLessons = ref<Lesson[]>([]);
-
-const showNewReqsForLesson = ref<boolean>(false);
-
-const selectedLesson = ref<Lesson | null>();
 const selectedRequirement = ref<Requirement>();
 const reqGroupSelection = ref<Requirement[]>([]);
-
-const isFormValid = ref(false);
-const rules = {
-  required: requiredRule
-};
 
 async function onRowClick(item: Requirement) {
   selectedRequirement.value = item;
@@ -56,35 +35,6 @@ async function getProductDetails() {
     AlertService.addErrorAlert("Failed to get product details: " + error.message);
   }
   loadingBar.value = false;
-}
-
-function onReset() {
-  selectedLesson.value = null;
-  selectAll.value = false;
-  reqGroupSelection.value = [];
-  showAllLessons.value = false;
-  setUpCatalog();
-}
-
-function toggleNewRequirements() {
-  utilStore.toggleLoadingBar();
-  reqGroupSelection.value = [];
-  selectAll.value = false;
-  let allReqs: Requirement[] = [];
-  if (catalog.value) {
-    allReqs = catalog.value.requirements;
-  }
-
-  if (requirementItems.value.length <= 0) {
-    requirementItems.value = allReqs;
-  } else {
-    let newReqs: Requirement[] = allReqs.filter((req) => {
-      return !requirementItems.value.some((item) => item.requirement_id === req.requirement_id);
-    });
-    requirementItems.value = [];
-    requirementItems.value.push(...newReqs);
-  }
-  utilStore.toggleLoadingBar();
 }
 
 onBeforeMount(async () => {
@@ -135,67 +85,11 @@ function setUpCatalog() {
 
     <v-row>
       <v-col>
-        <v-form v-model="isFormValid" validate-on="lazy blur">
-          <v-row>
-            <v-col md="8">
-              <v-row>
-                <v-col>
-                  <v-btn type="button" @click="onReset" class="pa-2">Zurücksetzen</v-btn>
-                  <v-btn type="submit" v-if="selectedLesson"
-                         class="pa-2 ml-sm-2">
-                    {{ showNewReqsForLesson ? 'Anforderungen hinzufügen' : 'Anforderungen entfernen' }}
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-select
-                      v-model="selectedLesson"
-                      :items="showAllLessons ? allLessons : catalogLessons"
-                      :label="showAllLessons ? 'Alle Lektionen' : 'Lektionen zum Katalog'"
-                      :item-title="item => item.title"
-                      :item-value="item => item"
-                      required
-                  ></v-select>
-                </v-col>
-              </v-row>
-            </v-col>
-
-            <v-col md="4">
-              <v-row>
-                <v-col>
-                  <v-switch
-                      v-if="selectedLesson"
-                      v-model="showNewReqsForLesson"
-                      @change="toggleNewRequirements"
-                      hide-details
-                      inset
-                      :label="showNewReqsForLesson ? 'Neue Anforderungen' : 'Zugeteilte Anforderungen'"
-                  ></v-switch>
-                  <v-switch
-                      v-model="showAllLessons"
-                      hide-details
-                      inset
-                      :disabled="catalogLessons.length <= 0"
-                      :label="showAllLessons ? 'Alle Lektionen' : 'Lektionen zum Katalog'"
-                  ></v-switch>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col>
-              <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
-                            :selectable="!!selectedLesson"
-                            @on-row-click="onRowClick"
-              ></CatalogTable>
-            </v-col>
-          </v-row>
-
-        </v-form>
+        <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
+                      :selectable="false"
+                      @on-row-click="onRowClick"
+        ></CatalogTable>
       </v-col>
     </v-row>
   </v-container>
-
 </template>

@@ -10,7 +10,7 @@ export async function loadFonts () {
             ]
         },
         fontactive(familyName: string, fvd: string) {
-            console.log(' Font active: ', familyName);
-        }
+            //console.log(' Font active: ', familyName);
+        },
     })
 }

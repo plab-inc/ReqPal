@@ -51,8 +51,8 @@
               <v-btn v-if="!authStore.session" block color="primary" class="mt-5" @click="$router.push('signup')">
                 Get started
               </v-btn>
-              <v-btn v-else block color="primary" class="mt-5" @click="$router.push('dashboard')">
-                Continue learning
+              <v-btn v-else block color="primary" class="mt-5" @click="$router.push('lessons')">
+                Lerne weiter
               </v-btn>
             </div>
           </div>

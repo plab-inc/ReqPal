@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import Hint from "@/components/lesson/modules/Hint.component.vue";
 
 interface Props {
   componentId: number,
   question: string | any,
   options: { minValue: number, maxValue: number, steps: number } | any,
-  solution: { correctValue: number, tolerance: number } | any
+  hint: string | any
 }
 
 const props = defineProps<Props>();
@@ -18,12 +19,15 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <v-card>
+  <v-card variant="flat">
     <v-container>
       <v-row>
-        <v-col>
+        <v-col cols="10">
           <div class="text-h6 text-md-h5">Slider</div>
           <div class="text-h6">{{ question }}</div>
+        </v-col>
+        <v-col cols="2">
+          <Hint v-if="hint" :hint="hint"></Hint>
         </v-col>
       </v-row>
       <v-row>
