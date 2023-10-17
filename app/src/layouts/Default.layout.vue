@@ -20,7 +20,7 @@
                      :subtitle="authStore.user?.email"
                      :active="false"
                      prepend-avatar="@/assets/images/tom.jpg"
-                     to="Profile"
+                     to="/profile"
         ></v-list-item>
         <v-list-item v-if="!authStore.user"
                      prepend-icon="mdi-login"
@@ -35,6 +35,7 @@
         <div v-if="authStore.user">
           <v-list-item prepend-icon="mdi-school" title="Lektionen" to="/lessons"></v-list-item>
           <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalogs"></v-list-item>
+          <v-list-item prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"></v-list-item>
           <v-list-item prepend-icon="mdi-tools" title="Lektions Builder" to="/builder"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Profil" to="/profile"></v-list-item>
           <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
