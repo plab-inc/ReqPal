@@ -15,8 +15,6 @@ const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
 
-currentQuestions.value.sort((a: any, b: any) => a.position - b.position)
-
 interface ComponentsMap {
   [key: string]: Component;
 }
