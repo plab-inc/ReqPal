@@ -62,7 +62,7 @@ const getComponentInstance = (componentName: string): Component => {
         <v-container v-if="sortedQuestions">
           <v-row v-for="componentEntry in sortedQuestions">
             <v-col class="my-2">
-              <v-sheet class="pa-3" rounded>
+              <v-sheet class="pa-3" rounded elevation="3">
                 <component
                     :is="getComponentInstance(componentEntry.question_type)"
                     :key="componentEntry.id"

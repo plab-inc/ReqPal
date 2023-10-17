@@ -14,7 +14,7 @@ const props = defineProps<Props>();
 
 <template>
   <v-expansion-panels>
-    <v-expansion-panel>
+    <v-expansion-panel elevation="0">
       <v-expansion-panel-title>
         Produkte
       </v-expansion-panel-title>
