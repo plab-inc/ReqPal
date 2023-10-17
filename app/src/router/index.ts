@@ -62,6 +62,14 @@ const routes = [
                 }
             },
             {
+                path: "/catalogs/upload",
+                name: "UploadCatalog",
+                component: () => import("@/views/catalog/CatalogUpload.view.vue"),
+                meta: {
+
+                }
+            },
+            {
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.view.vue"),
