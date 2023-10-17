@@ -7,6 +7,7 @@ interface AuthState {
     session: Session | null;
     //userMetadata type from supabase/gotrue-js/src/lib/types.ts -> TS Error
     userMetadata: any | null;
+    appMetadata: any | null;
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -14,12 +15,19 @@ export const useAuthStore = defineStore('auth', {
         user: null,
         session: null,
         userMetadata: null,
+        appMetadata: null,
     }),
+    getters: {
+        isLoggedIn: (state) => !!state.user,
+        isAdmin: (state) => state.userMetadata?.userroles?.includes('admin'),
+        isTeacher: (state) => state.appMetadata?.userroles?.includes('teacher'),
+    },
     actions: {
         setSession(session: Session | null) {
             this.session = session;
             this.user = session?.user ?? null;
             this.userMetadata = session?.user?.user_metadata ?? null;
+            this.appMetadata = session?.user?.app_metadata ?? null;
         },
         async signIn(email: string, password: string) {
             const data = await authService.pull.signInWithPassword(email, password);
