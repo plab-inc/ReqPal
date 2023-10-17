@@ -13,6 +13,8 @@ import {storeToRefs} from "pinia";
 const lessonStore = useLessonStore();
 const {currentLesson, currentQuestions} = storeToRefs(lessonStore)
 
+currentQuestions.value.sort((a: any, b: any) => a.position - b.position)
+
 interface ComponentsMap {
   [key: string]: Component;
 }
@@ -47,7 +49,7 @@ const getComponentInstance = (componentName: string): Component => {
         <v-progress-circular
             color="primary"
             model-value="20"
-            :size="49"
+            :size="50"
             :width="7"
         ></v-progress-circular>
       </v-col>
