@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {Product, Requirement} from "@/types/catalog.types.ts";
-import ProductDetailItem from "@/components/catalog/Product/ProductDetailItem.component.vue"
+import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue"
 
 interface Props {
   requirement: Requirement | undefined,
