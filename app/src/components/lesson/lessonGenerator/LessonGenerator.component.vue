@@ -9,6 +9,7 @@ import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import CustomDialog from "@/components/dialog/CustomDialog.component.vue"
 
 const lessonStore = useLessonStore();
 
@@ -16,6 +17,7 @@ const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
 
 const lessonFormStore = useLessonFormStore();
+const openDialog = ref<boolean>(false);
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -45,7 +47,7 @@ if (lessonFormStore.components.length <= 0) {
   })
 }
 const questionComponents = lessonFormStore.components;
-const formValues = lessonFormStore.components;
+const isFormValid = ref<boolean>(false);
 
 function submit() {
   console.log("submit!")
@@ -53,7 +55,6 @@ function submit() {
 </script>
 
 <template>
-  {{ sortedQuestions }}
   <v-container v-if="sortedQuestions.length <= 0">
     <div class="text-subtitle-1">Noch keine Fragen!</div>
   </v-container>
@@ -76,7 +77,7 @@ function submit() {
     </v-row>
 
     <v-divider></v-divider>
-    <v-form @submit.prevent="submit">
+    <v-form v-model="isFormValid" @submit.prevent>
       <v-row class="mt-4">
         <v-col>
           <v-container v-if="questionComponents">
@@ -97,12 +98,22 @@ function submit() {
       <v-row>
         <v-col>
           <v-container>
-            <v-btn type="submit">Submit</v-btn>
+            <v-btn type="submit" @click="openDialog = true">Submit</v-btn>
           </v-container>
         </v-col>
       </v-row>
     </v-form>
   </v-container>
+
+  <CustomDialog v-model="openDialog"
+                @confirm="submit"
+                message="Möchten Sie wirklich die Lektion beenden und Ihre Lösungen einreichen?
+                Die Lösungen können dann nicht mehr verändert werden."
+                title="Lektion beenden"
+                confirm-label="Lektion beenden"
+                cancel-label="Zurück zur Lektion">
+  </CustomDialog>
+
 </template>
 
 <style scoped>
