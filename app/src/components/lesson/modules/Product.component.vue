@@ -2,6 +2,7 @@
 import ProductItem from "@/components/catalog/product/ProductItem.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {ref} from "vue";
+import Help from "@/components/lesson/modules/Help.component.vue";
 
 interface Props {
   componentId: string,
@@ -10,6 +11,9 @@ interface Props {
 const props = defineProps<Props>();
 
 const lessonFormStore = useLessonFormStore();
+const productExplanation = "In diesem Bereich finden Sie Produkte, die für den weiteren Verlauf dieser Lektion oder für konkrete Aufgaben relevant sein können. " +
+    "Betrachten Sie sich die Produkte und klicken Sie bei Bedarf von weiteren Informationen auf das Produkt. " +
+    "Sie werden dann zu einer hilfreichen Website oder der offiziellen Website des Produkts weitergeleitet."
 
 const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
@@ -23,13 +27,22 @@ const fields = ref<any>({
         Produkte
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-          <v-container>
-            <v-row>
-              <v-col v-for="product in fields.options" :key="product.product_name" :cols="12/fields.options.length">
-                <ProductItem :options="product"></ProductItem>
-              </v-col>
-            </v-row>
-          </v-container>
+        <v-container>
+          <v-row>
+            <v-col class="d-flex justify-end">
+              <Help title="Produkte: Erklärung" :text="productExplanation"></Help>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-row>
+                <v-col v-for="product in fields.options" :key="product.product_name" :cols="12/fields.options.length">
+                  <ProductItem :options="product"></ProductItem>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>

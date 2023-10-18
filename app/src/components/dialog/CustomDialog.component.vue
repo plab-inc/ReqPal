@@ -1,22 +1,4 @@
-<template>
-  <v-dialog v-model="openDialog" max-width="800px">
-    <v-card>
-      <v-card-title>{{ title }}</v-card-title>
-      <v-card-text>
-        {{ message }}
-      </v-card-text>
-      <v-card-actions>
-        <v-btn @click="cancel">Cancel</v-btn>
-        <v-btn color="error" @click="confirm">{{ confirmLabel }}</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-</template>
-
 <script setup lang="ts">
-import {ref} from 'vue';
-
-const openDialog = ref<boolean>(true);
 
 const props = defineProps({
   title: {
@@ -30,6 +12,13 @@ const props = defineProps({
   confirmLabel: {
     type: String,
     default: "Confirm"
+  },
+  cancelLabel: {
+    type: String,
+    default: "Cancel"
+  },
+  modelValue: {
+    type: Boolean
   }
 });
 const emit = defineEmits();
@@ -43,4 +32,38 @@ function confirm() {
   openDialog.value = false;
   emit('confirm');
 }
+
+const openDialog = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emit('update:modelValue', value)
+  }
+})
+openDialog.value = props.modelValue;
 </script>
+
+<template>
+  <v-dialog v-model="openDialog" max-width="800px">
+    <v-card variant="elevated" class="pa-4">
+      <v-row>
+        <v-col cols="1" class="d-flex align-center">
+          <v-icon class="ml-2" icon="mdi-information" size="60"></v-icon>
+        </v-col>
+        <v-col cols="11" class="d-flex align-center">
+          <v-card-title>{{ title }}</v-card-title>
+        </v-col>
+      </v-row>
+
+      <v-card-text>
+        {{ message }}
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="success" @click="cancel">{{ cancelLabel }}</v-btn>
+        <v-btn color="warning" @click="confirm">{{ confirmLabel }}</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+

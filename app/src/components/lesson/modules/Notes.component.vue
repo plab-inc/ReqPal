@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import Help from "@/components/lesson/modules/Help.component.vue"
 
 interface Props {
   componentId: string,
@@ -8,7 +9,9 @@ interface Props {
 const props = defineProps<Props>();
 
 const textInput = ref<string[]>([]);
-
+const notesExplanation = "Nutzen Sie die bereitgestellten Textfelder, um sich Notizen zu Produkten, Anforderungen oder anderen Themen zu machen. " +
+    "Das Textfeld besitzt einen Titel, dass Ihnen helfen kann, Ihre Gedanken direkt zu einer bestimmten Kategorie zuzuordnen. " +
+    "In dem Feld 'Allgemein' können Sie frei alles notieren, was Ihnen wichtig ist oder auffällt."
 const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({
@@ -66,9 +69,13 @@ watch(textInput, (newTextInput) => {
       <v-expansion-panel-text>
         <v-container>
           <v-row>
+            <v-col class="d-flex justify-end">
+              <Help title="Notizen: Erklärung" :text="notesExplanation"></Help>
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col v-for="(option, index) in fields.options" :key="index" :cols="12/fields.options.length">
               <v-textarea v-model="textInput[option.id]"
-                          class="mt-4"
                           :label="option.label"
                           variant="outlined"
                           auto-grow></v-textarea>

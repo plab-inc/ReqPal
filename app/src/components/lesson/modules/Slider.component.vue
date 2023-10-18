@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import Help from "@/components/lesson/modules/Help.component.vue";
 
 interface Props {
   componentId: string,
@@ -10,6 +11,11 @@ interface Props {
 const props = defineProps<Props>();
 
 const inputValue = ref<number>(0);
+
+const sliderExplanation =
+    "In einer Slider Aufgabe ist das Ziel, abhängig von der Fragestellung, einen Wert auf dem Schieberegler auszuwählen oder einzuschätzen. " +
+    "Klicken Sie auf den Regler und ziehen Sie diesen nach links oder rechts, um einen Wert einzustellen. Ganz links befindet sich der kleinste Wert, " +
+    "während ganz rechts sich der maximale Wert befindet."
 
 const lessonFormStore = useLessonFormStore();
 const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
@@ -49,8 +55,17 @@ watch(inputValue, (newInput) => {
     <v-container>
       <v-row>
         <v-col cols="10">
-          <div class="text-h6 text-md-h5">Slider</div>
-          <div class="text-h6">{{ question }}</div>
+          <v-row>
+            <v-col class="d-flex justify-start align-center">
+              <div class="text-h6 text-md-h5 mr-2">Slider</div>
+              <Help title="Slider Aufgabe: Erklärung" :text="sliderExplanation"></Help>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <div class="text-h6">{{ question }}</div>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="2">
           <Hint v-if="hint" :hint="hint"></Hint>
