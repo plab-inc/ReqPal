@@ -1,5 +1,4 @@
 import { supabase } from "@/plugins/supabase";
-import {Json} from "@/types/supabase.types.ts";
 
 class PermissionServiceClass {
 

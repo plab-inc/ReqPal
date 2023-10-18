@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { booleanValueRule, noEmptyStringRule } from "@/utils/validationRules.ts";
+import { requiredStringRule } from "@/utils/validationRules.ts";
 import { useLessonFormStore } from "@/stores/lessonForm.store.ts";
 import { multipleChoiceAnswer } from "@/interfaces/Question.interfaces.ts";
 
@@ -8,10 +8,6 @@ const maxAnswers = 6;
 
 const props = defineProps<{ componentId: string }>();
 const isFormValid = ref(false);
-const rules = {
-  requiredBool: booleanValueRule,
-  requiredString: noEmptyStringRule
-};
 
 const lessonFormStore = useLessonFormStore();
 
@@ -75,11 +71,10 @@ watch(fields, (newFields) => {
 
 <template>
   <v-container>
-    <v-form v-model="isFormValid">
       <v-text-field
           v-model="fields.question"
           label="Multiple Choice Frage"
-          :rules="[rules.requiredString]"
+          :rules="[requiredStringRule]"
       ></v-text-field>
 
       <v-row>
@@ -89,11 +84,11 @@ watch(fields, (newFields) => {
               <v-text-field
                   v-model="answer.description"
                   :label="'Antwort ' + (index + 1)"
-                  :rules="[rules.requiredString]"
+                  :rules="[requiredStringRule]"
               ></v-text-field>
             </v-col>
             <v-col md="3" sm="8">
-              <v-radio-group v-model="answer.solution" :rules="[rules.requiredBool]" label="Lösung der Antwort:">
+              <v-radio-group v-model="answer.solution" label="Lösung der Antwort:">
                 <v-radio label="Richtig" :value="true"></v-radio>
                 <v-radio label="Falsch" :value="false"></v-radio>
               </v-radio-group>
@@ -119,7 +114,6 @@ watch(fields, (newFields) => {
           mdi-plus
         </v-icon>
       </v-btn>
-    </v-form>
   </v-container>
 </template>
 
