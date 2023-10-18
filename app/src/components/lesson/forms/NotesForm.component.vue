@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {requiredRule} from "@/utils/validationRules.ts";
+import {requiredStringRule, requiredRule} from "@/utils/validationRules.ts";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
-const rules = {
-  required: requiredRule
-};
+
 const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options') || [''],
 });
@@ -36,7 +34,7 @@ watch(fields, (newFields) => {
     <v-row v-for="(field, index) in fields.options" :key="index">
       <v-col :cols="index > 0 ? '11':'12'">
         <v-text-field
-            :rules="[rules.required]"
+            :rules="[requiredStringRule]"
             v-model="fields.options[index]"
             :label="'Name des Notizfelds ' + (index + 1)"
             variant="outlined"
