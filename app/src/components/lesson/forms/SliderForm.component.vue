@@ -2,16 +2,11 @@
 
 import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {noEmptyStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
+import {requiredStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
-
-const rules = {
-  requiredString: noEmptyStringRule,
-  requiredNumber: requiredNumberRule
-};
 
 function betweenRange(x: number) {
   const min: number = (+sliderSolution.value.correctValue) - (+sliderSolution.value.toleranceValue);
@@ -58,7 +53,7 @@ watch([sliderOptions, sliderSolution], () => {
         <v-text-field
             label="Slider Frage"
             v-model="fields.question"
-            :rules="[rules.requiredString]"
+            :rules="[requiredStringRule]"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -73,7 +68,7 @@ watch([sliderOptions, sliderSolution], () => {
                 variant="outlined"
                 type="number"
                 :max="sliderOptions.maxValue"
-                :rules="[rules.requiredNumber]"
+                :rules="[requiredNumberRule]"
             ></v-text-field>
           </v-col>
           <v-col md="3">
@@ -83,7 +78,7 @@ watch([sliderOptions, sliderSolution], () => {
                 variant="outlined"
                 type="number"
                 :min="sliderOptions.minValue"
-                :rules="[rules.requiredNumber]"
+                :rules="[requiredNumberRule]"
             ></v-text-field>
           </v-col>
           <v-col cols="6">
@@ -104,7 +99,7 @@ watch([sliderOptions, sliderSolution], () => {
                 :min="sliderOptions.minValue"
                 :max="sliderOptions.maxValue"
                 type="number"
-                :rules="[rules.requiredNumber]"
+                :rules="[requiredNumberRule]"
             ></v-text-field>
           </v-col>
           <v-col md="3">
@@ -113,6 +108,7 @@ watch([sliderOptions, sliderSolution], () => {
                 v-model="sliderSolution.toleranceValue"
                 :min="0"
                 :max="sliderSolution.correctValue"
+                :rules="[requiredNumberRule]"
                 variant="outlined"
                 type="number"
             ></v-text-field>

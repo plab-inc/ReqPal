@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules.ts";
+import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const props = defineProps<{ componentId: string }>();
@@ -23,10 +23,6 @@ watch(fields, (newFields) => {
   updateStoreData(newFields)
 }, {deep: true});
 
-const rules = {
-  requiredBool: booleanValueRule,
-  requiredString: noEmptyStringRule
-};
 </script>
 
 <template>
@@ -34,7 +30,7 @@ const rules = {
     <v-text-field
         label="True or False Frage"
         v-model="fields.question"
-        :rules="[rules.requiredString]"
+        :rules="[requiredStringRule]"
     ></v-text-field>
 
     <v-row>
@@ -42,7 +38,6 @@ const rules = {
         <v-radio-group
             label="Lösung zur Frage:"
             v-model="fields.solution"
-            :rules="[rules.requiredBool]"
         >
           <v-radio label="Richtig" :value="true"></v-radio>
           <v-radio label="Falsch" :value="false"></v-radio>
