@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import {Requirement} from "@/types/catalog.types.ts";
+import {requiredRule} from "@/utils/validationRules.ts";
 
 interface Props {
   items: Requirement[],
@@ -26,6 +27,7 @@ const selectedRequirement = computed({
   <v-select
       label="Anforderung wählen"
       v-model="selectedRequirement"
+      :rules="[requiredRule]"
       :items="items"
       :item-title="item => item.title"
       :item-value="item => item"

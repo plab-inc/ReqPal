@@ -35,7 +35,7 @@
 <script setup lang="ts">
 
 import { useAuthStore } from "@/stores/auth.store";
-import { requiredRule, emailRule } from "@/utils/validationRules";
+import { requiredRule, requiredEmailRule } from "@/utils/validationRules";
 import AlertService from "@/services/util/alert.service.ts";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
 
@@ -59,6 +59,6 @@ const submit = async () => {
 
 const rules = {
   required: requiredRule,
-  email: emailRule,
+  email: requiredEmailRule,
 };
 </script>

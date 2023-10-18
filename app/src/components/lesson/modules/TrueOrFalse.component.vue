@@ -28,7 +28,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {booleanValueRule} from "@/utils/validationRules.ts";
+import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 
 interface Props {
@@ -45,7 +45,7 @@ let result: boolean | null;
 
 const isFormValid = ref(false);
 const rules = {
-  requiredBool: booleanValueRule
+  requiredBool: requiredBooleanRule
 };
 
 async function submitAnswers(): Promise<void> {

@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth.store";
-import { requiredRule, matchingPasswordsRule, emailRule } from "@/utils/validationRules";
+import { requiredRule, matchingPasswordsRule, requiredEmailRule } from "@/utils/validationRules";
 
 import router from "@/router";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
@@ -98,7 +98,7 @@ const submit = async () => {
 const rules = {
   required: requiredRule,
   matchingPasswords: (value: string) => matchingPasswordsRule(value, password.value),
-  email: emailRule,
+  email: requiredEmailRule,
 };
 </script>
 
