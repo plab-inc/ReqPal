@@ -13,16 +13,26 @@ export interface Database {
         Row: {
           catalog_id: number
           catalog_name: string | null
+          owner_id: string | null
         }
         Insert: {
           catalog_id?: number
           catalog_name?: string | null
+          owner_id?: string | null
         }
         Update: {
           catalog_id?: number
           catalog_name?: string | null
+          owner_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "catalogs_owner_id_fkey"
+            columns: ["owner_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       lesson_requirements: {
         Row: {
