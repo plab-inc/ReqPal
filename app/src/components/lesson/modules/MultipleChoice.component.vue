@@ -3,6 +3,7 @@
 import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue"
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import Help from "@/components/lesson/modules/Help.component.vue"
 
 type Solution = { id: number, solution: boolean }
 
@@ -13,6 +14,11 @@ interface Props {
 const props = defineProps<Props>();
 const solution = ref<Solution[]>();
 const selectedAnswers = ref<any>([]);
+const mcExplanation =
+    "In einer Multiple-Choice-Aufgabe ist das Ziel, alle Aussagen auszuwählen, die auf die zuvor gestellte Frage zutreffen. " +
+    "Sie haben die Möglichkeit, mehrere oder auch keine Aussagen auszuwählen. " +
+    "Bitte lesen Sie die Frage sorgfältig durch und überlegen Sie, welche Aussagen wahr und welche falsch sind. " +
+    "Sobald Sie eine Aussage auswählen, gilt sie als zutreffend."
 
 function checkSolution(id: number) {
   if (solution.value) {
@@ -60,22 +66,31 @@ watch(selectedAnswers, (newAnswers) => {
     <v-container>
       <v-row>
         <v-col cols="10">
-          <div class="text-h6 text-md-h5">Multiple Choice</div>
-          <v-container>
-            <v-form fast-fail>
-              <div class="text-h6">{{ question }}</div>
-              <div class="text-h6" v-if="solution">Lösung:</div>
+          <v-row>
+            <v-col class="d-flex justify-start align-center">
+              <div class="text-h6 text-md-h5 mr-2">Multiple Choice</div>
+              <Help title="Multiple Choice Aufgabe: Erklärung" :text="mcExplanation"></Help>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-container>
+                <v-form fast-fail>
+                  <div class="text-h6">{{ question }}</div>
+                  <div class="text-h6" v-if="solution">Lösung:</div>
 
-              <v-checkbox v-for="(answer) in fields.options"
-                          :key="answer.id"
-                          :label="answer.description"
-                          v-model="selectedAnswers[answer.id]"
-                          :class="{ 'right': (solution && checkSolution(answer.id)),
+                  <v-checkbox v-for="(answer) in fields.options"
+                              :key="answer.id"
+                              :label="answer.description"
+                              v-model="selectedAnswers[answer.id]"
+                              :class="{ 'right': (solution && checkSolution(answer.id)),
                 'disabled': solution,
                 'wrong': (solution && !checkSolution(answer.id))}">
-              </v-checkbox>
-            </v-form>
-          </v-container>
+                  </v-checkbox>
+                </v-form>
+              </v-container>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="2">
           <Hint v-if="hint" :hint="hint"></Hint>
