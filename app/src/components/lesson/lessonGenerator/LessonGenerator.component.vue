@@ -34,16 +34,6 @@ const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
 };
 
-if (lessonFormStore.components.length <= 0) {
-  sortedQuestions.forEach(q => {
-    lessonFormStore.addComponentWithData(q.question_type, {
-      question: q.question,
-      options: q.options,
-      solution: q.solution,
-      hint: q.hint
-    })
-  })
-}
 const questionComponents = lessonFormStore.components;
 const form = ref<any>(null);
 
@@ -67,6 +57,22 @@ async function submit() {
     //await router.push({path: '/lessons'});
   }
 }
+init();
+function init() {
+  lessonFormStore.clearComponents();
+  sortedQuestions.forEach(q => {
+    lessonFormStore.addComponentWithData(q.question_type, {
+      question: q.question,
+      options: q.options,
+      solution: q.solution,
+      hint: q.hint
+    })
+  })
+}
+
+onBeforeRouteLeave(() => {
+  lessonFormStore.clearComponents();
+})
 </script>
 
 <template>
@@ -119,15 +125,6 @@ async function submit() {
       </v-row>
     </v-form>
   </v-container>
-<!--
-  <CustomDialog v-model="openDialog"
-                @confirm="submit"
-                message=""
-                title="
-                confirm-label="Lektion beenden"
-                cancel-label="Zurück zur Lektion">
-  </CustomDialog>
--->
 </template>
 
 <style scoped>
