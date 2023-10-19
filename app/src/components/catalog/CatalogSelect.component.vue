@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
-import {dbCatalog} from "@/types/catalog.types.ts";
+import {CatalogDTO} from "@/types/catalog.types.ts";
 import {requiredRule} from "@/utils/validationRules.ts";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const catalogs = ref<dbCatalog[]>([]);
+const catalogs = ref<CatalogDTO[]>([]);
 const loading = ref<boolean>();
 const emit = defineEmits(['update:modelValue']);
 
@@ -24,8 +24,8 @@ const selectedCatalog = computed({
 onBeforeMount(async () => {
   loading.value = true;
   const catalogStore = useCatalogStore();
-  await catalogStore.getAllCatalogs();
-  catalogs.value = catalogStore.allCatalogs;
+  await catalogStore.fetchCatalogs();
+  catalogs.value = catalogStore.getCustomCatalogs.concat(catalogStore.getExampleCatalogs);
   if (props.modelValue) {
     selectedCatalog.value = props.modelValue;
   }

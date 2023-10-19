@@ -16,7 +16,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof DatabaseError) {
-        AlertService.addErrorAlert("Beim hochladen in die Datenbank ist ein Fehler aufgetreten.");
+        AlertService.addErrorAlert("Es ist ein Fehler mit der Datenbank aufgetreten.");
         return;
     }
 
@@ -30,6 +30,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 };
 
 const globalErrorHandler = (event: ErrorEvent): void => {
+    console.log(event);
     AlertService.addErrorAlert("Ein unerwarteter Fehler ist aufgetreten.");
 };
 

@@ -1,17 +1,18 @@
 import {supabase} from "@/plugins/supabase";
 import {
-    Catalog
+    Catalog, CatalogDTO
 } from "@/types/catalog.types";
 
 class CatalogServiceClass {
 
     public push = {
         uploadCatalogToDatabase: this.uploadCatalogToDatabase.bind(this),
+        deleteCatalog: this.deleteCatalog.bind(this)
     };
 
     public pull = {
         fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
-        fetchAllCatalogs: this.fetchAllCatalogs.bind(this),
+        fetchCatalogs: this.fetchCatalogs.bind(this),
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
@@ -112,16 +113,32 @@ class CatalogServiceClass {
         }
     }
 
-    async fetchAllCatalogs() {
+    async fetchCatalogs(examples: boolean) {
         const {data, error} = await supabase
             .from('catalogs')
             .select('*')
+            .eq('example', examples)
+
+        console.log(data);
 
         if (error) throw error;
 
         if (data) {
             return data;
         }
+    }
+
+    async deleteCatalog(catalogId: number):Promise<CatalogDTO[]> {
+        const {data, error} = await supabase
+            .from('catalogs')
+            .delete()
+            .eq('catalog_id', catalogId)
+            .select();
+
+        if (error) throw error;
+
+        return data;
+
     }
 
 }

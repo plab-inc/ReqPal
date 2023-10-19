@@ -2,14 +2,13 @@
 import {HTML5Backend} from "react-dnd-html5-backend";
 import Container from "@/components/lesson/drafts/sortable/Container.component.vue";
 import {DndProvider} from "vue3-dnd";
-import {Question, SortableAnswer} from "@/types/lesson.types.ts";
+import {QuestionDTO} from "@/types/lesson.types.ts";
 import {SortableDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import {shuffleArray} from "@/utils/helper.ts";
-import {useLessonStore} from "@/stores/lesson.store.ts";
 import {ref} from "vue";
 
 interface Props {
-  question: Question;
+  question: QuestionDTO;
 }
 
 const props = defineProps<Props>();

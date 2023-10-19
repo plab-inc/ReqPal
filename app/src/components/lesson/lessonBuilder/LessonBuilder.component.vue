@@ -75,9 +75,9 @@ async function uploadLesson() {
   if (formIsValid) {
     let lessonJson = lessonFormStore.generateLessonJSON();
     console.log(lessonJson);
-    //LessonService.push.uploadLesson(lessonJson);
+    LessonService.push.uploadLesson(lessonJson);
     lessonFormStore.flushStore();
-    //await router.push({path: '/lessons'});
+    await router.push({path: '/lessons'});
   }
 }
 
