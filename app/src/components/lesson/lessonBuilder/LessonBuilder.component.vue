@@ -14,8 +14,7 @@ import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequir
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
-import LessonService from "@/services/database/lesson.service.ts";
-import router from "@/router/index.ts";
+import lessonService from "@/services/database/lesson.service.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -37,7 +36,6 @@ const componentsMap: ComponentsMap = {
 };
 
 const lessonFormStore = useLessonFormStore();
-const components = lessonFormStore.getComponents;
 
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
@@ -57,12 +55,7 @@ const [collect, drop] = useDrop(() => ({
 const {canDrop, isOver} = toRefs(collect);
 const isActive = computed(() => unref(canDrop) && unref(isOver));
 const form = ref<any>(null);
-
-const fields = ref<any>({
-  title: lessonFormStore.getLessonFormTitle,
-  points: lessonFormStore.getLessonFormPoints,
-  description: lessonFormStore.getLessonFormDescription,
-});
+const components = lessonFormStore.getComponents;
 
 async function checkValidity(){
   return (await form.value.validate()).valid;
@@ -72,24 +65,27 @@ async function uploadLesson() {
 
   const formIsValid = await checkValidity();
 
-  if (formIsValid) {
-    let lessonJson = lessonFormStore.generateLessonJSON();
-    console.log(lessonJson);
-    LessonService.push.uploadLesson(lessonJson);
-    lessonFormStore.flushStore();
-    await router.push({path: '/lessons'});
+  if (true) {
+    let lesson = lessonFormStore.generateLesson();
+    console.log(lesson);
+    //LessonService.push.uploadLesson(lesson);
+    //lessonFormStore.flushStore();
+    //await router.push({path: '/lessons'});
   }
+}
+
+async function testHydrate(){
+  let lesson = await lessonService.pull.getLesson(28);
+
+  if(lesson){
+    lessonFormStore.hydrate(lesson);
+  }
+
 }
 
 defineExpose({
   checkValidity
 });
-
-watch(fields, (newFields) => {
-  lessonFormStore.setLessonTitle(newFields.title);
-  lessonFormStore.setLessonPoints(newFields.points);
-  lessonFormStore.setLessonDescription(newFields.description);
-}, {deep: true});
 
 </script>
 
@@ -103,7 +99,7 @@ watch(fields, (newFields) => {
               :rules="[rules.requiredString]"
               label="Titel der Lektion"
               variant="outlined"
-              v-model="fields.title"
+              v-model="lessonFormStore.lessonTitle"
           ></v-text-field>
         </v-col>
         <v-col cols="2">
@@ -111,7 +107,7 @@ watch(fields, (newFields) => {
               label="Punktzahl bei Abschluss"
               variant="outlined"
               type="number"
-              v-model="fields.points"
+              v-model="lessonFormStore.lessonPoints"
               clearable
           />
         </v-col>
@@ -121,7 +117,7 @@ watch(fields, (newFields) => {
               label="Beschreibung der Lektion"
               :rules="[rules.requiredString]"
               variant="outlined"
-              v-model="fields.description"
+              v-model="lessonFormStore.lessonDescription"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -154,7 +150,7 @@ watch(fields, (newFields) => {
                   </v-col>
                   <v-col cols="11">
                     <v-sheet rounded class="pa-3">
-                      <component
+                      <component v-if="componentEntry.type"
                           :is="getComponentInstance(componentEntry.type)"
                           :key="componentEntry.id"
                           :componentId="componentEntry.id"
@@ -195,6 +191,15 @@ watch(fields, (newFields) => {
               <v-col>
                 <v-btn
                     color="error"
+                    @click="lessonFormStore.flushStore()"
+                    block
+                >
+                  Lektion zurücksetzen
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                    color="error"
                     @click="lessonFormStore.clearComponents()"
                     block
                 >
@@ -203,7 +208,6 @@ watch(fields, (newFields) => {
               </v-col>
               <v-col>
                 <v-btn
-                    :disabled="!components.length"
                     color="primary"
                     @click="uploadLesson()"
                     block

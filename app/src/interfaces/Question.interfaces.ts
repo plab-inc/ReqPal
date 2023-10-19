@@ -2,13 +2,13 @@ export interface Question {
     [key: string]: any;
     question: string | null;
     options: string[] | null;
-    solution: trueOrFalseAnswer | multipleChoiceAnswer | null;
+    solution: any | null;
     hint: string | null;
+
+    position?: number | null;
+    type?: string | null;
 }
-export interface trueOrFalseAnswer {
-    id: number;
-    true: boolean;
-}
+
 export interface multipleChoiceAnswer {
     id: number,
     description: string,

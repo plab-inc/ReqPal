@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {QuestionDTO} from "@/types/lesson.types.ts";
+import {Lesson, QuestionDTO} from "@/types/lesson.types.ts";
 
 class LessonServiceClass {
 
@@ -11,7 +11,8 @@ class LessonServiceClass {
         fetchLessons: this.fetchLessons,
         fetchLessonById: this.fetchLessonById.bind(this),
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
-    }
+        getLesson: this.getLesson.bind(this),
+    };
 
     private async fetchLessons() {
 
@@ -68,13 +69,23 @@ class LessonServiceClass {
 
     }
 
-    private async uploadLesson(lessonJson: any){
+    private async uploadLesson(lesson: Lesson){
         const { error } = await supabase
             .rpc('create_lesson_from_json', {
-                data: lessonJson
+                data: lesson
             })
 
         if (error) console.error(error)
+    }
+    private async getLesson(lessonId: number) {
+        const { error, data } = await supabase
+            .rpc('get_lesson_json', {
+                p_lesson_id: lessonId
+            })
+
+        if (error) console.error(error)
+
+        if (data) return data as Lesson;
     }
 
 }
