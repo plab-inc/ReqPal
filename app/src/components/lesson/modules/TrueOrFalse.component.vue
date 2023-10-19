@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import {booleanValueRule, noEmptyStringRule} from "@/utils/validationRules.ts";
+import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
@@ -14,10 +14,6 @@ const props = defineProps<Props>();
 const submitted = ref(false);
 let result: boolean | null;
 const isFormValid = ref(false);
-const rules = {
-  requiredBool: booleanValueRule,
-  requiredString: noEmptyStringRule
-};
 
 const lessonFormStore = useLessonFormStore();
 const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
@@ -44,6 +40,7 @@ watch(fields, (newFields) => {
 </script>
 
 <template>
+  {{ fields.options }}
   <v-card variant="flat">
     <v-container>
       <v-row>
@@ -59,14 +56,12 @@ watch(fields, (newFields) => {
               <div class="text-h6">{{ question }}</div>
               <div class="text-h6" v-if="submitted">Solution:</div>
               <v-container>
-                <v-form v-model="isFormValid" fast-fail>
-                  <v-radio-group v-model="fields.options" :rules="[rules.requiredBool]">
-                    <v-radio label="True" :value="true"
-                             :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
-                    <v-radio label="False" :value="false"
-                             :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
-                  </v-radio-group>
-                </v-form>
+                <v-radio-group v-model="fields.options" :rules="[requiredBooleanRule]">
+                  <v-radio label="True" :value="true"
+                           :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
+                  <v-radio label="False" :value="false"
+                           :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
+                </v-radio-group>
               </v-container>
             </v-col>
           </v-row>

@@ -75,19 +75,17 @@ watch(selectedAnswers, (newAnswers) => {
           <v-row>
             <v-col>
               <v-container>
-                <v-form fast-fail>
-                  <div class="text-h6">{{ question }}</div>
-                  <div class="text-h6" v-if="solution">Lösung:</div>
+                <div class="text-h6">{{ question }}</div>
+                <div class="text-h6" v-if="solution">Lösung:</div>
 
-                  <v-checkbox v-for="(answer) in fields.options"
-                              :key="answer.id"
-                              :label="answer.description"
-                              v-model="selectedAnswers[answer.id]"
-                              :class="{ 'right': (solution && checkSolution(answer.id)),
+                <v-checkbox v-for="(answer) in fields.options"
+                            :key="answer.id"
+                            :label="answer.description"
+                            v-model="selectedAnswers[answer.id]"
+                            :class="{ 'right': (solution && checkSolution(answer.id)),
                 'disabled': solution,
                 'wrong': (solution && !checkSolution(answer.id))}">
-                  </v-checkbox>
-                </v-form>
+                </v-checkbox>
               </v-container>
             </v-col>
           </v-row>

@@ -47,10 +47,27 @@ if (lessonFormStore.components.length <= 0) {
   })
 }
 const questionComponents = lessonFormStore.components;
-const isFormValid = ref<boolean>(false);
+const form = ref<any>(null);
 
-function submit() {
+async function checkValidity() {
+  return (await form.value.validate()).valid;
+}
+
+defineExpose({
+  checkValidity
+});
+
+async function submit() {
   console.log("submit!")
+  const formIsValid = await checkValidity();
+
+  if (formIsValid) {
+    let lessonJson = lessonFormStore.generateLessonJSON();
+    console.log(lessonJson);
+    //LessonService.push.uploadLesson(lessonJson);
+    lessonFormStore.flushStore();
+    //await router.push({path: '/lessons'});
+  }
 }
 </script>
 
@@ -77,7 +94,7 @@ function submit() {
     </v-row>
 
     <v-divider></v-divider>
-    <v-form v-model="isFormValid" @submit.prevent>
+    <v-form @submit.prevent ref="form">
       <v-row class="mt-4">
         <v-col>
           <v-container v-if="questionComponents">
