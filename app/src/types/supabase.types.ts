@@ -13,45 +13,24 @@ export interface Database {
         Row: {
           catalog_id: number
           catalog_name: string | null
+          user_id: string | null
         }
         Insert: {
           catalog_id?: number
           catalog_name?: string | null
+          user_id?: string | null
         }
         Update: {
           catalog_id?: number
           catalog_name?: string | null
-        }
-        Relationships: []
-      }
-      lesson_requirements: {
-        Row: {
-          lesson_id: number
-          lesson_requirement_id: number
-          requirement_id: number | null
-        }
-        Insert: {
-          lesson_id: number
-          lesson_requirement_id?: number
-          requirement_id?: number | null
-        }
-        Update: {
-          lesson_id?: number
-          lesson_requirement_id?: number
-          requirement_id?: number | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "lesson_requirements_lesson_id_fkey"
-            columns: ["lesson_id"]
-            referencedRelation: "lessons"
+            foreignKeyName: "catalogs_owner_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lesson_requirements_requirement_id_fkey"
-            columns: ["requirement_id"]
-            referencedRelation: "requirements"
-            referencedColumns: ["requirement_id"]
           }
         ]
       }
@@ -61,29 +40,29 @@ export interface Database {
           id: number
           points: number
           published: boolean
-          teacher_id: string
           title: string
+          user_id: string
         }
         Insert: {
           description: string
           id?: number
           points: number
           published?: boolean
-          teacher_id: string
           title: string
+          user_id: string
         }
         Update: {
           description?: string
           id?: number
           points?: number
           published?: boolean
-          teacher_id?: string
           title?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "lessons_teacher_id_fkey"
-            columns: ["teacher_id"]
+            foreignKeyName: "lessons_user_id_fkey"
+            columns: ["user_id"]
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -162,14 +141,17 @@ export interface Database {
       profiles: {
         Row: {
           id: string
+          teacher: string | null
           username: string | null
         }
         Insert: {
           id: string
+          teacher?: string | null
           username?: string | null
         }
         Update: {
           id?: string
+          teacher?: string | null
           username?: string | null
         }
         Relationships: [
@@ -177,6 +159,12 @@ export interface Database {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_teacher_fkey"
+            columns: ["teacher"]
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
@@ -386,6 +374,12 @@ export interface Database {
       get_my_claims: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_teacher_uuid: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: string
       }
       is_claims_admin: {
         Args: Record<PropertyKey, never>

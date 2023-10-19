@@ -23,6 +23,9 @@ export const useLessonFormStore = defineStore('lessonForm', {
         lessonPoints: 250
     }),
     getters: {
+        getComponents: (state) => {
+            return state.components;
+        },
         getComponentValues: (state) => (componentId: string) => {
             const component = state.components.find(comp => comp.id === componentId);
             return component ? component.data : null;
@@ -97,7 +100,13 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.lessonDescription = description;
         },
         clearComponents() {
-            this.components = [];
+            this.components.splice(0, this.components.length);
+        },
+        flushStore() {
+            this.lessonTitle = '';
+            this.lessonDescription = '';
+            this.lessonPoints = 250;
+            this.clearComponents();
         },
         componentsToJSON() {
             console.log(this.generateLessonJSON());
