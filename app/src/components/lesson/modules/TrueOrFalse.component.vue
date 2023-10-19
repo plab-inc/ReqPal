@@ -3,8 +3,8 @@
 import {ref} from "vue";
 import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   componentId: string,
@@ -14,16 +14,16 @@ const props = defineProps<Props>();
 const submitted = ref(false);
 let result: boolean | null;
 
-const lessonFormStore = useLessonFormStore();
-const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
-const hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+const lessonStore = useLessonStore();
+const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
+const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
 
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
 function updateStoreData(fields: any) {
-  lessonFormStore.setComponentData(props.componentId, 'options', fields.options);
+  lessonStore.setComponentData(props.componentId, 'options', fields.options);
 }
 
 watch(fields, (newFields) => {

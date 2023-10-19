@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   componentId: string,
@@ -8,10 +7,10 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
 
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 </script>
 
