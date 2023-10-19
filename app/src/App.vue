@@ -24,7 +24,6 @@ watch(() => themeStore.currentTheme, (newTheme) => {
 supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
     useAuthStore().setSession(session);
-    console.log(useAuthStore().appMetadata)
   }
 });
 
