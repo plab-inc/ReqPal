@@ -1,33 +1,54 @@
 import {defineStore} from 'pinia';
 import catalogService from "@/services/database/catalog.service.ts";
-import {Catalog, dbCatalog, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
+import {Catalog, CatalogDTO, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
+import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface CatalogState {
-    allCatalogs: dbCatalog[]
+    catalogs: CatalogDTO[]
+    examples: CatalogDTO[]
     currentCatalog: Catalog | null
 }
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
-        allCatalogs: [],
+        catalogs: [],
+        examples: [],
         currentCatalog: null,
     }),
 
     getters: {
-        getCurrentCatalog(): any {
+        getCurrentCatalog(): Catalog | null {
             return this.currentCatalog;
-        }
+        },
+        getCustomCatalogs(): CatalogDTO[] {
+            return this.catalogs;
+        },
+        getExampleCatalogs(): CatalogDTO[] {
+            return this.examples;
+        },
     },
 
     actions: {
-        async getAllCatalogs() {
-
-            const catalogData = await catalogService.pull.fetchAllCatalogs();
-
+        async fetchCatalogs() {
+            const catalogData = await catalogService.pull.fetchCatalogs(false);
             if (catalogData) {
-                this.allCatalogs = catalogData;
+                this.catalogs = catalogData;
             }
-
+            const exampleCatalogData = await catalogService.pull.fetchCatalogs(true);
+            if (exampleCatalogData) {
+                this.examples = exampleCatalogData;
+            }
+        },
+        async deleteCatalog(catalogId: number) {
+            await catalogService.push.deleteCatalog(catalogId).then(
+                (data: CatalogDTO[]) => {
+                    if(data.length > 0) {
+                        this.catalogs.splice(this.catalogs.findIndex(c => c.catalog_id === catalogId), 1);
+                        return;
+                    }
+                    throw new DatabaseError("Catalog could not be deleted", 500);
+                }
+            );
         },
 
         async getCatalogWithProductsById(id: number) {

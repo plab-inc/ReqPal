@@ -11,7 +11,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const headers = [
-  {text: 'ID', value: 'requirement_id', sortable: true},
   {text: 'Requirement', value: 'reqId', sortable: true},
   {text: 'Titel', value: 'title', sortable: true},
   {text: 'Beschreibung', value: 'description', sortable: true},

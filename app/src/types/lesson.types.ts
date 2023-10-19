@@ -1,7 +1,7 @@
 import {Database} from "@/types/supabase.types.ts";
 
-export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
-export type Question = Database["public"]["Tables"]["questions"]["Row"];
+export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
+export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 
 export type Answer = {
     id: number,

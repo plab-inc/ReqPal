@@ -101,9 +101,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.lessonPoints = 250;
             this.clearComponents();
         },
-        componentsToJSON() {
-            console.log(this.generateLessonJSON());
-        },
         generateLessonJSON() {
             return {
                 title: this.lessonTitle,

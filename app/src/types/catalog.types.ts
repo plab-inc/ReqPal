@@ -27,7 +27,7 @@ export type Catalog = {
     requirements: Requirement[];
 }
 
-export type dbCatalog = Database["public"]["Tables"]["catalogs"]["Row"];
-export type dbProduct = Database["public"]["Tables"]["products"]["Row"];
-export type dbRequirement = Database["public"]["Tables"]["requirements"]["Row"];
-export type dbProductRequirement = Database["public"]["Tables"]["product_requirements"]["Row"];
+export type CatalogDTO = Database["public"]["Tables"]["catalogs"]["Row"];
+export type ProductDTO = Database["public"]["Tables"]["products"]["Row"];
+export type RequirementDTO = Database["public"]["Tables"]["requirements"]["Row"];
+export type ProductRequirementDTO = Database["public"]["Tables"]["product_requirements"]["Row"];
