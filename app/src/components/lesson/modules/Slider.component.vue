@@ -3,6 +3,7 @@ import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import {requiredNumberRule} from "@/utils/validationRules.ts";
 
 interface Props {
   componentId: string,
@@ -73,17 +74,15 @@ watch(inputValue, (newInput) => {
       </v-row>
       <v-row>
         <v-col>
-          <v-form>
-            <v-slider
-                v-model="inputValue"
-                :min="fields.options.minValue"
-                :max="fields.options.maxValue"
-                :step="fields.options.steps"
-                color="orange"
-                track-color="warning"
-                thumb-label>
-            </v-slider>
-          </v-form>
+          <v-slider
+              v-model="inputValue"
+              :min="fields.options.minValue"
+              :max="fields.options.maxValue"
+              :step="fields.options.steps"
+              color="orange"
+              track-color="warning"
+              thumb-label>
+          </v-slider>
         </v-col>
       </v-row>
     </v-container>
