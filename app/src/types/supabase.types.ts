@@ -371,6 +371,12 @@ export interface Database {
         }
         Returns: Json
       }
+      get_lesson_json: {
+        Args: {
+          p_lesson_id: number
+        }
+        Returns: Json
+      }
       get_my_claim: {
         Args: {
           claim: string
