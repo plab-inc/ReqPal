@@ -9,15 +9,13 @@ import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import CustomDialog from "@/components/dialog/CustomDialog.component.vue"
+import alertService from "@/services/util/alert.service.ts";
 
 const lessonStore = useLessonStore();
-
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
 
 const lessonFormStore = useLessonFormStore();
-const openDialog = ref<boolean>(false);
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -115,22 +113,21 @@ async function submit() {
       <v-row>
         <v-col>
           <v-container>
-            <v-btn type="submit" @click="openDialog = true">Submit</v-btn>
+            <v-btn type="submit" @click="alertService.addHelpDialog('lessonFinished', submit)">Submit</v-btn>
           </v-container>
         </v-col>
       </v-row>
     </v-form>
   </v-container>
-
+<!--
   <CustomDialog v-model="openDialog"
                 @confirm="submit"
-                message="Möchten Sie wirklich die Lektion beenden und Ihre Lösungen einreichen?
-                Die Lösungen können dann nicht mehr verändert werden."
-                title="Lektion beenden"
+                message=""
+                title="
                 confirm-label="Lektion beenden"
                 cancel-label="Zurück zur Lektion">
   </CustomDialog>
-
+-->
 </template>
 
 <style scoped>
