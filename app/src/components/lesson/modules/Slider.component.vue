@@ -3,7 +3,6 @@ import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
-import alertService from "@/services/util/alert.service.ts";
 
 interface Props {
   componentId: string,
