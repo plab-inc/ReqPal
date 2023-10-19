@@ -15,6 +15,7 @@ import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
+import router from "@/router/index.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -69,12 +70,15 @@ async function checkValidity(){
 
 async function uploadLesson() {
 
-  if (await checkValidity()) {
+  const formIsValid = await checkValidity();
+
+  if (formIsValid) {
     let lessonJson = lessonFormStore.generateLessonJSON();
     console.log(lessonJson);
     //LessonService.push.uploadLesson(lessonJson);
+    lessonFormStore.flushStore();
+    //await router.push({path: '/lessons'});
   }
-
 }
 
 defineExpose({
@@ -194,25 +198,17 @@ watch(fields, (newFields) => {
                     @click="lessonFormStore.clearComponents()"
                     block
                 >
-                  Reset
+                  Module zurücksetzen
                 </v-btn>
               </v-col>
               <v-col>
                 <v-btn
+                    :disabled="!components.length"
                     color="primary"
                     @click="uploadLesson()"
                     block
                 >
                   Speichern
-                </v-btn>
-              </v-col>
-              <v-col>
-                <v-btn
-                    color="primary"
-                    @click="checkValidity()"
-                    block
-                >
-                  Validiere
                 </v-btn>
               </v-col>
             </v-row>

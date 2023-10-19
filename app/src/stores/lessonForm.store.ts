@@ -95,6 +95,12 @@ export const useLessonFormStore = defineStore('lessonForm', {
         clearComponents() {
             this.components.splice(0, this.components.length);
         },
+        flushStore() {
+            this.lessonTitle = '';
+            this.lessonDescription = '';
+            this.lessonPoints = 250;
+            this.clearComponents();
+        },
         componentsToJSON() {
             console.log(this.generateLessonJSON());
         },
