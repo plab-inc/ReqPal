@@ -119,8 +119,6 @@ class CatalogServiceClass {
             .select('*')
             .eq('example', examples)
 
-        console.log(data);
-
         if (error) throw error;
 
         if (data) {
