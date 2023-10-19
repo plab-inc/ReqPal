@@ -86,6 +86,15 @@
             </v-sheet>
           </v-col>
         </v-row>
+        <div v-for="dialog in utilStore.dialogs">
+          <CustomDialog @confirm="dialog.onConfirm(); utilStore.closeDialog(dialog.id)"
+                        @cancel="utilStore.closeDialog(dialog.id)"
+                        :title="dialog.title"
+                        :message="dialog.message"
+                        :confirm-label="dialog.confirmLabel"
+                        :cancel-label="dialog.cancelLabel"
+          ></CustomDialog>
+        </div>
       </v-container>
     </v-main>
   </v-app>
@@ -96,6 +105,7 @@ import router from "@/router/index.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
+import CustomDialog from "@/components/dialog/CustomDialog.component.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
