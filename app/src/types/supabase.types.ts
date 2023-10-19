@@ -13,16 +13,19 @@ export interface Database {
         Row: {
           catalog_id: number
           catalog_name: string | null
+          example: boolean | null
           user_id: string | null
         }
         Insert: {
           catalog_id?: number
           catalog_name?: string | null
+          example?: boolean | null
           user_id?: string | null
         }
         Update: {
           catalog_id?: number
           catalog_name?: string | null
+          example?: boolean | null
           user_id?: string | null
         }
         Relationships: [
@@ -37,6 +40,7 @@ export interface Database {
       lessons: {
         Row: {
           description: string
+          example: boolean | null
           id: number
           points: number
           published: boolean
@@ -45,6 +49,7 @@ export interface Database {
         }
         Insert: {
           description: string
+          example?: boolean | null
           id?: number
           points: number
           published?: boolean
@@ -53,6 +58,7 @@ export interface Database {
         }
         Update: {
           description?: string
+          example?: boolean | null
           id?: number
           points?: number
           published?: boolean

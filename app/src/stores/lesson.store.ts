@@ -1,12 +1,12 @@
 import {defineStore} from 'pinia';
-import {Lesson} from "@/types/lesson.types";
+import {LessonDTO} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {v1 as uuidv1} from "uuid";
 
 interface LessonState {
-    lessons: Lesson[];
-    currentLesson: Lesson | null;
+    lessons: LessonDTO[];
+    currentLesson: LessonDTO | null;
     currentQuestions: any;
     lessonsLoaded: Boolean;
     components: ComponentEntry[];
