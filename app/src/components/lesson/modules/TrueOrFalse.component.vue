@@ -5,6 +5,7 @@ import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import alertService from "@/services/util/alert.service.ts";
 
 interface Props {
   componentId: string,
@@ -17,12 +18,6 @@ let result: boolean | null;
 const lessonFormStore = useLessonFormStore();
 const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
-const trueOrFalseExplanation =
-    "In einer True or False Aufgabe ist das Ziel, zu entscheiden, ob eine Aussage wahr (True) oder falsch (False) ist. " +
-    "Sie haben zwei Optionen zur Auswahl, und Ihre Aufgabe besteht darin, diejenige auszuwählen, die am besten zur Aussage passt. " +
-    "Beachten Sie, dass dementsprechend nur eine Option ausgewählt werden kann. " +
-    "Eine 'True' Auswahl bedeutet, dass die Aussage korrekt ist, während 'False' bedeutet, dass die Aussage nicht korrekt ist. " +
-    "Bitte lesen Sie die Aussage sorgfältig durch und entscheiden Sie, ob sie wahr oder falsch ist."
 
 const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
@@ -47,7 +42,7 @@ watch(fields, (newFields) => {
           <v-row>
             <v-col class="d-flex justify-start align-center">
               <div class="text-h6 text-md-h5 mr-2">True or False?</div>
-              <Help title="True Or False Aufgabe: Erklärung" :text="trueOrFalseExplanation"></Help>
+              <Help dialog-type="tfExplanation"></Help>
             </v-col>
           </v-row>
           <v-row>

@@ -14,11 +14,7 @@ interface Props {
 const props = defineProps<Props>();
 const solution = ref<Solution[]>();
 const selectedAnswers = ref<any>([]);
-const mcExplanation =
-    "In einer Multiple-Choice-Aufgabe ist das Ziel, alle Aussagen auszuwählen, die auf die zuvor gestellte Frage zutreffen. " +
-    "Sie haben die Möglichkeit, mehrere oder auch keine Aussagen auszuwählen. " +
-    "Bitte lesen Sie die Frage sorgfältig durch und überlegen Sie, welche Aussagen wahr und welche falsch sind. " +
-    "Sobald Sie eine Aussage auswählen, gilt sie als zutreffend."
+
 
 function checkSolution(id: number) {
   if (solution.value) {
@@ -69,7 +65,7 @@ watch(selectedAnswers, (newAnswers) => {
           <v-row>
             <v-col class="d-flex justify-start align-center">
               <div class="text-h6 text-md-h5 mr-2">Multiple Choice</div>
-              <Help title="Multiple Choice Aufgabe: Erklärung" :text="mcExplanation"></Help>
+              <Help dialog-type="mcExplanation"></Help>
             </v-col>
           </v-row>
           <v-row>

@@ -9,9 +9,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const textInput = ref<string[]>([]);
-const notesExplanation = "Nutzen Sie die bereitgestellten Textfelder, um sich Notizen zu Produkten, Anforderungen oder anderen Themen zu machen. " +
-    "Das Textfeld besitzt einen Titel, dass Ihnen helfen kann, Ihre Gedanken direkt zu einer bestimmten Kategorie zuzuordnen. " +
-    "In dem Feld 'Allgemein' können Sie frei alles notieren, was Ihnen wichtig ist oder auffällt."
+
 const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({
@@ -70,7 +68,7 @@ watch(textInput, (newTextInput) => {
         <v-container>
           <v-row>
             <v-col class="d-flex justify-end">
-              <Help title="Notizen: Erklärung" :text="notesExplanation"></Help>
+              <Help dialog-type="notesExplanation"></Help>
             </v-col>
           </v-row>
           <v-row>

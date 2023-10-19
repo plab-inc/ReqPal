@@ -11,9 +11,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const lessonFormStore = useLessonFormStore();
-const productExplanation = "In diesem Bereich finden Sie Produkte, die für den weiteren Verlauf dieser Lektion oder für konkrete Aufgaben relevant sein können. " +
-    "Betrachten Sie sich die Produkte und klicken Sie bei Bedarf von weiteren Informationen auf das Produkt. " +
-    "Sie werden dann zu einer hilfreichen Website oder der offiziellen Website des Produkts weitergeleitet."
 
 const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
@@ -30,7 +27,7 @@ const fields = ref<any>({
         <v-container>
           <v-row>
             <v-col class="d-flex justify-end">
-              <Help title="Produkte: Erklärung" :text="productExplanation"></Help>
+              <Help dialog-type="productExplanation"></Help>
             </v-col>
           </v-row>
           <v-row>

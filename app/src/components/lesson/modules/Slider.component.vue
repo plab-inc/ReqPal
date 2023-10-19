@@ -3,6 +3,7 @@ import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import alertService from "@/services/util/alert.service.ts";
 
 interface Props {
   componentId: string,
@@ -58,7 +59,7 @@ watch(inputValue, (newInput) => {
           <v-row>
             <v-col class="d-flex justify-start align-center">
               <div class="text-h6 text-md-h5 mr-2">Slider</div>
-              <Help title="Slider Aufgabe: Erklärung" :text="sliderExplanation"></Help>
+              <Help dialog-type="sliderExplanation"></Help>
             </v-col>
           </v-row>
           <v-row>

@@ -18,7 +18,8 @@ const props = defineProps({
     default: "Cancel"
   },
   modelValue: {
-    type: Boolean
+    type: Boolean,
+    default: true
   }
 });
 const emit = defineEmits();
