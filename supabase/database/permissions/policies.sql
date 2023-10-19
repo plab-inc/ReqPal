@@ -118,3 +118,16 @@ CREATE POLICY "policy_questions"
         WHERE questions.lesson_id = lessons.id
     )
     );
+DROP POLICY IF EXISTS "policy_questions_edit" ON public.questions;
+CREATE POLICY "policy_questions_edit"
+    ON public.questions
+    FOR ALL
+    TO authenticated
+    USING (
+    EXISTS(
+        SELECT 1
+        FROM lessons
+        WHERE questions.lesson_id = lessons.id AND
+        lessons.user_id = auth.uid()
+    )
+    );
