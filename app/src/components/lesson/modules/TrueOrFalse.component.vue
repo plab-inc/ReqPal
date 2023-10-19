@@ -33,7 +33,6 @@ watch(fields, (newFields) => {
 </script>
 
 <template>
-  {{ fields.options }}
   <v-card variant="flat">
     <v-container>
       <v-row>
