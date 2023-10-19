@@ -46,7 +46,7 @@ openDialog.value = props.modelValue;
 </script>
 
 <template>
-  <v-dialog v-model="openDialog" max-width="800px">
+  <v-dialog v-model="openDialog" max-width="800px" persistent>
     <v-card variant="elevated" class="pa-4">
       <v-row>
         <v-col cols="1" class="d-flex align-center">
