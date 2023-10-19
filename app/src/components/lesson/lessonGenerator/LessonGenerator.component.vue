@@ -8,14 +8,11 @@ import Textfield from "@/components/lesson/modules/Textfield.component.vue"
 import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import alertService from "@/services/util/alert.service.ts";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
-
-const lessonFormStore = useLessonFormStore();
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -34,7 +31,6 @@ const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
 };
 
-const questionComponents = lessonFormStore.components;
 const form = ref<any>(null);
 
 async function checkValidity() {
@@ -50,29 +46,28 @@ async function submit() {
   const formIsValid = await checkValidity();
 
   if (formIsValid) {
-    let lessonJson = lessonFormStore.generateLessonJSON();
-    console.log(lessonJson);
+    //let lessonJson = lessonFormStore.generateLessonJSON();
+    console.log(formIsValid);
     //LessonService.push.uploadLesson(lessonJson);
-    lessonFormStore.flushStore();
+    //lessonFormStore.flushStore();
     //await router.push({path: '/lessons'});
   }
 }
-init();
-function init() {
-  lessonFormStore.clearComponents();
-  sortedQuestions.forEach(q => {
-    lessonFormStore.addComponentWithData(q.question_type, {
-      question: q.question,
-      options: q.options,
-      solution: q.solution,
-      hint: q.hint
-    })
-  })
-}
 
-onBeforeRouteLeave(() => {
-  lessonFormStore.clearComponents();
-})
+init();
+
+function init() {
+  if (lessonStore.components.length <= 0) {
+    sortedQuestions.forEach(q => {
+      lessonStore.addComponentWithData(q.question_type, {
+        question: q.question,
+        options: q.options,
+        solution: q.solution,
+        hint: q.hint
+      })
+    })
+  }
+}
 </script>
 
 <template>
@@ -101,8 +96,8 @@ onBeforeRouteLeave(() => {
     <v-form @submit.prevent ref="form">
       <v-row class="mt-4">
         <v-col>
-          <v-container v-if="questionComponents">
-            <v-row v-for="question in questionComponents">
+          <v-container v-if="lessonStore.components.length > 0">
+            <v-row v-for="question in lessonStore.components">
               <v-col class="my-2">
                 <v-sheet class="pa-3" rounded elevation="3">
                   <component

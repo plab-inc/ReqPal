@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   componentId: string,
@@ -12,21 +12,16 @@ const props = defineProps<Props>();
 
 const inputValue = ref<number>(0);
 
-const sliderExplanation =
-    "In einer Slider Aufgabe ist das Ziel, abhängig von der Fragestellung, einen Wert auf dem Schieberegler auszuwählen oder einzuschätzen. " +
-    "Klicken Sie auf den Regler und ziehen Sie diesen nach links oder rechts, um einen Wert einzustellen. Ganz links befindet sich der kleinste Wert, " +
-    "während ganz rechts sich der maximale Wert befindet."
-
-const lessonFormStore = useLessonFormStore();
-const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
-const hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
+const lessonStore = useLessonStore();
+const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
+const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
 
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
 function updateStoreData(fields: any) {
-  lessonFormStore.setComponentData(props.componentId, 'options', fields.options);
+  lessonStore.setComponentData(props.componentId, 'options', fields.options);
 }
 
 init();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import Help from "@/components/lesson/modules/Help.component.vue"
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   componentId: string,
@@ -10,14 +10,14 @@ const props = defineProps<Props>();
 
 const textInput = ref<string[]>([]);
 
-const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
 
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
 function updateStoreData() {
-  lessonFormStore.setComponentData(props.componentId, 'options', fields.value.options);
+  lessonStore.setComponentData(props.componentId, 'options', fields.value.options);
 }
 
 init();
