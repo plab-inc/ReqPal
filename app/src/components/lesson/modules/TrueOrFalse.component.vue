@@ -13,7 +13,6 @@ interface Props {
 const props = defineProps<Props>();
 const submitted = ref(false);
 let result: boolean | null;
-const isFormValid = ref(false);
 
 const lessonFormStore = useLessonFormStore();
 const question = lessonFormStore.getComponentFieldValues(props.componentId, 'question')
