@@ -94,7 +94,10 @@ CREATE POLICY "policy_edit_lessons"
     ON public.lessons
     FOR ALL
     TO authenticated
-    USING (auth.uid() = user_id);
+    USING (
+            (SELECT check_user_role(auth.uid(), 'moderator')) = true OR
+            auth.uid() = user_id
+    );
 
 DROP POLICY IF EXISTS "policy_select_lessons" ON public.lessons;
 CREATE POLICY "policy_select_lessons"

@@ -24,6 +24,9 @@ export const useLessonFormStore = defineStore('lessonForm', {
         lessonPoints: 250
     }),
     getters: {
+        isDirty: (state) => {
+            return state.components.length > 0 && state.lessonTitle.length > 0 && state.lessonDescription.length > 0;
+        },
         getComponents: (state) => {
             return state.components;
         },
