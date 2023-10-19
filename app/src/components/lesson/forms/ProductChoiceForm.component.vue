@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {requiredRule, hyperlinkRule} from "@/utils/validationRules.ts";
+import {requiredRule, requiredHyperlinkRule, requiredStringRule} from "@/utils/validationRules.ts";
 
 const icons = [
   {name: "Instagram", icon: "mdi-instagram"},
@@ -21,10 +21,6 @@ const icons = [
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
-const rules = {
-  required: requiredRule,
-  hyperlink: hyperlinkRule
-};
 
 const fields = ref<any>({
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options') || [{ name: "", link: "", icon: "" }],
@@ -58,7 +54,7 @@ watch(fields, (newFields) => {
             v-model="fields.options[index].name"
             label="Produkt Name"
             variant="outlined"
-            :rules="[rules.required]"
+            :rules="[requiredStringRule]"
         ></v-text-field>
       </v-col>
       <v-col cols="5">
@@ -66,7 +62,7 @@ watch(fields, (newFields) => {
             v-model="fields.options[index].link"
             label="Produkt Hyperlink"
             variant="outlined"
-            :rules="[rules.hyperlink]"
+            :rules="[requiredHyperlinkRule, requiredStringRule]"
         ></v-text-field>
       </v-col>
       <v-col cols="2">

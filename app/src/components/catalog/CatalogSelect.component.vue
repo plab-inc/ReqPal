@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {dbCatalog} from "@/types/catalog.types.ts";
+import {requiredRule} from "@/utils/validationRules.ts";
 
 interface Props {
   modelValue: number | undefined
@@ -36,6 +37,7 @@ onBeforeMount(async () => {
   <v-select
       label="Katalog wählen"
       v-model="selectedCatalog"
+      :rules="[requiredRule]"
       :items="catalogs"
       :item-title="item => item.catalog_name"
       :item-value="item => item.catalog_id"

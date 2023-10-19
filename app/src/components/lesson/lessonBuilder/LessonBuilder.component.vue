@@ -4,26 +4,28 @@ import {DragItemTypes} from '@/types/dragItem.types.ts';
 import {toRefs} from '@vueuse/core';
 import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-
+import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
+import {requiredStringRule} from "@/utils/validationRules.ts";
 import TrueOrFalse from "@/components/lesson/forms/TrueOrFalseForm.component.vue";
 import MultipleChoiceForm from "@/components/lesson/forms/MultipleChoiceForm.component.vue";
 import SliderForm from "@/components/lesson/forms/SliderForm.component.vue";
 import TextfieldForm from "@/components/lesson/forms/TextfieldForm.component.vue";
-import {LessonBuilderDragItem} from "@/interfaces/DragItems.interfaces.ts";
 import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequirementSelectionForm.component.vue"
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
+import router from "@/router/index.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
 }
 
 const themeColors = useTheme().current.value.colors;
-
 const templates = ['Requirement', 'Products', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
-
+const rules = {
+  requiredString: requiredStringRule
+};
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(CatalogRequirementSelection),
@@ -35,8 +37,7 @@ const componentsMap: ComponentsMap = {
 };
 
 const lessonFormStore = useLessonFormStore();
-
-const components = computed(() => lessonFormStore.components);
+const components = lessonFormStore.getComponents;
 
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
@@ -63,17 +64,21 @@ const fields = ref<any>({
   description: lessonFormStore.getLessonFormDescription,
 });
 
-const checkValidity = () => {
-  return form.value ? form.value.validate() : false;
-};
+async function checkValidity(){
+  return (await form.value.validate()).valid;
+}
 
-function uploadLesson() {
+async function uploadLesson() {
 
-  let lessonJson = lessonFormStore.generateLessonJSON();
-  console.log(lessonJson);
+  const formIsValid = await checkValidity();
 
-  LessonService.push.uploadLesson(lessonJson);
-
+  if (formIsValid) {
+    let lessonJson = lessonFormStore.generateLessonJSON();
+    console.log(lessonJson);
+    //LessonService.push.uploadLesson(lessonJson);
+    lessonFormStore.flushStore();
+    //await router.push({path: '/lessons'});
+  }
 }
 
 defineExpose({
@@ -95,6 +100,7 @@ watch(fields, (newFields) => {
         <v-col cols="10" class="pr-5">
           <v-text-field
               clearable
+              :rules="[rules.requiredString]"
               label="Titel der Lektion"
               variant="outlined"
               v-model="fields.title"
@@ -113,6 +119,7 @@ watch(fields, (newFields) => {
           <v-text-field
               clearable
               label="Beschreibung der Lektion"
+              :rules="[rules.requiredString]"
               variant="outlined"
               v-model="fields.description"
           ></v-text-field>
@@ -191,11 +198,12 @@ watch(fields, (newFields) => {
                     @click="lessonFormStore.clearComponents()"
                     block
                 >
-                  Reset
+                  Module zurücksetzen
                 </v-btn>
               </v-col>
               <v-col>
                 <v-btn
+                    :disabled="!components.length"
                     color="primary"
                     @click="uploadLesson()"
                     block

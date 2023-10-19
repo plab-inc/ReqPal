@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {noEmptyStringRule} from "@/utils/validationRules.ts";
+import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const props = defineProps<{ componentId: string }>();
@@ -24,7 +24,7 @@ watch(fields, (newFields) => {
   <div class="text-subtitle-1">{{ 'Füge hier einen Titel oder eine Beschreibung zur Aufgabe hinzu.' }}</div>
   <v-textarea
       v-model="fields.options"
-      :rules="[noEmptyStringRule]"
+      :rules="[requiredStringRule]"
       label="Beschreibung"
       variant="outlined"
       auto-grow></v-textarea>
