@@ -29,6 +29,21 @@
                     mdi-newspaper-variant
                   </v-icon>
                 </template>
+                <template v-slot:append>
+                  <v-btn-group
+                      variant="outlined"
+                      elevation="24"
+                      divided
+                      density="default"
+                  >
+                    <v-btn
+                        @click.stop="console.log('delete')"
+                        color="error"
+                    >
+                      Löschen
+                    </v-btn>
+                  </v-btn-group>
+                </template>
               </v-list-item>
             </v-list>
           </v-col>
