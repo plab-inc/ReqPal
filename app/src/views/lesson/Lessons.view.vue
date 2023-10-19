@@ -44,8 +44,14 @@
                       density="default"
                   >
                     <v-btn
-                        @click.stop="console.log('publish')"
+                        @click.stop="editLesson(lesson.id)"
                         color="primary"
+                    >
+                      Bearbeiten
+                    </v-btn>
+                    <v-btn
+                        @click.stop="console.log('publish')"
+                        color="success"
                     >
                       Veröffentlichen
                     </v-btn>
@@ -71,11 +77,24 @@
 import {useLessonStore} from "@/stores/lesson.store";
 import router from "@/router/index.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import lessonService from "@/services/database/lesson.service.ts";
 
 const lessonStore = useLessonStore();
+const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
 
 const lessons = lessonStore.getLessons;
+
+async function editLesson(lessonId: number) {
+
+  await lessonService.pull.getLesson(lessonId).then((lesson) => {
+    if(lesson){
+      lessonFormStore.hydrate(lesson);
+      router.push({path: '/builder'});
+    }
+  });
+}
 
 function openLessonDetails(lessonId: number) {
   router.push({ name: 'LessonDetails', params: { lessonId } });

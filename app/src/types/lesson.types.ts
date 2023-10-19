@@ -1,31 +1,13 @@
 import {Database} from "@/types/supabase.types.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 
-export type Answer = {
-    id: number,
+export type Lesson = {
+    id: number;
+    title: string;
     description: string;
-}
-
-export type SortableAnswer = {
-    id: string,
-    description: string;
-    order: number
-}
-
-export type Result = {
-    wholeAnswerIsCorrect: boolean;
-    results: answerResults[];
-}
-
-export type answerResults = {
-    id: number,
-    answerIsCorrect: boolean;
-}
-
-export type mcAnswer = {
-    id: number,
-    description: string,
-    solution: boolean
+    points: number;
+    questions: Question[];
 }

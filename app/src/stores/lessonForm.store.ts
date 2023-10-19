@@ -1,10 +1,11 @@
 import {defineStore} from 'pinia';
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {v1 as uuidv1} from 'uuid';
+import {Lesson} from "@/types/lesson.types.ts";
 
 interface ComponentEntry {
     id: string;
-    type: string;
+    type: string | null;
     data: Question;
 }
 
@@ -83,15 +84,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
                 component.data[field] = value;
             }
         },
-        setLessonPoints(points: number) {
-            this.lessonPoints = points;
-        },
-        setLessonTitle(title: string) {
-            this.lessonTitle = title;
-        },
-        setLessonDescription(description: string) {
-            this.lessonDescription = description;
-        },
         clearComponents() {
             this.components.splice(0, this.components.length);
         },
@@ -101,22 +93,43 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.lessonPoints = 250;
             this.clearComponents();
         },
-        generateLessonJSON() {
+        generateLesson(): Lesson {
             return {
+                id: 0, //TODO implement id
                 title: this.lessonTitle,
                 description: this.lessonDescription,
                 points: this.lessonPoints,
                 questions: this.components.map(component => {
                     return {
-                        type: component.type,
                         position: this.getComponentIndexById(component.id),
                         question: component.data.question,
                         solution: toRaw(component.data.solution),
                         options: toRaw(component.data.options),
-                        hint: toRaw(component.data.hint)
+                        hint: toRaw(component.data.hint),
+                        type: component.type
                     }
                 })
             };
+        },
+        hydrate(lesson: Lesson) {
+            this.flushStore();
+
+            this.lessonTitle = lesson.title;
+            this.lessonDescription = lesson.description;
+            this.lessonPoints = lesson.points;
+            lesson.questions.forEach((question: Question) => {
+                this.components.push({
+                    type: question.type || null,
+                    id: uuidv1(),
+                    data: {
+                        question: question.question,
+                        solution: question.solution,
+                        options: question.options,
+                        hint: question.hint,
+                        position: question.position,
+                    }
+                });
+            });
         }
     }
 });
