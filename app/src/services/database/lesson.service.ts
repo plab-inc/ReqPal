@@ -1,5 +1,6 @@
 import {supabase} from "@/plugins/supabase";
 import {Lesson, QuestionDTO} from "@/types/lesson.types.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
 
@@ -52,19 +53,7 @@ class LessonServiceClass {
         if (error) throw error;
 
             if (data) {
-                const newQuestions: QuestionDTO[] = data.map((questionData: any) => {
-                    return {
-                        id: questionData.id,
-                        hint: questionData.hint,
-                        options: questionData.options,
-                        lesson_id: lessonId,
-                        question: questionData.question,
-                        question_type: questionData.question_type,
-                        solution: null,
-                        position: questionData.position,
-                    };
-                });
-                return newQuestions;
+                return data as Question[];
             }
 
     }

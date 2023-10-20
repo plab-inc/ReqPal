@@ -32,3 +32,38 @@ BEGIN
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+
+create or replace function get_lesson_json(p_lesson_id integer) returns jsonb
+    language plpgsql
+as
+$$
+DECLARE
+    result JSONB;
+BEGIN
+    SELECT jsonb_build_object(
+                   'id', l.id,
+                   'title', l.title,
+                   'description', l.description,
+                   'points', l.points,
+                   'questions', COALESCE(
+                           jsonb_agg(
+                                   jsonb_build_object(
+                                           'hint', q.hint,
+                                           'id', q.id,
+                                           'lesson_id', q.lesson_id,
+                                           'options', q.options,
+                                           'position', q.position,
+                                           'question', q.question,
+                                           'type', q.question_type,
+                                           'solution', q.solution
+                                       )
+                                   ORDER BY q.position),'[]'::jsonb))
+    INTO result
+    FROM lessons l
+             LEFT JOIN questions q ON l.id = q.lesson_id
+    WHERE l.id = p_lesson_id
+    GROUP BY l.id;
+
+    RETURN result;
+END;
+$$;
