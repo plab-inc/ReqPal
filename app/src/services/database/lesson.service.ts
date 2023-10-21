@@ -16,11 +16,12 @@ class LessonServiceClass {
         getLesson: this.getLesson.bind(this),
     };
 
-    private async fetchLessons() {
+    private async fetchLessons(examples: boolean = false) {
 
         const {data, error} = await supabase
             .from('lessons')
             .select('*')
+            .eq('example', examples)
 
         if (error) throw error;
 
