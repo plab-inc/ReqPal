@@ -5,7 +5,7 @@ export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 
 export type Lesson = {
-    id: number;
+    uuid: string;
     title: string;
     description: string;
     points: number;

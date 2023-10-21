@@ -26,5 +26,8 @@ export const defaults: DefaultsInstance = {
     },
     VSheet: {
         elevation: 8,
+    },
+    VContainer: {
+        fluid: true,
     }
 };

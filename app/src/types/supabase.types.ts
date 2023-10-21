@@ -41,29 +41,29 @@ export interface Database {
         Row: {
           description: string
           example: boolean | null
-          id: number
           points: number
           published: boolean
           title: string
           user_id: string
+          uuid: string
         }
         Insert: {
           description: string
           example?: boolean | null
-          id?: number
           points: number
           published?: boolean
           title: string
           user_id: string
+          uuid?: string
         }
         Update: {
           description?: string
           example?: boolean | null
-          id?: number
           points?: number
           published?: boolean
           title?: string
           user_id?: string
+          uuid?: string
         }
         Relationships: [
           {
@@ -178,40 +178,40 @@ export interface Database {
       questions: {
         Row: {
           hint: string | null
-          id: number
-          lesson_id: number
+          lesson_uuid: string | null
           options: Json | null
           position: number
           question: string | null
           question_type: string
           solution: Json | null
+          uuid: string
         }
         Insert: {
           hint?: string | null
-          id?: number
-          lesson_id: number
+          lesson_uuid?: string | null
           options?: Json | null
           position: number
           question?: string | null
           question_type: string
           solution?: Json | null
+          uuid?: string
         }
         Update: {
           hint?: string | null
-          id?: number
-          lesson_id?: number
+          lesson_uuid?: string | null
           options?: Json | null
           position?: number
           question?: string | null
           question_type?: string
           solution?: Json | null
+          uuid?: string
         }
         Relationships: [
           {
-            foreignKeyName: "questions_lesson_id_fkey"
-            columns: ["lesson_id"]
+            foreignKeyName: "questions_lessons_uuid_fk"
+            columns: ["lesson_uuid"]
             referencedRelation: "lessons"
-            referencedColumns: ["id"]
+            referencedColumns: ["uuid"]
           }
         ]
       }
@@ -373,7 +373,7 @@ export interface Database {
       }
       get_lesson_json: {
         Args: {
-          p_lesson_id: number
+          p_lesson_uuid: string
         }
         Returns: Json
       }
