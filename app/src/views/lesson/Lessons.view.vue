@@ -43,6 +43,7 @@
                     <v-btn
                         @click.stop="console.log('copy')"
                         color="primary"
+                        disabled
                     >
                       Kopieren
                     </v-btn>
