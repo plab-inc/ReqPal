@@ -34,9 +34,16 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <v-card :loading="loading" :title="requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar'"
-          :text="requirement?.description ? requirement?.description : ''"
-          variant="outlined">
+  <v-card :loading="loading"
+          variant="outlined"
+          color="success"
+  >
+    <v-card-title class="text-h4 text-decoration-underline">
+      {{ requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar' }}
+    </v-card-title>
+    <v-card-text class="text-h5 mt-1">
+      {{ requirement?.description ? requirement?.description : 'Wähle eine Anforderung' }}
+    </v-card-text>
   </v-card>
 </template>
 
