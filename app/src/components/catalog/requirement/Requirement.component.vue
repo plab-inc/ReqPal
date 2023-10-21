@@ -2,7 +2,7 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Requirement} from "@/types/catalog.types.ts";
 import {ref} from "vue";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
@@ -12,9 +12,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
 onBeforeMount(async () => {
@@ -34,9 +34,16 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <v-card :loading="loading" :title="requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar'"
-          :text="requirement?.description ? requirement?.description : ''"
-          variant="outlined">
+  <v-card :loading="loading"
+          variant="outlined"
+          color="success"
+  >
+    <v-card-title class="text-h4 text-decoration-underline">
+      {{ requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar' }}
+    </v-card-title>
+    <v-card-text class="text-h5 mt-1">
+      {{ requirement?.description ? requirement?.description : 'Wähle eine Anforderung' }}
+    </v-card-text>
   </v-card>
 </template>
 
