@@ -1,15 +1,16 @@
 import {defineStore} from 'pinia';
 import {Question} from "@/interfaces/Question.interfaces.ts";
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {Lesson} from "@/types/lesson.types.ts";
 
 interface ComponentEntry {
-    id: string;
+    uuid: string;
     type: string | null;
     data: Question;
 }
 
 interface LessonFormState {
+    uuid: string;
     lessonTitle: string;
     lessonDescription: string;
     lessonPoints: number;
@@ -18,6 +19,7 @@ interface LessonFormState {
 
 export const useLessonFormStore = defineStore('lessonForm', {
     state: (): LessonFormState => ({
+        uuid: uuidv4(),
         components: [],
         lessonTitle: '',
         lessonDescription: '',
@@ -31,18 +33,18 @@ export const useLessonFormStore = defineStore('lessonForm', {
             return state.components;
         },
         getComponentValues: (state) => (componentId: string) => {
-            const component = state.components.find(comp => comp.id === componentId);
+            const component = state.components.find(comp => comp.uuid === componentId);
             return component ? component.data : null;
         },
         getComponentFieldValues: (state) => (componentId: string, field: string) => {
-            const component = state.components.find(comp => comp.id === componentId);
+            const component = state.components.find(comp => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
         getLessonFormTitle: (state) => {
             return state.lessonTitle;
         },
         getComponentIndexById: (state) => (id: string) => {
-            return state.components.findIndex((component) => component.id === id);
+            return state.components.findIndex((component) => component.uuid === id);
         },
         getLessonFormDescription: (state) => {
             return state.lessonDescription;
@@ -53,14 +55,15 @@ export const useLessonFormStore = defineStore('lessonForm', {
     },
     actions: {
         addComponent(componentName: string) {
+            let uuid: string  = uuidv4();
             this.components.push({
                 type: componentName,
-                id: uuidv1(),
-                data: {question: null, options: null, solution: null, hint: null}
+                uuid: uuid,
+                data: {uuid: uuid, question: null, options: null, solution: null, hint: null}
             });
         },
         removeComponentById(id: string) {
-            const indexToRemove = this.components.findIndex((component) => component.id === id);
+            const indexToRemove = this.components.findIndex((component) => component.uuid === id);
             this.components.splice(indexToRemove, 1);
         },
         switchComponentWithPrevById(id: string) {
@@ -82,7 +85,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             }
         },
         setComponentData(componentId: string, field: string, value: any) {
-            const component = this.components.find(comp => comp.id === componentId);
+            const component = this.components.find(comp => comp.uuid === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
             }
@@ -98,13 +101,14 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         generateLesson(): Lesson {
             return {
-                id: 0, //TODO implement id
+                uuid: this.uuid,
                 title: this.lessonTitle,
                 description: this.lessonDescription,
                 points: this.lessonPoints,
                 questions: this.components.map(component => {
                     return {
-                        position: this.getComponentIndexById(component.id),
+                        uuid: component.uuid,
+                        position: this.getComponentIndexById(component.uuid),
                         question: component.data.question,
                         solution: toRaw(component.data.solution),
                         options: toRaw(component.data.options),
@@ -116,15 +120,16 @@ export const useLessonFormStore = defineStore('lessonForm', {
         },
         hydrate(lesson: Lesson) {
             this.flushStore();
-
+            this.uuid = lesson.uuid;
             this.lessonTitle = lesson.title;
             this.lessonDescription = lesson.description;
             this.lessonPoints = lesson.points;
             lesson.questions.forEach((question: Question) => {
                 this.components.push({
                     type: question.type || null,
-                    id: uuidv1(),
+                    uuid: question.uuid,
                     data: {
+                        uuid: question.uuid,
                         question: question.question,
                         solution: question.solution,
                         options: question.options,

@@ -15,6 +15,8 @@ import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import lessonService from "@/services/database/lesson.service.ts";
+import LessonService from "@/services/database/lesson.service.ts";
+import router from "@/router/index.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -68,14 +70,14 @@ async function uploadLesson() {
   if (true) {
     let lesson = lessonFormStore.generateLesson();
     console.log(lesson);
-    //LessonService.push.uploadLesson(lesson);
-    //lessonFormStore.flushStore();
-    //await router.push({path: '/lessons'});
+    await LessonService.push.uploadLesson(lesson);
+    lessonFormStore.flushStore();
+    await router.push({path: '/lessons'});
   }
 }
 
 async function testHydrate(){
-  let lesson = await lessonService.pull.getLesson(28);
+  let lesson = await lessonService.pull.getLesson('b7415fb6-e763-4cf4-9f2b-19013d7b3adb');
 
   if(lesson){
     lessonFormStore.hydrate(lesson);
@@ -132,28 +134,28 @@ defineExpose({
               <v-container v-if="components">
                 <v-row v-for="componentEntry in components">
                   <v-col cols="1" align-self="center" class="d-flex flex-column">
-                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) > 0"
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.uuid) > 0"
                            class="ma-2"
                            icon="mdi-arrow-up"
-                           @click="lessonFormStore.switchComponentWithPrevById(componentEntry.id)"
+                           @click="lessonFormStore.switchComponentWithPrevById(componentEntry.uuid)"
                     ></v-btn>
                     <v-btn
                         class="ma-2"
                         icon="mdi-delete"
-                        @click="lessonFormStore.removeComponentById(componentEntry.id)"
+                        @click="lessonFormStore.removeComponentById(componentEntry.uuid)"
                     ></v-btn>
-                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.id) !== components.length-1"
+                    <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.uuid) !== components.length-1"
                            class="ma-2"
                            icon="mdi-arrow-down"
-                           @click="lessonFormStore.switchComponentWithPostById(componentEntry.id)"
+                           @click="lessonFormStore.switchComponentWithPostById(componentEntry.uuid)"
                     ></v-btn>
                   </v-col>
                   <v-col cols="11">
                     <v-sheet rounded class="pa-3">
                       <component v-if="componentEntry.type"
                           :is="getComponentInstance(componentEntry.type)"
-                          :key="componentEntry.id"
-                          :componentId="componentEntry.id"
+                          :key="componentEntry.uuid"
+                          :componentId="componentEntry.uuid"
                       ></component>
                     </v-sheet>
                   </v-col>

@@ -59,7 +59,8 @@ init();
 function init() {
   if (lessonStore.components.length <= 0) {
     sortedQuestions.forEach(q => {
-      lessonStore.addComponentWithData(q.question_type, {
+      lessonStore.addComponentWithData(q.question_type, q.uuid,{
+        uuid: q.uuid,
         question: q.question,
         options: q.options,
         solution: q.solution,
@@ -102,8 +103,8 @@ function init() {
                 <v-sheet class="pa-3" rounded elevation="3">
                   <component
                       :is="getComponentInstance(question.type)"
-                      :key="question.id"
-                      :componentId="question.id"
+                      :key="question.uuid"
+                      :componentId="question.uuid"
                   ></component>
                 </v-sheet>
               </v-col>
