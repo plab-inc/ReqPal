@@ -12,8 +12,8 @@
             <v-list>
               <v-list-item
                   v-for="lesson in lessons"
-                  :key="lesson.id"
-                  @click="openLessonDetails(lesson.id)"
+                  :key="lesson.uuid"
+                  @click="openLessonDetails(lesson.uuid)"
                   border
                   variant="outlined"
                   rounded
@@ -44,7 +44,7 @@
                       density="default"
                   >
                     <v-btn
-                        @click.stop="editLesson(lesson.id)"
+                        @click.stop="editLesson(lesson.uuid)"
                         color="primary"
                     >
                       Bearbeiten
@@ -86,9 +86,9 @@ const authStore = useAuthStore();
 
 const lessons = lessonStore.getLessons;
 
-async function editLesson(lessonId: number) {
+async function editLesson(lessonUUID: string) {
 
-  await lessonService.pull.getLesson(lessonId).then((lesson) => {
+  await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
     if(lesson){
       lessonFormStore.hydrate(lesson);
       router.push({path: '/builder'});
@@ -96,8 +96,9 @@ async function editLesson(lessonId: number) {
   });
 }
 
-function openLessonDetails(lessonId: number) {
-  router.push({ name: 'LessonDetails', params: { lessonId } });
+function openLessonDetails(lessonUUID: string) {
+  console.log(lessonUUID)
+  router.push({ name: 'LessonDetails', params: { lessonUUID } });
 }
 
 </script>

@@ -2,6 +2,7 @@ import {inherits} from "@babel/types";
 
 export interface Question {
     [key: string]: any;
+    uuid: string;
     question: string | null;
     options: string[] | null;
     hint: string | null;

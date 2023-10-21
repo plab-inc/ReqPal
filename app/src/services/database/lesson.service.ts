@@ -28,12 +28,12 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonById(lessonId: number) {
+    private async fetchLessonById(lessonUUID: string) {
 
         const {data, error} = await supabase
             .from('lessons')
             .select('*')
-            .eq('id', lessonId)
+            .eq('uuid', lessonUUID)
             .single()
 
         if (error) throw error;
@@ -43,12 +43,12 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchQuestionsForLesson(lessonId: number) {
+    private async fetchQuestionsForLesson(lessonUUID: string) {
 
         const {data, error} = await supabase
             .from('questions')
-            .select('id,lesson_id,question,question_type,options,hint,position')
-            .eq('lesson_id', lessonId)
+            .select('uuid,lesson_uuid,question,question_type,options,hint,position')
+            .eq('lesson_uuid', lessonUUID)
 
         if (error) throw error;
 
@@ -66,10 +66,10 @@ class LessonServiceClass {
 
         if (error) console.error(error)
     }
-    private async getLesson(lessonId: number) {
+    private async getLesson(lessonUUID: string) {
         const { error, data } = await supabase
             .rpc('get_lesson_json', {
-                p_lesson_id: lessonId
+                p_lesson_uuid: lessonUUID
             })
 
         if (error) console.error(error)

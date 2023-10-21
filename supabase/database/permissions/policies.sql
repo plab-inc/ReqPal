@@ -118,7 +118,7 @@ CREATE POLICY "policy_questions"
     EXISTS(
         SELECT 1
         FROM lessons
-        WHERE questions.lesson_id = lessons.id
+        WHERE questions.lesson_uuid = lessons.uuid
     )
     );
 DROP POLICY IF EXISTS "policy_questions_edit" ON public.questions;
@@ -130,7 +130,7 @@ CREATE POLICY "policy_questions_edit"
     EXISTS(
         SELECT 1
         FROM lessons
-        WHERE questions.lesson_id = lessons.id AND
+        WHERE questions.lesson_uuid = lessons.uuid AND
         lessons.user_id = auth.uid()
     )
     );

@@ -13,7 +13,7 @@ interface LessonState {
 }
 
 interface ComponentEntry {
-    id: string;
+    uuid: string;
     type: string;
     data: Question;
 }
@@ -43,14 +43,14 @@ export const useLessonStore = defineStore('lesson', {
             return [...state.currentQuestions].sort((a, b) => a.position - b.position);
         },
         getComponentFieldValues: (state) => (componentId: string, field: string) => {
-            const component = state.components.find(comp => comp.id === componentId);
+            const component = state.components.find(comp => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
     },
 
     actions: {
-        async fetchQuestionsForLesson(lessonId: number) {
-            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonId);
+        async fetchQuestionsForLesson(lessonUUID: string) {
+            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
             if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
             }
@@ -62,21 +62,21 @@ export const useLessonStore = defineStore('lesson', {
                 this.lessons = lessons;
             }
         },
-        loadLessonById(lessonId: number) {
-            const lesson = this.lessons.find(lesson => lesson.id === lessonId);
+        loadLessonByUUID(lessonUUID: string) {
+            const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
             if (lesson) {
                 this.currentLesson = lesson;
             }
         },
-        addComponentWithData(componentName: string, data: { question: any, options: any, solution: any, hint: any }) {
+        addComponentWithData(componentName: string, componentUUID: string, data: { uuid: string, question: any, options: any, solution: any, hint: any }) {
             this.components.push({
                 type: componentName,
-                id: uuidv1(),
+                uuid: componentUUID,
                 data: data
             });
         },
         setComponentData(componentId: string, field: string, value: any) {
-            const component = this.components.find(comp => comp.id === componentId);
+            const component = this.components.find(comp => comp.uuid === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
             }
