@@ -1,10 +1,12 @@
 import {supabase} from "@/plugins/supabase";
-import {Lesson, QuestionDTO} from "@/types/lesson.types.ts";
+import {Lesson} from "@/types/lesson.types.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
 
     public push = {
         uploadLesson: this.uploadLesson.bind(this),
+        deleteLesson: this.deleteLesson.bind(this),
     };
 
     public pull = {
@@ -14,11 +16,12 @@ class LessonServiceClass {
         getLesson: this.getLesson.bind(this),
     };
 
-    private async fetchLessons() {
+    private async fetchLessons(examples: boolean = false) {
 
         const {data, error} = await supabase
             .from('lessons')
             .select('*')
+            .eq('example', examples)
 
         if (error) throw error;
 
@@ -27,12 +30,12 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonById(lessonId: number) {
+    private async fetchLessonById(lessonUUID: string) {
 
         const {data, error} = await supabase
             .from('lessons')
             .select('*')
-            .eq('id', lessonId)
+            .eq('uuid', lessonUUID)
             .single()
 
         if (error) throw error;
@@ -42,33 +45,20 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchQuestionsForLesson(lessonId: number) {
+    private async fetchQuestionsForLesson(lessonUUID: string) {
 
         const {data, error} = await supabase
             .from('questions')
-            .select('id,lesson_id,question,question_type,options,hint,position')
-            .eq('lesson_id', lessonId)
+            .select('uuid,lesson_uuid,question,question_type,options,hint,position')
+            .eq('lesson_uuid', lessonUUID)
 
         if (error) throw error;
 
             if (data) {
-                const newQuestions: QuestionDTO[] = data.map((questionData: any) => {
-                    return {
-                        id: questionData.id,
-                        hint: questionData.hint,
-                        options: questionData.options,
-                        lesson_id: lessonId,
-                        question: questionData.question,
-                        question_type: questionData.question_type,
-                        solution: null,
-                        position: questionData.position,
-                    };
-                });
-                return newQuestions;
+                return data as Question[];
             }
 
     }
-
     private async uploadLesson(lesson: Lesson){
         const { error } = await supabase
             .rpc('create_lesson_from_json', {
@@ -77,15 +67,26 @@ class LessonServiceClass {
 
         if (error) console.error(error)
     }
-    private async getLesson(lessonId: number) {
+    private async getLesson(lessonUUID: string) {
         const { error, data } = await supabase
             .rpc('get_lesson_json', {
-                p_lesson_id: lessonId
+                p_lesson_uuid: lessonUUID
             })
 
         if (error) console.error(error)
 
         if (data) return data as Lesson;
+    }
+    private async deleteLesson(lessonUUID: string) {
+        const {data, error} = await supabase
+            .from('lessons')
+            .delete()
+            .eq('uuid', lessonUUID)
+            .select();
+
+        if (error) throw error;
+
+        return data;
     }
 
 }

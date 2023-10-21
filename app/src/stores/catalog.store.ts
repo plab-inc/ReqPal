@@ -30,7 +30,7 @@ export const useCatalogStore = defineStore('catalog', {
 
     actions: {
         async fetchCatalogs() {
-            const catalogData = await catalogService.pull.fetchCatalogs(false);
+            const catalogData = await catalogService.pull.fetchCatalogs();
             if (catalogData) {
                 this.catalogs = catalogData;
             }

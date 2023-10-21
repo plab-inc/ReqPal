@@ -15,7 +15,7 @@ const fields = ref<any>({
 </script>
 
 <template>
-  <v-card variant="outlined">
+  <v-card variant="flat">
     <v-card-text class="text-h5">
       {{ fields.options }}
     </v-card-text>
