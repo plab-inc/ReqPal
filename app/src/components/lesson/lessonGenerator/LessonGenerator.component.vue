@@ -69,6 +69,11 @@ function init() {
     })
   }
 }
+
+function isRequirementOrTextfield(componentType: string): boolean {
+  return componentType === 'Requirement' || componentType === 'Textfield';
+}
+
 </script>
 
 <template>
@@ -100,7 +105,10 @@ function init() {
           <v-container v-if="lessonStore.components.length > 0">
             <v-row v-for="question in lessonStore.components">
               <v-col class="my-2">
-                <v-sheet class="pa-3" rounded elevation="3">
+                <v-sheet
+                    class="pa-3"
+                    rounded
+                    :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
                   <component
                       :is="getComponentInstance(question.type)"
                       :key="question.uuid"
