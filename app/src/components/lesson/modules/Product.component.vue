@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ProductItem from "@/components/catalog/product/ProductItem.component.vue";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {ref} from "vue";
 import Help from "@/components/lesson/modules/Help.component.vue";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   componentId: string,
@@ -10,10 +10,10 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
 
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 </script>
 
