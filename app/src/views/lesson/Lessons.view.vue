@@ -56,7 +56,7 @@
                       Veröffentlichen
                     </v-btn>
                     <v-btn
-                        @click.stop="console.log('delete')"
+                        @click.stop="openDeleteDialog(lesson.uuid)"
                         color="error"
                     >
                       Löschen
@@ -79,6 +79,7 @@ import router from "@/router/index.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import lessonService from "@/services/database/lesson.service.ts";
+import alertService from "@/services/util/alert.service.ts";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
@@ -87,7 +88,6 @@ const authStore = useAuthStore();
 const lessons = lessonStore.getLessons;
 
 async function editLesson(lessonUUID: string) {
-
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
     if(lesson){
       lessonFormStore.hydrate(lesson);
@@ -97,8 +97,21 @@ async function editLesson(lessonUUID: string) {
 }
 
 function openLessonDetails(lessonUUID: string) {
-  console.log(lessonUUID)
   router.push({ name: 'LessonDetails', params: { lessonUUID } });
+}
+
+function openDeleteDialog(lessonUUID: string) {
+  alertService.openDialog(
+      () => deleteLesson(lessonUUID),
+      "Lektion löschen",
+      "Möchtest du die Lektion wirklich löschen? Das löschen is unwiederruflich",
+      "Ja",
+      "Nein"
+  )
+}
+function deleteLesson(lessonUUID: string): void {
+  lessonStore.deleteLesson(lessonUUID)
+      .then(() => {alertService.addSuccessAlert("Lektion gelöscht")})
 }
 
 </script>
