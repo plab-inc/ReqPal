@@ -2,7 +2,7 @@
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 import {Requirement} from "@/types/catalog.types.ts";
 import {ref} from "vue";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
@@ -12,9 +12,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
 const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
 
 onBeforeMount(async () => {
