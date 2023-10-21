@@ -106,7 +106,7 @@ function isRequirementOrTextfield(componentType: string): boolean {
             <v-row v-for="question in lessonStore.components">
               <v-col class="my-2">
                 <v-sheet
-                    class="pa-3"
+                    :class="isRequirementOrTextfield(question.type) ? '' : 'pa-3'"
                     rounded
                     :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
                   <component
