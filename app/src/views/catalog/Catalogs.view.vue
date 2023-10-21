@@ -66,6 +66,17 @@
             </v-list>
           </v-col>
         </v-row>
+    <v-row>
+      <v-col>
+        <v-btn
+            color="primary"
+            @click="router.push({path: '/catalogs/upload'})"
+            block
+        >
+          Katalog hochladen
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
