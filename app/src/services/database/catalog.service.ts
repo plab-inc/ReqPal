@@ -1,7 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {
-    Catalog, CatalogDTO
-} from "@/types/catalog.types";
+import {Catalog, CatalogDTO} from "@/types/catalog.types";
 
 class CatalogServiceClass {
 
@@ -113,7 +111,7 @@ class CatalogServiceClass {
         }
     }
 
-    async fetchCatalogs(examples: boolean) {
+    async fetchCatalogs(examples: boolean = false) {
         const {data, error} = await supabase
             .from('catalogs')
             .select('*')

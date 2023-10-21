@@ -5,6 +5,7 @@ import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface LessonState {
+    examples: LessonDTO[],
     lessons: LessonDTO[];
     currentLesson: LessonDTO | null;
     currentQuestions: any;
@@ -20,6 +21,7 @@ interface ComponentEntry {
 
 export const useLessonStore = defineStore('lesson', {
     state: (): LessonState => ({
+        examples: [],
         lessons: [],
         currentLesson: null,
         currentQuestions: [],
@@ -31,11 +33,12 @@ export const useLessonStore = defineStore('lesson', {
         getLessons: state => {
             return state.lessons;
         },
-
         getCurrentLesson: (state) => {
             return state.currentLesson;
         },
-
+        getExampleLessons: state => {
+            return state.examples;
+        },
         getCurrentQuestion: state => {
             return state.currentQuestions;
         },
@@ -60,6 +63,11 @@ export const useLessonStore = defineStore('lesson', {
             const lessons = await lessonService.pull.fetchLessons();
             if (lessons) {
                 this.lessons = lessons;
+            }
+            const exampleLessons = await lessonService.pull.fetchLessons(true);
+            if (exampleLessons) {
+                this.examples = exampleLessons;
+                console.log(this.examples);
             }
         },
         async deleteLesson(lessonUUID: string) {
