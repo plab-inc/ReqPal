@@ -1,11 +1,12 @@
 import {supabase} from "@/plugins/supabase";
-import {Lesson, QuestionDTO} from "@/types/lesson.types.ts";
+import {Lesson} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
 
     public push = {
         uploadLesson: this.uploadLesson.bind(this),
+        deleteLesson: this.deleteLesson.bind(this),
     };
 
     public pull = {
@@ -57,7 +58,6 @@ class LessonServiceClass {
             }
 
     }
-
     private async uploadLesson(lesson: Lesson){
         const { error } = await supabase
             .rpc('create_lesson_from_json', {
@@ -75,6 +75,17 @@ class LessonServiceClass {
         if (error) console.error(error)
 
         if (data) return data as Lesson;
+    }
+    private async deleteLesson(lessonUUID: string) {
+        const {data, error} = await supabase
+            .from('lessons')
+            .delete()
+            .eq('uuid', lessonUUID)
+            .select();
+
+        if (error) throw error;
+
+        return data;
     }
 
 }

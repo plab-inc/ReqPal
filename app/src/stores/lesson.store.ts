@@ -2,7 +2,7 @@ import {defineStore} from 'pinia';
 import {LessonDTO} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
-import {v1 as uuidv1} from "uuid";
+import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface LessonState {
     lessons: LessonDTO[];
@@ -61,6 +61,17 @@ export const useLessonStore = defineStore('lesson', {
             if (lessons) {
                 this.lessons = lessons;
             }
+        },
+        async deleteLesson(lessonUUID: string) {
+            await lessonService.push.deleteLesson(lessonUUID).then(
+                (data: LessonDTO[]) => {
+                    if(data.length > 0) {
+                        this.lessons.splice(this.lessons.findIndex(c => c.uuid === lessonUUID), 1);
+                        return;
+                    }
+                    throw new DatabaseError("Catalog could not be deleted", 500);
+                }
+            );
         },
         loadLessonByUUID(lessonUUID: string) {
             const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
