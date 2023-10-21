@@ -208,7 +208,7 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "questions_lessons_id_fk"
+            foreignKeyName: "questions_lessons_uuid_fk"
             columns: ["lesson_uuid"]
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
