@@ -14,7 +14,6 @@ import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequir
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
-import lessonService from "@/services/database/lesson.service.ts";
 import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router/index.ts";
 
@@ -58,31 +57,21 @@ const {canDrop, isOver} = toRefs(collect);
 const isActive = computed(() => unref(canDrop) && unref(isOver));
 const form = ref<any>(null);
 const formIsValid = ref(false);
-
-
 const components = lessonFormStore.getComponents;
 
 async function validate(){
-  formIsValid.value = !(await form.value.validate()).valid;
+  await form.value.validate();
 }
 
 async function uploadLesson() {
-
-  if (formIsValid.value) {
+  if (formIsValid.value && components.length > 0) {
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson);
     lessonFormStore.flushStore();
     await router.push({path: '/lessons'});
+    return;
   }
-}
-
-async function testHydrate(){
-  let lesson = await lessonService.pull.getLesson('b7415fb6-e763-4cf4-9f2b-19013d7b3adb');
-
-  if(lesson){
-    lessonFormStore.hydrate(lesson);
-  }
-
+  throw new Error('There was a Problem with the Lesson Form');
 }
 
 defineExpose({
@@ -93,7 +82,7 @@ defineExpose({
 
 <template>
   <v-container>
-    <v-form @submit.prevent ref="form">
+    <v-form @submit.prevent ref="form" v-model="formIsValid">
       <v-row no-gutters>
         <v-col cols="10" class="pr-5">
           <v-text-field
@@ -219,9 +208,9 @@ defineExpose({
                 Lektion Validieren
               </v-btn>
               <v-btn
-                  :variant="components.length === 0 && !formIsValid ? 'outlined' : 'elevated'"
+                  :variant="(formIsValid && components.length > 0) ? 'elevated' : 'outlined'"
                   color="primary"
-                  :disabled="components.length === 0 && !formIsValid"
+                  :disabled="!(formIsValid && components.length > 0)"
                   @click="uploadLesson()"
               >
                 Lektion Speichern
