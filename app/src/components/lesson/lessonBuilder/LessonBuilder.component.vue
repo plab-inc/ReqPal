@@ -57,19 +57,19 @@ const [collect, drop] = useDrop(() => ({
 const {canDrop, isOver} = toRefs(collect);
 const isActive = computed(() => unref(canDrop) && unref(isOver));
 const form = ref<any>(null);
+const formIsValid = ref(false);
+
+
 const components = lessonFormStore.getComponents;
 
-async function checkValidity(){
-  return (await form.value.validate()).valid;
+async function validate(){
+  formIsValid.value = !(await form.value.validate()).valid;
 }
 
 async function uploadLesson() {
 
-  const formIsValid = await checkValidity();
-
-  if (true) {
+  if (formIsValid.value) {
     let lesson = lessonFormStore.generateLesson();
-    console.log(lesson);
     await LessonService.push.uploadLesson(lesson);
     lessonFormStore.flushStore();
     await router.push({path: '/lessons'});
@@ -86,7 +86,7 @@ async function testHydrate(){
 }
 
 defineExpose({
-  checkValidity
+  checkValidity: validate
 });
 
 </script>
@@ -94,7 +94,7 @@ defineExpose({
 <template>
   <v-container>
     <v-form @submit.prevent ref="form">
-      <v-row no no-gutters>
+      <v-row no-gutters>
         <v-col cols="10" class="pr-5">
           <v-text-field
               clearable
@@ -177,50 +177,60 @@ defineExpose({
           </div>
         </v-col>
         <v-col cols="2">
-          <v-container>
-            <v-sheet elevation="0" border rounded>
-              <v-container>
-                <v-row>
-                  <v-col v-for="template in templates" :key="template">
-                    <LessonModuleBox :title="template"/>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-sheet>
-          </v-container>
-          <v-container>
-            <v-row>
-              <v-col>
-                <v-btn
-                    color="error"
-                    @click="lessonFormStore.flushStore()"
-                    block
-                >
-                  Lektion zurücksetzen
-                </v-btn>
+          <v-card
+              class="ml-5"
+              variant="outlined"
+              color="primary"
+          >
+              <v-col v-for="template in templates" :key="template">
+                <LessonModuleBox :title="template"/>
               </v-col>
-              <v-col>
-                <v-btn
-                    color="error"
-                    @click="lessonFormStore.clearComponents()"
-                    block
-                >
-                  Module zurücksetzen
-                </v-btn>
-              </v-col>
-              <v-col>
-                <v-btn
-                    color="primary"
-                    @click="uploadLesson()"
-                    block
-                >
-                  Speichern
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
+          </v-card>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="auto">
+          <v-card
+              variant="outlined"
+              color="primary"
+          >
+            <v-btn-group
+                variant="outlined"
+                divided
+                elevation="5"
+            >
+              <v-btn
+                  color="error"
+                  @click="lessonFormStore.flushStore()"
+              >
+                Lektion zurücksetzen
+              </v-btn>
+              <v-btn
+                  color="error"
+                  @click="lessonFormStore.clearComponents()"
+              >
+                Module zurücksetzen
+              </v-btn>
+              <v-btn
+                  variant="outlined"
+                  color="info"
+                  @click="validate()"
+              >
+                Lektion Validieren
+              </v-btn>
+              <v-btn
+                  :variant="components.length === 0 && !formIsValid ? 'outlined' : 'elevated'"
+                  color="primary"
+                  :disabled="components.length === 0 && !formIsValid"
+                  @click="uploadLesson()"
+              >
+                Lektion Speichern
+              </v-btn>
+            </v-btn-group>
+          </v-card>
+        </v-col>
+      </v-row>
+
     </v-form>
   </v-container>
 </template>
@@ -229,7 +239,7 @@ defineExpose({
 
 .scrollcontainer {
   overflow-y: auto;
-  max-height: 70vh;
+  max-height: 69vh;
 }
 
 .container {
@@ -239,7 +249,7 @@ defineExpose({
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 700px;
+  min-height: 70vh;
   height: 70vh;
 }
 </style>

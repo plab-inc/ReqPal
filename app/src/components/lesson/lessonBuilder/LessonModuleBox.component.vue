@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 
-import { useDrag } from 'vue3-dnd'
-import { DragItemTypes } from '@/types/dragItem.types.ts'
-import { toRefs } from '@vueuse/core'
+import {useDrag} from 'vue3-dnd'
+import {DragItemTypes} from '@/types/dragItem.types.ts'
+import {toRefs} from '@vueuse/core'
+import {vElementHover} from "@vueuse/components";
 
 const props = defineProps<{
   title: string
@@ -20,6 +21,11 @@ const [collect, drag] = useDrag(() => ({
 }))
 
 const { isDragging } = toRefs(collect);
+const isHovered = ref(false);
+
+function onHover(state: boolean) {
+  isHovered.value = state;
+}
 
 </script>
 
@@ -29,17 +35,20 @@ const { isDragging } = toRefs(collect);
       :ref="drag"
       :style="{ opacity: isDragging ? 0.3 : 1 }"
   >
-    {{ title }}
+        <v-card
+            v-element-hover="onHover"
+            :variant="isHovered ? 'outlined' : 'elevated'"
+            border
+            v-bind="props"
+            ripple
+            density="compact"
+        >
+        </v-card>
   </div>
 </template>
 
 <style scoped>
 .box {
-  font-size: 0.875em;
-  padding: 0.5rem 1rem;
-  border: 1px solid lightgray;
-  background-color: rgb(var(--v-theme-primary));
-  border-radius: 5px;
   cursor: move;
   user-select: none;
   text-align: center;
