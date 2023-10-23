@@ -67,16 +67,12 @@ async function uploadLesson() {
   if (formIsValid.value && components.length > 0) {
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson);
-    lessonFormStore.flushStore();
     await router.push({path: '/lessons'});
+    lessonFormStore.flushStore();
     return;
   }
   throw new Error('There was a Problem with the Lesson Form');
 }
-
-defineExpose({
-  checkValidity: validate
-});
 
 </script>
 
