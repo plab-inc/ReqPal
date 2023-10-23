@@ -12,6 +12,9 @@ BEGIN
     IF NEW.question_id IS NOT NULL THEN
         IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'TrueOrFalse' THEN
             result_value := evaluate_true_or_false(NEW.question_id, NEW.answer, NEW.max_points);
+            ELSE IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'MultipleChoice' THEN
+                result_value := evaluate_multiple_choice(NEW.question_id, NEW.answer, NEW.max_points);
+                END IF;
         END IF;
     END IF;
 
