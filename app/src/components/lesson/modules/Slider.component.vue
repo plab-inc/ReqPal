@@ -31,6 +31,13 @@ function init() {
     inputValue.value = fields.value.options.input;
   } else {
     inputValue.value = (fields.value.options.maxValue / 2);
+    fields.value.options = {
+      steps: fields.value.options.steps,
+      minValue: fields.value.options.minValue,
+      maxValue: fields.value.options.maxValue,
+      input: inputValue.value
+    };
+    updateStoreData(fields.value)
   }
 }
 
