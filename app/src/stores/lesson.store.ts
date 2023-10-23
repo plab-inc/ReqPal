@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import {LessonAnswer, LessonDTO} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
-import {Question, solution} from "@/interfaces/Question.interfaces.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface LessonState {
