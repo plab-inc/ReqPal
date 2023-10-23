@@ -94,6 +94,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.components.splice(0, this.components.length);
         },
         flushStore() {
+            this.uuid = uuidv4();
             this.lessonTitle = '';
             this.lessonDescription = '';
             this.lessonPoints = 250;
