@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
-import {LessonDTO} from "@/types/lesson.types";
+import {LessonAnswer, LessonDTO} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {Question, solution} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface LessonState {
@@ -73,7 +73,7 @@ export const useLessonStore = defineStore('lesson', {
         async deleteLesson(lessonUUID: string) {
             await lessonService.push.deleteLesson(lessonUUID).then(
                 (data: LessonDTO[]) => {
-                    if(data.length > 0) {
+                    if (data.length > 0) {
                         this.lessons.splice(this.lessons.findIndex(c => c.uuid === lessonUUID), 1);
                         return;
                     }
@@ -87,7 +87,13 @@ export const useLessonStore = defineStore('lesson', {
                 this.currentLesson = lesson;
             }
         },
-        addComponentWithData(componentName: string, componentUUID: string, data: { uuid: string, question: any, options: any, solution: any, hint: any }) {
+        addComponentWithData(componentName: string, componentUUID: string, data: {
+            uuid: string,
+            question: any,
+            options: any,
+            solution: any,
+            hint: any
+        }) {
             this.components.push({
                 type: componentName,
                 uuid: componentUUID,
@@ -100,5 +106,37 @@ export const useLessonStore = defineStore('lesson', {
                 component.data[field] = value;
             }
         },
+
+        generateUserResults(): LessonAnswer | null {
+            const questions = this.filterComponentsByQuestionOnly();
+            if (this.currentLesson) {
+                return {
+                    uuid: this.currentLesson?.uuid,
+                    usedHints: 0,
+                    answers: questions.map(component => {
+                        return {
+                            uuid: component.uuid,
+                            question: component.data.question,
+                            options: toRaw(component.data.options),
+                            type: component.type
+                        }
+                    })
+                };
+            }
+            return null;
+        },
+
+        async submitUserAnswers(answers: any) {
+
+            await lessonService.push.uploadUserAnswers(answers);
+
+        },
+
+        filterComponentsByQuestionOnly() {
+            return this.components.filter(c =>
+                c.type === 'MultipleChoice' ||
+                c.type === 'TrueOrFalse' ||
+                c.type === 'Slider')
+        }
     },
 });

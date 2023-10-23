@@ -7,6 +7,7 @@ class LessonServiceClass {
     public push = {
         uploadLesson: this.uploadLesson.bind(this),
         deleteLesson: this.deleteLesson.bind(this),
+        uploadUserAnswers: this.submitUserAnswers.bind(this)
     };
 
     public pull = {
@@ -54,21 +55,23 @@ class LessonServiceClass {
 
         if (error) throw error;
 
-            if (data) {
-                return data as Question[];
-            }
+        if (data) {
+            return data as Question[];
+        }
 
     }
-    private async uploadLesson(lesson: Lesson){
-        const { error } = await supabase
+
+    private async uploadLesson(lesson: Lesson) {
+        const {error} = await supabase
             .rpc('create_lesson_from_json', {
                 data: lesson
             })
 
         if (error) console.error(error)
     }
+
     private async getLesson(lessonUUID: string) {
-        const { error, data } = await supabase
+        const {error, data} = await supabase
             .rpc('get_lesson_json', {
                 p_lesson_uuid: lessonUUID
             })
@@ -87,6 +90,18 @@ class LessonServiceClass {
         if (error) throw error;
 
         return data;
+    }
+
+    private async submitUserAnswers(answers: any) {
+
+        const {data, error} = await supabase.rpc('create_user_answers_from_json', {
+            data: answers
+        })
+
+        if (error) throw error;
+
+        return data;
+
     }
 
 }

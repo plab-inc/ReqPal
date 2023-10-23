@@ -9,6 +9,7 @@ import Notes from "@/components/lesson/modules/Notes.component.vue"
 import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import alertService from "@/services/util/alert.service.ts";
+import router from "@/router";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
@@ -45,12 +46,14 @@ async function submit() {
   console.log("submit!")
   const formIsValid = await checkValidity();
 
-  if (formIsValid) {
-    //let lessonJson = lessonFormStore.generateLessonJSON();
-    console.log(formIsValid);
-    //LessonService.push.uploadLesson(lessonJson);
-    //lessonFormStore.flushStore();
-    //await router.push({path: '/lessons'});
+  if (formIsValid && currentLesson) {
+    let lessonJson = lessonStore.generateUserResults();
+
+    if (lessonJson) {
+      await lessonStore.submitUserAnswers(lessonJson);
+      const id = currentLesson.uuid;
+      await router.push({name: 'LessonResults', params: {id}});
+    }
   }
 }
 
@@ -59,7 +62,7 @@ init();
 function init() {
   if (lessonStore.components.length <= 0) {
     sortedQuestions.forEach(q => {
-      lessonStore.addComponentWithData(q.question_type, q.uuid,{
+      lessonStore.addComponentWithData(q.question_type, q.uuid, {
         uuid: q.uuid,
         question: q.question,
         options: q.options,
