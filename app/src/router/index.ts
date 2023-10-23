@@ -52,6 +52,14 @@ const routes = [
                 }
             },
             {
+                path: "/lessons/:lessonUUID/results",
+                name: "LessonResults",
+                component: () => import("@/views/lesson/LessonResults.view.vue"),
+                meta: {
+                    middleware: []
+                }
+            },
+            {
                 path: "/catalogs",
                 name: "Catalogs",
                 component: () => import("@/views/catalog/Catalogs.view.vue"),
@@ -65,9 +73,7 @@ const routes = [
                 path: "/catalogs/upload",
                 name: "UploadCatalog",
                 component: () => import("@/views/catalog/CatalogUpload.view.vue"),
-                meta: {
-
-                }
+                meta: {}
             },
             {
                 path: "/catalogs/:catalogId",
