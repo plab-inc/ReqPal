@@ -74,10 +74,6 @@ async function uploadLesson() {
   throw new Error('There was a Problem with the Lesson Form');
 }
 
-defineExpose({
-  checkValidity: validate
-});
-
 </script>
 
 <template>
@@ -190,7 +186,7 @@ defineExpose({
             >
               <v-btn
                   color="error"
-                  @click="resetForm()"
+                  @click="lessonFormStore.flushStore()"
               >
                 Lektion zurücksetzen
               </v-btn>
