@@ -77,6 +77,9 @@ function isRequirementOrTextfield(componentType: string): boolean {
   return componentType === 'Requirement' || componentType === 'Textfield';
 }
 
+onBeforeRouteLeave(() => {
+  lessonStore.clearComponents();
+})
 </script>
 
 <template>

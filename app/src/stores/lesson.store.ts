@@ -139,6 +139,10 @@ export const useLessonStore = defineStore('lesson', {
                 c.type === 'MultipleChoice' ||
                 c.type === 'TrueOrFalse' ||
                 c.type === 'Slider')
+        },
+
+        clearComponents() {
+            this.components = [];
         }
     },
 });
