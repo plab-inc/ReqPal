@@ -107,7 +107,7 @@
                 </v-btn>
                 <v-btn
                     @click.stop="togglePublished(lesson)"
-                    color="success"
+                    :color="lesson.published ? 'warning' : 'success'"
                     min-width="180px"
                 >
                   {{ lesson.published ?  'Verbergen' : 'Veröffentlichen' }}
