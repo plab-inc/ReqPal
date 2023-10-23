@@ -7,6 +7,7 @@ class LessonServiceClass {
     public push = {
         uploadLesson: this.uploadLesson.bind(this),
         deleteLesson: this.deleteLesson.bind(this),
+        togglePublished: this.togglePublished.bind(this),
     };
 
     public pull = {
@@ -88,6 +89,15 @@ class LessonServiceClass {
 
         return data;
     }
+    private async togglePublished(lessonUUID: string) {
+        const {error} = await supabase
+            .rpc('reverse_boolean_value', {
+                row_uuid: lessonUUID
+            })
+
+        if (error) console.error(error)
+    }
+
 
 }
 
