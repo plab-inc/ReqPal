@@ -39,6 +39,7 @@ export interface Database {
       }
       lessons: {
         Row: {
+          created_at: string
           description: string
           example: boolean | null
           points: number
@@ -48,6 +49,7 @@ export interface Database {
           uuid: string
         }
         Insert: {
+          created_at?: string
           description: string
           example?: boolean | null
           points: number
@@ -57,6 +59,7 @@ export interface Database {
           uuid?: string
         }
         Update: {
+          created_at?: string
           description?: string
           example?: boolean | null
           points?: number
@@ -292,6 +295,43 @@ export interface Database {
         }
         Relationships: []
       }
+      user_answers: {
+        Row: {
+          answer: Json | null
+          lesson_id: string
+          result: Json | null
+          user_id: string
+          uuid: string
+        }
+        Insert: {
+          answer?: Json | null
+          lesson_id: string
+          result?: Json | null
+          user_id: string
+          uuid?: string
+        }
+        Update: {
+          answer?: Json | null
+          lesson_id?: string
+          result?: Json | null
+          user_id?: string
+          uuid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_answers_lesson_id_fkey"
+            columns: ["lesson_id"]
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_answers_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       user_points: {
         Row: {
           id: number
@@ -410,6 +450,12 @@ export interface Database {
           answer_json: Json
         }
         Returns: Json
+      }
+      reverse_boolean_value: {
+        Args: {
+          row_uuid: string
+        }
+        Returns: undefined
       }
       role_has_permission: {
         Args: {
