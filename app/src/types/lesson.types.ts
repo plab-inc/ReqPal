@@ -1,5 +1,5 @@
 import {Database} from "@/types/supabase.types.ts";
-import {Question, solution} from "@/interfaces/Question.interfaces.ts";
+import {Question} from "@/interfaces/Question.interfaces.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
