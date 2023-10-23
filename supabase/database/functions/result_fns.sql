@@ -1,4 +1,3 @@
-DROP FUNCTION IF EXISTS evaluate_true_or_false(uuid, jsonb, float);
 DROP FUNCTION IF EXISTS create_user_answers_from_json(jsonb);
 
 CREATE
@@ -56,9 +55,10 @@ $$
 --------------------------------------------
 -- EVALUATION FUNCTIONS
 --------------------------------------------
+DROP FUNCTION IF EXISTS evaluate_true_or_false(uuid, jsonb, double precision);
 
 CREATE
-    OR REPLACE FUNCTION evaluate_true_or_false(question_id uuid, answer jsonb, max_points int4) RETURNS jsonb
+    OR REPLACE FUNCTION evaluate_true_or_false(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
 AS
 $$
 DECLARE
@@ -91,7 +91,7 @@ $$
 DROP FUNCTION IF EXISTS evaluate_multiple_choice(uuid, jsonb, double precision);
 
 CREATE
-    OR REPLACE FUNCTION evaluate_multiple_choice(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
+    OR REPLACE FUNCTION evaluate_multiple_choice(question_id uuid, answer jsonb, max_points integer) RETURNS jsonb
 AS
 $$
 DECLARE
