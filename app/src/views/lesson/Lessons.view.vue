@@ -106,10 +106,11 @@
                   Bearbeiten
                 </v-btn>
                 <v-btn
-                    @click.stop="console.log('publish')"
+                    @click.stop="togglePublished(lesson)"
                     color="success"
+                    min-width="180px"
                 >
-                  Veröffentlichen
+                  {{ lesson.published ?  'Verbergen' : 'Veröffentlichen' }}
                 </v-btn>
                 <v-btn
                     @click.stop="openDeleteDialog(lesson.uuid)"
@@ -146,13 +147,14 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import lessonService from "@/services/database/lesson.service.ts";
 import alertService from "@/services/util/alert.service.ts";
+import {LessonDTO} from "@/types/lesson.types.ts";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
 
-const lessons = lessonStore.getLessons;
-const examples = lessonStore.getExampleLessons;
+const lessons: LessonDTO[] = lessonStore.getLessons;
+const examples: LessonDTO[] = lessonStore.getExampleLessons;
 
 async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
@@ -161,6 +163,12 @@ async function editLesson(lessonUUID: string) {
       router.push({path: '/builder'});
     }
   });
+}
+
+function togglePublished(lesson: lessonDTO) {
+  lessonService.push.togglePublished(lesson.uuid).then(() => {
+    lesson.published = !lesson.published; //Trick in UI, damit Objekt nicht erneut geladen werden muss
+  })
 }
 
 function openLessonDetails(lessonUUID: string) {
