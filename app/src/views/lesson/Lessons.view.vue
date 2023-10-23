@@ -5,8 +5,8 @@
     <v-row no-gutters>
       <v-col cols="12" v-if="lessons.length < 1 ">
         <v-card
-                title="Noch keine Lektionen vorhanden!"
-                :subtitle="authStore.isTeacher ? 'Es wurden noch keine Lektionen erstellt' :'Ihr Dozent hat aktuell noch keine Lektionen erstellt und veröffentlicht.'"
+                :title="authStore.isTeacher ? 'Keine eigenen Lektionen verfügbar.' : 'Keine Lektionen verfügbar'"
+                :subtitle="authStore.isTeacher ? 'Sie haben noch keine Lektionen erstellt' :'Ihr Dozent hat aktuell noch keine Lektionen erstellt und veröffentlicht.'"
                 variant="outlined"
                 color="error"
                 elevation="12"
@@ -173,10 +173,6 @@ function togglePublished(lesson: LessonDTO) {
 
 function openLessonDetails(lessonUUID: string) {
   router.push({ name: 'LessonDetails', params: { lessonUUID } });
-}
-function newLessonButton() {
-  lessonFormStore.flushStore();
-  router.push({path: '/builder'});
 }
 
 function openDeleteDialog(lessonUUID: string) {

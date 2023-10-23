@@ -31,7 +31,7 @@ export const useLessonStore = defineStore('lesson', {
 
     getters: {
         getLessons: state => {
-            return [...state.lessons].sort((a, b) => {
+            return state.lessons.sort((a, b) => {
                 return a.created_at.localeCompare(b.created_at);
             });
         },
