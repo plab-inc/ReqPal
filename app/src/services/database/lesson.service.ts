@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {Lesson, UserAnswer} from "@/types/lesson.types.ts";
+import {Lesson, UserAnswer, UserResult} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
@@ -18,7 +18,8 @@ class LessonServiceClass {
         getLesson: this.getLesson.bind(this),
         fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this),
         fetchLessonFinishedForUser: this.fetchLessonFinishedForUser.bind(this),
-        fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this)
+        fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this),
+        fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -164,6 +165,20 @@ class LessonServiceClass {
             return data as UserAnswer[];
         } else return null;
 
+    }
+
+    private async fetchUserScoreForLesson(lessonUUID: string, userUUID: string) {
+        const {data, error} = await supabase
+            .from('user_answers')
+            .select('result')
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        if (data) {
+            return data as UserResult[];
+        } else return null;
     }
 
 }

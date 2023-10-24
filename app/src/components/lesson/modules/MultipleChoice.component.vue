@@ -5,33 +5,33 @@ import Hint from "@/components/lesson/modules/Hint.component.vue"
 import Help from "@/components/lesson/modules/Help.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 
-type Solution = { id: number, solution: boolean }
-
 interface Props {
   componentId: string,
 }
 
 const props = defineProps<Props>();
-const solution = ref<Solution[]>();
 const selectedAnswers = ref<any>([]);
-
-
-function checkSolution(id: number) {
-  if (solution.value) {
-    const found = solution.value.find(s => s.id === id);
-    if (found) {
-      return found.solution;
-    } else return undefined;
-  }
-}
 
 const lessonStore = useLessonStore();
 const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
+const solution = lessonStore.getComponentFieldValues(props.componentId, 'solution')
 
 const fields = ref<any>({
   options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
 });
+
+function checkSolution(id: number) {
+  if (solution) {
+    const found = solution.find((s: any) => s.id === id);
+    if (found) {
+      const option = fields.value.options.find((o: any) => o.id === id);
+      if (option) {
+        return (option.input === found.solution);
+      }
+    } else return undefined;
+  }
+}
 
 init();
 
@@ -72,7 +72,6 @@ watch(selectedAnswers, (newAnswers) => {
             <v-col>
               <v-container>
                 <div class="text-h6">{{ question }}</div>
-                <div class="text-h6" v-if="solution">Lösung:</div>
 
                 <v-checkbox v-for="(answer) in fields.options"
                             :key="answer.id"
