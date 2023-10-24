@@ -1,37 +1,13 @@
 <script setup lang="ts">
-
-import TrueOrFalse from "@/components/lesson/modules/TrueOrFalse.component.vue"
-import Requirement from "@/components/catalog/requirement/Requirement.component.vue"
-import MultipleChoice from "@/components/lesson/modules/MultipleChoice.component.vue"
-import Slider from "@/components/lesson/modules/Slider.component.vue"
-import Textfield from "@/components/lesson/modules/Textfield.component.vue"
-import Notes from "@/components/lesson/modules/Notes.component.vue"
-import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import alertService from "@/services/util/alert.service.ts";
 import router from "@/router";
 import AlertService from "@/services/util/alert.service.ts";
+import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
-
-interface ComponentsMap {
-  [key: string]: Component;
-}
-
-const componentsMap: ComponentsMap = {
-  'TrueOrFalse': markRaw(TrueOrFalse),
-  'Requirement': markRaw(Requirement),
-  'MultipleChoice': markRaw(MultipleChoice),
-  'Slider': markRaw(Slider),
-  'Textfield': markRaw(Textfield),
-  'Note': markRaw(Notes),
-  'Products': markRaw(Product),
-};
-const getComponentInstance = (componentName: string): Component => {
-  return componentsMap[componentName];
-};
 
 const form = ref<any>(null);
 
@@ -77,10 +53,6 @@ function init() {
   }
 }
 
-function isRequirementOrTextfield(componentType: string): boolean {
-  return componentType === 'Requirement' || componentType === 'Textfield';
-}
-
 async function openLessonResults() {
   if (lessonStore.currentLesson && lessonStore.lessonFinished) {
     try {
@@ -124,22 +96,7 @@ async function openLessonResults() {
     <v-form @submit.prevent ref="form">
       <v-row class="mt-4">
         <v-col>
-          <v-container v-if="lessonStore.components.length > 0">
-            <v-row v-for="question in lessonStore.components">
-              <v-col class="my-2">
-                <v-sheet
-                    :class="isRequirementOrTextfield(question.type) ? '' : 'pa-3'"
-                    rounded
-                    :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
-                  <component
-                      :is="getComponentInstance(question.type)"
-                      :key="question.uuid"
-                      :componentId="question.uuid"
-                  ></component>
-                </v-sheet>
-              </v-col>
-            </v-row>
-          </v-container>
+          <LessonQuestions></LessonQuestions>
         </v-col>
       </v-row>
       <v-row>
