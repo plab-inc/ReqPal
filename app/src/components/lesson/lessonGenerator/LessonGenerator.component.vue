@@ -1,35 +1,13 @@
 <script setup lang="ts">
-
-import TrueOrFalse from "@/components/lesson/modules/TrueOrFalse.component.vue"
-import Requirement from "@/components/catalog/requirement/Requirement.component.vue"
-import MultipleChoice from "@/components/lesson/modules/MultipleChoice.component.vue"
-import Slider from "@/components/lesson/modules/Slider.component.vue"
-import Textfield from "@/components/lesson/modules/Textfield.component.vue"
-import Notes from "@/components/lesson/modules/Notes.component.vue"
-import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import alertService from "@/services/util/alert.service.ts";
+import router from "@/router";
+import AlertService from "@/services/util/alert.service.ts";
+import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson = lessonStore.getCurrentLesson;
-
-interface ComponentsMap {
-  [key: string]: Component;
-}
-
-const componentsMap: ComponentsMap = {
-  'TrueOrFalse': markRaw(TrueOrFalse),
-  'Requirement': markRaw(Requirement),
-  'MultipleChoice': markRaw(MultipleChoice),
-  'Slider': markRaw(Slider),
-  'Textfield': markRaw(Textfield),
-  'Note': markRaw(Notes),
-  'Products': markRaw(Product),
-};
-const getComponentInstance = (componentName: string): Component => {
-  return componentsMap[componentName];
-};
 
 const form = ref<any>(null);
 
@@ -42,15 +20,20 @@ defineExpose({
 });
 
 async function submit() {
-  console.log("submit!")
   const formIsValid = await checkValidity();
 
-  if (formIsValid) {
-    //let lessonJson = lessonFormStore.generateLessonJSON();
-    console.log(formIsValid);
-    //LessonService.push.uploadLesson(lessonJson);
-    //lessonFormStore.flushStore();
-    //await router.push({path: '/lessons'});
+  if (formIsValid && currentLesson) {
+    let lessonJson = lessonStore.generateUserResults();
+
+    if (lessonJson) {
+      try {
+        await lessonStore.submitUserAnswers(lessonJson);
+        const id = currentLesson.uuid;
+        await router.push({name: 'LessonResults', params: {lessonUUID: id}});
+      } catch (error: any) {
+        AlertService.addErrorAlert("Fehler beim Abschicken der Daten: " + error.message);
+      }
+    }
   }
 }
 
@@ -59,7 +42,7 @@ init();
 function init() {
   if (lessonStore.components.length <= 0) {
     sortedQuestions.forEach(q => {
-      lessonStore.addComponentWithData(q.question_type, q.uuid,{
+      lessonStore.addComponentWithData(q.question_type, q.uuid, {
         uuid: q.uuid,
         question: q.question,
         options: q.options,
@@ -70,10 +53,28 @@ function init() {
   }
 }
 
-function isRequirementOrTextfield(componentType: string): boolean {
-  return componentType === 'Requirement' || componentType === 'Textfield';
+async function resetLesson() {
+  if (lessonStore.currentLesson) {
+    try {
+      await lessonStore.resetUserAnswersForLesson(lessonStore.currentLesson.uuid);
+      await router.push({name: 'Lessons'});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
+    }
+  }
+
 }
 
+async function openLessonResults() {
+  if (lessonStore.currentLesson && lessonStore.lessonFinished) {
+    try {
+      const id = lessonStore.currentLesson.uuid;
+      await router.push({name: 'LessonResults', params: {lessonUUID: id}});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Öffnen der Ergebnisse: " + error.message);
+    }
+  }
+}
 </script>
 
 <template>
@@ -91,10 +92,18 @@ function isRequirementOrTextfield(componentType: string): boolean {
         <div class="text-h6 text-lg-h4">{{ currentLesson?.points }} Punkte</div>
         <v-progress-circular
             color="primary"
-            model-value="20"
+            :model-value="lessonStore.lessonFinished ? 100 : 20"
             :size="50"
             :width="7"
         ></v-progress-circular>
+      </v-col>
+    </v-row>
+    <v-row v-if="lessonStore.lessonFinished">
+      <v-col class="d-flex justify-end my-2">
+        <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal
+          bearbeiten
+        </v-btn>
+        <v-btn color="success" @click="openLessonResults">Zu den Ergebnissen</v-btn>
       </v-col>
     </v-row>
 
@@ -102,28 +111,15 @@ function isRequirementOrTextfield(componentType: string): boolean {
     <v-form @submit.prevent ref="form">
       <v-row class="mt-4">
         <v-col>
-          <v-container v-if="lessonStore.components.length > 0">
-            <v-row v-for="question in lessonStore.components">
-              <v-col class="my-2">
-                <v-sheet
-                    :class="isRequirementOrTextfield(question.type) ? '' : 'pa-3'"
-                    rounded
-                    :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
-                  <component
-                      :is="getComponentInstance(question.type)"
-                      :key="question.uuid"
-                      :componentId="question.uuid"
-                  ></component>
-                </v-sheet>
-              </v-col>
-            </v-row>
-          </v-container>
+          <LessonQuestions></LessonQuestions>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="!lessonStore.lessonFinished">
         <v-col>
           <v-container>
-            <v-btn type="submit" @click="alertService.addHelpDialog('lessonFinished', submit)">Submit</v-btn>
+            <v-btn :disabled="lessonStore.lessonFinished" type="submit"
+                   @click="alertService.addHelpDialog('lessonFinished', submit)">Submit
+            </v-btn>
           </v-container>
         </v-col>
       </v-row>
