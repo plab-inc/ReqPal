@@ -32,7 +32,7 @@ async function getProductDetails() {
       await catalogStore.getProductDetailsForRequirement(selectedRequirement.value);
     }
   } catch (error: any) {
-    AlertService.addErrorAlert("Failed to get product details: " + error.message);
+    AlertService.addErrorAlert("Fehler beim Abrufen der Produktdetails: " + error.message);
   }
   loadingBar.value = false;
 }

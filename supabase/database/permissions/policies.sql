@@ -13,9 +13,25 @@ CREATE POLICY "policy_profiles"
 
 CREATE POLICY "policy_user_points"
     ON public.user_points
-    FOR SELECT
+    FOR ALL
     TO authenticated
-    USING (true);
+    USING ((auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
+
+CREATE POLICY "policy_user_answers"
+    ON public.user_answers
+    FOR ALL
+    TO authenticated
+    USING ((auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_finished_lessons" ON public.user_finished_lessons;
+
+CREATE POLICY "policy_user_finished_lessons"
+    ON public.user_finished_lessons
+    FOR ALL
+    TO authenticated
+    USING ((auth.uid() = user_id));
 
 --------------------------------------------
 -- Catalog related policies
