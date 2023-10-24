@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {Lesson} from "@/types/lesson.types.ts";
+import {Lesson, UserAnswer} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
@@ -16,7 +16,9 @@ class LessonServiceClass {
         fetchLessonById: this.fetchLessonById.bind(this),
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
-        fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this)
+        fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this),
+        fetchLessonFinishedForUser: this.fetchLessonFinishedForUser.bind(this),
+        fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -82,6 +84,7 @@ class LessonServiceClass {
 
         if (data) return data as Lesson;
     }
+
     private async deleteLesson(lessonUUID: string) {
         const {data, error} = await supabase
             .from('lessons')
@@ -93,6 +96,7 @@ class LessonServiceClass {
 
         return data;
     }
+
     private async togglePublished(lessonUUID: string) {
         const {error} = await supabase
             .rpc('reverse_boolean_value', {
@@ -127,6 +131,39 @@ class LessonServiceClass {
         if (data) {
             return data as Question[];
         }
+    }
+
+    private async fetchLessonFinishedForUser(lessonUUID: string, userUUID: string) {
+        const {data, error} = await supabase
+            .from('user_finished_lessons')
+            .select('finished')
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) {
+            throw error;
+        }
+
+        if (data?.length > 0) {
+            return data[0];
+        } else {
+            return null;
+        }
+    }
+
+    private async fetchLessonUserAnswers(lessonUUID: string, userUUID: string) {
+        const {data, error} = await supabase
+            .from('user_answers')
+            .select('question_id, answer')
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        if (data) {
+            return data as UserAnswer[];
+        } else return null;
+
     }
 
 }

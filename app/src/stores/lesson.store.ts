@@ -1,8 +1,9 @@
 import {defineStore} from 'pinia';
-import {LessonAnswer, LessonDTO} from "@/types/lesson.types";
+import {LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface LessonState {
     examples: LessonDTO[],
@@ -11,6 +12,7 @@ interface LessonState {
     currentQuestions: any;
     lessonsLoaded: Boolean;
     components: ComponentEntry[];
+    lessonFinished: boolean;
 }
 
 interface ComponentEntry {
@@ -26,7 +28,8 @@ export const useLessonStore = defineStore('lesson', {
         currentLesson: null,
         currentQuestions: [],
         lessonsLoaded: false,
-        components: []
+        components: [],
+        lessonFinished: false
     }),
 
     getters: {
@@ -69,7 +72,6 @@ export const useLessonStore = defineStore('lesson', {
             const exampleLessons = await lessonService.pull.fetchLessons(true);
             if (exampleLessons) {
                 this.examples = exampleLessons;
-                console.log(this.examples);
             }
         },
         async deleteLesson(lessonUUID: string) {
@@ -84,11 +86,14 @@ export const useLessonStore = defineStore('lesson', {
             );
         },
         loadLessonByUUID(lessonUUID: string) {
+            this.lessonFinished = false;
             const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
             if (lesson) {
                 this.currentLesson = lesson;
+                this.clearComponents();
             }
         },
+
         addComponentWithData(componentName: string, componentUUID: string, data: {
             uuid: string,
             question: any,
@@ -129,9 +134,21 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async submitUserAnswers(answers: any) {
-
             await lessonService.push.uploadUserAnswers(answers);
+        },
 
+        async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
+            const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
+            if (data) {
+                this.currentQuestions = data;
+
+                data.forEach(d => {
+                    let component = this.components.find(component => component.data.uuid === d.uuid);
+                    if (component) {
+                        component.data.solution = d.solution;
+                    }
+                })
+            }
         },
 
         filterComponentsByQuestionOnly() {
@@ -143,6 +160,41 @@ export const useLessonStore = defineStore('lesson', {
 
         clearComponents() {
             this.components = [];
+        },
+
+        async loadUserAnswersForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                const data = await lessonService.pull.fetchLessonFinishedForUser(lessonUUID, authStore.user.id);
+                if (data && data.finished) {
+                    this.lessonFinished = true;
+                    const answers = await lessonService.pull.fetchLessonUserAnswers(lessonUUID, authStore.user.id);
+                    if (answers) {
+                        this.hydrate(answers);
+                    }
+                }
+            }
+        },
+
+        hydrate(answers: UserAnswer[]) {
+            this.clearComponents();
+
+            this.currentQuestions.forEach((q: Question) => {
+                this.addComponentWithData(q.question_type, q.uuid, {
+                    uuid: q.uuid,
+                    question: q.question,
+                    options: q.options,
+                    solution: q.solution,
+                    hint: q.hint
+                })
+            })
+
+            answers.forEach(answer => {
+                const comp =
+                    this.components.find(c => c.uuid === answer.question_id);
+                if (comp) comp.data.options = answer.answer;
+            });
         }
+
     },
 });
