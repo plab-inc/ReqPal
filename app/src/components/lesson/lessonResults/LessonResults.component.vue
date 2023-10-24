@@ -11,6 +11,7 @@ import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import StatItem from "@/components/lesson/lessonResults/StatItem.component.vue";
+import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson;
@@ -73,22 +74,7 @@ onBeforeMount(async () => {
 
   <v-row class="mt-4">
     <v-col>
-      <v-container v-if="lessonStore.components.length > 0">
-        <v-row v-for="question in lessonStore.components">
-          <v-col class="my-2">
-            <v-sheet
-                :class="isRequirementOrTextfield(question.type) ? '' : 'pa-3'"
-                rounded
-                :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
-              <component
-                  :is="getComponentInstance(question.type)"
-                  :key="question.uuid"
-                  :componentId="question.uuid"
-              ></component>
-            </v-sheet>
-          </v-col>
-        </v-row>
-      </v-container>
+      <LessonQuestions></LessonQuestions>
     </v-col>
   </v-row>
 
