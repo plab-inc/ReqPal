@@ -10,7 +10,7 @@ import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
-    fetchQuestionsForLesson,
+    fetchQuestionsForLesson, fetchUserAnswersForQuestions,
     loadLessonByUUID, loadLessonSolutionsByUUID
 } from "@/middlewares/lesson.middleware.ts";
 
@@ -47,7 +47,8 @@ const routes = [
                 meta: {
                     middleware: [
                         loadLessonByUUID,
-                        fetchQuestionsForLesson
+                        fetchQuestionsForLesson,
+                        fetchUserAnswersForQuestions
                     ]
                 }
             },
@@ -57,6 +58,9 @@ const routes = [
                 component: () => import("@/views/lesson/LessonResults.view.vue"),
                 meta: {
                     middleware: [
+                       // loadLessonByUUID,
+                       // fetchQuestionsForLesson,
+                       // fetchUserAnswersForQuestions,
                         loadLessonSolutionsByUUID
                     ]
                 }
