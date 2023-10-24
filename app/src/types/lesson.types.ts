@@ -1,4 +1,4 @@
-import {Database, Json} from "@/types/supabase.types.ts";
+import {Database} from "@/types/supabase.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
