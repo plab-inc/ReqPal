@@ -70,8 +70,7 @@ $$
 DECLARE
     solution        jsonb;
     compared_result bool;
-    user_result     jsonb;
-    score           double precision := max_points;
+    score           double precision := 0;
 BEGIN
 
     SELECT questions.solution
@@ -81,10 +80,8 @@ BEGIN
 
     compared_result := (solution = answer);
 
-    user_result := to_jsonb(compared_result);
-
     IF
-        (user_result) THEN
+        (compared_result) THEN
         score := max_points;
     END IF;
 
