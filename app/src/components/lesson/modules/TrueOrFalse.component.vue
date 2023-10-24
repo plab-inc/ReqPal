@@ -11,12 +11,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const submitted = ref(false);
-let result: boolean | null;
-
 const lessonStore = useLessonStore();
 const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
+const solution = lessonStore.getComponentFieldValues(props.componentId, 'solution');
 
 const fields = ref<any>({
   options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
@@ -46,13 +44,12 @@ watch(fields, (newFields) => {
           <v-row>
             <v-col>
               <div class="text-h6">{{ question }}</div>
-              <div class="text-h6" v-if="submitted">Solution:</div>
               <v-container>
                 <v-radio-group v-model="fields.options" :rules="[requiredBooleanRule]">
                   <v-radio label="True" :value="true"
-                           :class="{'disabled': submitted,'right': result === true, 'wrong': result === false}"></v-radio>
+                           :class="{'disabled': solution !== undefined,'right': (solution !== undefined && solution === fields.options), 'wrong': (solution !== undefined && solution !== fields.options)}"></v-radio>
                   <v-radio label="False" :value="false"
-                           :class="{'disabled': submitted, 'right': result === false, 'wrong': result === true}"></v-radio>
+                           :class="{'disabled': solution !== undefined, 'right': (solution !== undefined && !solution === !fields.options), 'wrong': (solution !== undefined && solution !== fields.options)}"></v-radio>
                 </v-radio-group>
               </v-container>
             </v-col>

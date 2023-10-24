@@ -11,3 +11,18 @@ export type Lesson = {
     points: number;
     questions: Question[];
 }
+
+export type LessonAnswer = {
+    uuid: string,
+    usedHints: number,
+    answers: any[]
+}
+
+export type UserAnswer = {
+    question_id: string,
+    answer: string[]
+}
+
+export type UserResult = {
+    result: {score: number, results: any, isCorrect: boolean}
+}
