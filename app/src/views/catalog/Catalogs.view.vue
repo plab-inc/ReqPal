@@ -1,5 +1,5 @@
 <template>
-  <h1>Meine Kataloge</h1>
+  <h1>Meine Kataloge ({{ catalogs.length }}/{{ MAX_CATALOGS }})</h1>
   <v-divider></v-divider>
   <v-container>
         <v-row>
@@ -72,6 +72,7 @@
             color="primary"
             @click="router.push({path: '/catalogs/upload'})"
             block
+            :disabled="catalogs.length >= MAX_CATALOGS"
         >
           Katalog hochladen
         </v-btn>
@@ -90,6 +91,8 @@ const catalogStore = useCatalogStore();
 
 const catalogs = catalogStore.getCustomCatalogs;
 const examples = catalogStore.getExampleCatalogs;
+
+const MAX_CATALOGS = 5;
 
 function openCatalogDetails(catalogId: number) {
   router.push({name: "CatalogDetails", params: { catalogId: catalogId }})
