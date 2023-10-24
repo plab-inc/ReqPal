@@ -66,7 +66,7 @@ class LessonServiceClass {
                 data: lesson
             })
 
-        if (error) console.error(error)
+        if (error) throw error;
     }
     private async getLesson(lessonUUID: string) {
         const { error, data } = await supabase

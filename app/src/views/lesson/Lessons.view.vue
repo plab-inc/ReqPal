@@ -1,5 +1,5 @@
 <template>
-  <h1>Meine Lektionen</h1>
+  <h1>Meine Lektionen ({{ lessons.length }}/20) </h1>
   <v-divider></v-divider>
   <v-container>
     <v-row no-gutters>
@@ -131,6 +131,7 @@
             color="primary"
             @click="router.push({path: '/builder'})"
             block
+            :disabled="lessons.length >= 20"
         >
           Neue Lektion erstellen
         </v-btn>

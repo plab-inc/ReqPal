@@ -16,6 +16,8 @@ import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.compo
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router/index.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -37,6 +39,11 @@ const componentsMap: ComponentsMap = {
 };
 
 const lessonFormStore = useLessonFormStore();
+const lessonStore = useLessonStore();
+const utilStore = useUtilStore();
+
+const MAX_LESSONS: number = 20;
+const MAX_QUESTIONS: number = 20;
 
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
@@ -45,33 +52,44 @@ const getComponentInstance = (componentName: string): Component => {
 const [collect, drop] = useDrop(() => ({
   accept: DragItemTypes.COMPONENT,
   drop: (item: LessonBuilderDragItem) => {
-    lessonFormStore.addComponent(item.name);
+    if(components.length < MAX_QUESTIONS){
+      lessonFormStore.addComponent(item.name);
+      return;
+    }
+    utilStore.addAlert('Die maximale Anzahl von Lernmodulen pro Lektion wurde erreicht', 'info');
   },
   collect: monitor => ({
     isOver: monitor.isOver(),
-    canDrop: monitor.canDrop(),
+    canDrop: (monitor.canDrop() && components.length < MAX_QUESTIONS),
   }),
 }));
 
-const {canDrop, isOver} = toRefs(collect);
+
 const isActive = computed(() => unref(canDrop) && unref(isOver));
 const form = ref<any>(null);
 const formIsValid = ref(false);
 const components = lessonFormStore.getComponents;
+const lessons = lessonStore.getLessons;
+const {canDrop, isOver} = toRefs(collect);
 
 async function validate(){
   await form.value.validate();
 }
 
 async function uploadLesson() {
-  if (formIsValid.value && components.length > 0) {
+  if (formIsValid.value && components.length > MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
     let lesson = lessonFormStore.generateLesson();
-    await LessonService.push.uploadLesson(lesson);
-    await router.push({path: '/lessons'});
-    lessonFormStore.flushStore();
+    await LessonService.push.uploadLesson(lesson)
+        .catch(() => {utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
+    }).then(async () => {
+      utilStore.addAlert('Lektion erfolgreich gespeichert', 'success');
+      await router.push({path: '/lessons'});
+      lessonFormStore.flushStore();
+    });
+
     return;
   }
-  throw new Error('There was a Problem with the Lesson Form');
+  throw new Error('Die Lektion konnte nicht erstellt werden');
 }
 
 </script>
@@ -206,7 +224,7 @@ async function uploadLesson() {
               <v-btn
                   :variant="(formIsValid && components.length > 0) ? 'elevated' : 'outlined'"
                   color="primary"
-                  :disabled="!(formIsValid && components.length > 0)"
+                  :disabled="!(formIsValid && components.length > 0 && components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS)"
                   @click="uploadLesson()"
               >
                 Lektion Speichern
