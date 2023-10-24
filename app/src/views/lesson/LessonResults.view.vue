@@ -1,8 +1,10 @@
 <template>
-  <v-container>
-    <div class="text-h2">Lektion beendet!</div>
-  </v-container>
+
+<LessonResults></LessonResults>
+
 </template>
 
 <script setup lang="ts">
+import LessonResults from "@/components/lesson/lessonResults/LessonResults.component.vue"
+
 </script>

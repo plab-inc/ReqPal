@@ -10,9 +10,9 @@ interface LessonState {
     lessons: LessonDTO[];
     currentLesson: LessonDTO | null;
     currentQuestions: any;
-    lessonsLoaded: Boolean;
     components: ComponentEntry[];
     lessonFinished: boolean;
+    scoredPoints: number;
 }
 
 interface ComponentEntry {
@@ -27,9 +27,9 @@ export const useLessonStore = defineStore('lesson', {
         lessons: [],
         currentLesson: null,
         currentQuestions: [],
-        lessonsLoaded: false,
         components: [],
-        lessonFinished: false
+        lessonFinished: false,
+        scoredPoints: 0
     }),
 
     getters: {
@@ -64,6 +64,7 @@ export const useLessonStore = defineStore('lesson', {
             }
 
         },
+
         async fetchLessons() {
             const lessons = await lessonService.pull.fetchLessons();
             if (lessons) {
@@ -74,6 +75,7 @@ export const useLessonStore = defineStore('lesson', {
                 this.examples = exampleLessons;
             }
         },
+
         async deleteLesson(lessonUUID: string) {
             await lessonService.push.deleteLesson(lessonUUID).then(
                 (data: LessonDTO[]) => {
@@ -85,6 +87,7 @@ export const useLessonStore = defineStore('lesson', {
                 }
             );
         },
+
         loadLessonByUUID(lessonUUID: string) {
             this.lessonFinished = false;
             const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
@@ -107,6 +110,7 @@ export const useLessonStore = defineStore('lesson', {
                 data: data
             });
         },
+
         setComponentData(componentId: string, field: string, value: any) {
             const component = this.components.find(comp => comp.uuid === componentId);
             if (component && component.data.hasOwnProperty(field)) {
@@ -160,6 +164,20 @@ export const useLessonStore = defineStore('lesson', {
 
         clearComponents() {
             this.components = [];
+        },
+
+        async loadUserScoreForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user && this.lessonFinished) {
+                const data = await lessonService.pull.fetchUserScoreForLesson(lessonUUID, authStore.user.id);
+                if (data) {
+                    let score = 0;
+                    data.forEach(d => {
+                        score += d.result.score;
+                    })
+                    this.scoredPoints = Math.round(score);
+                }
+            }
         },
 
         async loadUserAnswersForLesson(lessonUUID: string) {

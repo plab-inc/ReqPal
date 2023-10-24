@@ -22,3 +22,7 @@ export type UserAnswer = {
     question_id: string,
     answer: string[]
 }
+
+export type UserResult = {
+    result: {score: number, results: any, isCorrect: boolean}
+}
