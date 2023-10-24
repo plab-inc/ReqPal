@@ -100,7 +100,9 @@ async function openLessonResults() {
     </v-row>
     <v-row v-if="lessonStore.lessonFinished">
       <v-col class="d-flex justify-end my-2">
-        <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal bearbeiten</v-btn>
+        <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal
+          bearbeiten
+        </v-btn>
         <v-btn color="success" @click="openLessonResults">Zu den Ergebnissen</v-btn>
       </v-col>
     </v-row>
@@ -112,7 +114,7 @@ async function openLessonResults() {
           <LessonQuestions></LessonQuestions>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="!lessonStore.lessonFinished">
         <v-col>
           <v-container>
             <v-btn :disabled="lessonStore.lessonFinished" type="submit"

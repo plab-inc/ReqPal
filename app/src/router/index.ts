@@ -9,7 +9,6 @@ import {
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
-import {fetchLessons, fetchQuestionsForLesson, loadLessonByUUID} from "@/middlewares/lesson.middleware.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson, fetchUserAnswersForQuestions,
