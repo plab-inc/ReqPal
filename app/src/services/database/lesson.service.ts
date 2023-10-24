@@ -16,6 +16,7 @@ class LessonServiceClass {
         fetchLessonById: this.fetchLessonById.bind(this),
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
+        fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -112,6 +113,20 @@ class LessonServiceClass {
 
         return data;
 
+    }
+
+    private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string) {
+
+        const {data, error} = await supabase
+            .from('questions')
+            .select('uuid,lesson_uuid,question,question_type,options,hint,position, solution')
+            .eq('lesson_uuid', lessonUUID)
+
+        if (error) throw error;
+
+        if (data) {
+            return data as Question[];
+        }
     }
 
 }
