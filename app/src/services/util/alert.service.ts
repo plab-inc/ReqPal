@@ -30,6 +30,9 @@ class AlertServiceClass {
             case "lessonFinished":
                 this.addLessonFinishDialog(onConfirm);
                 break;
+            case "resetLesson":
+                this.addResetLessonDialog(onConfirm);
+                break;
             case "mcExplanation":
                 this.addMCExplanationDialog();
                 break;
@@ -55,6 +58,14 @@ class AlertServiceClass {
             "Lektion beenden",
             "Möchten Sie wirklich die Lektion beenden und Ihre Lösungen einreichen? Die Lösungen können dann nicht mehr verändert werden.",
             "Lektion beenden", "Zurück zur Lektion");
+    }
+
+    private addResetLessonDialog(onConfirm: () => void) {
+        this.store.openDialog(onConfirm,
+            "Lektion zurücksetzen",
+            "Möchten Sie wirklich die Lektion zurücksetzen und Ihre eingereichten Antworten löschen? " +
+            "Die Lösungen können dann nicht mehr eingesehen werden. Ihre gesammelten Punkte behalten Sie trotzdem.",
+            "Lektion zurücksetzen", "Zurück zur Lektion");
     }
 
     private addMCExplanationDialog() {

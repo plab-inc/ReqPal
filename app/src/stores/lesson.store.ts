@@ -180,6 +180,13 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
+        async resetUserAnswersForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                await lessonService.push.deleteUserAnswersForLesson(lessonUUID, authStore.user.id);
+            }
+        },
+
         async loadUserAnswersForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
             if (authStore.user) {
