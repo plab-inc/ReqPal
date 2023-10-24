@@ -40,7 +40,7 @@ export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from:
 export async function fetchUserAnswersForQuestions(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-        if(lessonStore.currentQuestions.length < 0) {
+        if (lessonStore.currentQuestions.length < 0) {
             await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
         }
         await lessonStore.loadUserAnswersForLesson(to.params.lessonUUID.toString());
@@ -56,6 +56,7 @@ export async function loadLessonSolutionsByUUID(to: RouteLocationNormalized, fro
         const lessonStore = useLessonStore();
 
         await lessonStore.loadQuestionsWithSolutionsForLesson(to.params.lessonUUID.toString());
+        await lessonStore.loadUserScoreForLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
         console.log(error);

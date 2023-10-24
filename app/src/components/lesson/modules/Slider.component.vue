@@ -15,6 +15,10 @@ const inputValue = ref<number>(0);
 const lessonStore = useLessonStore();
 const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
+const solution = lessonStore.getComponentFieldValues(props.componentId, 'solution');
+const minValue = ref<number>();
+const maxValue = ref<number>();
+const correctValue = ref<number>();
 
 const fields = ref<any>({
   options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
@@ -27,6 +31,13 @@ function updateStoreData(fields: any) {
 init();
 
 function init() {
+
+  if (solution) {
+    minValue.value = (+solution.correctValue - +solution.toleranceValue);
+    maxValue.value = (+solution.correctValue + +solution.toleranceValue);
+    correctValue.value = (+solution.correctValue);
+  }
+
   if (fields.value.options.hasOwnProperty('input')) {
     inputValue.value = fields.value.options.input;
   } else {
@@ -38,6 +49,12 @@ function init() {
       input: inputValue.value
     };
     updateStoreData(fields.value)
+  }
+}
+
+function checkSolution() {
+  if (solution && minValue.value && maxValue.value) {
+    return (inputValue.value >= minValue.value && inputValue.value <= maxValue.value)
   }
 }
 
@@ -74,13 +91,17 @@ watch(inputValue, (newInput) => {
         </v-col>
       </v-row>
       <v-row>
+        <v-col v-if="solution" class="text-center">
+          <div class="text-h6 mb-2">Richtige Antwort: {{ correctValue }}</div>
+          <div class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
+        </v-col>
         <v-col>
           <v-slider
               v-model="inputValue"
               :min="fields.options.minValue"
               :max="fields.options.maxValue"
               :step="fields.options.steps"
-              color="orange"
+              :color="solution && checkSolution() ? 'success' : 'orange'"
               track-color="warning"
               thumb-label>
           </v-slider>

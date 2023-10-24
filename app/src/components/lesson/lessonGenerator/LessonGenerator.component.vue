@@ -10,6 +10,7 @@ import Product from "@/components/lesson/modules/Product.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import alertService from "@/services/util/alert.service.ts";
 import router from "@/router";
+import AlertService from "@/services/util/alert.service.ts";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
@@ -43,16 +44,19 @@ defineExpose({
 });
 
 async function submit() {
-  console.log("submit!")
   const formIsValid = await checkValidity();
 
   if (formIsValid && currentLesson) {
     let lessonJson = lessonStore.generateUserResults();
 
     if (lessonJson) {
-      await lessonStore.submitUserAnswers(lessonJson);
-      const id = currentLesson.uuid;
-      await router.push({name: 'LessonResults', params: {id}});
+      try {
+        await lessonStore.submitUserAnswers(lessonJson);
+        const id = currentLesson.uuid;
+        await router.push({name: 'LessonResults', params: {lessonUUID: id}});
+      } catch (error: any) {
+        AlertService.addErrorAlert("Fehler beim Abschicken der Daten: " + error.message);
+      }
     }
   }
 }
@@ -77,9 +81,16 @@ function isRequirementOrTextfield(componentType: string): boolean {
   return componentType === 'Requirement' || componentType === 'Textfield';
 }
 
-onBeforeRouteLeave(() => {
-  lessonStore.clearComponents();
-})
+async function openLessonResults() {
+  if (lessonStore.currentLesson && lessonStore.lessonFinished) {
+    try {
+      const id = lessonStore.currentLesson.uuid;
+      await router.push({name: 'LessonResults', params: {lessonUUID: id}});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Öffnen der Ergebnisse: " + error.message);
+    }
+  }
+}
 </script>
 
 <template>
@@ -97,10 +108,15 @@ onBeforeRouteLeave(() => {
         <div class="text-h6 text-lg-h4">{{ currentLesson?.points }} Punkte</div>
         <v-progress-circular
             color="primary"
-            model-value="20"
+            :model-value="lessonStore.lessonFinished ? 100 : 20"
             :size="50"
             :width="7"
         ></v-progress-circular>
+      </v-col>
+    </v-row>
+    <v-row v-if="lessonStore.lessonFinished">
+      <v-col class="d-flex justify-end my-2">
+        <v-btn @click="openLessonResults">Zu den Ergebnissen</v-btn>
       </v-col>
     </v-row>
 
@@ -129,7 +145,9 @@ onBeforeRouteLeave(() => {
       <v-row>
         <v-col>
           <v-container>
-            <v-btn type="submit" @click="alertService.addHelpDialog('lessonFinished', submit)">Submit</v-btn>
+            <v-btn :disabled="lessonStore.lessonFinished" type="submit"
+                   @click="alertService.addHelpDialog('lessonFinished', submit)">Submit
+            </v-btn>
           </v-container>
         </v-col>
       </v-row>
