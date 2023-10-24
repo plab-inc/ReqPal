@@ -2,12 +2,14 @@ import {
     createRouter,
     createWebHistory,
     NavigationGuardNext,
-    RouteLocationNormalized, RouteLocationRaw,
+    RouteLocationNormalized,
+    RouteLocationRaw,
     Router
 } from "vue-router";
 
 import {requiresAuth} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
+import {fetchLessons, fetchQuestionsForLesson, loadLessonByUUID} from "@/middlewares/lesson.middleware.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson, fetchUserAnswersForQuestions,
@@ -38,7 +40,11 @@ const routes = [
                 path: "/builder",
                 name: "LessonBuilder",
                 component: () => import("@/views/lesson/LessonBuilder.view.vue"),
-                meta: {}
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
             },
             {
                 path: "/lessons/:lessonUUID",
