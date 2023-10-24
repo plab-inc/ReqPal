@@ -8,7 +8,8 @@ class LessonServiceClass {
         uploadLesson: this.uploadLesson.bind(this),
         deleteLesson: this.deleteLesson.bind(this),
         togglePublished: this.togglePublished.bind(this),
-        uploadUserAnswers: this.submitUserAnswers.bind(this)
+        uploadUserAnswers: this.submitUserAnswers.bind(this),
+        deleteUserAnswersForLesson: this.deleteUserAnswersForLesson.bind(this)
     };
 
     public pull = {
@@ -179,6 +180,17 @@ class LessonServiceClass {
         if (data) {
             return data as UserResult[];
         } else return null;
+    }
+
+    private async deleteUserAnswersForLesson(lessonUUID: string, userUUID: string) {
+        const {data, error} = await supabase
+            .from('user_finished_lessons')
+            .delete()
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
     }
 
 }

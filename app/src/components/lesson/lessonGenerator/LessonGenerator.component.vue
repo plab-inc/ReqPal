@@ -53,6 +53,18 @@ function init() {
   }
 }
 
+async function resetLesson() {
+  if (lessonStore.currentLesson) {
+    try {
+      await lessonStore.resetUserAnswersForLesson(lessonStore.currentLesson.uuid);
+      await router.push({name: 'Lessons'});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
+    }
+  }
+
+}
+
 async function openLessonResults() {
   if (lessonStore.currentLesson && lessonStore.lessonFinished) {
     try {
@@ -88,7 +100,8 @@ async function openLessonResults() {
     </v-row>
     <v-row v-if="lessonStore.lessonFinished">
       <v-col class="d-flex justify-end my-2">
-        <v-btn @click="openLessonResults">Zu den Ergebnissen</v-btn>
+        <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal bearbeiten</v-btn>
+        <v-btn color="success" @click="openLessonResults">Zu den Ergebnissen</v-btn>
       </v-col>
     </v-row>
 

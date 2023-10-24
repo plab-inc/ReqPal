@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
-export type DialogType = 'lessonFinished' | 'mcExplanation' | 'tfExplanation' | 'sliderExplanation' | 'notesExplanation' | 'productExplanation';
+export type DialogType = 'lessonFinished' | 'resetLesson' | 'mcExplanation' | 'tfExplanation' | 'sliderExplanation' | 'notesExplanation' | 'productExplanation';
 
 interface IAlert {
     id: string;
