@@ -458,6 +458,14 @@ export interface Database {
         }
         Returns: Json
       }
+      evaluate_slider: {
+        Args: {
+          question_id: string
+          answer: Json
+          max_points: number
+        }
+        Returns: Json
+      }
       evaluate_true_or_false: {
         Args: {
           question_id: string
