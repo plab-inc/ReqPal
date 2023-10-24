@@ -11,7 +11,7 @@ import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
-    loadLessonByUUID
+    loadLessonByUUID, loadLessonSolutionsByUUID
 } from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
@@ -56,7 +56,9 @@ const routes = [
                 name: "LessonResults",
                 component: () => import("@/views/lesson/LessonResults.view.vue"),
                 meta: {
-                    middleware: []
+                    middleware: [
+                        loadLessonSolutionsByUUID
+                    ]
                 }
             },
             {
