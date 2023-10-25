@@ -89,11 +89,17 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         loadLessonByUUID(lessonUUID: string) {
+            if (this.currentLesson?.uuid === lessonUUID) return;
             this.lessonFinished = false;
+            this.clearComponents();
             const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
             if (lesson) {
                 this.currentLesson = lesson;
-                this.clearComponents();
+            } else {
+                const lesson = this.examples.find(lesson => lesson.uuid === lessonUUID);
+                if (lesson) {
+                    this.currentLesson = lesson;
+                }
             }
         },
 
