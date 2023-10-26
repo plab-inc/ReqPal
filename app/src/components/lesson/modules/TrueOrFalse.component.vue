@@ -34,12 +34,9 @@ watch(fields, (newFields) => {
   <v-card variant="flat">
     <v-container>
       <v-row>
-        <v-col cols="10">
+        <v-col sm="10">
           <v-row>
-            <v-col class="d-flex justify-start align-center">
-              <div class="text-h6 text-md-h5 mr-2">True or False?</div>
-              <Help dialog-type="tfExplanation"></Help>
-            </v-col>
+            <div class="text-h6 text-md-h5 mr-2">True or False?</div>
           </v-row>
           <v-row>
             <v-col>
@@ -55,8 +52,13 @@ watch(fields, (newFields) => {
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
-          <Hint v-if="hint" :hint="hint"></Hint>
+        <v-col sm="2" class="d-flex flex-grow-1 align-end justify-end">
+          <div class="mr-2">
+            <Help dialog-type="mcExplanation"></Help>
+          </div>
+          <div>
+            <Hint v-if="hint" :hint="hint"></Hint>
+          </div>
         </v-col>
       </v-row>
     </v-container>
