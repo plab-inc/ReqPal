@@ -52,7 +52,7 @@ const getComponentInstance = (componentName: string): Component => {
 const [collect, drop] = useDrop(() => ({
   accept: DragItemTypes.COMPONENT,
   drop: (item: LessonBuilderDragItem) => {
-    if(components.length < MAX_QUESTIONS){
+    if (components.length < MAX_QUESTIONS) {
       lessonFormStore.addComponent(item.name);
       return;
     }
@@ -72,20 +72,21 @@ const components = lessonFormStore.getComponents;
 const lessons = lessonStore.getLessons;
 const {canDrop, isOver} = toRefs(collect);
 
-async function validate(){
+async function validate() {
   await form.value.validate();
 }
 
 async function uploadLesson() {
-  if (formIsValid.value && components.length > MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
+  if (formIsValid.value && components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson)
-        .catch(() => {utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
-    }).then(async () => {
-      utilStore.addAlert('Lektion erfolgreich gespeichert', 'success');
-      await router.push({path: '/lessons'});
-      lessonFormStore.flushStore();
-    });
+        .catch(() => {
+          utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
+        }).then(async () => {
+          utilStore.addAlert('Lektion erfolgreich gespeichert', 'success');
+          await router.push({path: '/lessons'});
+          lessonFormStore.flushStore();
+        });
 
     return;
   }
@@ -156,9 +157,9 @@ async function uploadLesson() {
                   <v-col cols="11">
                     <v-sheet rounded class="pa-3">
                       <component v-if="componentEntry.type"
-                          :is="getComponentInstance(componentEntry.type)"
-                          :key="componentEntry.uuid"
-                          :componentId="componentEntry.uuid"
+                                 :is="getComponentInstance(componentEntry.type)"
+                                 :key="componentEntry.uuid"
+                                 :componentId="componentEntry.uuid"
                       ></component>
                     </v-sheet>
                   </v-col>
@@ -185,9 +186,9 @@ async function uploadLesson() {
               variant="outlined"
               color="primary"
           >
-              <v-col v-for="template in templates" :key="template">
-                <LessonModuleBox :title="template"/>
-              </v-col>
+            <v-col v-for="template in templates" :key="template">
+              <LessonModuleBox :title="template"/>
+            </v-col>
           </v-card>
         </v-col>
       </v-row>
