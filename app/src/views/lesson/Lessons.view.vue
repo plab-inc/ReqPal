@@ -14,12 +14,13 @@
         >
         </v-card>
       </v-col>
+
       <v-col cols="12" v-if="authStore.isTeacher">
         <v-list>
           <v-list-item
               v-for="lesson in examples"
-              :key="lesson.uuid"
-              @click="openLessonDetails(lesson.uuid)"
+              :key="lesson.lessonDTO.uuid"
+              @click="openLessonDetails(lesson)"
               border
               variant="outlined"
               rounded
@@ -30,8 +31,8 @@
               class="ma-5"
               subtitle="Beispiellektion"
           >
-            <v-list-item-title>{{ lesson.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ lesson.description }}</v-list-item-subtitle>
+            <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
             <template v-slot:prepend>
               <v-icon>
                 mdi-clipboard-text
@@ -64,12 +65,13 @@
         </v-list>
         <v-divider/>
       </v-col>
+
       <v-col cols="12" v-if="true">
         <v-list>
           <v-list-item
               v-for="lesson in lessons"
-              :key="lesson.uuid"
-              @click="openLessonDetails(lesson.uuid)"
+              :key="lesson.lessonDTO.uuid"
+              @click="openLessonDetails(lesson)"
               border
               variant="outlined"
               rounded
@@ -78,20 +80,19 @@
               elevation="12"
               class="ma-5"
           >
-            <v-list-item-title>{{ lesson.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ lesson.description }}</v-list-item-subtitle>
+            <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
             <template v-slot:prepend>
               <v-icon>
                 mdi-clipboard-text
               </v-icon>
             </template>
             <template v-slot:append>
-              <v-badge
-                  v-if="!authStore.isTeacher"
-                  inline
-                  color="error"
-                  content="NEU">
-              </v-badge>
+
+              <div v-if="!authStore.isTeacher">
+                <LessonDetailsStudent :lesson="lesson"></LessonDetailsStudent>
+              </div>
+
               <v-btn-group
                   v-if="authStore.isTeacher"
                   variant="outlined"
@@ -100,20 +101,20 @@
                   density="default"
               >
                 <v-btn
-                    @click.stop="editLesson(lesson.uuid)"
+                    @click.stop="editLesson(lesson.lessonDTO.uuid)"
                     color="primary"
                 >
                   Bearbeiten
                 </v-btn>
                 <v-btn
-                    @click.stop="togglePublished(lesson)"
-                    :color="lesson.published ? 'warning' : 'success'"
+                    @click.stop="togglePublished(lesson.lessonDTO)"
+                    :color="lesson.lessonDTO.published ? 'warning' : 'success'"
                     min-width="180px"
                 >
-                  {{ lesson.published ? 'Verbergen' : 'Veröffentlichen' }}
+                  {{ lesson.lessonDTO.published ? 'Verbergen' : 'Veröffentlichen' }}
                 </v-btn>
                 <v-btn
-                    @click.stop="openDeleteDialog(lesson.uuid)"
+                    @click.stop="openDeleteDialog(lesson.lessonDTO.uuid)"
                     color="error"
                 >
                   Löschen
@@ -148,14 +149,15 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import lessonService from "@/services/database/lesson.service.ts";
 import alertService from "@/services/util/alert.service.ts";
-import {LessonDTO} from "@/types/lesson.types.ts";
+import {LessonDTO, Lesson} from "@/types/lesson.types.ts";
+import LessonDetailsStudent from "@/components/lesson/lessonGenerator/LessonDetailsStudent.component.vue";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
 
-const lessons: LessonDTO[] = lessonStore.getLessons;
-const examples: LessonDTO[] = lessonStore.getExampleLessons;
+const lessons: Lesson[] = lessonStore.getLessons;
+const examples: Lesson[] = lessonStore.getExampleLessons;
 
 async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
@@ -172,8 +174,13 @@ function togglePublished(lesson: LessonDTO) {
   })
 }
 
-function openLessonDetails(lessonUUID: string) {
-  router.push({name: 'LessonDetails', params: {lessonUUID}});
+async function openLessonDetails(lesson: Lesson) {
+
+  if (lesson.isFinished) {
+    await router.push({name: 'LessonResults', params: {lessonUUID: lesson.lessonDTO.uuid}});
+  } else {
+    await router.push({name: 'LessonDetails', params: {lessonUUID: lesson.lessonDTO.uuid}});
+  }
 }
 
 function openDeleteDialog(lessonUUID: string) {

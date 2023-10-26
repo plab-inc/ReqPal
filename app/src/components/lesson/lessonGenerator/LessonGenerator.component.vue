@@ -4,10 +4,12 @@ import alertService from "@/services/util/alert.service.ts";
 import router from "@/router";
 import AlertService from "@/services/util/alert.service.ts";
 import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
+import {LessonDTO} from "@/types/lesson.types.ts";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
-const currentLesson = lessonStore.getCurrentLesson;
+const currentLesson: LessonDTO | undefined = lessonStore.getCurrentLesson?.lessonDTO;
+const isFinished = lessonStore.getCurrentLesson?.isFinished;
 
 const form = ref<any>(null);
 
@@ -28,8 +30,7 @@ async function submit() {
     if (lessonJson) {
       try {
         await lessonStore.submitUserAnswers(lessonJson);
-        const id = currentLesson.uuid;
-        await router.push({name: 'LessonResults', params: {lessonUUID: id}});
+        await router.push({name: 'LessonResults', params: {lessonUUID: currentLesson.uuid}});
       } catch (error: any) {
         AlertService.addErrorAlert("Fehler beim Abschicken der Daten: " + error.message);
       }
@@ -53,22 +54,12 @@ function init() {
   }
 }
 
-async function resetLesson() {
-  if (lessonStore.currentLesson) {
-    try {
-      await lessonStore.resetUserAnswersForLesson(lessonStore.currentLesson.uuid);
-      await router.push({name: 'Lessons'});
-    } catch (error: any) {
-      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
-    }
-  }
 
-}
 
 async function openLessonResults() {
-  if (lessonStore.currentLesson && lessonStore.lessonFinished) {
+  if (lessonStore.currentLesson && lessonStore.currentLesson.isFinished) {
     try {
-      const id = lessonStore.currentLesson.uuid;
+      const id = lessonStore.currentLesson.lessonDTO.uuid;
       await router.push({name: 'LessonResults', params: {lessonUUID: id}});
     } catch (error: any) {
       AlertService.addErrorAlert("Fehler beim Öffnen der Ergebnisse: " + error.message);
@@ -96,14 +87,6 @@ async function openLessonResults() {
         </div>
       </v-col>
     </v-row>
-    <v-row v-if="lessonStore.lessonFinished">
-      <v-col class="d-flex justify-end my-2">
-        <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal
-          bearbeiten
-        </v-btn>
-        <v-btn color="success" @click="openLessonResults">Zu den Ergebnissen</v-btn>
-      </v-col>
-    </v-row>
 
     <v-divider></v-divider>
     <v-form @submit.prevent ref="form">
@@ -112,10 +95,10 @@ async function openLessonResults() {
           <LessonQuestions></LessonQuestions>
         </v-col>
       </v-row>
-      <v-row v-if="!lessonStore.lessonFinished">
+      <v-row v-if="!isFinished">
         <v-col>
           <v-container>
-            <v-btn :disabled="lessonStore.lessonFinished" type="submit"
+            <v-btn :disabled="isFinished" type="submit"
                    @click="alertService.addHelpDialog('lessonFinished', submit)">Submit
             </v-btn>
           </v-container>

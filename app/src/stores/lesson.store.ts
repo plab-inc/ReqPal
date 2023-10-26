@@ -1,18 +1,16 @@
 import {defineStore} from 'pinia';
-import {LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
+import {Lesson, LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface LessonState {
-    examples: LessonDTO[],
-    lessons: LessonDTO[];
-    currentLesson: LessonDTO | null;
+    examples: Lesson[],
+    lessons: Lesson[];
+    currentLesson: Lesson | null;
     currentQuestions: any;
     components: ComponentEntry[];
-    lessonFinished: boolean;
-    scoredPoints: number;
 }
 
 interface ComponentEntry {
@@ -28,14 +26,12 @@ export const useLessonStore = defineStore('lesson', {
         currentLesson: null,
         currentQuestions: [],
         components: [],
-        lessonFinished: false,
-        scoredPoints: 0
     }),
 
     getters: {
         getLessons: state => {
             return state.lessons.sort((a, b) => {
-                return a.created_at.localeCompare(b.created_at);
+                return a.lessonDTO.created_at.localeCompare(b.lessonDTO.created_at);
             });
         },
         getCurrentLesson: (state) => {
@@ -67,12 +63,36 @@ export const useLessonStore = defineStore('lesson', {
 
         async fetchLessons() {
             const lessons = await lessonService.pull.fetchLessons();
+            this.lessons = [];
+            this.examples = [];
+
             if (lessons) {
-                this.lessons = lessons;
+                this.lessons = lessons.map((l) => ({
+                    lessonDTO: l,
+                    isFinished: false,
+                    userScore: 0
+                }));
             }
+
+
             const exampleLessons = await lessonService.pull.fetchLessons(true);
+
             if (exampleLessons) {
-                this.examples = exampleLessons;
+                this.examples = exampleLessons.map((l) => ({
+                    lessonDTO: l,
+                    isFinished: false,
+                    userScore: 0
+                }));
+            }
+            await this.initLessons(this.lessons);
+            await this.initLessons(this.examples);
+        },
+
+        async initLessons(lessons: Lesson[]) {
+            for (const l of lessons) {
+                const isFinished = await this.isLessonFinished(l.lessonDTO.uuid);
+                l.isFinished = isFinished ? isFinished : false;
+                await this.loadUserScoreForLesson(l.lessonDTO.uuid);
             }
         },
 
@@ -80,7 +100,7 @@ export const useLessonStore = defineStore('lesson', {
             await lessonService.push.deleteLesson(lessonUUID).then(
                 (data: LessonDTO[]) => {
                     if (data.length > 0) {
-                        this.lessons.splice(this.lessons.findIndex(c => c.uuid === lessonUUID), 1);
+                        this.lessons.splice(this.lessons.findIndex(c => c.lessonDTO.uuid === lessonUUID), 1);
                         return;
                     }
                     throw new DatabaseError("Catalog could not be deleted", 500);
@@ -89,17 +109,11 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         loadLessonByUUID(lessonUUID: string) {
-            if (this.currentLesson?.uuid === lessonUUID) return;
-            this.lessonFinished = false;
+            if (this.currentLesson?.lessonDTO.uuid === lessonUUID) return;
             this.clearComponents();
-            const lesson = this.lessons.find(lesson => lesson.uuid === lessonUUID);
+            const lesson = this.findLesson(lessonUUID);
             if (lesson) {
                 this.currentLesson = lesson;
-            } else {
-                const lesson = this.examples.find(lesson => lesson.uuid === lessonUUID);
-                if (lesson) {
-                    this.currentLesson = lesson;
-                }
             }
         },
 
@@ -128,7 +142,7 @@ export const useLessonStore = defineStore('lesson', {
             const questions = this.filterComponentsByQuestionOnly();
             if (this.currentLesson) {
                 return {
-                    uuid: this.currentLesson?.uuid,
+                    uuid: this.currentLesson?.lessonDTO.uuid,
                     usedHints: 0,
                     answers: questions.map(component => {
                         return {
@@ -174,14 +188,17 @@ export const useLessonStore = defineStore('lesson', {
 
         async loadUserScoreForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
-            if (authStore.user && this.lessonFinished) {
-                const data = await lessonService.pull.fetchUserScoreForLesson(lessonUUID, authStore.user.id);
-                if (data) {
-                    let score = 0;
-                    data.forEach(d => {
-                        score += d.result.score;
-                    })
-                    this.scoredPoints = Math.round(score);
+            let lesson = this.findLesson(lessonUUID);
+            if (lesson) {
+                if (authStore.user && lesson.isFinished) {
+                    const data = await lessonService.pull.fetchUserScoreForLesson(lessonUUID, authStore.user.id);
+                    if (data) {
+                        let score = 0;
+                        data.forEach(d => {
+                            score += d.result.score;
+                        })
+                        lesson.userScore = Math.round(score);
+                    }
                 }
             }
         },
@@ -195,15 +212,26 @@ export const useLessonStore = defineStore('lesson', {
 
         async loadUserAnswersForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
-            if (authStore.user) {
-                const data = await lessonService.pull.fetchLessonFinishedForUser(lessonUUID, authStore.user.id);
-                if (data && data.finished) {
-                    this.lessonFinished = true;
+            let lesson = this.findLesson(lessonUUID);
+
+            if (authStore.user && lesson) {
+                const isFinished = await this.isLessonFinished(lessonUUID);
+                if (isFinished) {
+                    lesson.isFinished = true;
                     const answers = await lessonService.pull.fetchLessonUserAnswers(lessonUUID, authStore.user.id);
                     if (answers) {
                         this.hydrate(answers);
                     }
                 }
+            }
+        },
+
+        async isLessonFinished(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                const isFinished = await lessonService.pull.fetchLessonFinishedForUser(lessonUUID, authStore.user.id);
+                if (isFinished && isFinished.finished) return isFinished.finished;
+                return false;
             }
         },
 
@@ -225,6 +253,14 @@ export const useLessonStore = defineStore('lesson', {
                     this.components.find(c => c.uuid === answer.question_id);
                 if (comp) comp.data.options = answer.answer;
             });
+        },
+
+        findLesson(lessonUUID: string) {
+            let lesson = this.lessons.find(l => l.lessonDTO.uuid === lessonUUID);
+            if (!lesson) {
+                lesson = this.examples.find(l => l.lessonDTO.uuid === lessonUUID);
+            }
+            return lesson;
         }
 
     },

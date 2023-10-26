@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {v4 as uuidv4} from 'uuid';
-import {Lesson} from "@/types/lesson.types.ts";
+import {LessonForm} from "@/types/lesson.types.ts";
 
 interface ComponentEntry {
     uuid: string;
@@ -55,7 +55,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
     },
     actions: {
         addComponent(componentName: string) {
-            let uuid: string  = uuidv4();
+            let uuid: string = uuidv4();
             this.components.push({
                 type: componentName,
                 uuid: uuid,
@@ -100,7 +100,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.lessonPoints = 250;
             this.clearComponents();
         },
-        generateLesson(): Lesson {
+        generateLesson(): LessonForm {
             return {
                 uuid: this.uuid,
                 title: this.lessonTitle,
@@ -119,7 +119,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                 })
             };
         },
-        hydrate(lesson: Lesson) {
+        hydrate(lesson: LessonForm) {
             this.flushStore();
             this.uuid = lesson.uuid;
             this.lessonTitle = lesson.title;
