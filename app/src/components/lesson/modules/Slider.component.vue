@@ -38,6 +38,14 @@ function init() {
     correctValue.value = (+solution.correctValue);
   }
 
+  if (!fields.options) {
+    fields.options = {
+      minValue: 0,
+      maxValue: 10,
+      steps: 1
+    };
+  }
+
   if (fields.value.options.hasOwnProperty('input')) {
     inputValue.value = fields.value.options.input;
   } else {
@@ -48,8 +56,8 @@ function init() {
       maxValue: fields.value.options.maxValue,
       input: inputValue.value
     };
-    updateStoreData(fields.value)
   }
+  updateStoreData(fields.value)
 }
 
 function checkSolution() {
@@ -75,10 +83,7 @@ watch(inputValue, (newInput) => {
       <v-row>
         <v-col cols="10">
           <v-row>
-            <v-col class="d-flex justify-start align-center">
-              <div class="text-h6 text-md-h5 mr-2">Slider</div>
-              <Help dialog-type="sliderExplanation"></Help>
-            </v-col>
+            <div class="text-h6 text-md-h5 mr-2">Slider</div>
           </v-row>
           <v-row>
             <v-col>
@@ -86,14 +91,11 @@ watch(inputValue, (newInput) => {
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2">
-          <Hint v-if="hint" :hint="hint"></Hint>
-        </v-col>
       </v-row>
       <v-row>
         <v-col v-if="solution" class="text-center">
           <div class="text-h6 mb-2">Richtige Antwort: {{ correctValue }}</div>
-          <div class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
+          <div v-if="minValue != maxValue" class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
         </v-col>
         <v-col>
           <v-slider
@@ -105,6 +107,16 @@ watch(inputValue, (newInput) => {
               track-color="warning"
               thumb-label>
           </v-slider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex flex-grow-1 align-end justify-end">
+          <div class="mr-2">
+            <Help dialog-type="mcExplanation"></Help>
+          </div>
+          <div>
+            <Hint v-if="hint" :hint="hint"></Hint>
+          </div>
         </v-col>
       </v-row>
     </v-container>
