@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {Lesson, UserAnswer, UserResult} from "@/types/lesson.types.ts";
+import {LessonForm, UserAnswer, UserResult} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
@@ -67,7 +67,7 @@ class LessonServiceClass {
 
     }
 
-    private async uploadLesson(lesson: Lesson) {
+    private async uploadLesson(lesson: LessonForm) {
         const {error} = await supabase
             .rpc('create_lesson_from_json', {
                 data: lesson
@@ -84,7 +84,7 @@ class LessonServiceClass {
 
         if (error) console.error(error)
 
-        if (data) return data as Lesson;
+        if (data) return data as LessonForm;
     }
 
     private async deleteLesson(lessonUUID: string) {

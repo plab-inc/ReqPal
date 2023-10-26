@@ -5,6 +5,12 @@ export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 
 export type Lesson = {
+    lessonDTO: LessonDTO,
+    isFinished: boolean,
+    userScore: number
+}
+
+export type LessonForm = {
     uuid: string;
     title: string;
     description: string;

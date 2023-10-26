@@ -1,7 +1,7 @@
 <template>
-
-<LessonResults></LessonResults>
-
+  <v-container>
+    <LessonResults></LessonResults>
+  </v-container>
 </template>
 
 <script setup lang="ts">
