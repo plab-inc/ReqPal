@@ -19,6 +19,12 @@ const props = defineProps<Props>();
         :color="lesson.isFinished ? 'success' : 'error'"
         :content="lesson.isFinished ? 'ABGESCHLOSSEN' : 'NEU'">
     </v-badge>
+    <v-badge
+        v-if="lesson.isStarted"
+        inline
+        :color="'warning'"
+        :content="'BEGONNEN'">
+    </v-badge>
   </div>
 </template>
 

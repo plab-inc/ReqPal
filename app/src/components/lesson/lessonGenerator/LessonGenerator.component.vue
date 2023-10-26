@@ -10,6 +10,7 @@ const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
 const currentLesson: LessonDTO | undefined = lessonStore.getCurrentLesson?.lessonDTO;
 const isFinished = lessonStore.getCurrentLesson?.isFinished;
+const isStarted = lessonStore.getCurrentLesson?.isStarted;
 
 const form = ref<any>(null);
 
@@ -54,22 +55,17 @@ function init() {
   }
 }
 
-
-
-async function openLessonResults() {
-  if (lessonStore.currentLesson && lessonStore.currentLesson.isFinished) {
-    try {
-      const id = lessonStore.currentLesson.lessonDTO.uuid;
-      await router.push({name: 'LessonResults', params: {lessonUUID: id}});
-    } catch (error: any) {
-      AlertService.addErrorAlert("Fehler beim Öffnen der Ergebnisse: " + error.message);
-    }
+async function openDialog() {
+  const formIsValid = await checkValidity();
+  if (formIsValid) {
+    alertService.addHelpDialog('lessonFinished', submit)
+  } else {
+    alertService.addInfoAlert("Die Lektion wurde noch nicht vollständig bearbeitet.")
   }
 }
 </script>
 
 <template>
-
   <v-container v-if="sortedQuestions.length <= 0">
     <div class="text-subtitle-1">Noch keine Fragen!</div>
   </v-container>
@@ -95,11 +91,11 @@ async function openLessonResults() {
           <LessonQuestions></LessonQuestions>
         </v-col>
       </v-row>
-      <v-row v-if="!isFinished">
+      <v-row v-if="!isFinished || isStarted">
         <v-col>
           <v-container>
-            <v-btn :disabled="isFinished" type="submit"
-                   @click="alertService.addHelpDialog('lessonFinished', submit)">Submit
+            <v-btn :disabled="!isStarted && isFinished" type="submit"
+                   @click="openDialog">Submit
             </v-btn>
           </v-container>
         </v-col>

@@ -9,7 +9,7 @@ class LessonServiceClass {
         deleteLesson: this.deleteLesson.bind(this),
         togglePublished: this.togglePublished.bind(this),
         uploadUserAnswers: this.submitUserAnswers.bind(this),
-        deleteUserAnswersForLesson: this.deleteUserAnswersForLesson.bind(this)
+        setLessonStartedStatus: this.setLessonStartedStatus.bind(this)
     };
 
     public pull = {
@@ -18,7 +18,7 @@ class LessonServiceClass {
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
         fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this),
-        fetchLessonFinishedForUser: this.fetchLessonFinishedForUser.bind(this),
+        fetchLessonStatusForUser: this.fetchLessonStatusForUser.bind(this),
         fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this),
         fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this)
     };
@@ -135,10 +135,10 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonFinishedForUser(lessonUUID: string, userUUID: string) {
+    private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string) {
         const {data, error} = await supabase
             .from('user_finished_lessons')
-            .select('finished')
+            .select('finished, is_started')
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
 
@@ -146,7 +146,7 @@ class LessonServiceClass {
             throw error;
         }
 
-        if (data?.length > 0) {
+        if (data) {
             return data[0];
         } else {
             return null;
@@ -182,14 +182,21 @@ class LessonServiceClass {
         } else return null;
     }
 
-    private async deleteUserAnswersForLesson(lessonUUID: string, userUUID: string) {
+    private async setLessonStartedStatus(lessonUUID: string, userUUID: string, status: boolean) {
         const {data, error} = await supabase
             .from('user_finished_lessons')
-            .delete()
+            .update({is_started: status})
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
+            .select()
+            .single()
 
         if (error) throw error;
+
+        if (data && data.is_started !== null) {
+            return data.is_started;
+        }
+        return false;
 
     }
 

@@ -18,7 +18,7 @@ const profileStore = useProfileStore();
 async function resetLesson() {
   if (lessonStore.currentLesson) {
     try {
-      await lessonStore.resetUserAnswersForLesson(lessonStore.currentLesson.lessonDTO.uuid);
+      await lessonStore.restartLessonForUser(lessonStore.currentLesson.lessonDTO.uuid);
       await router.push({name: 'Lessons'});
     } catch (error: any) {
       AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);

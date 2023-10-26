@@ -70,6 +70,7 @@ export const useLessonStore = defineStore('lesson', {
                 this.lessons = lessons.map((l) => ({
                     lessonDTO: l,
                     isFinished: false,
+                    isStarted: false,
                     userScore: 0
                 }));
             }
@@ -81,6 +82,7 @@ export const useLessonStore = defineStore('lesson', {
                 this.examples = exampleLessons.map((l) => ({
                     lessonDTO: l,
                     isFinished: false,
+                    isStarted: false,
                     userScore: 0
                 }));
             }
@@ -90,8 +92,9 @@ export const useLessonStore = defineStore('lesson', {
 
         async initLessons(lessons: Lesson[]) {
             for (const l of lessons) {
-                const isFinished = await this.isLessonFinished(l.lessonDTO.uuid);
-                l.isFinished = isFinished ? isFinished : false;
+                const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
+                l.isFinished = status && (status.finished !== null) ? status.finished : false;
+                l.isStarted = status && (status.is_started !== null) ? status.is_started : false;
                 await this.loadUserScoreForLesson(l.lessonDTO.uuid);
             }
         },
@@ -109,7 +112,6 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         loadLessonByUUID(lessonUUID: string) {
-            if (this.currentLesson?.lessonDTO.uuid === lessonUUID) return;
             this.clearComponents();
             const lesson = this.findLesson(lessonUUID);
             if (lesson) {
@@ -158,20 +160,28 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async submitUserAnswers(answers: any) {
-            await lessonService.push.uploadUserAnswers(answers);
+            await lessonService.push.uploadUserAnswers(answers).then(() => {
+                if (this.currentLesson) {
+                    this.currentLesson.isFinished = true;
+                    this.currentLesson.isStarted = false;
+                }
+            });
         },
 
         async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
-            const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
-            if (data) {
-                this.currentQuestions = data;
+            let lesson = this.findLesson(lessonUUID);
+            if (lesson?.isFinished && !lesson.isStarted) {
+                const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
 
-                data.forEach(d => {
-                    let component = this.components.find(component => component.data.uuid === d.uuid);
-                    if (component) {
-                        component.data.solution = d.solution;
-                    }
-                })
+                if (data) {
+                    this.currentQuestions = data;
+                    data.forEach(d => {
+                        let component = this.components.find(component => component.data.uuid === d.uuid);
+                        if (component) {
+                            component.data.solution = d.solution;
+                        }
+                    })
+                }
             }
         },
 
@@ -203,11 +213,21 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        async resetUserAnswersForLesson(lessonUUID: string) {
+        async restartLessonForUser(lessonUUID: string) {
             const authStore = useAuthStore();
             if (authStore.user) {
-                await lessonService.push.deleteUserAnswersForLesson(lessonUUID, authStore.user.id);
+                const data = await lessonService.push.setLessonStartedStatus(lessonUUID, authStore.user.id, true);
+                if (data) {
+                    const lesson = this.findLesson(lessonUUID);
+                    if (lesson) {
+                        lesson.isStarted = true;
+                        console.log(lesson)
+                        console.log(this.lessons)
+                    }
+                }
             }
+
+            this.clearComponents();
         },
 
         async loadUserAnswersForLesson(lessonUUID: string) {
@@ -215,9 +235,8 @@ export const useLessonStore = defineStore('lesson', {
             let lesson = this.findLesson(lessonUUID);
 
             if (authStore.user && lesson) {
-                const isFinished = await this.isLessonFinished(lessonUUID);
-                if (isFinished) {
-                    lesson.isFinished = true;
+                const status = await this.getStatusOfLessonForUser(lessonUUID);
+                if (status && !status.is_started) {
                     const answers = await lessonService.pull.fetchLessonUserAnswers(lessonUUID, authStore.user.id);
                     if (answers) {
                         this.hydrate(answers);
@@ -226,12 +245,14 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        async isLessonFinished(lessonUUID: string) {
+        async getStatusOfLessonForUser(lessonUUID: string) {
             const authStore = useAuthStore();
-            if (authStore.user) {
-                const isFinished = await lessonService.pull.fetchLessonFinishedForUser(lessonUUID, authStore.user.id);
-                if (isFinished && isFinished.finished) return isFinished.finished;
-                return false;
+            const lesson = this.findLesson(lessonUUID);
+            if (authStore.user && lesson) {
+                const status = await lessonService.pull.fetchLessonStatusForUser(lessonUUID, authStore.user.id);
+                if (status) {
+                    return status;
+                }
             }
         },
 

@@ -7,6 +7,7 @@ export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 export type Lesson = {
     lessonDTO: LessonDTO,
     isFinished: boolean,
+    isStarted: boolean,
     userScore: number
 }
 
