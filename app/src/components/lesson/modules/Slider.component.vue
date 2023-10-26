@@ -38,6 +38,14 @@ function init() {
     correctValue.value = (+solution.correctValue);
   }
 
+  if (!fields.options) {
+    fields.options = {
+      minValue: 0,
+      maxValue: 10,
+      steps: 1
+    };
+  }
+
   if (fields.value.options.hasOwnProperty('input')) {
     inputValue.value = fields.value.options.input;
   } else {
@@ -48,8 +56,8 @@ function init() {
       maxValue: fields.value.options.maxValue,
       input: inputValue.value
     };
-    updateStoreData(fields.value)
   }
+  updateStoreData(fields.value)
 }
 
 function checkSolution() {
@@ -87,7 +95,7 @@ watch(inputValue, (newInput) => {
       <v-row>
         <v-col v-if="solution" class="text-center">
           <div class="text-h6 mb-2">Richtige Antwort: {{ correctValue }}</div>
-          <div class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
+          <div v-if="minValue != maxValue" class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
         </v-col>
         <v-col>
           <v-slider
