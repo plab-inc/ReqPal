@@ -5,12 +5,12 @@
     <v-row no-gutters>
       <v-col cols="12" v-if="lessons.length < 1 ">
         <v-card
-                :title="authStore.isTeacher ? 'Keine eigenen Lektionen verfügbar.' : 'Keine Lektionen verfügbar'"
-                :subtitle="authStore.isTeacher ? 'Sie haben noch keine Lektionen erstellt' :'Ihr Dozent hat aktuell noch keine Lektionen erstellt und veröffentlicht.'"
-                variant="outlined"
-                color="error"
-                elevation="12"
-                class="mb-10"
+            :title="authStore.isTeacher ? 'Keine eigenen Lektionen verfügbar.' : 'Keine Lektionen verfügbar'"
+            :subtitle="authStore.isTeacher ? 'Sie haben noch keine Lektionen erstellt' :'Ihr Dozent hat aktuell noch keine Lektionen erstellt und veröffentlicht.'"
+            variant="outlined"
+            color="error"
+            elevation="12"
+            class="mb-10"
         >
         </v-card>
       </v-col>
@@ -110,7 +110,7 @@
                     :color="lesson.published ? 'warning' : 'success'"
                     min-width="180px"
                 >
-                  {{ lesson.published ?  'Verbergen' : 'Veröffentlichen' }}
+                  {{ lesson.published ? 'Verbergen' : 'Veröffentlichen' }}
                 </v-btn>
                 <v-btn
                     @click.stop="openDeleteDialog(lesson.uuid)"
@@ -159,7 +159,7 @@ const examples: LessonDTO[] = lessonStore.getExampleLessons;
 
 async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
-    if(lesson){
+    if (lesson) {
       lessonFormStore.hydrate(lesson);
       router.push({path: '/builder'});
     }
@@ -173,21 +173,24 @@ function togglePublished(lesson: LessonDTO) {
 }
 
 function openLessonDetails(lessonUUID: string) {
-  router.push({ name: 'LessonDetails', params: { lessonUUID } });
+  router.push({name: 'LessonDetails', params: {lessonUUID}});
 }
 
 function openDeleteDialog(lessonUUID: string) {
   alertService.openDialog(
-      () => deleteLesson(lessonUUID),
       "Lektion löschen",
       "Möchtest du die Lektion wirklich löschen? Das löschen is unwiederruflich",
       "Ja",
-      "Nein"
+      "Nein",
+      () => deleteLesson(lessonUUID)
   )
 }
+
 function deleteLesson(lessonUUID: string): void {
   lessonStore.deleteLesson(lessonUUID)
-      .then(() => {alertService.addSuccessAlert("Lektion gelöscht")})
+      .then(() => {
+        alertService.addSuccessAlert("Lektion gelöscht")
+      })
 }
 
 </script>

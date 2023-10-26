@@ -29,7 +29,7 @@ class AlertServiceClass {
         this.store.addAlert(message, 'warning');
     }
 
-    openDialog(onConfirm: () => void, title: string, message: string, confirmButton: string, cancelButton: string) {
+    openDialog(title: string, message: string, confirmButton: string, cancelButton?: string, onConfirm?: () => void) {
         this.store.openDialog({
             title: title,
             message: message,

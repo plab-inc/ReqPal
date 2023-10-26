@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import alertService from "@/services/util/alert.service.ts";
+
 interface Props {
   hint: string
 }
@@ -12,21 +14,21 @@ function toggleShowHint() {
 </script>
 
 <template>
-    <v-tooltip :text="showHint ? 'Hinweis verstecken' : 'Hinweis anzeigen'" location="top">
-      <template v-slot:activator="{ props }">
-        <v-btn v-bind="props"
-               size="40"
-               icon="mdi-lightbulb"
-               @click="toggleShowHint"></v-btn>
-      </template>
-    </v-tooltip>
-    <v-card
-        class="mt-2"
-        v-if="showHint"
-        color="success"
-        title="Hinweis"
-        :text="hint"
-    ></v-card>
+  <v-tooltip :text="showHint ? 'Hinweis verstecken' : 'Hinweis anzeigen'" location="top">
+    <template v-slot:activator="{ props }">
+      <v-btn v-bind="props"
+             size="40"
+             icon="mdi-lightbulb"
+             @click="alertService.openDialog('Hinweis', hint, 'Danke!')"></v-btn>
+    </template>
+  </v-tooltip>
+  <v-card
+      class="mt-2"
+      v-if="showHint"
+      color="success"
+      title="Hinweis"
+      :text="hint"
+  ></v-card>
 </template>
 
 <style scoped>
