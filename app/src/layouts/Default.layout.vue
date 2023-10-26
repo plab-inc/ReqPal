@@ -89,10 +89,11 @@
         <div v-for="dialog in utilStore.dialogs">
           <CustomDialog @confirm="dialog.onConfirm(); utilStore.closeDialog(dialog.id)"
                         @cancel="utilStore.closeDialog(dialog.id)"
-                        :title="dialog.title"
-                        :message="dialog.message"
-                        :confirm-label="dialog.confirmLabel"
-                        :cancel-label="dialog.cancelLabel"
+                        :title="dialog.content.title"
+                        :message="dialog.content.message"
+                        :confirm-label="dialog.content.confirmLabel"
+                        :cancel-label="dialog.content.cancelLabel"
+                        :onlyConfirmButton="dialog.onlyConfirmButton"
           ></CustomDialog>
         </div>
       </v-container>
