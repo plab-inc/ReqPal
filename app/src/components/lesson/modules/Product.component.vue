@@ -33,7 +33,7 @@ const fields = ref<any>({
           <v-row>
             <v-col>
               <v-row>
-                <v-col v-for="product in fields.options" :key="product.product_name" :cols="12/fields.options.length">
+                <v-col v-for="product in fields.options" :key="product.product_name" :md="12/fields.options.length">
                   <ProductItem :options="product"></ProductItem>
                 </v-col>
               </v-row>

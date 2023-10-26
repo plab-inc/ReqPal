@@ -75,19 +75,13 @@ watch(inputValue, (newInput) => {
       <v-row>
         <v-col cols="10">
           <v-row>
-            <v-col class="d-flex justify-start align-center">
-              <div class="text-h6 text-md-h5 mr-2">Slider</div>
-              <Help dialog-type="sliderExplanation"></Help>
-            </v-col>
+            <div class="text-h6 text-md-h5 mr-2">Slider</div>
           </v-row>
           <v-row>
             <v-col>
               <div class="text-h6">{{ question }}</div>
             </v-col>
           </v-row>
-        </v-col>
-        <v-col cols="2">
-          <Hint v-if="hint" :hint="hint"></Hint>
         </v-col>
       </v-row>
       <v-row>
@@ -105,6 +99,16 @@ watch(inputValue, (newInput) => {
               track-color="warning"
               thumb-label>
           </v-slider>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex flex-grow-1 align-end justify-end">
+          <div class="mr-2">
+            <Help dialog-type="mcExplanation"></Help>
+          </div>
+          <div>
+            <Hint v-if="hint" :hint="hint"></Hint>
+          </div>
         </v-col>
       </v-row>
     </v-container>

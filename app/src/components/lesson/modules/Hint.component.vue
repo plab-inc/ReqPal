@@ -12,28 +12,21 @@ function toggleShowHint() {
 </script>
 
 <template>
-
-  <v-container>
-    <v-row>
-      <v-col class="d-flex flex-column justify-center align-center">
-        <v-tooltip :text="showHint ? 'Hinweis verstecken' : 'Hinweis anzeigen'" location="top">
-          <template v-slot:activator="{ props }">
-            <v-btn v-bind="props"
-                   icon="mdi-lightbulb"
-                   @click="toggleShowHint"></v-btn>
-          </template>
-        </v-tooltip>
-        <v-card
-            class="mt-2"
-            v-if="showHint"
-            color="success"
-            title="Hinweis"
-            :text="hint"
-        ></v-card>
-      </v-col>
-    </v-row>
-  </v-container>
-
+    <v-tooltip :text="showHint ? 'Hinweis verstecken' : 'Hinweis anzeigen'" location="top">
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props"
+               size="40"
+               icon="mdi-lightbulb"
+               @click="toggleShowHint"></v-btn>
+      </template>
+    </v-tooltip>
+    <v-card
+        class="mt-2"
+        v-if="showHint"
+        color="success"
+        title="Hinweis"
+        :text="hint"
+    ></v-card>
 </template>
 
 <style scoped>
