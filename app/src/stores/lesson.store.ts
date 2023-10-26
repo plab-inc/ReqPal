@@ -94,7 +94,7 @@ export const useLessonStore = defineStore('lesson', {
             for (const l of lessons) {
                 const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
                 l.isFinished = status && (status.finished !== null) ? status.finished : false;
-                l.isStarted = status && (status.is_started !== null) ? status.is_started : false;
+                l.isStarted = status && (status.is_started !== null) ? status.is_started : true;
                 await this.loadUserScoreForLesson(l.lessonDTO.uuid);
             }
         },

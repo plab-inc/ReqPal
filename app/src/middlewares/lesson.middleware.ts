@@ -82,7 +82,7 @@ export async function nextIfLessonNotFinished(to: RouteLocationNormalized, from:
     try {
         const lessonStore = useLessonStore();
         const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
-        if(status && (!status.finished || status.is_started)) {
+        if(!status || status && (!status.finished || status.is_started)) {
             return next();
         } else {
             alertService.addErrorAlert("Diese Lektion wurde bereits abgeschlossen!")
