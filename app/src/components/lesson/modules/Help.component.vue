@@ -10,14 +10,14 @@ const props = defineProps<Props>();
 
 </script>
 <template>
-    <v-tooltip :text="'Hilfe'" location="top">
-      <template v-slot:activator="{ props }">
-        <v-btn v-bind="props"
-               icon="mdi-help"
-               size="40"
-               @click="AlertService.addHelpDialog(dialogType, ()=>{})"></v-btn>
-      </template>
-    </v-tooltip>
+  <v-tooltip :text="'Hilfe'" location="top">
+    <template v-slot:activator="{ props }">
+      <v-btn v-bind="props"
+             icon="mdi-help"
+             size="40"
+             @click="AlertService.addHelpDialog(dialogType)"></v-btn>
+    </template>
+  </v-tooltip>
 </template>
 
 <style scoped>
