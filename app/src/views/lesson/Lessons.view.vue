@@ -176,7 +176,7 @@ function togglePublished(lesson: LessonDTO) {
 
 async function openLessonDetails(lesson: Lesson) {
 
-  if (lesson.isFinished) {
+  if (lesson.isFinished && !lesson.isStarted) {
     await router.push({name: 'LessonResults', params: {lessonUUID: lesson.lessonDTO.uuid}});
   } else {
     await router.push({name: 'LessonDetails', params: {lessonUUID: lesson.lessonDTO.uuid}});

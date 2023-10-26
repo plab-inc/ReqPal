@@ -12,7 +12,7 @@ import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson, fetchUserAnswersForQuestions,
-    loadLessonByUUID, loadLessonSolutionsByUUID, nextIfLessonFinished
+    loadLessonByUUID, loadLessonSolutionsByUUID, nextIfLessonFinished, nextIfLessonNotFinished
 } from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
@@ -51,9 +51,9 @@ const routes = [
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
                     middleware: [
+                        nextIfLessonNotFinished,
                         loadLessonByUUID,
                         fetchQuestionsForLesson,
-                        fetchUserAnswersForQuestions
                     ]
                 }
             },

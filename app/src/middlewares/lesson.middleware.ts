@@ -16,9 +16,7 @@ export async function fetchLessons(to: RouteLocationNormalized, from: RouteLocat
 export async function loadLessonByUUID(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-        if (lessonStore.lessons.length <= 0) {
-            await lessonStore.fetchLessons();
-        }
+        await lessonStore.fetchLessons();
         lessonStore.loadLessonByUUID(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
@@ -41,9 +39,8 @@ export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from:
 export async function fetchUserAnswersForQuestions(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-        if (lessonStore.currentQuestions.length < 0) {
-            await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
-        }
+
+        await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
         await lessonStore.loadUserAnswersForLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
@@ -68,11 +65,27 @@ export async function loadLessonSolutionsByUUID(to: RouteLocationNormalized, fro
 export async function nextIfLessonFinished(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-        const isFinished = await lessonStore.isLessonFinished(to.params.lessonUUID.toString());
-        if(isFinished) {
+        const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
+        if(status && status.finished && !status.is_started) {
             return next();
         } else {
             alertService.addErrorAlert("Diese Lektion wurde noch nicht abgeschlossen!")
+            return next({name: 'Lessons'});
+        }
+    } catch (error) {
+        console.log(error);
+        return next({name: 'Error'});
+    }
+}
+
+export async function nextIfLessonNotFinished(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    try {
+        const lessonStore = useLessonStore();
+        const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
+        if(status && (!status.finished || status.is_started)) {
+            return next();
+        } else {
+            alertService.addErrorAlert("Diese Lektion wurde bereits abgeschlossen!")
             return next({name: 'Lessons'});
         }
     } catch (error) {
