@@ -78,24 +78,22 @@ async function openLessonResults() {
 </script>
 
 <template>
+
   <v-container v-if="sortedQuestions.length <= 0">
     <div class="text-subtitle-1">Noch keine Fragen!</div>
   </v-container>
 
   <v-container v-else>
     <v-row class="mb-4">
-      <v-col cols="10">
-        <div class="text-h3">{{ currentLesson?.title }}</div>
-        <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
+      <v-col sm="10">
+        <div class="text-h3 text-sm-start text-center">{{ currentLesson?.title }}</div>
+        <div class="text-h5 mt-4 text-sm-start text-center">{{ currentLesson?.description }}</div>
       </v-col>
-      <v-col cols="2" class="d-flex justify-space-between">
-        <div class="text-h6 text-lg-h4">{{ currentLesson?.points }} Punkte</div>
-        <v-progress-circular
-            color="primary"
-            :model-value="lessonStore.lessonFinished ? 100 : 20"
-            :size="50"
-            :width="7"
-        ></v-progress-circular>
+      <v-col sm="2">
+        <div class="d-flex align-center justify-center justify-sm-end">
+          <div class="text-h4 mr-2">{{ currentLesson?.points }}</div>
+          <v-icon size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="lessonStore.lessonFinished">
