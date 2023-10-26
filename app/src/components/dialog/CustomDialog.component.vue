@@ -3,24 +3,28 @@
 const props = defineProps({
   title: {
     type: String,
-    default: "Warning"
+    default: "Warnung"
   },
   message: {
     type: String,
-    default: "Are you sure you want to proceed?"
+    default: "Wollen Sie wirklich fortfahren?"
   },
   confirmLabel: {
     type: String,
-    default: "Confirm"
+    default: "Fortfahren"
   },
   cancelLabel: {
     type: String,
-    default: "Cancel"
+    default: "Abbrechen"
   },
   modelValue: {
     type: Boolean,
     default: true
-  }
+  },
+  onlyConfirmButton: {
+    type: Boolean,
+    default: false
+  },
 });
 const emit = defineEmits();
 
@@ -61,7 +65,7 @@ openDialog.value = props.modelValue;
         {{ message }}
       </v-card-text>
       <v-card-actions>
-        <v-btn color="success" @click="cancel">{{ cancelLabel }}</v-btn>
+        <v-btn v-if="!onlyConfirmButton" color="success" @click="cancel">{{ cancelLabel }}</v-btn>
         <v-btn color="warning" @click="confirm">{{ confirmLabel }}</v-btn>
       </v-card-actions>
     </v-card>

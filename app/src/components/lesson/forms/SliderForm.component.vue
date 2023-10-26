@@ -14,25 +14,42 @@ function betweenRange(x: number) {
   return x >= min && x <= max;
 }
 
-const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options') || {
-  minValue: 0,
-  maxValue: 10,
-  steps: 1
-};
+const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options');
 
-const storedSolution = lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {
-  correctValue: 5,
-  toleranceValue: 0
-};
+const storedSolution = lessonFormStore.getComponentFieldValues(props.componentId, 'solution');
 
-const sliderOptions = ref(storedOptions);
-const sliderSolution = ref(storedSolution);
+const sliderOptions = ref<any>();
+const sliderSolution = ref<any>();
+
+init();
+
+function init() {
+  if (!storedOptions) {
+    sliderOptions.value = {
+      minValue: 0,
+      maxValue: 10,
+      steps: 1
+    };
+    lessonFormStore.setComponentData(props.componentId, 'options', sliderOptions.value);
+  } else {
+    sliderOptions.value = storedOptions;
+  }
+
+  if (!storedSolution) {
+    sliderSolution.value = {
+      correctValue: 5,
+      toleranceValue: 0
+    };
+    lessonFormStore.setComponentData(props.componentId, 'solution', sliderSolution.value);
+  } else {
+    sliderSolution.value = storedSolution;
+  }
+}
 
 const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
   hint: lessonFormStore.getComponentFieldValues(props.componentId, 'hint')
 });
-
 
 watch(fields, (newFields) => {
   lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
@@ -42,8 +59,7 @@ watch(fields, (newFields) => {
 watch([sliderOptions, sliderSolution], () => {
   lessonFormStore.setComponentData(props.componentId, 'options', sliderOptions.value);
   lessonFormStore.setComponentData(props.componentId, 'solution', sliderSolution.value);
-}, { deep: true });
-
+}, {deep: true});
 </script>
 
 <template>
