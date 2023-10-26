@@ -1,7 +1,15 @@
 import {defineStore} from 'pinia';
+import {DialogText} from "@/utils/dialog.defaults.ts";
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
-export type DialogType = 'lessonFinished' | 'resetLesson' | 'mcExplanation' | 'tfExplanation' | 'sliderExplanation' | 'notesExplanation' | 'productExplanation';
+export type DialogType =
+    'lessonFinished'
+    | 'resetLesson'
+    | 'mcExplanation'
+    | 'tfExplanation'
+    | 'sliderExplanation'
+    | 'notesExplanation'
+    | 'productExplanation';
 
 interface IAlert {
     id: string;
@@ -12,10 +20,8 @@ interface IAlert {
 interface IDialog {
     id: string;
     onConfirm: () => void;
-    title: string,
-    message: string,
-    confirmLabel: string,
-    cancelLabel: string,
+    onlyConfirmButton: boolean;
+    content: DialogText;
 }
 
 export const useUtilStore = defineStore({
@@ -42,10 +48,12 @@ export const useUtilStore = defineStore({
         stopLoadingBar() {
             this.showLoadingBar = false;
         },
-        openDialog(onConfirm: () => void, title: string, message: string,
-                   confirmLabel: string, cancelLabel: string) {
+        openDialog(content: DialogText, onConfirm?: () => void) {
             const id = Date.now().toString();
-            this.dialogs.push({id, onConfirm, title, message, confirmLabel, cancelLabel});
+            const onlyConfirm: boolean = !content.cancelLabel;
+            const confirmation: () => void = onConfirm ? onConfirm : () => {};
+
+            this.dialogs.push({id: id, onConfirm: confirmation, content: content, onlyConfirmButton: onlyConfirm});
         },
         closeDialog(id: string) {
             this.dialogs = this.dialogs.filter(dialog => dialog.id !== id);
