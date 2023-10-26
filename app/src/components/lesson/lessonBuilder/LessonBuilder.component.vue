@@ -77,10 +77,12 @@ async function validate(){
 }
 
 async function uploadLesson() {
-  if (formIsValid.value && components.length > MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
+  if (formIsValid.value && components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson)
-        .catch(() => {utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
+        .catch((error) => {
+          console.log(error);
+          utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
     }).then(async () => {
       utilStore.addAlert('Lektion erfolgreich gespeichert', 'success');
       await router.push({path: '/lessons'});
