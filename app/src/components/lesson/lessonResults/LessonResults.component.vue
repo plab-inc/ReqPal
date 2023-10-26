@@ -14,6 +14,11 @@ const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
 const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const userScore = lessonStore.getCurrentLesson?.userScore;
 const profileStore = useProfileStore();
+const fullScore = ref<boolean>(false);
+
+if (userScore && currentLesson) {
+  fullScore.value = userScore >= currentLesson.points;
+}
 
 async function resetLesson() {
   if (lessonStore.currentLesson) {
