@@ -2,7 +2,7 @@
 
 interface Props {
   text: string,
-  color: string,
+  color: string
 }
 
 const props = defineProps<Props>()
@@ -21,6 +21,7 @@ const props = defineProps<Props>()
     <div class="text-h6 text-sm-h4 text-md-h5 text-lg-h4">
       {{ text }}
     </div>
+    <v-icon class="ml-2" size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
 
   </v-sheet>
 </template>

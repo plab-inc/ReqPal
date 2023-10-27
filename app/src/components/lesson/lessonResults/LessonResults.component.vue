@@ -8,6 +8,7 @@ import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions
 import alertService from "@/services/util/alert.service.ts";
 import router from "@/router";
 import AlertService from "@/services/util/alert.service.ts";
+import FeedbackItem from "@/components/lesson/lessonResults/FeedbackItem.component.vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
@@ -15,6 +16,9 @@ const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const userScore = lessonStore.getCurrentLesson?.userScore;
 const profileStore = useProfileStore();
 const fullScore = ref<boolean>(false);
+
+const newScore = ref<number>(0);
+const finishedForFirstTime = ref<boolean>(true);
 
 if (userScore && currentLesson) {
   fullScore.value = userScore >= currentLesson.points;
@@ -33,8 +37,11 @@ async function resetLesson() {
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
-  if (authStore.user) {
+  if (authStore.user && currentLesson) {
     await profileStore.fetchPoints(authStore.user.id);
+    newScore.value = await lessonStore.getUserResultsForLesson(currentLesson.uuid);
+    const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
+    if (data !== null && data !== undefined) finishedForFirstTime.value = data;
   }
 })
 </script>
@@ -46,24 +53,52 @@ onBeforeMount(async () => {
 
   <div v-else>
     <v-container>
-
-      <v-row class="mb-4 d-flex align-center">
-        <v-col md="4">
-          <div class="text-h3">Ergebnisse für Lektion:</div>
+      <v-row>
+        <v-col md="8">
+          <div class="text-h3">Ergebnisse</div>
+          <div class="text-h3 mt-4">{{ currentLesson?.title }}</div>
+          <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
         </v-col>
         <v-col md="4">
-          <StatItem :text="userScore + '/' + currentLesson?.points + ' Punkten'"
-                    :color="'success'"></StatItem>
-        </v-col>
-        <v-col md="4">
-          <StatItem :text="profileStore.points + ' Gesamtpunktzahl'" :color="'primary'"></StatItem>
+          <v-row>
+            <v-col>
+              <div class="text-h4 text-center">Gesamtpunktzahl</div>
+            </v-col>
+            <v-col>
+              <StatItem :text="profileStore.points + ''" :color="'primary'"></StatItem>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
-      <v-row class="mb-4">
-        <v-col cols="10">
-          <div class="text-h3">{{ currentLesson?.title }}</div>
-          <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
+      <v-row v-if="!finishedForFirstTime" class="mt-10">
+        <v-col md="6" order="1" order-md="1">
+          <div class="text-h4 text-center">Neue Punktzahl</div>
+        </v-col>
+        <v-col md="6" order="3" order-md="2">
+          <div class="text-h4 text-center">Punktzahl beim ersten Durchlauf</div>
+        </v-col>
+
+        <v-col md="6" order="2" order-md="3">
+          <StatItem :text="newScore + ' / ' + currentLesson?.points" :color="'success'"></StatItem>
+        </v-col>
+        <v-col md="6" order="4" order-md="4">
+          <StatItem :text="userScore + ' / ' + currentLesson?.points" :color="'primary'"></StatItem>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="finishedForFirstTime" class="mt-10">
+        <v-col>
+          <div class="text-h4 text-center">Punktzahl</div>
+        </v-col>
+        <v-col>
+          <StatItem :text="newScore + ' / ' + currentLesson?.points" :color="'success'"></StatItem>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <FeedbackItem :color="'info'" :new-score="newScore"></FeedbackItem>
         </v-col>
       </v-row>
 
