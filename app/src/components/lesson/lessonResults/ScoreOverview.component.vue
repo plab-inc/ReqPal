@@ -11,7 +11,6 @@ const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
 const userScore = lessonStore.getCurrentLesson?.userScore;
 const profileStore = useProfileStore();
 const fullScore = ref<boolean>(false);
-import StatItem from "@/components/lesson/lessonResults/StatItem.component.vue";
 
 const newScore = ref<number>(0);
 const finishedForFirstTime = ref<boolean>(true);
@@ -50,7 +49,7 @@ onBeforeMount(async () => {
             <ScoreItem v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
           </v-col>
           <v-col md="6" order="4" order-md="4" class="d-flex align-center justify-center">
-            <ScoreItem v-if="currentLesson && userScore" :score="userScore"
+            <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore"
                        :max-score="currentLesson?.points"></ScoreItem>
           </v-col>
         </v-row>
@@ -59,8 +58,8 @@ onBeforeMount(async () => {
           <v-col>
             <div class="text-h4 text-center">Punktzahl</div>
           </v-col>
-          <v-col>
-            <StatItem :text="newScore + ' / ' + currentLesson?.points" :color="'success'"></StatItem>
+          <v-col class="d-flex align-center justify-center">
+            <ScoreItem v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
           </v-col>
         </v-row>
 
