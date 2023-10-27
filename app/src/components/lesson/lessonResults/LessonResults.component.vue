@@ -8,21 +8,14 @@ import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions
 import alertService from "@/services/util/alert.service.ts";
 import router from "@/router";
 import AlertService from "@/services/util/alert.service.ts";
-import FeedbackItem from "@/components/lesson/lessonResults/FeedbackItem.component.vue";
+import ScoreOverview from "@/components/lesson/lessonResults/ScoreOverview.component.vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
 const isFinished = lessonStore.getCurrentLesson?.isFinished;
-const userScore = lessonStore.getCurrentLesson?.userScore;
 const profileStore = useProfileStore();
-const fullScore = ref<boolean>(false);
 
-const newScore = ref<number>(0);
 const finishedForFirstTime = ref<boolean>(true);
-
-if (userScore && currentLesson) {
-  fullScore.value = userScore >= currentLesson.points;
-}
 
 async function resetLesson() {
   if (lessonStore.currentLesson) {
@@ -39,7 +32,6 @@ onBeforeMount(async () => {
   const authStore = useAuthStore();
   if (authStore.user && currentLesson) {
     await profileStore.fetchPoints(authStore.user.id);
-    newScore.value = await lessonStore.getUserResultsForLesson(currentLesson.uuid);
     const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
     if (data !== null && data !== undefined) finishedForFirstTime.value = data;
   }
@@ -54,16 +46,13 @@ onBeforeMount(async () => {
   <div v-else>
     <v-container>
       <v-row>
-        <v-col md="8">
+        <v-col md="9">
           <div class="text-h3">Ergebnisse</div>
           <div class="text-h3 mt-4">{{ currentLesson?.title }}</div>
           <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
         </v-col>
-        <v-col md="4">
+        <v-col md="3">
           <v-row>
-            <v-col>
-              <div class="text-h4 text-center">Gesamtpunktzahl</div>
-            </v-col>
             <v-col>
               <StatItem :text="profileStore.points + ''" :color="'primary'"></StatItem>
             </v-col>
@@ -71,38 +60,9 @@ onBeforeMount(async () => {
         </v-col>
       </v-row>
 
-      <v-row v-if="!finishedForFirstTime" class="mt-10">
-        <v-col md="6" order="1" order-md="1">
-          <div class="text-h4 text-center">Neue Punktzahl</div>
-        </v-col>
-        <v-col md="6" order="3" order-md="2">
-          <div class="text-h4 text-center">Punktzahl beim ersten Durchlauf</div>
-        </v-col>
-
-        <v-col md="6" order="2" order-md="3">
-          <StatItem :text="newScore + ' / ' + currentLesson?.points" :color="'success'"></StatItem>
-        </v-col>
-        <v-col md="6" order="4" order-md="4">
-          <StatItem :text="userScore + ' / ' + currentLesson?.points" :color="'primary'"></StatItem>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="finishedForFirstTime" class="mt-10">
-        <v-col>
-          <div class="text-h4 text-center">Punktzahl</div>
-        </v-col>
-        <v-col>
-          <StatItem :text="newScore + ' / ' + currentLesson?.points" :color="'success'"></StatItem>
-        </v-col>
-      </v-row>
+    <ScoreOverview class="my-5"></ScoreOverview>
 
       <v-row>
-        <v-col>
-          <FeedbackItem :color="'info'" :new-score="newScore"></FeedbackItem>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="isFinished">
         <v-col class="d-flex justify-end my-2">
           <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal
             bearbeiten
