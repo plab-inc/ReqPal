@@ -60,7 +60,11 @@ onBeforeMount(async () => {
         </v-col>
       </v-row>
 
-    <ScoreOverview class="my-5"></ScoreOverview>
+      <v-row>
+        <v-col>
+          <ScoreOverview class="my-5"></ScoreOverview>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col class="d-flex justify-end my-2">
