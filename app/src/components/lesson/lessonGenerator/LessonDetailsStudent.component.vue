@@ -12,7 +12,8 @@ const props = defineProps<Props>();
 
 <template>
   <div class="d-flex align-center justify-end">
-    <div class="text-h6 mr-1">{{ lesson.userScore }} / {{ lesson.lessonDTO.points }}</div>
+    <div v-if="lesson.isFinished" class="text-h6 mr-1">{{ lesson.userScore }} / {{ lesson.lessonDTO.points }}</div>
+    <div v-if="!lesson.isFinished" class="text-h6 mr-1">{{ lesson.lessonDTO.points }}</div>
     <v-icon class="mr-4" size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
     <v-badge
         inline
@@ -20,7 +21,7 @@ const props = defineProps<Props>();
         :content="lesson.isFinished ? 'ABGESCHLOSSEN' : 'NEU'">
     </v-badge>
     <v-badge
-        v-if="lesson.isStarted"
+        v-if="lesson.isFinished && lesson.isStarted"
         inline
         :color="'warning'"
         :content="'BEGONNEN'">

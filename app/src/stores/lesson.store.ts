@@ -95,7 +95,7 @@ export const useLessonStore = defineStore('lesson', {
                 const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
                 l.isFinished = status && (status.finished !== null) ? status.finished : false;
                 l.isStarted = status && (status.is_started !== null) ? status.is_started : true;
-                await this.loadUserScoreForLesson(l.lessonDTO.uuid);
+                await this.loadFirstUserScoreForLesson(l.lessonDTO.uuid);
             }
         },
 
@@ -196,18 +196,35 @@ export const useLessonStore = defineStore('lesson', {
             this.components = [];
         },
 
-        async loadUserScoreForLesson(lessonUUID: string) {
+        async getUserResultsForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
             let lesson = this.findLesson(lessonUUID);
+            let score = 0;
             if (lesson) {
                 if (authStore.user && lesson.isFinished) {
                     const data = await lessonService.pull.fetchUserScoreForLesson(lessonUUID, authStore.user.id);
                     if (data) {
-                        let score = 0;
                         data.forEach(d => {
                             score += d.result.score;
                         })
-                        lesson.userScore = Math.round(score);
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+            return Math.round(score);
+        },
+
+        async loadFirstUserScoreForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            let lesson = this.findLesson(lessonUUID);
+            if (lesson) {
+                if (authStore.user && lesson.isFinished) {
+                    const points = await lessonService.pull.fetchFirstUserScoreForLesson(lessonUUID, authStore.user.id);
+                    if (points !== null) {
+                        lesson.userScore = Math.round(points);
+                    } else {
+                        lesson.userScore = -1;
                     }
                 }
             }
@@ -253,6 +270,13 @@ export const useLessonStore = defineStore('lesson', {
                 if (status) {
                     return status;
                 }
+            }
+        },
+
+        async checkLessonFinishedForFirstTime(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                return await lessonService.pull.checkLessonFinishedForFirstTime(lessonUUID, authStore.user.id);
             }
         },
 

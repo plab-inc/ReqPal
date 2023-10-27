@@ -63,8 +63,8 @@ const routes = [
                 component: () => import("@/views/lesson/LessonResults.view.vue"),
                 meta: {
                     middleware: [
-                        nextIfLessonFinished,
                         loadLessonByUUID,
+                        nextIfLessonFinished,
                         fetchQuestionsForLesson,
                         fetchUserAnswersForQuestions,
                         loadLessonSolutionsByUUID
