@@ -348,20 +348,26 @@ export interface Database {
         Row: {
           finished: boolean | null
           id: string
+          is_started: boolean | null
           lesson_id: string | null
           user_id: string | null
+          user_points: number | null
         }
         Insert: {
           finished?: boolean | null
           id?: string
+          is_started?: boolean | null
           lesson_id?: string | null
           user_id?: string | null
+          user_points?: number | null
         }
         Update: {
           finished?: boolean | null
           id?: string
+          is_started?: boolean | null
           lesson_id?: string | null
           user_id?: string | null
+          user_points?: number | null
         }
         Relationships: [
           {
