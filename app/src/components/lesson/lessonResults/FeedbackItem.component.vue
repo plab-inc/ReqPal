@@ -55,8 +55,8 @@ onBeforeMount(async () => {
 
   <v-sheet
       :elevation="9"
-      :min-height="150"
-      :min-width="150"
+      :min-height="120"
+      :min-width="120"
       :color="color"
       rounded
       class="d-flex align-center justify-center flex-wrap text-center"
