@@ -54,7 +54,6 @@ export async function loadLessonSolutionsByUUID(to: RouteLocationNormalized, fro
         const lessonStore = useLessonStore();
 
         await lessonStore.loadQuestionsWithSolutionsForLesson(to.params.lessonUUID.toString());
-        await lessonStore.loadUserScoreForLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
         console.log(error);
@@ -66,7 +65,7 @@ export async function nextIfLessonFinished(to: RouteLocationNormalized, from: Ro
     try {
         const lessonStore = useLessonStore();
         const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
-        if(status && status.finished && !status.is_started) {
+        if (status && status.finished && !status.is_started) {
             return next();
         } else {
             alertService.addErrorAlert("Diese Lektion wurde noch nicht abgeschlossen!")
@@ -82,7 +81,7 @@ export async function nextIfLessonNotFinished(to: RouteLocationNormalized, from:
     try {
         const lessonStore = useLessonStore();
         const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
-        if(!status || status && (!status.finished || status.is_started)) {
+        if (!status || status && (!status.finished || status.is_started)) {
             return next();
         } else {
             alertService.addErrorAlert("Diese Lektion wurde bereits abgeschlossen!")

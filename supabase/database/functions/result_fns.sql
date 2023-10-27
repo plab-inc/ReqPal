@@ -38,8 +38,8 @@ BEGIN
 
         points_per_question := max_points / jsonb_array_length(data -> 'answers');
 
-        INSERT INTO user_finished_lessons (user_id, lesson_id, finished, is_started)
-        VALUES (auth.uid(), lesson_uuid, TRUE, FALSE);
+        INSERT INTO user_finished_lessons (user_id, lesson_id, finished, is_started, finished_for_first_time)
+        VALUES (auth.uid(), lesson_uuid, TRUE, FALSE, TRUE);
         lesson_finished
             := FALSE;
     END IF;
@@ -67,9 +67,11 @@ BEGIN
                   AND user_id = auth.uid()
                   AND question_id = question_uuid;
             END LOOP;
+
         UPDATE user_finished_lessons
         SET finished  = TRUE,
-            is_started = FALSE
+            is_started = FALSE,
+            finished_for_first_time = FALSE
         WHERE lesson_id = lesson_uuid
           AND user_id = auth.uid();
     END IF;
