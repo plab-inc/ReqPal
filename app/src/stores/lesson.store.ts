@@ -4,6 +4,7 @@ import lessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
+import LessonService from "@/services/database/lesson.service.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -326,6 +327,20 @@ export const useLessonStore = defineStore('lesson', {
                 lesson = this.examples.find(l => l.lessonDTO.uuid === lessonUUID);
             }
             return lesson;
+        },
+
+        async getLessonStatistics(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.isTeacher) {
+                return await LessonService.pull.fetchLessonStatistics(lessonUUID);
+            }
+        },
+
+        async getCountOfStudentsForTeacher() {
+            const authStore = useAuthStore();
+            if (authStore.isTeacher && authStore.user) {
+                return await LessonService.pull.getCountOfStudentsForTeacher(authStore.user.id);
+            }
         }
 
     },
