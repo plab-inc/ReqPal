@@ -7,12 +7,12 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth} from "@/middlewares/auth.middleware";
+import {requiresAuth, requiresTeacher} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson, fetchUserAnswersForQuestions,
-    loadLessonByUUID, loadLessonSolutionsByUUID, nextIfLessonFinished, nextIfLessonNotFinished
+    loadLessonByUUID, loadQuestionsWithSolutions, requiresFinishedLesson, requiresUnfinishedLesson
 } from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
@@ -51,7 +51,7 @@ const routes = [
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
                     middleware: [
-                        nextIfLessonNotFinished,
+                        requiresUnfinishedLesson,
                         loadLessonByUUID,
                         fetchQuestionsForLesson,
                     ]
@@ -64,10 +64,21 @@ const routes = [
                 meta: {
                     middleware: [
                         loadLessonByUUID,
-                        nextIfLessonFinished,
-                        fetchQuestionsForLesson,
-                        fetchUserAnswersForQuestions,
-                        loadLessonSolutionsByUUID
+                        requiresFinishedLesson,
+                        loadQuestionsWithSolutions,
+                        fetchUserAnswersForQuestions
+                    ]
+                }
+            },
+            {
+                path: "/lessons/:lessonUUID/teacher-overview",
+                name: "LessonTeacherOverview",
+                component: () => import("@/views/lesson/LessonTeacherOverview.view.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        loadLessonByUUID,
+                        fetchQuestionsForLesson
                     ]
                 }
             },

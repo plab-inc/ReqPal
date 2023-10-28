@@ -39,22 +39,6 @@ async function submit() {
   }
 }
 
-init();
-
-function init() {
-  if (lessonStore.components.length <= 0) {
-    sortedQuestions.forEach(q => {
-      lessonStore.addComponentWithData(q.question_type, q.uuid, {
-        uuid: q.uuid,
-        question: q.question,
-        options: q.options,
-        solution: q.solution,
-        hint: q.hint
-      })
-    })
-  }
-}
-
 async function openDialog() {
   const formIsValid = await checkValidity();
   if (formIsValid) {
@@ -88,7 +72,7 @@ async function openDialog() {
     <v-form @submit.prevent ref="form">
       <v-row class="mt-4">
         <v-col>
-          <LessonQuestions></LessonQuestions>
+          <LessonQuestions :components="lessonStore.getComponents"></LessonQuestions>
         </v-col>
       </v-row>
       <v-row v-if="!isFinished || isStarted">
