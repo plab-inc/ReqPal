@@ -1,5 +1,8 @@
 DROP POLICY IF EXISTS "policy_profiles" ON public.profiles;
+DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
 DROP POLICY IF EXISTS "policy_user_points" ON public.user_points;
+DROP POLICY IF EXISTS "policy_user_finished_lessons" ON public.user_finished_lessons;
+DROP POLICY IF EXISTS "policy_user_finished_lessons_teacher" ON public.user_finished_lessons;
 
 --------------------------------------------
 -- User related policies
@@ -15,23 +18,25 @@ CREATE POLICY "policy_user_points"
     ON public.user_points
     FOR ALL
     TO authenticated
-    USING ((auth.uid() = user_id));
-
-DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
 CREATE POLICY "policy_user_answers"
     ON public.user_answers
     FOR ALL
     TO authenticated
-    USING ((auth.uid() = user_id));
-
-DROP POLICY IF EXISTS "policy_user_finished_lessons" ON public.user_finished_lessons;
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
 CREATE POLICY "policy_user_finished_lessons"
     ON public.user_finished_lessons
     FOR ALL
     TO authenticated
-    USING ((auth.uid() = user_id));
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+CREATE POLICY "policy_user_finished_lessons_teacher"
+    ON public.user_finished_lessons
+    FOR SELECT
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'teacher')) = true));
 
 --------------------------------------------
 -- Catalog related policies
