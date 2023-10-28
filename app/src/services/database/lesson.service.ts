@@ -22,7 +22,6 @@ class LessonServiceClass {
         fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this),
         fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this),
         fetchFirstUserScoreForLesson: this.fetchFirstUserScoreForLesson.bind(this),
-        checkLessonFinishedForFirstTime: this.checkLessonFinishedForFirstTime.bind(this),
         fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
         getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this)
     };
@@ -142,7 +141,7 @@ class LessonServiceClass {
     private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string) {
         const {data, error} = await supabase
             .from('user_finished_lessons')
-            .select('finished, is_started')
+            .select('finished, is_started, finished_for_first_time')
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
 
@@ -183,20 +182,6 @@ class LessonServiceClass {
 
         if (data) {
             return data as UserResult[];
-        } else return null;
-    }
-
-    private async checkLessonFinishedForFirstTime(lessonUUID: string, userUUID: string) {
-        const {data, error} = await supabase
-            .from('user_finished_lessons')
-            .select('finished_for_first_time')
-            .eq('lesson_id', lessonUUID)
-            .eq('user_id', userUUID)
-
-        if (error) throw error;
-
-        if (data && data[0]) {
-            return data[0].finished_for_first_time;
         } else return null;
     }
 
