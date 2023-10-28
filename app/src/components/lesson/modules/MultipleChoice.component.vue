@@ -4,6 +4,7 @@ import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue"
 import Help from "@/components/lesson/modules/Help.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface Props {
   componentId: string,
@@ -16,6 +17,8 @@ const lessonStore = useLessonStore();
 const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
 const solution = lessonStore.getComponentFieldValues(props.componentId, 'solution')
+const authStore = useAuthStore();
+const isTeacher: boolean = authStore.isTeacher;
 
 const fields = ref<any>({
   options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
@@ -24,6 +27,7 @@ const fields = ref<any>({
 function checkSolution(id: number) {
   if (solution) {
     const found = solution.find((s: any) => s.id === id);
+    if(isTeacher && found) return found.solution;
     if (found) {
       const option = fields.value.options.find((o: any) => o.id === id);
       if (option) {
@@ -67,7 +71,7 @@ watch(selectedAnswers, (newAnswers) => {
               <div class="text-h6 text-md-h5 mr-2">Multiple Choice</div>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row v-if="!isTeacher">
             <v-col>
               <v-container>
                 <div class="text-h6">{{ question }}</div>
@@ -83,6 +87,24 @@ watch(selectedAnswers, (newAnswers) => {
               </v-container>
             </v-col>
           </v-row>
+
+          <v-row v-else>
+            <v-col>
+              <v-container>
+                <div class="text-h6">{{ question }}</div>
+
+                <v-checkbox v-for="(answer) in fields.options"
+                            :key="answer.id"
+                            :label="answer.description"
+                            v-model="selectedAnswers[answer.id]"
+                            :class="{ 'right': (solution && checkSolution(answer.id) && isTeacher),
+                'disabled': solution,
+                'wrong': (solution && !checkSolution(answer.id) && isTeacher)}">
+                </v-checkbox>
+              </v-container>
+            </v-col>
+          </v-row>
+
         </v-col>
         <v-col sm="2" class="d-flex flex-grow-1 align-end justify-end">
           <div class="mr-2">

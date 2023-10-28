@@ -3,6 +3,7 @@ import {ref} from "vue";
 import Hint from "@/components/lesson/modules/Hint.component.vue";
 import Help from "@/components/lesson/modules/Help.component.vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface Props {
   componentId: string,
@@ -19,6 +20,9 @@ const solution = lessonStore.getComponentFieldValues(props.componentId, 'solutio
 const minValue = ref<number>();
 const maxValue = ref<number>();
 const correctValue = ref<number>();
+
+const authStore = useAuthStore();
+const isTeacher: boolean = authStore.isTeacher;
 
 const fields = ref<any>({
   options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
@@ -56,6 +60,10 @@ function init() {
       maxValue: fields.value.options.maxValue,
       input: inputValue.value
     };
+  }
+
+  if (isTeacher && correctValue.value !== undefined) {
+    inputValue.value = correctValue.value;
   }
   updateStoreData(fields.value)
 }
@@ -95,7 +103,10 @@ watch(inputValue, (newInput) => {
       <v-row>
         <v-col v-if="solution" class="text-center">
           <div class="text-h6 mb-2">Richtige Antwort: {{ correctValue }}</div>
-          <div v-if="minValue != maxValue" class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{ maxValue }}</div>
+          <div v-if="minValue != maxValue" class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{
+              maxValue
+            }}
+          </div>
         </v-col>
         <v-col>
           <v-slider
