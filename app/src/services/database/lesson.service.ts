@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {LessonForm, UserAnswer, UserResult} from "@/types/lesson.types.ts";
+import {LessonForm, LessonStatistic, UserAnswer, UserResult} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
@@ -22,7 +22,9 @@ class LessonServiceClass {
         fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this),
         fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this),
         fetchFirstUserScoreForLesson: this.fetchFirstUserScoreForLesson.bind(this),
-        checkLessonFinishedForFirstTime: this.checkLessonFinishedForFirstTime.bind(this)
+        checkLessonFinishedForFirstTime: this.checkLessonFinishedForFirstTime.bind(this),
+        fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
+        getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -228,6 +230,35 @@ class LessonServiceClass {
         }
         return false;
 
+    }
+
+    private async fetchLessonStatistics(lessonUUID: string) {
+        const {data, error} = await supabase
+            .from('user_finished_lessons')
+            .select('finished, user_points')
+            .eq('lesson_id', lessonUUID)
+
+        if (error) throw error;
+
+        if (data) {
+            return data as LessonStatistic[];
+        }
+        return null;
+
+    }
+
+    private async getCountOfStudentsForTeacher(teacherUUID: string) {
+        const {data, error} = await supabase
+            .from('profiles')
+            .select('teacher')
+            .eq('teacher', teacherUUID)
+
+        if (error) throw error;
+
+        if (data && data.length > 10) {
+            return data.length;
+        }
+        return 0;
     }
 
 }
