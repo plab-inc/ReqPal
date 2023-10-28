@@ -33,3 +33,8 @@ export type UserAnswer = {
 export type UserResult = {
     result: {score: number, results: any, isCorrect: boolean}
 }
+
+export type LessonStatistic = {
+    finished: boolean,
+    user_points: number
+}
