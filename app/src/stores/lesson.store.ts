@@ -280,7 +280,10 @@ export const useLessonStore = defineStore('lesson', {
         async checkLessonFinishedForFirstTime(lessonUUID: string) {
             const authStore = useAuthStore();
             if (authStore.user) {
-                return await lessonService.pull.checkLessonFinishedForFirstTime(lessonUUID, authStore.user.id);
+                const status = await lessonService.pull.fetchLessonStatusForUser(lessonUUID, authStore.user.id);
+                if (status) {
+                    return status.finished_for_first_time;
+                }
             }
         },
 
