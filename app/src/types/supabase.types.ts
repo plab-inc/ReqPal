@@ -347,6 +347,7 @@ export interface Database {
       user_finished_lessons: {
         Row: {
           finished: boolean | null
+          finished_for_first_time: boolean | null
           id: string
           is_started: boolean | null
           lesson_id: string | null
@@ -355,6 +356,7 @@ export interface Database {
         }
         Insert: {
           finished?: boolean | null
+          finished_for_first_time?: boolean | null
           id?: string
           is_started?: boolean | null
           lesson_id?: string | null
@@ -363,6 +365,7 @@ export interface Database {
         }
         Update: {
           finished?: boolean | null
+          finished_for_first_time?: boolean | null
           id?: string
           is_started?: boolean | null
           lesson_id?: string | null
