@@ -7,7 +7,7 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresTeacher} from "@/middlewares/auth.middleware";
+import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.middleware";
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
@@ -41,6 +41,7 @@ const routes = [
                 component: () => import("@/views/lesson/LessonBuilder.view.vue"),
                 meta: {
                     middleware: [
+                        requiresTeacher,
                         fetchLessons
                     ]
                 }
@@ -51,6 +52,7 @@ const routes = [
                 component: () => import("@/views/lesson/LessonDetails.view.vue"),
                 meta: {
                     middleware: [
+                        requiresStudent,
                         requiresUnfinishedLesson,
                         loadLessonByUUID,
                         fetchQuestionsForLesson,
@@ -63,6 +65,7 @@ const routes = [
                 component: () => import("@/views/lesson/LessonResults.view.vue"),
                 meta: {
                     middleware: [
+                        requiresStudent,
                         loadLessonByUUID,
                         requiresFinishedLesson,
                         loadQuestionsWithSolutions,
@@ -88,6 +91,7 @@ const routes = [
                 component: () => import("@/views/catalog/Catalogs.view.vue"),
                 meta: {
                     middleware: [
+                        requiresTeacher,
                         fetchCatalogs
                     ]
                 }
@@ -102,7 +106,11 @@ const routes = [
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.view.vue"),
-                meta: {}
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                    ]
+                }
             },
             {
                 path: "/feedback",

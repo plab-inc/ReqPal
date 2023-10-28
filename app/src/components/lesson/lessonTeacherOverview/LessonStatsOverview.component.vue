@@ -3,8 +3,6 @@
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
-import FeedbackItem from "@/components/lesson/lessonResults/FeedbackItem.component.vue";
-import ScoreItem from "@/components/lesson/lessonResults/ScoreItem.component.vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
