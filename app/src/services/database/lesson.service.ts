@@ -190,12 +190,11 @@ class LessonServiceClass {
             .select('finished_for_first_time')
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
-            .single()
 
         if (error) throw error;
 
-        if (data) {
-            return data.finished_for_first_time;
+        if (data && data[0]) {
+            return data[0].finished_for_first_time;
         } else return null;
     }
 
@@ -205,12 +204,11 @@ class LessonServiceClass {
             .select('user_points')
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
-            .single()
 
         if (error) throw error;
 
-        if (data) {
-            return data.user_points;
+        if (data && data[0]) {
+            return data[0].user_points;
         } else return null;
     }
 

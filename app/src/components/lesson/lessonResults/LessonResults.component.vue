@@ -31,9 +31,13 @@ async function resetLesson() {
 onBeforeMount(async () => {
   const authStore = useAuthStore();
   if (authStore.user && currentLesson) {
-    await profileStore.fetchPoints(authStore.user.id);
-    const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
-    if (data !== null && data !== undefined) finishedForFirstTime.value = data;
+    try {
+      await profileStore.fetchPoints(authStore.user.id);
+      const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
+      if (data !== null && data !== undefined) finishedForFirstTime.value = data;
+    } catch (error: any) {
+      AlertService.addErrorAlert('Ein Fehler ist aufgetreten.');
+    }
   }
 })
 </script>
