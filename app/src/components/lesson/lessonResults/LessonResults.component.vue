@@ -21,7 +21,7 @@ async function resetLesson() {
   if (lessonStore.currentLesson) {
     try {
       await lessonStore.restartLessonForUser(lessonStore.currentLesson.lessonDTO.uuid);
-      await router.push({name: 'Lessons'});
+      await router.push({name: 'LessonDetails', params: {lessonUUID: lessonStore.currentLesson.lessonDTO.uuid}});
     } catch (error: any) {
       AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
     }
