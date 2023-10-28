@@ -13,7 +13,7 @@ interface LessonState {
     components: ComponentEntry[];
 }
 
-interface ComponentEntry {
+export interface ComponentEntry {
     uuid: string;
     type: string;
     data: Question;
@@ -50,6 +50,9 @@ export const useLessonStore = defineStore('lesson', {
             const component = state.components.find(comp => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
+        getComponents: (state) => {
+            return state.components;
+        },
     },
 
     actions: {
@@ -57,8 +60,8 @@ export const useLessonStore = defineStore('lesson', {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
             if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
+                this.setUpComponents();
             }
-
         },
 
         async fetchLessons() {
@@ -169,12 +172,14 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
             let lesson = this.findLesson(lessonUUID);
-            if (lesson?.isFinished && !lesson.isStarted) {
+            if (authStore.isTeacher || (lesson?.isFinished && !lesson.isStarted)) {
                 const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
 
                 if (data) {
                     this.currentQuestions = data;
+                    this.setUpComponents();
                     data.forEach(d => {
                         let component = this.components.find(component => component.data.uuid === d.uuid);
                         if (component) {
@@ -238,8 +243,6 @@ export const useLessonStore = defineStore('lesson', {
                     const lesson = this.findLesson(lessonUUID);
                     if (lesson) {
                         lesson.isStarted = true;
-                        console.log(lesson)
-                        console.log(this.lessons)
                     }
                 }
             }
@@ -256,7 +259,7 @@ export const useLessonStore = defineStore('lesson', {
                 if (status && !status.is_started) {
                     const answers = await lessonService.pull.fetchLessonUserAnswers(lessonUUID, authStore.user.id);
                     if (answers) {
-                        this.hydrate(answers);
+                        this.hydrateUserAnswers(answers);
                     }
                 }
             }
@@ -280,7 +283,24 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        hydrate(answers: UserAnswer[]) {
+        setUpComponents() {
+            this.clearComponents();
+
+            if (this.currentQuestions.length > 0) {
+                const sortedQuestions = this.getSortedCurrentQuestions;
+                sortedQuestions.forEach(q => {
+                    this.addComponentWithData(q.question_type, q.uuid, {
+                        uuid: q.uuid,
+                        question: q.question,
+                        options: q.options,
+                        solution: q.solution,
+                        hint: q.hint
+                    })
+                })
+            }
+        },
+
+        hydrateUserAnswers(answers: UserAnswer[]) {
             this.clearComponents();
 
             this.currentQuestions.forEach((q: Question) => {

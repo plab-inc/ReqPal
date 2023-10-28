@@ -63,7 +63,6 @@ const submit = async () => {
     try {
       await authStore.signIn(email.value, password.value).then(() => {
         if (authStore.session) {
-          console.log("fuck")
           router.push({ path: '/profile' })
         }
       })

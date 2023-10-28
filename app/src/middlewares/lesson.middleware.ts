@@ -40,7 +40,6 @@ export async function fetchUserAnswersForQuestions(to: RouteLocationNormalized, 
     try {
         const lessonStore = useLessonStore();
 
-        await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
         await lessonStore.loadUserAnswersForLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
@@ -49,7 +48,7 @@ export async function fetchUserAnswersForQuestions(to: RouteLocationNormalized, 
     }
 }
 
-export async function loadLessonSolutionsByUUID(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function loadQuestionsWithSolutions(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
 
@@ -61,7 +60,7 @@ export async function loadLessonSolutionsByUUID(to: RouteLocationNormalized, fro
     }
 }
 
-export async function nextIfLessonFinished(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function requiresFinishedLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
         const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());
@@ -77,7 +76,7 @@ export async function nextIfLessonFinished(to: RouteLocationNormalized, from: Ro
     }
 }
 
-export async function nextIfLessonNotFinished(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function requiresUnfinishedLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
         const status = await lessonStore.getStatusOfLessonForUser(to.params.lessonUUID.toString());

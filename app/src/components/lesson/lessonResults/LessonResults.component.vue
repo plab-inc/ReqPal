@@ -83,7 +83,7 @@ onBeforeMount(async () => {
 
     <v-row class="mt-4">
       <v-col>
-        <LessonQuestions></LessonQuestions>
+        <LessonQuestions :components="lessonStore.getComponents"></LessonQuestions>
       </v-col>
     </v-row>
   </div>
