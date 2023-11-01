@@ -149,16 +149,19 @@ export interface Database {
       }
       profiles: {
         Row: {
+          avatar: string
           id: string
           teacher: string | null
           username: string | null
         }
         Insert: {
+          avatar?: string
           id: string
           teacher?: string | null
           username?: string | null
         }
         Update: {
+          avatar?: string
           id?: string
           teacher?: string | null
           username?: string | null
