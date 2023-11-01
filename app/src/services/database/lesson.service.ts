@@ -233,15 +233,15 @@ class LessonServiceClass {
     }
 
     private async getCountOfStudentsForTeacher(teacherUUID: string) {
-        const {data, error} = await supabase
+        const { data, error, status, count } = await supabase
             .from('profiles')
-            .select('teacher')
+            .select('teacher', { count: 'exact', head: true })
             .eq('teacher', teacherUUID)
 
         if (error) throw error;
 
-        if (data && data.length > 10) {
-            return data.length;
+        if (count) {
+            return count;
         }
         return 0;
     }
