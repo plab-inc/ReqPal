@@ -12,7 +12,8 @@ CREATE POLICY "policy_profiles"
     ON public.profiles
     FOR SELECT
     TO authenticated
-    USING (true);
+    USING ((auth.uid() = id) OR
+           ((select check_user_role(auth.uid(), 'teacher')) AND (teacher = auth.uid())));
 
 CREATE POLICY "policy_user_points"
     ON public.user_points
@@ -36,7 +37,14 @@ CREATE POLICY "policy_user_finished_lessons_teacher"
     ON public.user_finished_lessons
     FOR SELECT
     TO authenticated
-    USING (((select check_user_role(auth.uid(), 'teacher')) = true));
+    USING (
+        ((select check_user_role(auth.uid(), 'teacher')) = true) AND
+        (EXISTS (
+            SELECT COUNT(*)
+            FROM public.profiles
+            WHERE teacher = auth.uid()
+            HAVING COUNT(*) >= 10))
+    );
 
 --------------------------------------------
 -- Catalog related policies
