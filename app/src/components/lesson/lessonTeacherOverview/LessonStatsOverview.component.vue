@@ -21,22 +21,27 @@ async function init() {
     const data = await lessonStore.getCountOfStudentsForTeacher();
     if (data) studentCount.value = data;
 
-    if (studentCount.value === 0) {
+    if (studentCount.value < 10) {
       notEnoughData.value = true;
     } else {
       stats.value = await lessonStore.getLessonStatistics(currentLesson.uuid);
-      maxScore.value = currentLesson.points;
 
-      let allPoints = 0;
+      if (stats.value) {
+        maxScore.value = currentLesson.points;
 
-      stats.value.forEach((s: LessonStatistic) => {
-        allPoints += s.user_points;
-        finishedCounter++;
-      })
+        let allPoints = 0;
 
-      if (finishedCounter > 0 && studentCount.value > 0) {
-        avgScore.value = allPoints / studentCount.value;
-        avgScore.value = 50;
+        stats.value.forEach((s: LessonStatistic) => {
+          allPoints += s.user_points;
+          finishedCounter++;
+        })
+
+        if (finishedCounter > 0 && studentCount.value > 0) {
+          avgScore.value = allPoints / studentCount.value;
+          avgScore.value = 50;
+        }
+      } else {
+        notEnoughData.value = true;
       }
     }
   }
