@@ -23,7 +23,7 @@ const props = defineProps<Props>();
         </v-col>
         <v-col cols="4" class="d-flex align-center justify-end">
           <ProductQualification :size="50"
-              :qualification="requirement?.products[product.product_name].qualification"></ProductQualification>
+              :qualification="requirement?.products[product.product_name].qualification + ''"></ProductQualification>
         </v-col>
       </v-row>
       <v-row>
