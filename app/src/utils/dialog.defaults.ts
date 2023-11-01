@@ -28,11 +28,20 @@ export const tfExplanation: DialogText = {
 
 export const sliderExplanation: DialogText = {
     title: "Slider Aufgabe: Erklärung",
-    message: "In einer True or False Aufgabe ist das Ziel, zu entscheiden, ob eine Aussage wahr (True) oder falsch (False) ist. " +
-        "Sie haben zwei Optionen zur Auswahl, und Ihre Aufgabe besteht darin, diejenige auszuwählen, die am besten zur Aussage passt. " +
-        "Beachten Sie, dass dementsprechend nur eine Option ausgewählt werden kann. " +
-        "Eine 'True' Auswahl bedeutet, dass die Aussage korrekt ist, während 'False' bedeutet, dass die Aussage nicht korrekt ist. " +
-        "Bitte lesen Sie die Aussage sorgfältig durch und entscheiden Sie, ob sie wahr oder falsch ist."
+    message: "In einer Slider Aufgabe ist das Ziel, einen Wert auszuwählen oder einzuschätzen abhängig von der gestellten Frage. " +
+        "Der Slider kann mithilfe der Maus bewegt werden. Klicken Sie auf den Slider und ziehen Sie diesen nach links oder rechts. " +
+        "Links wird der Wert kleiner, rechts wird dieser größer. Wählen Sie so einen Wert aus. Manchmal muss der Wert nicht 100% korrekt sein, da es einen " +
+        "Toleranzbereich geben kann, je nach Aufgabe."
+    ,
+    confirmLabel: explanationConfirmation,
+}
+
+export const productQualificationExplanation: DialogText = {
+    title: "Produkt Qualifizierung Aufgabe: Erklärung",
+    message: "In dieser Aufgabe ist das Ziel, die angegebenen Produkte nach ihrer Qualifizierung zu bewerten. " +
+        "Recherchieren Sie hierfür zunächst mithilfe der bereitgestellten Links und Kriterien oder Anforderungen. " +
+        "Daraufhin können Sie mithilfe des Sliders einen Wert zwischen 1 und 5 auswählen. Der Wert 1 ist schlecht, also nicht gut geeignet, während " +
+        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut."
     ,
     confirmLabel: explanationConfirmation,
 }

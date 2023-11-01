@@ -7,7 +7,6 @@ const minAnswers = 3;
 const maxAnswers = 6;
 
 const props = defineProps<{ componentId: string }>();
-const isFormValid = ref(false);
 
 const lessonFormStore = useLessonFormStore();
 
