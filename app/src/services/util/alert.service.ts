@@ -4,6 +4,7 @@ import {
     mcExplanation,
     notesExplanation,
     productExplanation,
+    productQualificationExplanation,
     sliderExplanation,
     tfExplanation
 } from "@/utils/dialog.defaults.ts";
@@ -54,6 +55,9 @@ class AlertServiceClass {
                 break;
             case "sliderExplanation":
                 this.store.openDialog(sliderExplanation)
+                break;
+            case "productQualificationExplanation":
+                this.store.openDialog(productQualificationExplanation)
                 break;
             case "notesExplanation":
                 this.store.openDialog(notesExplanation);

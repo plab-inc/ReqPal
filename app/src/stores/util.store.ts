@@ -9,7 +9,8 @@ export type DialogType =
     | 'tfExplanation'
     | 'sliderExplanation'
     | 'notesExplanation'
-    | 'productExplanation';
+    | 'productExplanation'
+    | 'productQualificationExplanation';
 
 interface IAlert {
     id: string;
