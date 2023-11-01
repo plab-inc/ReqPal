@@ -1,13 +1,28 @@
 <script setup lang="ts">
 
 import {Lesson} from "@/types/lesson.types.ts";
+import alertService from "@/services/util/alert.service.ts";
+import router from "@/router";
+import AlertService from "@/services/util/alert.service.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
   lesson: Lesson
 }
 
 const props = defineProps<Props>();
+const lessonStore = useLessonStore();
 
+async function resetLesson() {
+  if (lessonStore.currentLesson) {
+    try {
+      await lessonStore.restartLessonForUser(lessonStore.currentLesson.lessonDTO.uuid);
+      await router.push({name: 'LessonDetails', params: {lessonUUID: lessonStore.currentLesson.lessonDTO.uuid}});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
+    }
+  }
+}
 </script>
 
 <template>
@@ -15,17 +30,47 @@ const props = defineProps<Props>();
     <div v-if="lesson.isFinished" class="text-h6 mr-1">{{ lesson.userScore }} / {{ lesson.lessonDTO.points }}</div>
     <div v-if="!lesson.isFinished" class="text-h6 mr-1">{{ lesson.lessonDTO.points }}</div>
     <v-icon class="mr-4" size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+
     <v-badge
+        v-if="!lesson.isFinished"
         inline
-        :color="lesson.isFinished ? 'success' : 'error'"
-        :content="lesson.isFinished ? 'ABGESCHLOSSEN' : 'NEU'">
+        :color="'error'"
+        :content="'NEU'">
     </v-badge>
+
+    <v-badge
+        v-if="lesson.isFinished && !lesson.isStarted"
+        inline
+        :color="'success'"
+        :content="'ABGESCHLOSSEN'">
+    </v-badge>
+
+    <v-badge
+        v-if="lesson.isFinished && lesson.isStarted"
+        inline
+        :color="'success'"
+        :content="'BEREITS ABGESCHLOSSEN'">
+    </v-badge>
+
     <v-badge
         v-if="lesson.isFinished && lesson.isStarted"
         inline
         :color="'warning'"
         :content="'BEGONNEN'">
     </v-badge>
+
+    <v-btn-group
+        v-if="lesson.isFinished && !lesson.isStarted"
+        class="ml-3"
+        variant="outlined"
+        elevation="24"
+        divided
+        density="default"
+    >
+      <v-btn color="warning" class="mr-2" @click.stop="alertService.addHelpDialog('resetLesson', resetLesson)">
+        Nochmal bearbeiten
+      </v-btn>
+    </v-btn-group>
   </div>
 </template>
 
