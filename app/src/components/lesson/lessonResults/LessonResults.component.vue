@@ -5,8 +5,6 @@ import {useProfileStore} from "@/stores/profile.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import StatItem from "@/components/lesson/lessonResults/StatItem.component.vue";
 import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
-import alertService from "@/services/util/alert.service.ts";
-import router from "@/router";
 import AlertService from "@/services/util/alert.service.ts";
 import ScoreOverview from "@/components/lesson/lessonResults/ScoreOverview.component.vue";
 
@@ -16,17 +14,6 @@ const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const profileStore = useProfileStore();
 
 const finishedForFirstTime = ref<boolean>(true);
-
-async function resetLesson() {
-  if (lessonStore.currentLesson) {
-    try {
-      await lessonStore.restartLessonForUser(lessonStore.currentLesson.lessonDTO.uuid);
-      await router.push({name: 'LessonDetails', params: {lessonUUID: lessonStore.currentLesson.lessonDTO.uuid}});
-    } catch (error: any) {
-      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
-    }
-  }
-}
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
@@ -70,13 +57,6 @@ onBeforeMount(async () => {
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col class="d-flex justify-end my-2">
-          <v-btn color="warning" class="mr-2" @click="alertService.addHelpDialog('resetLesson', resetLesson)">Nochmal
-            bearbeiten
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-container>
 
     <v-divider></v-divider>
