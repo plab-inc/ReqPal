@@ -102,7 +102,7 @@ function addSolutionsField(product: Product) {
     qualification: 1,
     tolerance: 0
   }
-};
+}
 
 const removeField = (index: number) => {
   products.value.splice(index, 1);
