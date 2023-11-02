@@ -48,6 +48,18 @@ export async function fetchUserAnswersForQuestions(to: RouteLocationNormalized, 
     }
 }
 
+export async function fetchUserProgressForLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    try {
+        const lessonStore = useLessonStore();
+
+        await lessonStore.fetchUserProgressForLesson(to.params.lessonUUID.toString());
+        return next();
+    } catch (error) {
+        console.log(error);
+        return next({name: 'Error'});
+    }
+}
+
 export async function loadQuestionsWithSolutions(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();

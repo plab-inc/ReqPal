@@ -11,7 +11,7 @@ import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
-    fetchQuestionsForLesson, fetchUserAnswersForQuestions,
+    fetchQuestionsForLesson, fetchUserAnswersForQuestions, fetchUserProgressForLesson,
     loadLessonByUUID, loadQuestionsWithSolutions, requiresFinishedLesson, requiresUnfinishedLesson
 } from "@/middlewares/lesson.middleware.ts";
 
@@ -56,6 +56,7 @@ const routes = [
                         requiresUnfinishedLesson,
                         loadLessonByUUID,
                         fetchQuestionsForLesson,
+                        fetchUserProgressForLesson
                     ]
                 }
             },
