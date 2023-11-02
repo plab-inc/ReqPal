@@ -22,7 +22,7 @@ type Product = {
   link: string,
   icon: string,
   checkQualification: boolean,
-  solution: Solution | undefined,
+  solution?: Solution | undefined,
   input: number
 }
 
@@ -49,9 +49,7 @@ function init() {
   }];
 
   if (storedOptions) {
-    products.value = storedOptions
-        .filter((p: any) => !p.checkQualification)
-        .map((p: any) => ({
+    products.value = storedOptions.map((p: any) => ({
       id: p.id,
       name: p.name,
       link: p.link,
@@ -59,29 +57,18 @@ function init() {
       checkQualification: p.checkQualification
     }));
 
-    if (!storedOptions.hasOwnProperty('input')) {
-      productsWithTask.value = storedOptions
-          .filter((p: any) => p.checkQualification)
-          .map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        link: p.link,
-        icon: p.icon,
-        checkQualification: p.checkQualification,
-        input: 1
-      }));
-    } else {
-      productsWithTask.value = storedOptions
-          .filter((p: any) => p.checkQualification)
-          .map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        link: p.link,
-        icon: p.icon,
-        checkQualification: p.checkQualification,
-        input: p.input
-      }));
-    }
+    storedOptions.forEach((p: any) => {
+      if (p.checkQualification) {
+        productsWithTask.value.push({
+          id: p.id,
+          name: p.name,
+          link: p.link,
+          icon: p.icon,
+          checkQualification: p.checkQualification,
+          input: p.hasOwnProperty('input') ? p.input : 1
+        })
+      }
+    })
   }
 
   const solutions = lessonStore.getComponentFieldValues(props.componentId, 'solution');
@@ -129,14 +116,18 @@ function updateStoreData(options: any) {
 
 watch(productsWithTask, (newProductsWithTask) => {
 
-  const updatedOptions = newProductsWithTask.map(p => ({
-    id: p.id,
-    name: p.name,
-    link: p.link,
-    icon: p.icon,
-    checkQualification: p.checkQualification,
-    input: p.input
-  }));
+  const updatedOptions = products.value.filter(p => !p.checkQualification);
+
+  newProductsWithTask.forEach(p => {
+    updatedOptions.push({
+      id: p.id,
+      name: p.name,
+      link: p.link,
+      icon: p.icon,
+      checkQualification: p.checkQualification,
+      input: p.input
+    })
+  })
 
   updateStoreData(updatedOptions);
 }, {deep: true});

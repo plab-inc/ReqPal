@@ -195,7 +195,8 @@ export const useLessonStore = defineStore('lesson', {
             return this.components.filter(c =>
                 c.type === 'MultipleChoice' ||
                 c.type === 'TrueOrFalse' ||
-                c.type === 'Slider')
+                c.type === 'Slider' ||
+                c.type === 'Products')
         },
 
         clearComponents() {
