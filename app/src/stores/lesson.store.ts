@@ -306,18 +306,6 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         hydrateUserAnswers(answers: UserAnswer[]) {
-            this.clearComponents();
-
-            this.currentQuestions.forEach((q: Question) => {
-                this.addComponentWithData(q.question_type, q.uuid, {
-                    uuid: q.uuid,
-                    question: q.question,
-                    options: q.options,
-                    solution: q.solution,
-                    hint: q.hint
-                })
-            })
-
             answers.forEach(answer => {
                 const comp =
                     this.components.find(c => c.uuid === answer.question_id);
@@ -344,6 +332,30 @@ export const useLessonStore = defineStore('lesson', {
             const authStore = useAuthStore();
             if (authStore.isTeacher && authStore.user) {
                 return await LessonService.pull.getCountOfStudentsForTeacher(authStore.user.id);
+            }
+        },
+
+        async uploadUserProgressToLesson(lessonAnswers: LessonAnswer) {
+            const authStore = useAuthStore();
+            if (!authStore.isTeacher && authStore.user) {
+                await LessonService.push.uploadUserProgressToLesson(authStore.user.id, lessonAnswers);
+            }
+        },
+
+        async fetchUserProgressForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
+                const data = await LessonService.pull.fetchUserProgressForLesson(authStore.user.id, lessonUUID);
+
+                if (data) {
+                    if (data.answers && Array.isArray(data.answers)) {
+                        const questionsWithAnswers: UserAnswer[] = data.answers.map((a: any) => ({
+                            question_id: a.uuid,
+                            answer: a.options
+                        }));
+                        this.hydrateUserAnswers(questionsWithAnswers);
+                    }
+                }
             }
         }
 

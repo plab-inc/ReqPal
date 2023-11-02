@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {LessonForm, LessonStatistic, UserAnswer, UserResult} from "@/types/lesson.types.ts";
+import {LessonAnswer, LessonForm, LessonStatistic, UserAnswer, UserResult} from "@/types/lesson.types.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 
 class LessonServiceClass {
@@ -9,7 +9,8 @@ class LessonServiceClass {
         deleteLesson: this.deleteLesson.bind(this),
         togglePublished: this.togglePublished.bind(this),
         uploadUserAnswers: this.submitUserAnswers.bind(this),
-        setLessonStartedStatus: this.setLessonStartedStatus.bind(this)
+        setLessonStartedStatus: this.setLessonStartedStatus.bind(this),
+        uploadUserProgressToLesson: this.uploadUserProgressToLesson.bind(this)
     };
 
     public pull = {
@@ -23,7 +24,8 @@ class LessonServiceClass {
         fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this),
         fetchFirstUserScoreForLesson: this.fetchFirstUserScoreForLesson.bind(this),
         fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
-        getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this)
+        getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this),
+        fetchUserProgressForLesson: this.fetchUserProgressForLesson.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -233,9 +235,9 @@ class LessonServiceClass {
     }
 
     private async getCountOfStudentsForTeacher(teacherUUID: string) {
-        const { data, error, status, count } = await supabase
+        const {data, error, status, count} = await supabase
             .from('profiles')
-            .select('teacher', { count: 'exact', head: true })
+            .select('teacher', {count: 'exact', head: true})
             .eq('teacher', teacherUUID)
 
         if (error) throw error;
@@ -244,6 +246,47 @@ class LessonServiceClass {
             return count;
         }
         return 0;
+    }
+
+    private async uploadUserProgressToLesson(userUUID: string, lessonAnswer: LessonAnswer) {
+        const exists = await this.fetchUserProgressForLesson(userUUID, lessonAnswer.uuid);
+
+        if (exists) {
+            const {data, error} = await supabase
+                .from('user_lesson_progress')
+                .update({answers: lessonAnswer.answers, used_hints: lessonAnswer.usedHints})
+                .eq('lesson_id', lessonAnswer.uuid)
+                .eq('user_id', userUUID)
+
+            if (error) throw error;
+        } else {
+            const {data, error} = await supabase
+                .from('user_lesson_progress')
+                .insert([
+                    {
+                        lesson_id: lessonAnswer.uuid,
+                        user_id: userUUID,
+                        answers: lessonAnswer.answers,
+                        used_hints: lessonAnswer.usedHints
+                    },
+                ])
+            if (error) throw error;
+        }
+    }
+
+    private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string) {
+        const {data, error} = await supabase
+            .from('user_lesson_progress')
+            .select('answers, used_hints')
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return data[0];
+        }
+        return null;
     }
 
 }
