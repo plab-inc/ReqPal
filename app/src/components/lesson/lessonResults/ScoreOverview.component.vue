@@ -59,7 +59,7 @@ onBeforeMount(async () => {
             <div class="text-h4 text-center">Punktzahl</div>
           </v-col>
           <v-col class="d-flex align-center justify-center">
-            <ScoreItem v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
+            <ScoreItem v-if="currentLesson" :score="userScore ? userScore : 0" :max-score="currentLesson?.points"></ScoreItem>
           </v-col>
         </v-row>
 
