@@ -4,9 +4,16 @@ import {ref} from "vue";
 import Help from "@/components/lesson/modules/Help.component.vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.component.vue";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface Props {
   componentId: string,
+}
+
+type Solution = {
+  id: number,
+  qualification: number,
+  tolerance: number
 }
 
 type Product = {
@@ -15,57 +22,123 @@ type Product = {
   link: string,
   icon: string,
   checkQualification: boolean,
+  solution: Solution | undefined,
   input: number
 }
 
 const props = defineProps<Props>();
-const inputValues = ref<number[]>([]);
 
 const lessonStore = useLessonStore();
 
-const fields = ref<any>({
-  options: lessonStore.getComponentFieldValues(props.componentId, 'options'),
-  solution: lessonStore.getComponentFieldValues(props.componentId, 'solutions')
-});
-
+const products = ref<Product[]>([]);
 const productsWithTask = ref<Product[]>([]);
+const authStore = useAuthStore();
+const isTeacher: boolean = authStore.isTeacher;
 
 init();
 
 function init() {
-  if (fields.value && fields.value.options) {
-    fields.value.options.forEach((option: any) => {
-      if (option.checkQualification) {
-        productsWithTask.value.push(option);
-        inputValues.value[option.id] = 1;
+  const storedOptions = lessonStore.getComponentFieldValues(props.componentId, 'options') || [{
+    id: 0,
+    name: "",
+    link: "",
+    icon: "",
+    checkQualification: false,
+    solution: undefined,
+    input: 1
+  }];
+
+  if (storedOptions) {
+    products.value = storedOptions
+        .filter((p: any) => !p.checkQualification)
+        .map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      link: p.link,
+      icon: p.icon,
+      checkQualification: p.checkQualification
+    }));
+
+    if (!storedOptions.hasOwnProperty('input')) {
+      productsWithTask.value = storedOptions
+          .filter((p: any) => p.checkQualification)
+          .map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        link: p.link,
+        icon: p.icon,
+        checkQualification: p.checkQualification,
+        input: 1
+      }));
+    } else {
+      productsWithTask.value = storedOptions
+          .filter((p: any) => p.checkQualification)
+          .map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        link: p.link,
+        icon: p.icon,
+        checkQualification: p.checkQualification,
+        input: p.input
+      }));
+    }
+  }
+
+  const solutions = lessonStore.getComponentFieldValues(props.componentId, 'solution');
+
+  if (solutions) {
+    productsWithTask.value.forEach((product: any) => {
+      const found = solutions.find((s: any) => s.id === product.id);
+      if (found) {
+        product.solution = found;
+        if (isTeacher) {
+          product.input = product.solution.qualification;
+        }
       }
     })
   }
 }
 
-function updateStoreData(fields: any) {
-  lessonStore.setComponentData(props.componentId, 'options', fields);
+function checkSolution(product: Product) {
+  if (product.solution) {
+    let minValue: number = getMinValueForProduct(product);
+    let maxValue: number = getMaxValueForProduct(product);
+    return (+product.input >= +minValue && +product.input <= +maxValue)
+  }
 }
 
-watch(inputValues, (newInputValues) => {
-  const updatedProducts = productsWithTask.value.map((option: any) => ({
-    id: option.id,
-    name: option.name,
-    link: option.link,
-    icon: option.icon,
-    checkQualification: option.checkQualification,
-    input: newInputValues[option.id]
+function getMinValueForProduct(product: Product) {
+  const solution = product.solution;
+  if (solution) {
+    return +solution.qualification - +solution.tolerance;
+  }
+  return -1;
+}
+
+function getMaxValueForProduct(product: Product) {
+  const solution = product.solution;
+  if (solution) {
+    return +solution.qualification + +solution.tolerance;
+  }
+  return -1;
+}
+
+function updateStoreData(options: any) {
+  lessonStore.setComponentData(props.componentId, 'options', options);
+}
+
+watch(productsWithTask, (newProductsWithTask) => {
+
+  const updatedOptions = newProductsWithTask.map(p => ({
+    id: p.id,
+    name: p.name,
+    link: p.link,
+    icon: p.icon,
+    checkQualification: p.checkQualification,
+    input: p.input
   }));
 
-  const updatedOptions = fields.value.options.map((option: any) => {
-    const found = updatedProducts.find((p) => p.id === option.id);
-    return found ? found : option;
-  });
-
-  productsWithTask.value = updatedProducts;
-  fields.value.options = updatedOptions;
-
-  updateStoreData(updatedProducts);
+  updateStoreData(updatedOptions);
 }, {deep: true});
 
 </script>
@@ -86,7 +159,7 @@ watch(inputValues, (newInputValues) => {
           <v-row>
             <v-col>
               <v-row>
-                <v-col v-for="product in fields.options" :key="product.product_name" :md="12/fields.options.length">
+                <v-col v-for="product in products" :key="product.id" :md="12/products.length">
                   <ProductItem :options="product"></ProductItem>
                 </v-col>
               </v-row>
@@ -104,8 +177,15 @@ watch(inputValues, (newInputValues) => {
         <div v-for="product in productsWithTask" class="my-5">
           <v-row>
 
-            <v-col v-if="fields.solution" class="text-center">
-              <div class="text-h6 mb-2">Richtige Antwort:</div>
+            <v-col v-if="product.solution">
+              <div class="text-h6 mb-2">Richtige Antwort: {{ product.solution?.qualification }}</div>
+              <div
+                  v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
+                  class="text-h6 mb-2">
+                Toleranzbereich zwischen: {{ getMinValueForProduct(product) }} und {{
+                  getMaxValueForProduct(product)
+                }}
+              </div>
             </v-col>
 
             <v-col md="6">
@@ -119,10 +199,11 @@ watch(inputValues, (newInputValues) => {
                 <v-col>
                   <div>
                     <v-slider
-                        v-model="inputValues[product.id]"
+                        v-model="product.input"
                         :min="1"
                         :max="5"
                         :step="1"
+                        :color="product.solution && checkSolution(product) ? 'success' : 'orange'"
                         track-color="warning"
                         thumb-label>
                     </v-slider>
@@ -139,7 +220,8 @@ watch(inputValues, (newInputValues) => {
                 <v-col>
                   <div class="d-flex align-center justify-center">
                     <ProductQualification :size="80"
-                                          :qualification="inputValues[product.id] + ''"></ProductQualification>
+                                          :qualification="product.solution ? product.solution.qualification + '' : product.input + ''">
+                    </ProductQualification>
                   </div>
                 </v-col>
               </v-row>
