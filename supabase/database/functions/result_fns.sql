@@ -4,15 +4,22 @@ CREATE
     RETURNS VOID AS
 $$
 DECLARE
+    used_hints_count    int4             := 0;
     lesson_uuid         uuid;
     newAnswer           jsonb;
     question_uuid       uuid;
     lesson_finished     bool             := false;
-    lesson_started    bool             := false;
+    lesson_started      bool             := false;
     max_points          double precision := 0;
     points_per_question double precision := 0;
 BEGIN
     lesson_uuid := data ->> 'uuid';
+
+    SELECT COUNT(*)
+    INTO used_hints_count
+    FROM user_hints
+    WHERE user_id = auth.uid()
+      AND lesson_id = lesson_uuid;
 
     SELECT is_started
     INTO lesson_started
@@ -24,6 +31,17 @@ BEGIN
         lesson_started := TRUE;
     end if;
 
+    SELECT lessons.points
+    INTO max_points
+    FROM lessons
+    WHERE uuid = lesson_uuid;
+
+    points_per_question = (max_points - (used_hints_count * 10)) / jsonb_array_length(data -> 'answers');
+
+    IF points_per_question < 0 THEN
+        points_per_question := 0;
+    END IF;
+
     SELECT finished
     INTO lesson_finished
     FROM user_finished_lessons
@@ -31,15 +49,9 @@ BEGIN
       AND user_id = auth.uid();
 
     IF NOT FOUND THEN
-        SELECT lessons.points
-        INTO max_points
-        FROM lessons
-        WHERE uuid = lesson_uuid;
-
-        points_per_question := max_points / jsonb_array_length(data -> 'answers');
-
-        INSERT INTO user_finished_lessons (user_id, lesson_id, finished, is_started, finished_for_first_time)
-        VALUES (auth.uid(), lesson_uuid, TRUE, FALSE, TRUE);
+        INSERT INTO user_finished_lessons (user_id, lesson_id, finished, is_started, finished_for_first_time,
+                                           used_hints)
+        VALUES (auth.uid(), lesson_uuid, TRUE, FALSE, TRUE, used_hints_count);
         lesson_finished
             := FALSE;
     END IF;
@@ -55,26 +67,27 @@ BEGIN
 
             END LOOP;
 
-    ELSE IF(lesson_started) THEN
-        FOR newAnswer IN
-            SELECT *
-            FROM jsonb_array_elements(data -> 'answers')
-            LOOP
-                question_uuid := (newAnswer ->> 'uuid')::uuid;
-                UPDATE user_answers
-                SET answer = newAnswer -> 'options'
-                WHERE lesson_id = lesson_uuid
-                  AND user_id = auth.uid()
-                  AND question_id = question_uuid;
-            END LOOP;
+    ELSE
+        IF (lesson_started) THEN
+            FOR newAnswer IN
+                SELECT *
+                FROM jsonb_array_elements(data -> 'answers')
+                LOOP
+                    question_uuid := (newAnswer ->> 'uuid')::uuid;
+                    UPDATE user_answers
+                    SET answer = newAnswer -> 'options', max_points = points_per_question
+                    WHERE lesson_id = lesson_uuid
+                      AND user_id = auth.uid()
+                      AND question_id = question_uuid;
+                END LOOP;
 
-        UPDATE user_finished_lessons
-        SET finished  = TRUE,
-            is_started = FALSE,
-            finished_for_first_time = FALSE
-        WHERE lesson_id = lesson_uuid
-          AND user_id = auth.uid();
-    END IF;
+            UPDATE user_finished_lessons
+            SET finished                = TRUE,
+                is_started              = FALSE,
+                finished_for_first_time = FALSE
+            WHERE lesson_id = lesson_uuid
+              AND user_id = auth.uid();
+        END IF;
     END IF;
 END;
 $$
@@ -214,11 +227,11 @@ $$
 DROP FUNCTION IF EXISTS evaluate_product_qualification(uuid, jsonb, double precision);
 
 CREATE
-OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
+    OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
 AS
 $$
 DECLARE
-solution        jsonb;
+    solution        jsonb;
     compared_result jsonb;
     score           double precision := 0;
     result          jsonb;
@@ -226,19 +239,20 @@ solution        jsonb;
     totalAnswers    double precision := 0;
     percentage      double precision := 1.0;
     user_result     jsonb;
-    answers jsonb;
+    answers         jsonb;
 BEGIN
 
-SELECT jsonb_agg(elem) INTO answers
-FROM jsonb_array_elements(answer) elem
-WHERE (elem->>'checkQualification')::boolean;
+    SELECT jsonb_agg(elem)
+    INTO answers
+    FROM jsonb_array_elements(answer) elem
+    WHERE (elem ->> 'checkQualification')::boolean;
 
-SELECT questions.solution
-INTO solution
-FROM questions
-WHERE questions.uuid = question_id;
+    SELECT questions.solution
+    INTO solution
+    FROM questions
+    WHERE questions.uuid = question_id;
 
-compared_result := json_agg(jsonb_build_object(
+    compared_result := json_agg(jsonb_build_object(
             'id', q_option ->> 'id',
             'isCorrect', (
                 (o_option ->> 'input')::int BETWEEN
@@ -249,12 +263,12 @@ compared_result := json_agg(jsonb_build_object(
                                 LEFT JOIN json_array_elements(answers::JSON) AS o_option
                                           ON (q_option ->> 'id')::int = (o_option ->> 'id')::int;
 
-FOR result IN SELECT * FROM jsonb_array_elements(compared_result)
-                                LOOP
-    IF (result ->> 'isCorrect')::BOOLEAN THEN
+    FOR result IN SELECT * FROM jsonb_array_elements(compared_result)
+        LOOP
+            IF (result ->> 'isCorrect')::BOOLEAN THEN
                 correctAnswers := correctAnswers + 1;
-END IF;
-END LOOP;
+            END IF;
+        END LOOP;
 
     totalAnswers := jsonb_array_length(answers);
     percentage := correctAnswers / totalAnswers;
@@ -262,7 +276,7 @@ END LOOP;
 
     user_result := json_build_object('score', score, 'results', compared_result);
 
-RETURN user_result;
+    RETURN user_result;
 END
 $$
-LANGUAGE plpgsql;
+    LANGUAGE plpgsql;

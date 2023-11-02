@@ -1,6 +1,8 @@
 DROP POLICY IF EXISTS "policy_profiles" ON public.profiles;
 DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
 DROP POLICY IF EXISTS "policy_user_points" ON public.user_points;
+DROP POLICY IF EXISTS "policy_user_lesson_progress" ON public.user_lesson_progress;
+DROP POLICY IF EXISTS "policy_user_hints" ON public.user_hints;
 DROP POLICY IF EXISTS "policy_user_finished_lessons" ON public.user_finished_lessons;
 DROP POLICY IF EXISTS "policy_user_finished_lessons_teacher" ON public.user_finished_lessons;
 
@@ -23,6 +25,18 @@ CREATE POLICY "policy_user_points"
 
 CREATE POLICY "policy_user_answers"
     ON public.user_answers
+    FOR ALL
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+CREATE POLICY "policy_user_lesson_progress"
+    ON public.user_lesson_progress
+    FOR ALL
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+CREATE POLICY "policy_user_hints"
+    ON public.user_hints
     FOR ALL
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
