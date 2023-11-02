@@ -1,3 +1,8 @@
+--- wurden durch result_fns ersetzt
+DROP FUNCTION IF EXISTS mc_compare_solution(INTEGER, JSON);
+DROP FUNCTION IF EXISTS sortable_compare_solution(INTEGER, JSON);
+DROP FUNCTION IF EXISTS true_false_compare_solution(INTEGER, BOOLEAN);
+
 CREATE FUNCTION mc_compare_solution(question_id INTEGER, answer_json JSON) RETURNS JSON
     LANGUAGE plpgsql
 AS $$
