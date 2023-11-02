@@ -75,7 +75,7 @@ watch(fields, (newFields) => {
         </v-col>
         <v-col sm="2" class="d-flex flex-grow-1 align-end justify-end">
           <div class="mr-2">
-            <Help dialog-type="mcExplanation"></Help>
+            <Help dialog-type="tfExplanation"></Help>
           </div>
           <div>
             <Hint v-if="hint" :hint="hint"></Hint>
