@@ -142,3 +142,42 @@ CREATE TRIGGER user_finished_lesson_delete_trigger
     ON user_finished_lessons
     FOR EACH ROW
 EXECUTE FUNCTION delete_user_answers();
+
+---
+-- DELETE USER PROGRESS AND USED HINTS IF LESSON FINISHED INSERT
+---
+
+DROP FUNCTION IF EXISTS delete_user_progress_and_hints();
+DROP TRIGGER IF EXISTS user_finished_lesson_insert_trigger ON user_finished_lessons;
+DROP TRIGGER IF EXISTS user_finished_lesson_insert_trigger ON user_finished_lessons;
+
+CREATE OR REPLACE FUNCTION delete_user_progress_and_hints()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    DELETE
+    FROM user_lesson_progress
+    WHERE lesson_id = NEW.lesson_id
+      AND user_id = NEW.user_id;
+
+    DELETE
+    FROM user_hints
+    WHERE lesson_id = NEW.lesson_id
+      AND user_id = NEW.user_id;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_finished_lesson_insert_trigger
+    AFTER INSERT
+    ON user_finished_lessons
+    FOR EACH ROW
+EXECUTE FUNCTION delete_user_progress_and_hints();
+
+CREATE TRIGGER user_finished_lesson_update_trigger
+    AFTER UPDATE
+    ON user_finished_lessons
+    FOR EACH ROW
+EXECUTE FUNCTION delete_user_progress_and_hints();
+
