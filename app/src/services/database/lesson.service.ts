@@ -10,7 +10,8 @@ class LessonServiceClass {
         togglePublished: this.togglePublished.bind(this),
         uploadUserAnswers: this.submitUserAnswers.bind(this),
         setLessonStartedStatus: this.setLessonStartedStatus.bind(this),
-        uploadUserProgressToLesson: this.uploadUserProgressToLesson.bind(this)
+        uploadUserProgressToLesson: this.uploadUserProgressToLesson.bind(this),
+        uploadUsedHintForQuestion: this.uploadUsedHintForQuestion.bind(this)
     };
 
     public pull = {
@@ -254,7 +255,7 @@ class LessonServiceClass {
         if (exists) {
             const {data, error} = await supabase
                 .from('user_lesson_progress')
-                .update({answers: lessonAnswer.answers, used_hints: lessonAnswer.usedHints})
+                .update({answers: lessonAnswer.answers})
                 .eq('lesson_id', lessonAnswer.uuid)
                 .eq('user_id', userUUID)
 
@@ -267,7 +268,6 @@ class LessonServiceClass {
                         lesson_id: lessonAnswer.uuid,
                         user_id: userUUID,
                         answers: lessonAnswer.answers,
-                        used_hints: lessonAnswer.usedHints
                     },
                 ])
             if (error) throw error;
@@ -277,7 +277,7 @@ class LessonServiceClass {
     private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string) {
         const {data, error} = await supabase
             .from('user_lesson_progress')
-            .select('answers, used_hints')
+            .select('answers')
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
 
@@ -289,6 +289,28 @@ class LessonServiceClass {
         return null;
     }
 
+    private async uploadUsedHintForQuestion(userUUID: string, questionUUID: string, lessonUUID: string) {
+        const {data, error} = await supabase
+            .from('user_hints')
+            .select('*')
+            .eq('question_id', questionUUID)
+            .eq('user_id', userUUID)
+            .eq('lesson_id', lessonUUID)
+
+        if (error) throw error;
+        if (!data || data.length <= 0) {
+            const {data, error} = await supabase
+                .from('user_hints')
+                .insert([
+                    {
+                        question_id: questionUUID,
+                        user_id: userUUID,
+                        lesson_id: lessonUUID
+                    },
+                ])
+            if (error) throw error;
+        }
+    }
 }
 
 const LessonService = new LessonServiceClass();
