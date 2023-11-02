@@ -206,3 +206,63 @@ BEGIN
 END
 $$
     LANGUAGE plpgsql;
+
+--------------------------------------------
+-- PRODUCT QUALIFICATION
+--------------------------------------------
+
+DROP FUNCTION IF EXISTS evaluate_product_qualification(uuid, jsonb, double precision);
+
+CREATE
+OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
+AS
+$$
+DECLARE
+solution        jsonb;
+    compared_result jsonb;
+    score           double precision := 0;
+    result          jsonb;
+    correctAnswers  double precision := 0;
+    totalAnswers    double precision := 0;
+    percentage      double precision := 1.0;
+    user_result     jsonb;
+    answers jsonb;
+BEGIN
+
+SELECT jsonb_agg(elem) INTO answers
+FROM jsonb_array_elements(answer) elem
+WHERE (elem->>'checkQualification')::boolean;
+
+SELECT questions.solution
+INTO solution
+FROM questions
+WHERE questions.uuid = question_id;
+
+compared_result := json_agg(jsonb_build_object(
+            'id', q_option ->> 'id',
+            'isCorrect', (
+                (o_option ->> 'input')::int BETWEEN
+                    ((q_option ->> 'qualification')::int - (q_option ->> 'tolerance')::int) AND
+                    ((q_option ->> 'qualification')::int + (q_option ->> 'tolerance')::int)
+                )::BOOLEAN))
+                       FROM json_array_elements(solution::JSON) AS q_option
+                                LEFT JOIN json_array_elements(answers::JSON) AS o_option
+                                          ON (q_option ->> 'id')::int = (o_option ->> 'id')::int;
+
+FOR result IN SELECT * FROM jsonb_array_elements(compared_result)
+                                LOOP
+    IF (result ->> 'isCorrect')::BOOLEAN THEN
+                correctAnswers := correctAnswers + 1;
+END IF;
+END LOOP;
+
+    totalAnswers := jsonb_array_length(answers);
+    percentage := correctAnswers / totalAnswers;
+    score := max_points * percentage;
+
+    user_result := json_build_object('score', score, 'results', compared_result);
+
+RETURN user_result;
+END
+$$
+LANGUAGE plpgsql;

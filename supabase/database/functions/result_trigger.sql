@@ -6,7 +6,6 @@ DROP TRIGGER user_answers_update_trigger ON user_answers;
 ---
 -- EVALUATE AND CALCULATE SCORE ON ANSWER INSERTION
 ---
-
 CREATE OR REPLACE FUNCTION evaluate_answers_function()
     RETURNS TRIGGER AS
 $$
@@ -25,6 +24,10 @@ BEGIN
             ELSE
                 IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Slider' THEN
                     result_value := evaluate_slider(NEW.question_id, NEW.answer, NEW.max_points);
+                ELSE
+                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Products' THEN
+                        result_value := evaluate_product_qualification(NEW.question_id, NEW.answer, NEW.max_points);
+                    END IF;
                 END IF;
             END IF;
         END IF;
@@ -86,6 +89,10 @@ BEGIN
             ELSE
                 IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Slider' THEN
                     result_value := evaluate_slider(NEW.question_id, NEW.answer, NEW.max_points);
+                ELSE
+                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Products' THEN
+                        result_value := evaluate_product_qualification(NEW.question_id, NEW.answer, NEW.max_points);
+                    END IF;
                 END IF;
             END IF;
         END IF;
