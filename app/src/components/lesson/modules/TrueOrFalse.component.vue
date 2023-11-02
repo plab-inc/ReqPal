@@ -16,6 +16,7 @@ const lessonStore = useLessonStore();
 const question = lessonStore.getComponentFieldValues(props.componentId, 'question')
 const hint = lessonStore.getComponentFieldValues(props.componentId, 'hint')
 const solution = lessonStore.getComponentFieldValues(props.componentId, 'solution');
+const questionId = lessonStore.getComponentFieldValues(props.componentId, 'uuid');
 const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
 
@@ -78,7 +79,7 @@ watch(fields, (newFields) => {
             <Help dialog-type="tfExplanation"></Help>
           </div>
           <div>
-            <Hint v-if="hint" :hint="hint"></Hint>
+            <Hint v-if="hint" :hint="hint" :questionId="questionId"></Hint>
           </div>
         </v-col>
       </v-row>

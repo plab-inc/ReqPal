@@ -357,6 +357,13 @@ export const useLessonStore = defineStore('lesson', {
                     }
                 }
             }
+        },
+
+        async uploadUsedHintForQuestion(questionUUID: string) {
+            const authStore = useAuthStore();
+            if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
+                await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
+            }
         }
 
     },

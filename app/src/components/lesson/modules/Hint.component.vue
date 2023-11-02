@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import alertService from "@/services/util/alert.service.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {
+  questionId: string,
   hint: string
 }
 
@@ -11,6 +13,12 @@ const showHint = ref<boolean>(false);
 function toggleShowHint() {
   showHint.value = !showHint.value;
 }
+
+const lessonStore = useLessonStore();
+
+async function onHintClick() {
+  await lessonStore.uploadUsedHintForQuestion(props.questionId);
+}
 </script>
 
 <template>
@@ -19,7 +27,7 @@ function toggleShowHint() {
       <v-btn v-bind="props"
              size="40"
              icon="mdi-lightbulb"
-             @click="alertService.openDialog('Hinweis', hint, 'Danke!')"></v-btn>
+             @click="alertService.openDialog('Hinweis', hint, 'Danke!', undefined, onHintClick)"></v-btn>
     </template>
   </v-tooltip>
   <v-card
