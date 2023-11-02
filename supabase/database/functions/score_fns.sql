@@ -1,3 +1,7 @@
+--- wurden durch result_fns ersetzt
+DROP FUNCTION IF EXISTS calculate_user_score_mc(INTEGER, JSON, UUID);
+DROP FUNCTION IF EXISTS calculate_user_score_true_false(INTEGER, BOOLEAN, UUID);
+
 CREATE FUNCTION calculate_user_score_mc(question_id INTEGER, user_results JSON, id_user UUID) RETURNS INTEGER
     LANGUAGE plpgsql
 AS $$
