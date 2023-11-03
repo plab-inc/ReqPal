@@ -8,13 +8,19 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const showHint = ref<boolean>(false);
-
-function toggleShowHint() {
-  showHint.value = !showHint.value;
-}
 
 const lessonStore = useLessonStore();
+
+function openWarningDialog() {
+  alertService.openDialog('Warnung: Hinweise anzeigen',
+      'Wenn Sie sich einen Hinweis anschauen, gibt es 10 Punkte Abzug pro Hinweis. ' +
+      'Falls Sie sich diesen Hinweis bereits angeschaut haben, gibt es keine zusätzlichen Punktabzüge.',
+      'Hinweis anzeigen', 'Zurück zur Lektion', openHintDialog);
+}
+
+function openHintDialog() {
+  alertService.openDialog('Hinweis', props.hint, 'Danke!', undefined, onHintClick)
+}
 
 async function onHintClick() {
   await lessonStore.uploadUsedHintForQuestion(props.questionId);
@@ -22,21 +28,14 @@ async function onHintClick() {
 </script>
 
 <template>
-  <v-tooltip :text="showHint ? 'Hinweis verstecken' : 'Hinweis anzeigen'" location="top">
+  <v-tooltip :text="'Hinweis'" location="top">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props"
              size="40"
              icon="mdi-lightbulb"
-             @click="alertService.openDialog('Hinweis', hint, 'Danke!', undefined, onHintClick)"></v-btn>
+             @click="openWarningDialog"></v-btn>
     </template>
   </v-tooltip>
-  <v-card
-      class="mt-2"
-      v-if="showHint"
-      color="success"
-      title="Hinweis"
-      :text="hint"
-  ></v-card>
 </template>
 
 <style scoped>
