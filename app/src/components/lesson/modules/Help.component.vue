@@ -10,7 +10,7 @@ const props = defineProps<Props>();
 
 </script>
 <template>
-  <v-tooltip :text="'Hilfe'" location="top">
+  <v-tooltip :text="'Erklärung'" location="top">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props"
              icon="mdi-help"
