@@ -103,6 +103,7 @@ watch(inputValue, (newInput) => {
       </v-row>
       <v-row>
         <v-col v-if="solution" class="text-center">
+          <div class="text-h6 mb-2">Ihre Antwort: {{ inputValue }}</div>
           <div class="text-h6 mb-2">Richtige Antwort: {{ correctValue }}</div>
           <div v-if="minValue != maxValue" class="text-h6 mb-2">Toleranzbereich zwischen: {{ minValue }} und {{
               maxValue
@@ -112,6 +113,7 @@ watch(inputValue, (newInput) => {
         <v-col>
           <v-slider
               v-model="inputValue"
+              :readonly="!!solution"
               :min="fields.options.minValue"
               :max="fields.options.maxValue"
               :step="fields.options.steps"
