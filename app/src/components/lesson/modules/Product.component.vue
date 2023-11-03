@@ -169,6 +169,7 @@ watch(productsWithTask, (newProductsWithTask) => {
           <v-row>
 
             <v-col v-if="product.solution">
+              <div class="text-h6 mb-2">Ihre Antwort: {{ product.input }}</div>
               <div class="text-h6 mb-2">Richtige Antwort: {{ product.solution?.qualification }}</div>
               <div
                   v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
@@ -191,6 +192,7 @@ watch(productsWithTask, (newProductsWithTask) => {
                   <div>
                     <v-slider
                         v-model="product.input"
+                        :readonly="!!product.solution"
                         :min="1"
                         :max="5"
                         :step="1"
