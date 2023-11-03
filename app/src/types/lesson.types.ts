@@ -8,6 +8,7 @@ export type Lesson = {
     lessonDTO: LessonDTO,
     isFinished: boolean,
     isStarted: boolean,
+    hasSavedProgress: boolean,
     userScore: number
 }
 

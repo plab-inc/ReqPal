@@ -75,6 +75,7 @@ export const useLessonStore = defineStore('lesson', {
                     lessonDTO: l,
                     isFinished: false,
                     isStarted: false,
+                    hasSavedProgress: false,
                     userScore: 0
                 }));
             }
@@ -87,6 +88,7 @@ export const useLessonStore = defineStore('lesson', {
                     lessonDTO: l,
                     isFinished: false,
                     isStarted: false,
+                    hasSavedProgress: false,
                     userScore: 0
                 }));
             }
@@ -100,6 +102,9 @@ export const useLessonStore = defineStore('lesson', {
                 l.isFinished = status && (status.finished !== null) ? status.finished : false;
                 l.isStarted = status && (status.is_started !== null) ? status.is_started : true;
                 await this.loadFirstUserScoreForLesson(l.lessonDTO.uuid);
+                if (l.isStarted) {
+                    l.hasSavedProgress = await this.checkIfLessonHasProgress(l.lessonDTO.uuid);
+                }
             }
         },
 
@@ -237,6 +242,14 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
+        async checkIfLessonHasProgress(lessonUUID: string) {
+            const authStore = useAuthStore();
+            if (authStore.user && !authStore.isTeacher) {
+                return await LessonService.pull.checkIfLessonHasSavedProgress(lessonUUID, authStore.user.id);
+            }
+            return false;
+        },
+
         async restartLessonForUser(lessonUUID: string) {
             const authStore = useAuthStore();
             if (authStore.user) {
@@ -247,6 +260,17 @@ export const useLessonStore = defineStore('lesson', {
                         lesson.isStarted = true;
                     }
                 }
+            }
+
+            this.clearComponents();
+        },
+
+        async restartLessonProgressForUser(lessonUUID: string) {
+            const authStore = useAuthStore();
+            const lesson = this.findLesson(lessonUUID);
+            if (authStore.user && lesson && lesson.hasSavedProgress) {
+                const data = await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
+                if (lesson) lesson.hasSavedProgress = false;
             }
 
             this.clearComponents();

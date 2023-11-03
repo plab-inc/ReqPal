@@ -40,8 +40,13 @@ async function submit() {
 }
 
 async function saveProgress() {
-  let lessonJson = lessonStore.generateUserResults();
-  if (lessonJson) await lessonStore.uploadUserProgressToLesson(lessonJson);
+  try {
+    let lessonJson = lessonStore.generateUserResults();
+    if (lessonJson) await lessonStore.uploadUserProgressToLesson(lessonJson);
+    AlertService.addSuccessAlert('Fortschritt erfolgreich gespeichert!')
+  } catch (error: any) {
+    AlertService.addErrorAlert('Fortschritt konnte nicht gespeichert werden.')
+  }
 }
 
 async function openDialog() {
