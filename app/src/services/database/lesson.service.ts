@@ -11,7 +11,8 @@ class LessonServiceClass {
         uploadUserAnswers: this.submitUserAnswers.bind(this),
         setLessonStartedStatus: this.setLessonStartedStatus.bind(this),
         uploadUserProgressToLesson: this.uploadUserProgressToLesson.bind(this),
-        uploadUsedHintForQuestion: this.uploadUsedHintForQuestion.bind(this)
+        uploadUsedHintForQuestion: this.uploadUsedHintForQuestion.bind(this),
+        deleteLessonProgressForUser: this.deleteLessonProgressForUser.bind(this)
     };
 
     public pull = {
@@ -26,7 +27,8 @@ class LessonServiceClass {
         fetchFirstUserScoreForLesson: this.fetchFirstUserScoreForLesson.bind(this),
         fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
         getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this),
-        fetchUserProgressForLesson: this.fetchUserProgressForLesson.bind(this)
+        fetchUserProgressForLesson: this.fetchUserProgressForLesson.bind(this),
+        checkIfLessonHasSavedProgress: this.checkIfLessonHasSavedProgress.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false) {
@@ -310,6 +312,31 @@ class LessonServiceClass {
                 ])
             if (error) throw error;
         }
+    }
+
+    private async deleteLessonProgressForUser(lessonUUID: string, userUUID: string) {
+        const {data, error} = await supabase
+            .from('user_lesson_progress')
+            .delete()
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        return data;
+    }
+
+    private async checkIfLessonHasSavedProgress(lessonUUID: string, userUUID: string) {
+        const {data, error, status, count} = await supabase
+            .from('user_lesson_progress')
+            .select('lesson_id, user_id', {count: 'exact', head: true})
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        if(count) return count > 0;
+        return false;
     }
 }
 
