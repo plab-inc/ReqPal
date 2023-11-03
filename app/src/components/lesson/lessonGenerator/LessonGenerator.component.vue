@@ -88,11 +88,11 @@ async function openDialog() {
       <v-row v-if="!isFinished || isStarted">
         <v-col>
           <v-container>
-            <v-btn :disabled="!isStarted && isFinished" type="button"
+            <v-btn :disabled="!isStarted && isFinished" type="button" class="mr-2"
                    @click="saveProgress">Speichern
             </v-btn>
             <v-btn :disabled="!isStarted && isFinished" type="submit"
-                   @click="openDialog">Submit
+                   @click="openDialog">Antworten abschicken
             </v-btn>
           </v-container>
         </v-col>
