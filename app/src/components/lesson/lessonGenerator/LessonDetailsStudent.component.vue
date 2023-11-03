@@ -17,11 +17,29 @@ async function resetLesson() {
   if (lessonStore.currentLesson) {
     try {
       await lessonStore.restartLessonForUser(lessonStore.currentLesson.lessonDTO.uuid);
+      AlertService.addSuccessAlert('Lektion erfolgreich zurückgesetzt!')
       await router.push({name: 'LessonDetails', params: {lessonUUID: lessonStore.currentLesson.lessonDTO.uuid}});
     } catch (error: any) {
       AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
     }
   }
+}
+
+async function resetProgress() {
+  if (lessonStore.currentLesson) {
+    try {
+      await lessonStore.restartLessonProgressForUser(lessonStore.currentLesson.lessonDTO.uuid);
+      AlertService.addSuccessAlert('Fortschritt erfolgreich zurückgesetzt!')
+      await router.push({name: 'LessonDetails', params: {lessonUUID: lessonStore.currentLesson.lessonDTO.uuid}});
+    } catch (error: any) {
+      AlertService.addErrorAlert("Fehler beim Zurücksetzen: " + error.message);
+    }
+  }
+}
+
+function openDialog() {
+  alertService.openDialog('Fortschritt zurücksetzen', 'Hierdurch wird der gesamte Fortschritt der Lektion gelöscht ' +
+      'und Sie müssen Sie von vorne beginnen.', 'Zurücksetzen', 'Abbrechen', resetProgress);
 }
 </script>
 
@@ -69,6 +87,18 @@ async function resetLesson() {
     >
       <v-btn color="warning" class="mr-2" @click.stop="alertService.addHelpDialog('resetLesson', resetLesson)">
         Nochmal bearbeiten
+      </v-btn>
+    </v-btn-group>
+    <v-btn-group
+        v-if="lesson.hasSavedProgress"
+        class="ml-3"
+        variant="outlined"
+        elevation="24"
+        divided
+        density="default"
+    >
+      <v-btn color="warning" class="mr-2" @click.stop="openDialog">
+        Neustarten
       </v-btn>
     </v-btn-group>
   </div>
