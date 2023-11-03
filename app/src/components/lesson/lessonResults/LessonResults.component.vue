@@ -45,7 +45,7 @@ onBeforeMount(async () => {
         <v-col md="3">
           <v-row>
             <v-col>
-              <StatItem :text="profileStore.points + ''" :color="'primary'"></StatItem>
+              <StatItem :headline="'Ihre Gesamtpunkte:'" :text="profileStore.points + ''" :color="'primary'"></StatItem>
             </v-col>
           </v-row>
         </v-col>
@@ -53,7 +53,9 @@ onBeforeMount(async () => {
 
       <v-row>
         <v-col>
-          <ScoreOverview class="my-5"></ScoreOverview>
+          <v-container>
+            <ScoreOverview class="my-5"></ScoreOverview>
+          </v-container>
         </v-col>
       </v-row>
 
