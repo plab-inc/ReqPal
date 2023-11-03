@@ -32,6 +32,7 @@ export interface Database {
           {
             foreignKeyName: "catalogs_owner_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -72,6 +73,7 @@ export interface Database {
           {
             foreignKeyName: "lessons_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -121,12 +123,14 @@ export interface Database {
           {
             foreignKeyName: "productrequirements_product_id_fkey"
             columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["product_id"]
           },
           {
             foreignKeyName: "productrequirements_requirement_id_fkey"
             columns: ["requirement_id"]
+            isOneToOne: false
             referencedRelation: "requirements"
             referencedColumns: ["requirement_id"]
           }
@@ -170,12 +174,14 @@ export interface Database {
           {
             foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "profiles_teacher_fkey"
             columns: ["teacher"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -216,6 +222,7 @@ export interface Database {
           {
             foreignKeyName: "questions_lessons_uuid_fk"
             columns: ["lesson_uuid"]
+            isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
           }
@@ -247,6 +254,7 @@ export interface Database {
           {
             foreignKeyName: "requirements_catalog_id_fkey"
             columns: ["catalog_id"]
+            isOneToOne: false
             referencedRelation: "catalogs"
             referencedColumns: ["catalog_id"]
           }
@@ -269,12 +277,14 @@ export interface Database {
           {
             foreignKeyName: "role_permissions_permission_id_fkey"
             columns: ["permission_id"]
+            isOneToOne: false
             referencedRelation: "permissions"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "role_permissions_role_id_fkey"
             columns: ["role_id"]
+            isOneToOne: false
             referencedRelation: "roles"
             referencedColumns: ["id"]
           }
@@ -330,18 +340,21 @@ export interface Database {
           {
             foreignKeyName: "user_answers_lesson_id_fkey"
             columns: ["lesson_id"]
+            isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
           },
           {
             foreignKeyName: "user_answers_question_id_fkey"
             columns: ["question_id"]
+            isOneToOne: false
             referencedRelation: "questions"
             referencedColumns: ["uuid"]
           },
           {
             foreignKeyName: "user_answers_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -354,6 +367,7 @@ export interface Database {
           id: string
           is_started: boolean | null
           lesson_id: string | null
+          used_hints: number | null
           user_id: string | null
           user_points: number | null
         }
@@ -363,6 +377,7 @@ export interface Database {
           id?: string
           is_started?: boolean | null
           lesson_id?: string | null
+          used_hints?: number | null
           user_id?: string | null
           user_points?: number | null
         }
@@ -372,6 +387,7 @@ export interface Database {
           id?: string
           is_started?: boolean | null
           lesson_id?: string | null
+          used_hints?: number | null
           user_id?: string | null
           user_points?: number | null
         }
@@ -379,12 +395,93 @@ export interface Database {
           {
             foreignKeyName: "user_finished_lessons_lesson_id_fkey"
             columns: ["lesson_id"]
+            isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
           },
           {
             foreignKeyName: "user_finished_lessons_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_hints: {
+        Row: {
+          id: string
+          lesson_id: string | null
+          question_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          lesson_id?: string | null
+          question_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          lesson_id?: string | null
+          question_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_hints_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_hints_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_hints_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_lesson_progress: {
+        Row: {
+          answers: Json | null
+          id: string
+          lesson_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json | null
+          id?: string
+          lesson_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json | null
+          id?: string
+          lesson_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_lesson_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -410,6 +507,7 @@ export interface Database {
           {
             foreignKeyName: "user_points_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
@@ -420,22 +518,6 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      calculate_user_score_mc: {
-        Args: {
-          question_id: number
-          user_results: Json
-          id_user: string
-        }
-        Returns: number
-      }
-      calculate_user_score_true_false: {
-        Args: {
-          question_id: number
-          user_result: boolean
-          id_user: string
-        }
-        Returns: number
-      }
       check_user_role: {
         Args: {
           uid: string
@@ -463,6 +545,14 @@ export interface Database {
         Returns: string
       }
       evaluate_multiple_choice: {
+        Args: {
+          question_id: string
+          answer: Json
+          max_points: number
+        }
+        Returns: Json
+      }
+      evaluate_product_qualification: {
         Args: {
           question_id: string
           answer: Json
@@ -532,13 +622,6 @@ export interface Database {
         }
         Returns: number
       }
-      mc_compare_solution: {
-        Args: {
-          question_id: number
-          answer_json: Json
-        }
-        Returns: Json
-      }
       reverse_boolean_value: {
         Args: {
           row_uuid: string
@@ -559,20 +642,6 @@ export interface Database {
           value: Json
         }
         Returns: string
-      }
-      sortable_compare_solution: {
-        Args: {
-          question_id: number
-          answer_json: Json
-        }
-        Returns: Json
-      }
-      true_false_compare_solution: {
-        Args: {
-          question_id: number
-          user_result: boolean
-        }
-        Returns: Json
       }
       update_user_permissions: {
         Args: {
