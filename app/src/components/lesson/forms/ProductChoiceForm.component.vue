@@ -38,10 +38,19 @@ type Product = {
 }
 
 const products = ref<Product[]>([]);
+const qualificationActive = computed(() => {
+  return (!!products.value.find(p => p.checkQualification));
+})
+
+const fields = ref<any>({
+  hint: "",
+});
 
 init();
 
 function init() {
+  fields.value.hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint') || "";
+
   products.value = lessonFormStore.getComponentFieldValues(props.componentId, 'options') || [{
     id: 0,
     name: "",
@@ -81,6 +90,7 @@ function updateStoreData() {
         tolerance: p.solution?.tolerance
       }));
 
+  lessonFormStore.setComponentData(props.componentId, 'hint', fields.value.hint);
   lessonFormStore.setComponentData(props.componentId, 'options', productsToSave);
   lessonFormStore.setComponentData(props.componentId, 'solution', solutionsToSave);
 }
@@ -174,6 +184,18 @@ watch(products, (newProducts) => {
           </v-btn>
         </v-col>
       </v-row>
+
+      <div v-if="qualificationActive">
+        <v-row v-if="index === 0">
+          <v-col cols="8"></v-col>
+          <v-col cols="4">
+            <v-text-field
+                label="Hinweis"
+                v-model="fields.hint"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </div>
 
       <v-row v-if="product.checkQualification && product.solution !== undefined">
         <v-col cols="4">

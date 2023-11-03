@@ -5,6 +5,7 @@ import Help from "@/components/lesson/modules/Help.component.vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.component.vue";
 import {useAuthStore} from "@/stores/auth.store.ts";
+import Hint from "@/components/lesson/modules/Hint.component.vue";
 
 interface Props {
   componentId: string,
@@ -34,6 +35,15 @@ const products = ref<Product[]>([]);
 const productsWithTask = ref<Product[]>([]);
 const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
+
+const fields = ref<any>({
+  hint: lessonStore.getComponentFieldValues(props.componentId, 'hint'),
+  questionId: lessonStore.getComponentFieldValues(props.componentId, 'uuid')
+});
+
+function openLink(link: string) {
+  window.open(link);
+}
 
 init();
 
@@ -183,9 +193,11 @@ watch(productsWithTask, (newProductsWithTask) => {
             <v-col md="6">
               <v-row>
                 <v-col>
-                  <div class="text-h6">Bewerte das Produkt <span class="text-info">{{ product.name }}</span> nach
-                    Eignung
-                    von 1 bis 5.
+                  <div class="text-h6">Bewerte das Produkt
+                    <span><router-link to="" @click="openLink(product.link)" class="link text-info">{{
+                        product.name
+                      }}</router-link></span>
+                    nach Eignung von 1 bis 5.
                   </div>
                 </v-col>
                 <v-col>
@@ -227,6 +239,9 @@ watch(productsWithTask, (newProductsWithTask) => {
             <div class="mr-2">
               <Help dialog-type="productQualificationExplanation"></Help>
             </div>
+            <div>
+              <Hint v-if="fields.hint" :hint="fields.hint" :questionId="fields.questionId"></Hint>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -238,5 +253,7 @@ watch(productsWithTask, (newProductsWithTask) => {
 </template>
 
 <style scoped>
-
+.link {
+  text-decoration: none;
+}
 </style>

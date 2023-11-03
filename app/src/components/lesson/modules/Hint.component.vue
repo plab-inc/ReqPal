@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import alertService from "@/services/util/alert.service.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface Props {
   questionId: string,
@@ -10,12 +11,17 @@ interface Props {
 const props = defineProps<Props>();
 
 const lessonStore = useLessonStore();
+const authStore = useAuthStore();
 
 function openWarningDialog() {
-  alertService.openDialog('Warnung: Hinweise anzeigen',
-      'Wenn Sie sich einen Hinweis anschauen, gibt es 10 Punkte Abzug pro Hinweis. ' +
-      'Falls Sie sich diesen Hinweis bereits angeschaut haben, gibt es keine zusätzlichen Punktabzüge.',
-      'Hinweis anzeigen', 'Zurück zur Lektion', openHintDialog);
+  if (authStore.isTeacher) {
+    openHintDialog();
+  } else {
+    alertService.openDialog('Warnung: Hinweise anzeigen',
+        'Wenn Sie sich einen Hinweis anschauen, gibt es 10 Punkte Abzug pro Hinweis. ' +
+        'Falls Sie sich diesen Hinweis bereits angeschaut haben, gibt es keine zusätzlichen Punktabzüge.',
+        'Hinweis anzeigen', 'Zurück zur Lektion', openHintDialog);
+  }
 }
 
 function openHintDialog() {
