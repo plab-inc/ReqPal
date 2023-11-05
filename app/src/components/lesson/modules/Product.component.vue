@@ -107,7 +107,9 @@ function checkSolution(product: Product) {
 function getMinValueForProduct(product: Product) {
   const solution = product.solution;
   if (solution) {
-    return +solution.qualification - +solution.tolerance;
+    const min : number = +solution.qualification - +solution.tolerance;
+    if(min < 0) return 0;
+    return min;
   }
   return -1;
 }
@@ -115,7 +117,9 @@ function getMinValueForProduct(product: Product) {
 function getMaxValueForProduct(product: Product) {
   const solution = product.solution;
   if (solution) {
-    return +solution.qualification + +solution.tolerance;
+    const max : number = +solution.qualification + +solution.tolerance;
+    if(max > +solution.qualification) return +solution.qualification;
+    return max;
   }
   return -1;
 }
