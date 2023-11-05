@@ -53,8 +53,8 @@ onBeforeMount(async () => {
 
       <v-row>
         <v-col>
-          <v-container>
-            <ScoreOverview class="my-5"></ScoreOverview>
+          <v-container class="my-5">
+            <ScoreOverview></ScoreOverview>
           </v-container>
         </v-col>
       </v-row>
