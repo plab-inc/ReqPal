@@ -12,6 +12,10 @@ DECLARE
     lesson_started      bool             := false;
     max_points          double precision := 0;
     points_per_question double precision := 0;
+    data_obj            jsonb;
+    product_answers     int4             := 0;
+    total_answers       int4             := 0;
+    product_option      jsonb;
 BEGIN
     lesson_uuid := data ->> 'uuid';
 
@@ -36,7 +40,35 @@ BEGIN
     FROM lessons
     WHERE uuid = lesson_uuid;
 
-    points_per_question = (max_points - (used_hints_count * 10)) / jsonb_array_length(data -> 'answers');
+    FOR data_obj IN
+        SELECT *
+        FROM jsonb_array_elements(data -> 'answers')
+        LOOP
+            IF ((data_obj ->> 'type') = 'Products') THEN
+                FOR product_option IN
+                    SELECT *
+                    FROM jsonb_array_elements(data_obj -> 'options')
+                    LOOP
+                    -- do not count products as answers that do not check for qualification
+                        IF (product_option ->> 'checkQualification')::boolean THEN
+                            product_answers := product_answers + 1;
+                            exit;
+                        END IF;
+                    END LOOP;
+            END IF;
+        END LOOP;
+
+    FOR data_obj IN
+        SELECT *
+        FROM jsonb_array_elements(data -> 'answers')
+        LOOP
+            IF ((data_obj ->> 'type') != 'Products') THEN
+                total_answers := total_answers + 1;
+            end if;
+        END LOOP;
+
+    total_answers := total_answers + product_answers;
+    points_per_question = (max_points - (used_hints_count * 10)) / total_answers;
 
     IF points_per_question < 0 THEN
         points_per_question := 0;
