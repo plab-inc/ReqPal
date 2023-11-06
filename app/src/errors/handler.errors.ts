@@ -21,7 +21,11 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof AuthenticationError) {
-        AlertService.addErrorAlert("Feher bei der Anmeldung/Registrierung/Zurücksetzen des Passworts.");
+        if(error.message === 'Email not confirmed') {
+            AlertService.addErrorAlert("Ihre Email wurde noch nicht bestätigt.");
+            return;
+        }
+        AlertService.addErrorAlert("Fehler bei der Anmeldung/Registrierung/Zurücksetzen des Passworts.");
         return;
     }
 
