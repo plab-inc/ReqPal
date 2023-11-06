@@ -37,14 +37,10 @@ export const useAuthStore = defineStore('auth', {
         },
         async signUpTeacher(email: string, password: string, username: string, role: string) {
             const data = await authService.push.signUp(email, password, username, role, '');
-
-            this.user = data.user;
             this.session = data.session;
         },
         async signUpStudent(email: string, password: string, username: string, role: string, teacherUUID: string) {
             const data = await authService.push.signUp(email, password, username, role, teacherUUID);
-
-            this.user = data.user;
             this.session = data.session;
         },
         async signOut() {
