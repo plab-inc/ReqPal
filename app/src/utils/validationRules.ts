@@ -3,6 +3,19 @@ export const requiredStringRule = (value: string | null | any): boolean | string
     if(typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
     return "Benötigt";
 }
+export const minMaxWords = (value: string | null | any): boolean | string => {
+
+    if(typeof value === 'string') {
+        const words = value.split(/\s+/).length;
+        const characters = value.length;
+        if (words >= 15 && words <= 100 && characters <= 500) {
+            return true;
+        } else {
+            return "Mindestens 15 und maximal 100 Wörter";
+        }
+    }
+    return "Mindestens 15 und maximal 50 Wörter";
+}
 
 export const requiredBooleanRule = (value: boolean | null): boolean | string => {
     if (value === true || value === false) {

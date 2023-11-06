@@ -155,18 +155,21 @@ export interface Database {
         Row: {
           avatar: string
           id: string
+          role: string | null
           teacher: string | null
           username: string | null
         }
         Insert: {
           avatar?: string
           id: string
+          role?: string | null
           teacher?: string | null
           username?: string | null
         }
         Update: {
           avatar?: string
           id?: string
+          role?: string | null
           teacher?: string | null
           username?: string | null
         }
@@ -353,6 +356,35 @@ export interface Database {
           },
           {
             foreignKeyName: "user_answers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_feedback: {
+        Row: {
+          created_at: string
+          feedback: string
+          id: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          feedback: string
+          id?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          feedback?: string
+          id?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_feedback_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
