@@ -23,22 +23,37 @@ class AuthServiceClass {
         return data;
     }
 
-    private async signUp(email: string, password: string, username: string, role: string, teacherUUID: string) {
-        const {data, error} = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    role: role,
-                    username: username,
-                    teacher: teacherUUID
+    private async signUp(email: string, password: string, username: string, role: string, teacherUUID?: string) {
+        if(teacherUUID) {
+            const {data, error} = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        role: role,
+                        username: username,
+                        teacher: teacherUUID
+                    }
                 }
-            }
-        });
-        if (error) throw error;
-        console.log(data);
+            });
+            if (error) throw error;
 
-        return data;
+            return data;
+        } else {
+            const {data, error} = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        role: role,
+                        username: username,
+                    }
+                }
+            });
+            if (error) throw error;
+
+            return data;
+        }
     }
 
     private async signOut() {
