@@ -4,7 +4,7 @@
       <v-col order="1" order-md="2" md="4" class="d-flex flex-column justify-center align-center">
         <v-avatar class="profileData"
                   color="secondary"
-                  image="@/assets/images/tom.jpg"
+                  image="@/assets/avatars/tom.png"
                   alt="profilePicture"
                   size="160"></v-avatar>
         <h1 class="text-center">Company Name</h1>
