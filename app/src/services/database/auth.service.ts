@@ -10,6 +10,7 @@ class AuthServiceClass {
     public pull = {
         signInWithPassword: this.signIn.bind(this),
         signOut: this.signOut.bind(this),
+        getTeachers: this.getTeachers.bind(this)
     }
 
     private async signIn(email: string, password: string) {
@@ -22,13 +23,15 @@ class AuthServiceClass {
         return data;
     }
 
-    private async signUp(email: string, password: string, username: string) {
+    private async signUp(email: string, password: string, username: string, role: string, teacherUUID: string) {
         const {data, error} = await supabase.auth.signUp({
             email: email,
             password: password,
             options: {
                 data: {
-                    username: username
+                    role: role,
+                    username: username,
+                    teacher: teacherUUID
                 }
             }
         });
@@ -47,6 +50,19 @@ class AuthServiceClass {
             redirectTo: 'https://google.com/',
         });
         if (error) throw error;
+    }
+
+    private async getTeachers() {
+        const {data, error} = await supabase
+            .from('profiles')
+            .select('id, username')
+            .eq('role', 'teacher')
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return data as {id: string, username: string}[];
+        }
     }
 }
 
