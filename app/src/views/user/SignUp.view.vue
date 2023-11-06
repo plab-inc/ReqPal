@@ -84,12 +84,14 @@
 
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
-import {requiredRule, matchingPasswordsRule, requiredEmailRule} from "@/utils/validationRules";
+import {matchingPasswordsRule, requiredEmailRule, requiredRule} from "@/utils/validationRules";
 
 import router from "@/router";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const authStore = useAuthStore();
+const utilStore = useUtilStore();
 
 const username = ref("");
 const email = ref("");
@@ -106,24 +108,24 @@ const submit = async () => {
       const role = isTeacher.value ? 'teacher' : 'student';
       if (isTeacher.value) {
         await authStore.signUpTeacher(email.value, password.value, username.value, role).then(() => {
-          if (authStore.session) {
-            router.push({name: "Profile"});
-          }
+          router.push({name: "Home"});
+          utilStore.addAlert("Bitte Bestätigen Sie ihre email", "info");
+          return;
         })
-      } else {
-        if (selectedTeacher.value) {
-          await authStore.signUpStudent(email.value, password.value, username.value, role, selectedTeacher.value).then(() => {
-            if (authStore.session) {
-              router.push({name: "Profile"});
-            }
-          })
-        }
+      }
+      if (selectedTeacher.value) {
+        await authStore.signUpStudent(email.value, password.value, username.value, role, selectedTeacher.value).then(() => {
+          router.push({name: "Home"});
+          utilStore.addAlert("Bitte bestätigen Sie ihre email", "info");
+          return;
+        })
+
       }
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }
   }
-};
+}
 
 const rules = {
   required: requiredRule,
