@@ -11,8 +11,13 @@ import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth
 import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
 import {
     fetchLessons,
-    fetchQuestionsForLesson, fetchUserAnswersForQuestions, fetchUserProgressForLesson,
-    loadLessonByUUID, loadQuestionsWithSolutions, requiresFinishedLesson, requiresUnfinishedLesson
+    fetchQuestionsForLesson,
+    fetchUserAnswersForQuestions,
+    fetchUserProgressForLesson,
+    loadLessonByUUID,
+    loadQuestionsWithSolutions,
+    requiresFinishedLesson,
+    requiresUnfinishedLesson
 } from "@/middlewares/lesson.middleware.ts";
 
 const routes = [
@@ -24,6 +29,11 @@ const routes = [
                 path: "",
                 name: "Home",
                 component: () => import("@/views/home/Home.view.vue"),
+                meta: {
+                    middleware: [
+                        fetchLessons
+                    ]
+                }
             },
             {
                 path: "/lessons",
@@ -137,6 +147,16 @@ const routes = [
                 path: "/profile",
                 name: "Profile",
                 component: () => import("@/views/user/Profile.view.vue"),
+                meta: {
+                    middleware: [
+                        requiresAuth
+                    ]
+                },
+            },
+            {
+                path: "/account",
+                name: "Account",
+                component: () => import("@/views/user/Account.view.vue"),
                 meta: {
                     middleware: [
                         requiresAuth

@@ -3,7 +3,7 @@
     <v-col class="d-flex flex-column align-center justify-center">
       <v-avatar
           color="secondary"
-          image="@/assets/images/tom.jpg"
+          :image="profileStore.getAvatar"
           alt="profilePicture"
           size="160"></v-avatar>
     </v-col>
@@ -21,8 +21,11 @@
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
 import {User} from "@supabase/supabase-js";
+import {useProfileStore} from "@/stores/profile.store.ts";
 
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
+
 const user: User | null = authStore.user;
 const isoDateString = user?.created_at;
 let joinedDate: string;

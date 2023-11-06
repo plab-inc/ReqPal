@@ -46,12 +46,14 @@
 <script setup lang="ts">
 import router from "@/router";
 
-import { useAuthStore } from "@/stores/auth.store";
-import { requiredRule, requiredEmailRule } from "@/utils/validationRules";
+import {useAuthStore} from "@/stores/auth.store";
+import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 
 import {AuthenticationError} from "@/errors/custom.errors.ts";
+import {useProfileStore} from "@/stores/profile.store.ts";
 
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
 
 const email = ref("");
 const password = ref("");
@@ -63,7 +65,8 @@ const submit = async () => {
     try {
       await authStore.signIn(email.value, password.value).then(() => {
         if (authStore.session) {
-          router.push({ path: '/profile' })
+          profileStore.fetchProfile(authStore.session.user.id);
+          router.push({ path: '/profile' });
         }
       })
     } catch (error: any) {
