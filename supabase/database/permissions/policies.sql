@@ -10,6 +10,18 @@ DROP POLICY IF EXISTS "policy_user_finished_lessons_teacher" ON public.user_fini
 --------------------------------------------
 -- User related policies
 --------------------------------------------
+CREATE POLICY policy_feedback
+    ON public.user_feedback
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
+
+CREATE POLICY policy_feedback_select
+    ON public.user_feedback
+    FOR SELECT
+    TO authenticated
+    USING ((auth.uid() = user_id));
+
 CREATE POLICY policy_profiles
     ON public.profiles
     FOR SELECT
