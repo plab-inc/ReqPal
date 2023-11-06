@@ -1,4 +1,5 @@
 DROP POLICY IF EXISTS "policy_profiles" ON public.profiles;
+DROP POLICY IF EXISTS "policy_profiles_auth" ON public.profiles;
 DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
 DROP POLICY IF EXISTS "policy_user_points" ON public.user_points;
 DROP POLICY IF EXISTS "policy_user_lesson_progress" ON public.user_lesson_progress;
@@ -9,6 +10,18 @@ DROP POLICY IF EXISTS "policy_user_finished_lessons_teacher" ON public.user_fini
 --------------------------------------------
 -- User related policies
 --------------------------------------------
+CREATE POLICY policy_profiles
+    ON public.profiles
+    FOR SELECT
+    TO PUBLIC
+    USING (role = 'teacher');
+
+CREATE POLICY policy_profiles_auth
+    ON public.profiles
+    FOR SELECT
+    TO authenticated
+    USING ((auth.uid() = id) OR
+           ((select check_user_role(auth.uid(), 'teacher')) AND (teacher = auth.uid())));
 
 CREATE POLICY "policy_profiles"
     ON public.profiles
