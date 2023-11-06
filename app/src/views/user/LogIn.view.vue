@@ -5,7 +5,7 @@
         <h1 class="text-h2">Log in</h1>
       </v-col>
     </v-row>
-    <v-form v-model="isFormValid" @submit.prevent="submit" ref="signInForm" fast-fail>
+    <v-form v-model="isFormValid" @submit.prevent="submit" ref="signInForm" fast-fail class="mt-10">
       <v-row>
         <v-col>
           <v-text-field
