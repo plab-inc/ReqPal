@@ -36,7 +36,6 @@ class AuthServiceClass {
             }
         });
         if (error) throw error;
-        console.log(data);
 
         return data;
     }
