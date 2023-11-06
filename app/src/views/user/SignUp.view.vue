@@ -106,21 +106,12 @@ const submit = async () => {
   if (isFormValid.value) {
     try {
       const role = isTeacher.value ? 'teacher' : 'student';
-      if (isTeacher.value) {
-        await authStore.signUpTeacher(email.value, password.value, username.value, role).then(() => {
-          router.push({name: "Home"});
-          utilStore.addAlert("Bitte Bestätigen Sie ihre email", "info");
-          return;
-        })
-      }
-      if (selectedTeacher.value) {
-        await authStore.signUpStudent(email.value, password.value, username.value, role, selectedTeacher.value).then(() => {
-          router.push({name: "Home"});
-          utilStore.addAlert("Bitte bestätigen Sie ihre email", "info");
-          return;
-        })
-
-      }
+      const teacher = isTeacher.value ? undefined : selectedTeacher.value;
+      await authStore.signUp(email.value, password.value, username.value, role, teacher).then(() => {
+        router.push({name: "Home"});
+        utilStore.addAlert("Bitte Bestätigen Sie Ihre Email", "info");
+        return;
+      })
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }
