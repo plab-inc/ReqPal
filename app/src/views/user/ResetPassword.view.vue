@@ -5,7 +5,7 @@
         <h1 class="text-h2">Passwort zurücksetzen</h1>
       </v-col>
     </v-row>
-    <v-form v-model="isFormValid" @submit.prevent="submit" ref="resetPasswordForm" fast-fail>
+    <v-form v-model="isFormValid" @submit.prevent="submit" ref="resetPasswordForm" fast-fail class="mt-10">
       <v-row>
         <v-col>
           <v-text-field
