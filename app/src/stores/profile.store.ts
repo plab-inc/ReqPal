@@ -4,19 +4,27 @@ import profileService from "@/services/database/profile.service.ts";
 interface ProfileState {
     username: string | null;
     points: number;
+    avatar: string;
 }
 
 export const useProfileStore = defineStore('profile', {
     state: (): ProfileState => ({
         username: null,
-        points: 0
+        points: 0,
+        avatar: '',
     }),
+    getters: {
+        getAvatar(): string{
+            return "src/assets/avatars/" + this.avatar + ".png";
+        }
+    },
     actions: {
         async fetchProfile(userId: string) {
             const data = await profileService.pull.fetchProfile(userId);
 
             if (data) {
                 this.username = data.username;
+                this.avatar = data.avatar;
             }
         },
 

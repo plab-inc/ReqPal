@@ -11,35 +11,16 @@ class ProfileServiceClass {
 
     private async fetchProfile(userId: string) {
 
-        const storedUserData = localStorage.getItem('user');
-
-        if (storedUserData) {
-            const userData = JSON.parse(storedUserData);
-            if (userId === userData.userId) {
-                return userData;
-            }
-        }
-
         const {data, error} = await supabase
             .from('profiles')
-            .select('username')
+            .select('*')
             .eq('id', userId)
             .single();
 
         if (error) throw error;
 
-        if (data) {
+        return data;
 
-            const userData = {
-                userId: userId,
-                username: data.username
-            };
-
-            localStorage.setItem('user', JSON.stringify(userData));
-            return data;
-        } else {
-            return null;
-        }
     }
 
     private async fetchPoints(userId: string) {

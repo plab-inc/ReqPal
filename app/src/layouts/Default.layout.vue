@@ -19,7 +19,7 @@
                      :title="authStore.user?.user_metadata.username"
                      :subtitle="authStore.user?.email"
                      :active="false"
-                     prepend-avatar="@/assets/images/tom.jpg"
+                     :prepend-avatar="profileStore.getAvatar"
                      to="/profile"
         ></v-list-item>
         <v-list-item v-if="!authStore.user"
@@ -33,13 +33,34 @@
       <v-list nav>
         <v-list-item prepend-icon="mdi-home" title="Home" to="/" exact></v-list-item>
         <div v-if="authStore.user">
-          <v-list-item prepend-icon="mdi-school" title="Lektionen" to="/lessons"></v-list-item>
+          <v-list-item v-if="true" prepend-icon="mdi-school" title="Erstellte Lektionen" to="/lessons"></v-list-item>
+          <v-list-group value="Lektionen" v-if="true">
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                  v-bind="props"
+                  prepend-icon="mdi-school"
+                  title="Lernen"
+              ></v-list-item>
+            </template>
+            <v-list-item to="/lessons" title="Lektionen" subtitle="Noch 2 offen">
+              <template v-slot:append>
+                <v-progress-circular class="ma-1" size="27" model-value="20"></v-progress-circular>
+              </template>
+            </v-list-item>
+            <v-list-item title="Meine Punkte" subtitle="250">
+              <template v-slot:append>
+                <v-icon class="pr-1" size="30" color="warning">
+                  mdi-star-four-points-circle-outline
+                </v-icon>
+              </template>
+            </v-list-item>
+          </v-list-group>
         </div>
         <div v-if="authStore.user && authStore.isTeacher">
           <v-divider></v-divider>
-          <v-list-item prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalogs"></v-list-item>
+          <v-list-item prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"></v-list-item>
           <v-list-item prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"></v-list-item>
-          <v-list-item prepend-icon="mdi-tools" title="Lektions Builder" to="/builder"></v-list-item>
+          <v-list-item prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"></v-list-item>
           <v-divider></v-divider>
         </div>
         <div v-if="authStore.user">
@@ -107,13 +128,22 @@ import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
 import CustomDialog from "@/components/dialog/CustomDialog.component.vue";
+import {useProfileStore} from "@/stores/profile.store.ts";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
 const themeStore = useThemeStore();
 
 const rail = ref(true);
 const drawer = ref(null);
+
+onBeforeMount(async () => {
+  if (authStore.user) {
+    console.log("meh")
+    await profileStore.fetchProfile(authStore.user.id);
+  }
+})
 
 const removeAlertWithDelay = (alertId: string, delay = 10000) => {
   setTimeout(() => {
