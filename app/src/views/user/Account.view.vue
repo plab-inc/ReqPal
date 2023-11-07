@@ -63,24 +63,22 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import {useProfileStore} from "@/stores/profile.store.js";
-
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 const avatarOptions = [
-  { name: 'Owl', src: 'src/assets/avatars/owl.png' },
-  { name: 'Cat', src: 'src/assets/avatars/cat.png' },
-  { name: 'Panda', src: 'src/assets/avatars/panda.png' },
-  { name: 'Squirrel', src: 'src/assets/avatars/squirrel.png' },
+  { name: 'Owl', src: 'avatars/owl.png' },
+  { name: 'Cat', src: 'avatars/cat.png' },
+  { name: 'Panda', src: 'avatars/panda.png' },
+  { name: 'Squirrel', src: 'avatars/squirrel.png' },
 ];
 
 const profileStore = useProfileStore();
+const authStore = useAuthStore();
 
-const selectedAvatar = ref(profileStore.avatar);
-const username = ref('InitBenutzername');
-const email = ref('beispiel@domain.de');
+const username = ref(authStore.user?.user_metadata.username);
+const email = ref(authStore.user?.email);
 const oldPassword = ref('');
 const password = ref('');
-
-
 
 
 const checkUsernameExists = async () => {
