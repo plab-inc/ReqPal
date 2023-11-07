@@ -1,10 +1,11 @@
 import {defineStore} from 'pinia';
 import {Lesson, LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
+import LessonService from "@/services/database/lesson.service.ts";
 import {Question} from "@/interfaces/Question.interfaces.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
-import LessonService from "@/services/database/lesson.service.ts";
+import profileService from "@/services/database/profile.service.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -71,13 +72,24 @@ export const useLessonStore = defineStore('lesson', {
             this.examples = [];
 
             if (lessons) {
-                this.lessons = lessons.map((l) => ({
-                    lessonDTO: l,
-                    isFinished: false,
-                    isStarted: false,
-                    hasSavedProgress: false,
-                    userScore: 0
-                }));
+                const enrichedLessons = [];
+
+                for (const lesson of lessons) {
+                    const creatorUsername = await profileService.pull.getUsername(lesson.user_id) || {username: 'Unbekannt'};
+                    const creatorAvatar = await profileService.pull.getAvatar(lesson.user_id) || {avatar: 'fhdo'};
+
+                    enrichedLessons.push({
+                        lessonDTO: lesson,
+                        isFinished: false,
+                        isStarted: false,
+                        hasSavedProgress: false,
+                        userScore: 0,
+                        creatorUsername: creatorUsername.username,
+                        creatorAvatar: creatorAvatar.avatar
+                    });
+                }
+
+                this.lessons = enrichedLessons;
             }
 
 

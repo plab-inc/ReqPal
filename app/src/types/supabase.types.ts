@@ -157,21 +157,21 @@ export interface Database {
           id: string
           role: string | null
           teacher: string | null
-          username: string | null
+          username: string
         }
         Insert: {
           avatar?: string
           id: string
           role?: string | null
           teacher?: string | null
-          username?: string | null
+          username: string
         }
         Update: {
           avatar?: string
           id?: string
           role?: string | null
           teacher?: string | null
-          username?: string | null
+          username?: string
         }
         Relationships: [
           {
