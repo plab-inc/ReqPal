@@ -104,7 +104,7 @@ serve(async (req) => {
 
 function validateCSVFormat(csvString: string){
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
-    const productList = productCol.split(';;;')[0].split(';').filter((product)=>product !== '');
+    const productList = productCol.split(';;;')[1].split(';').filter((product)=>product !== '');
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
     return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length/2);
 }
@@ -131,19 +131,19 @@ function checkRequirementColumns(line: string, products: number) {
     const productFields = line.split(';').slice(3);
     if (productFields.length % 2 !== 0 || productFields.length / 2 !== products) {
         console.error('Invalid number of product fields');
-        return true;
+        return false;
     }
     for(let i = 0; i < productFields.length; i += 2){
         if (productFields[i] !== 'Qualifizierung' || productFields[i + 1] !== 'Kommentar') {
             console.error('Invalid product colum titles');
-            return true;
+            return false;
         }
     }
     const correctTitles = ['Req-ID', 'Titel', 'Beschreibung'];
     for (let i = 0; i < correctTitles.length; i++) {
         if (requirementFields[i] !== correctTitles[i]) {
             console.error('Invalid requirement column titles');
-            return true;
+            return false;
         }
     }
     return true;
