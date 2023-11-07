@@ -15,7 +15,7 @@ export const useProfileStore = defineStore('profile', {
     }),
     getters: {
         getAvatar(): string{
-            return "src/assets/avatars/" + this.avatar + ".png";
+            return 'avatars/' + this.avatar + '.png';
         }
     },
     actions: {
