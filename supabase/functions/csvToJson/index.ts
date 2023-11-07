@@ -104,11 +104,26 @@ serve(async (req) => {
 
 function validateCSVFormat(csvString: string){
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
-    const productList = productCol.split(';').filter((product)=>product !== '');
+    const productList = productCol.split(';;;')[0].split(';').filter((product)=>product !== '');
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
-    return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length);
+    return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length/2);
 }
 function checkProductsColumn(productRow: string) {
+    if (productRow.length === 0) {
+        console.error('Product column is empty');
+        return false;
+    }
+    if (!productRow.startsWith(';;;')) {
+        console.error('Product column does not start with ";;;"');
+        return false;
+    }
+    const fields = productRow.split(';;;')[1].split(';');
+    for (const field of fields){
+        if (field === '') {
+            console.error('Product-Name/-URL column contains empty field');
+            return false;
+        }
+    }
     return true;
 }
 function checkRequirementColumns(line: string, products: number) {
