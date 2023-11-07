@@ -19,6 +19,7 @@ import {
     requiresFinishedLesson,
     requiresUnfinishedLesson
 } from "@/middlewares/lesson.middleware.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const routes = [
     {
@@ -183,6 +184,9 @@ const router: Router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    const utilStore = useUtilStore();
+    utilStore.startLoadingBar();
+
     if (to.meta.middleware) {
         const middlewares = Array.isArray(to.meta.middleware) ? to.meta.middleware : [to.meta.middleware];
         return runMiddleware(middlewares, to, from, next);
@@ -190,6 +194,12 @@ router.beforeEach((to, from, next) => {
 
     return next();
 });
+
+router.afterEach((to, from) => {
+    const utilStore = useUtilStore();
+    utilStore.stopLoadingBar();
+});
+
 
 function runMiddleware(middlewares: Function[], to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     const [middleware, ...rest] = middlewares;
