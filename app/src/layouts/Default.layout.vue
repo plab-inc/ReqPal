@@ -42,12 +42,14 @@
                   title="Lernen"
               ></v-list-item>
             </template>
-            <v-list-item to="/lessons" title="Lektionen" subtitle="Noch 2 offen">
+            <v-list-item to="/lessons" title="Lektionen"
+                         :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen Lektionen' : 'Noch '+lessonStore.openLessons+' offen'">
               <template v-slot:append>
-                <v-progress-circular class="ma-1" size="27" model-value="20"></v-progress-circular>
+                <v-progress-circular class="ma-1" size="27"
+                                     :model-value="(lessonStore.lessons.length - lessonStore.openLessons / lessonStore.lessons.length) * 100"></v-progress-circular>
               </template>
             </v-list-item>
-            <v-list-item title="Meine Punkte" subtitle="250">
+            <v-list-item title="Meine Punkte" :subtitle="profileStore.points">
               <template v-slot:append>
                 <v-icon class="pr-1" size="30" color="warning">
                   mdi-star-four-points-circle-outline
@@ -131,11 +133,13 @@ import CustomDialog from "@/components/dialog/CustomDialog.component.vue";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useSound} from "@vueuse/sound";
 import alertSfx from "@/assets/sound/alert.mp3";
+import {useLessonStore} from "@/stores/lesson.store.ts";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const themeStore = useThemeStore();
+const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
@@ -143,8 +147,8 @@ const sound = useSound(alertSfx);
 
 onBeforeMount(async () => {
   if (authStore.user) {
-    console.log("meh")
     await profileStore.fetchProfile(authStore.user.id);
+    await profileStore.fetchPoints(authStore.user.id);
   }
 })
 

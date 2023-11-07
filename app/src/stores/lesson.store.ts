@@ -12,6 +12,7 @@ interface LessonState {
     currentLesson: Lesson | null;
     currentQuestions: any;
     components: ComponentEntry[];
+    openLessons: number;
 }
 
 export interface ComponentEntry {
@@ -27,6 +28,7 @@ export const useLessonStore = defineStore('lesson', {
         currentLesson: null,
         currentQuestions: [],
         components: [],
+        openLessons: 0
     }),
 
     getters: {
@@ -53,6 +55,10 @@ export const useLessonStore = defineStore('lesson', {
         },
         getComponents: (state) => {
             return state.components;
+        },
+        getAmountOfFinishedLessons: (state) => {
+            const finishedLessons = state.lessons.filter(l => l.isFinished === true);
+            return finishedLessons.length;
         },
     },
 
@@ -94,6 +100,8 @@ export const useLessonStore = defineStore('lesson', {
             }
             await this.initLessons(this.lessons);
             await this.initLessons(this.examples);
+            let finishedLessons = this.getAmountOfFinishedLessons;
+            this.openLessons = this.lessons.length - finishedLessons;
         },
 
         async initLessons(lessons: Lesson[]) {
@@ -115,7 +123,7 @@ export const useLessonStore = defineStore('lesson', {
                         this.lessons.splice(this.lessons.findIndex(c => c.lessonDTO.uuid === lessonUUID), 1);
                         return;
                     }
-                    throw new DatabaseError("Catalog could not be deleted", 500);
+                    throw new DatabaseError("Lektion konnte nicht gelöscht werden.", 500);
                 }
             );
         },
