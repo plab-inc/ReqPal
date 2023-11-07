@@ -63,7 +63,6 @@ const isFormValid = ref(false);
 
 const submit = async () => {
   if (isFormValid.value) {
-    utilStore.startLoadingBar();
     try {
       await authStore.signIn(email.value, password.value)
           .then(() => {
@@ -73,9 +72,6 @@ const submit = async () => {
                 utilStore.addAlert("Erfolgreich angemeldet", "success");
               });
             }})
-          .finally(() => {
-            utilStore.stopLoadingBar();
-          });
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }
