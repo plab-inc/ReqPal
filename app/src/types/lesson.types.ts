@@ -9,7 +9,10 @@ export type Lesson = {
     isFinished: boolean,
     isStarted: boolean,
     hasSavedProgress: boolean,
-    userScore: number
+    userScore: number,
+
+    creatorAvatar?: string,
+    creatorUsername?: string,
 }
 
 export type LessonForm = {
