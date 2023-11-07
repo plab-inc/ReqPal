@@ -15,7 +15,7 @@ import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
-import router from "@/router/index.ts";
+import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 

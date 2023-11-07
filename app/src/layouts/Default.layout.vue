@@ -20,7 +20,7 @@
                      :subtitle="authStore.user?.email"
                      :active="false"
                      :prepend-avatar="profileStore.getAvatar"
-                     to="/profile"
+                     to="/account"
         ></v-list-item>
         <v-list-item v-if="!authStore.user"
                      prepend-icon="mdi-login"
@@ -125,7 +125,7 @@
 </template>
 
 <script lang="ts" setup>
-import router from "@/router/index.ts";
+import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
@@ -148,6 +148,7 @@ const sound = useSound(alertSfx);
 onBeforeMount(async () => {
   if (authStore.user) {
     await profileStore.fetchProfile(authStore.user.id);
+    console.log("Default")
     await profileStore.fetchPoints(authStore.user.id);
   }
 })

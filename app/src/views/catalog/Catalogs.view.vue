@@ -84,18 +84,22 @@
 <script setup lang="ts">
 
 import {useCatalogStore} from "@/stores/catalog.store.ts";
-import router from "@/router/index.ts";
+import router from "@/router";
 import alertService from "@/services/util/alert.service.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const catalogStore = useCatalogStore();
-
+const utilStore = useUtilStore();
 const catalogs = catalogStore.getCustomCatalogs;
 const examples = catalogStore.getExampleCatalogs;
 
 const MAX_CATALOGS = 5;
 
-function openCatalogDetails(catalogId: number) {
-  router.push({name: "CatalogDetails", params: {catalogId: catalogId}})
+async function openCatalogDetails(catalogId: number) {
+  utilStore.startLoadingBar();
+  await router.push({name: "CatalogDetails", params: {catalogId: catalogId}}).then(() => {
+    utilStore.stopLoadingBar();
+  });
 }
 
 function openDeleteDialog(catalogId: number) {
