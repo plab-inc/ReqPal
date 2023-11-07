@@ -117,10 +117,6 @@ function checkProductsColumn(productRow: string) {
         console.error('Product column does not start with ";;;"');
         return false;
     }
-    if (!productRow.endsWith(';')) {
-        console.error('Product column does not end with ";"');
-        return false;
-    }
     const fields = productRow.split(';;;')[1].split(';');
     for (const field of fields){
         if (field === '') {
