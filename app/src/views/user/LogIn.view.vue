@@ -30,7 +30,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn block type="submit" :disabled="!isFormValid"> Submit </v-btn>
+          <v-btn block type="submit" :disabled="!isFormValid"> Einloggen </v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -51,9 +51,11 @@ import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 
 import {AuthenticationError} from "@/errors/custom.errors.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
+const utilStore = useUtilStore();
 
 const email = ref("");
 const password = ref("");
@@ -61,14 +63,19 @@ const isFormValid = ref(false);
 
 const submit = async () => {
   if (isFormValid.value) {
-
+    utilStore.startLoadingBar();
     try {
-      await authStore.signIn(email.value, password.value).then(() => {
-        if (authStore.session) {
-          profileStore.fetchProfile(authStore.session.user.id);
-          router.push({ path: '/profile' });
-        }
-      })
+      await authStore.signIn(email.value, password.value)
+          .then(() => {
+            if (authStore.session) {
+              profileStore.fetchProfile(authStore.session.user.id);
+              router.push({ name: 'Home' }).then(() => {
+                utilStore.addAlert("Erfolgreich angemeldet", "success");
+              });
+            }})
+          .finally(() => {
+            utilStore.stopLoadingBar();
+          });
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }

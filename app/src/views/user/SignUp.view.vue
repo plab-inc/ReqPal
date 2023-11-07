@@ -68,7 +68,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn block type="submit" :disabled="!isFormValid"> Submit</v-btn>
+          <v-btn block type="submit" :disabled="!isFormValid"> Registrieren </v-btn>
         </v-col>
       </v-row>
     </v-form>
