@@ -164,7 +164,7 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
 
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
-        products: mappedProducts,
+        products: products,
         requirements: []
     };
     for(let i = 2; i < lines.length; i++){
@@ -175,8 +175,8 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
             "description": currentLine[2],
             "productDetails": {}
         };
-        for(let k = 0; k < products.length; k++){
-            const product = products[k];
+        for(let k = 0; k < mappedProducts.length; k++){
+            const product = mappedProducts[k];
             const qualification = currentLine[k * 2 + 3];
             const comment = currentLine[k * 2 + 4];
             item.productDetails[product.product_name] = {
