@@ -150,17 +150,21 @@ function checkRequirementColumns(line: string, products: number) {
 }
 function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
-    const products: Product[] = lines[0].split(";;;")[0].split(';')
-        .reduce((acc: Product[], value: string, index: number, array: string[]) => {
-            if (index % 2 === 0) {
-                acc.push({ product_name: value, product_url: array[index + 1] });
-            }
-            return acc;
-        }, []);
+    const products = lines[0].split(";;;")[0].split(';');
+
+    const mappedProducts: Product[] = [];
+
+    for (let i = 0; i < products.length; i += 2) {
+        mappedProducts.push({
+            product_name: products[i],
+            product_url: products[i + 1],
+        });
+    }
+
 
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
-        products: products,
+        products: mappedProducts,
         requirements: []
     };
     for(let i = 2; i < lines.length; i++){
