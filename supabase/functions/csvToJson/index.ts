@@ -7,6 +7,7 @@ interface ProductDetails {
 
 export type Product = {
     product_name: string;
+    product_url: string;
 }
 
 interface Requirement {
@@ -107,23 +108,23 @@ function validateCSVFormat(csvString: string) {
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
     return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length);
 }
-function checkProductsColumn(productCol: string) {
-    if (productCol.length === 0) {
+function checkProductsColumn(productRow: string) {
+    if (productRow.length === 0) {
         console.error('Product column is empty');
         return false;
     }
-    if (!productCol.startsWith(';;;')) {
+    if (!productRow.startsWith(';;;')) {
         console.error('Product column does not start with ";;;"');
         return false;
     }
-    if (!productCol.endsWith(';')) {
+    if (!productRow.endsWith(';')) {
         console.error('Product column does not end with ";"');
         return false;
     }
-    const fields = productCol.split(';;').slice(1, -1);
+    const fields = productRow.split(';;;')[1].split(';');
     for (const field of fields){
         if (field === '') {
-            console.error('Product column contains empty field');
+            console.error('Product-Name/-URL column contains empty field');
             return false;
         }
     }
@@ -153,7 +154,14 @@ function checkRequirementColumns(line: string, products: number) {
 }
 function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
-    const products = lines[0].slice(3, -1).split(";;").map((productString: string) => ({ product_name: productString }));
+    const products: Product[] = lines[0].split(";;;")[0].split(';')
+        .reduce((acc: Product[], value: string, index: number, array: string[]) => {
+            if (index % 2 === 0) {
+                acc.push({ product_name: value, product_url: array[index + 1] });
+            }
+            return acc;
+        }, []);
+
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
         products: products,
