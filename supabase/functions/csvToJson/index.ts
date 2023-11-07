@@ -109,21 +109,6 @@ function validateCSVFormat(csvString: string){
     return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length);
 }
 function checkProductsColumn(productRow: string) {
-    if (productRow.length === 0) {
-        console.error('Product column is empty');
-        return true;
-    }
-    if (!productRow.startsWith(';;;')) {
-        console.error('Product column does not start with ";;;"');
-        return true;
-    }
-    const fields = productRow.split(';;;')[1].split(';');
-    for (const field of fields){
-        if (field === '') {
-            console.error('Product-Name/-URL column contains empty field');
-            return true;
-        }
-    }
     return true;
 }
 function checkRequirementColumns(line: string, products: number) {
