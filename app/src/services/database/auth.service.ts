@@ -29,6 +29,7 @@ class AuthServiceClass {
                 email: email,
                 password: password,
                 options: {
+                    emailRedirectTo: 'https://thelethalgoose.github.io/Projektarbeit2023/',
                     data: {
                         role: role,
                         username: username,
