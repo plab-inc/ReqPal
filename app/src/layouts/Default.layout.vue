@@ -131,7 +131,6 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
 import CustomDialog from "@/components/dialog/CustomDialog.component.vue";
 import {useProfileStore} from "@/stores/profile.store.ts";
-import {useSound} from "@vueuse/sound";
 import alertSfx from "@/assets/sound/alert.mp3";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 
@@ -143,7 +142,7 @@ const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
-const sound = useSound(alertSfx);
+const audio = new Audio(alertSfx);
 
 onBeforeMount(async () => {
   if (authStore.user) {
@@ -166,7 +165,8 @@ const logout = () => {
 
 watch(() => utilStore.alerts.length, (newLength, oldLength) => {
   if (newLength > oldLength) {
-    sound.play();
+    audio.volume = 0.2;
+    audio.play();
   }
 });
 
