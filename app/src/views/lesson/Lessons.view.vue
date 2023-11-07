@@ -88,11 +88,14 @@
               </v-icon>
             </template>
             <template v-slot:append>
-
-              <div v-if="!authStore.isTeacher">
-                <LessonDetailsStudent :lesson="lesson"></LessonDetailsStudent>
-              </div>
-
+              <v-chip
+                  class="mr-10 ma-5"
+                  :prepend-avatar="'avatars/' + lesson.creatorAvatar + '.png'"
+                  elevation="8"
+              >
+                {{ lesson.creatorUsername }}
+              </v-chip>
+              <LessonDetailsStudent v-if="!authStore.isTeacher" :lesson="lesson"></LessonDetailsStudent>
               <v-btn-group
                   v-if="authStore.isTeacher"
                   variant="outlined"
@@ -149,7 +152,7 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import lessonService from "@/services/database/lesson.service.ts";
 import alertService from "@/services/util/alert.service.ts";
-import {LessonDTO, Lesson} from "@/types/lesson.types.ts";
+import {Lesson, LessonDTO} from "@/types/lesson.types.ts";
 import LessonDetailsStudent from "@/components/lesson/lessonGenerator/LessonDetailsStudent.component.vue";
 
 const lessonStore = useLessonStore();
