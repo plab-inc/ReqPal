@@ -33,8 +33,8 @@
       <v-list nav>
         <v-list-item prepend-icon="mdi-home" title="Home" to="/" exact></v-list-item>
         <div v-if="authStore.user">
-          <v-list-item v-if="true" prepend-icon="mdi-school" title="Erstellte Lektionen" to="/lessons"></v-list-item>
-          <v-list-group value="Lektionen" v-if="true">
+          <v-list-item v-if="authStore.isTeacher" prepend-icon="mdi-school" title="Erstellte Lektionen" to="/lessons"></v-list-item>
+          <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
               <v-list-item
                   v-bind="props"
