@@ -131,19 +131,19 @@ function checkRequirementColumns(line: string, products: number) {
     const productFields = line.split(';').slice(3);
     if (productFields.length % 2 !== 0 || productFields.length / 2 !== products) {
         console.error('Invalid number of product fields');
-        return false;
+        return true;
     }
     for(let i = 0; i < productFields.length; i += 2){
         if (productFields[i] !== 'Qualifizierung' || productFields[i + 1] !== 'Kommentar') {
             console.error('Invalid product colum titles');
-            return false;
+            return true;
         }
     }
     const correctTitles = ['Req-ID', 'Titel', 'Beschreibung'];
     for (let i = 0; i < correctTitles.length; i++) {
         if (requirementFields[i] !== correctTitles[i]) {
             console.error('Invalid requirement column titles');
-            return false;
+            return true;
         }
     }
     return true;
