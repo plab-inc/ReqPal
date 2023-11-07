@@ -147,7 +147,7 @@
 <script setup lang="ts">
 
 import {useLessonStore} from "@/stores/lesson.store";
-import router from "@/router/index.ts";
+import router from "@/router";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import lessonService from "@/services/database/lesson.service.ts";
