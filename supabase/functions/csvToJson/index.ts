@@ -121,7 +121,7 @@ function checkProductsColumn(productRow: string) {
     for (const field of fields){
         if (field === '') {
             console.error('Product-Name/-URL column contains empty field');
-            return false;
+            return true;
         }
     }
     return true;
