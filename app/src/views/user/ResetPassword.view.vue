@@ -19,7 +19,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn type="submit" :disabled="!isFormValid" block> Reset </v-btn>
+          <v-btn type="submit" :disabled="!isFormValid" block> Passwort Zurücksetzen</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -34,23 +34,29 @@
 
 <script setup lang="ts">
 
-import { useAuthStore } from "@/stores/auth.store";
-import { requiredRule, requiredEmailRule } from "@/utils/validationRules";
+import {useAuthStore} from "@/stores/auth.store";
+import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 import AlertService from "@/services/util/alert.service.ts";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
+import {useUtilStore} from "@/stores/util.store.ts";
 
 const authStore = useAuthStore();
+const utilStore = useUtilStore();
 
 const email = ref("");
 const isFormValid = ref(false);
 
 const submit = async () => {
   if (isFormValid.value) {
-
+    utilStore.startLoadingBar();
     try {
-      await authStore.resetPassword(email.value).then(() => {
-        AlertService.addInfoAlert("Falls die E-Mail-Adresse in unserer Datenbank existiert, haben wir dir eine E-Mail mit weiteren Anweisungen zum Zurücksetzen deines Passworts geschickt.");
-      })
+      await authStore.resetPassword(email.value)
+          .then(() => {
+            AlertService.addInfoAlert("Falls die E-Mail-Adresse in unserer Datenbank existiert, haben wir dir eine E-Mail mit weiteren Anweisungen zum Zurücksetzen deines Passworts geschickt.");
+          })
+          .finally(() => {
+            utilStore.stopLoadingBar();
+          });
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }

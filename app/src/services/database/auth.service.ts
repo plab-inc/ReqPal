@@ -63,7 +63,7 @@ class AuthServiceClass {
 
     private async resetPassword(email: string) {
         const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://google.com/',
+            redirectTo: 'https://thelethalgoose.github.io/Projektarbeit2023',
         });
         if (error) throw error;
     }
