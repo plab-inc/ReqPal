@@ -74,6 +74,7 @@ const avatarOptions = [
 
 const profileStore = useProfileStore();
 const authStore = useAuthStore();
+const selectedAvatar = ref('meh');
 
 const username = ref(authStore.user?.user_metadata.username);
 const email = ref(authStore.user?.email);
