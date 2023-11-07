@@ -169,7 +169,7 @@ const routes = [
                 component: () => import("@/views/util/Error.view.vue"),
             },
             {
-                path: "/:pathMatch(.*)",
+                path: "/:pathMatch(.*)*",
                 name: "Error",
                 component: () => import("@/views/util/Error.view.vue"),
             }
