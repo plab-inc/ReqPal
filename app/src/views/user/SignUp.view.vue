@@ -107,11 +107,17 @@ const submit = async () => {
     try {
       const role = isTeacher.value ? 'teacher' : 'student';
       const teacher = isTeacher.value ? undefined : selectedTeacher.value;
-      await authStore.signUp(email.value, password.value, username.value, role, teacher).then(() => {
-        router.push({name: "Home"});
-        utilStore.addAlert("Bitte Bestätigen Sie Ihre Email", "info");
-        return;
-      })
+      utilStore.startLoadingBar();
+      await authStore.signUp(email.value, password.value, username.value, role, teacher)
+          .then(() => {
+            router.push({name: "Home"})
+                .then(() => {
+                  utilStore.addAlert("Bitte Bestätigen Sie noch Ihre Email", "info");
+                });
+          })
+          .finally(() => {
+            utilStore.stopLoadingBar();
+          });
     } catch (error: any) {
       throw new AuthenticationError(error.message, error.code);
     }
