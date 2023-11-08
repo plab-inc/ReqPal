@@ -97,27 +97,60 @@ export interface Database {
         }
         Relationships: []
       }
+      product_catalogs: {
+        Row: {
+          catalog_id: number | null
+          id: number
+          product_id: number | null
+        }
+        Insert: {
+          catalog_id?: number | null
+          id?: number
+          product_id?: number | null
+        }
+        Update: {
+          catalog_id?: number | null
+          id?: number
+          product_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_catalogs_catalog_id_fkey"
+            columns: ["catalog_id"]
+            isOneToOne: false
+            referencedRelation: "catalogs"
+            referencedColumns: ["catalog_id"]
+          },
+          {
+            foreignKeyName: "product_catalogs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["product_id"]
+          }
+        ]
+      }
       product_requirements: {
         Row: {
           comment: string | null
-          product_id: number | null
+          product_id: number
           product_requirement_id: number
           qualification: string | null
-          requirement_id: number | null
+          requirement_id: number
         }
         Insert: {
           comment?: string | null
-          product_id?: number | null
+          product_id: number
           product_requirement_id?: number
           qualification?: string | null
-          requirement_id?: number | null
+          requirement_id: number
         }
         Update: {
           comment?: string | null
-          product_id?: number | null
+          product_id?: number
           product_requirement_id?: number
           qualification?: string | null
-          requirement_id?: number | null
+          requirement_id?: number
         }
         Relationships: [
           {
@@ -139,17 +172,17 @@ export interface Database {
       products: {
         Row: {
           product_id: number
-          product_name: string | null
+          product_name: string
           product_url: string
         }
         Insert: {
           product_id?: number
-          product_name?: string | null
+          product_name: string
           product_url: string
         }
         Update: {
           product_id?: number
-          product_name?: string | null
+          product_name?: string
           product_url?: string
         }
         Relationships: []
