@@ -78,6 +78,7 @@ export const useCatalogStore = defineStore('catalog', {
                             catalogProducts.push({
                                 product_id: p.products?.product_id,
                                 product_name: p.products?.product_name ? p.products?.product_name : "Product",
+                                product_url: p.products?.product_url ? p.products?.product_url : "Url"
                             })
                         })
                     }

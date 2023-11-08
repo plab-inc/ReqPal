@@ -5,14 +5,12 @@ import AlertService from "@/services/util/alert.service.ts";
 import ProdutDetailPanel from "@/components/catalog/product/ProdutDetailPanel.component.vue";
 import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import CatalogTable from "@/components/catalog/CatalogTable.component.vue";
-import {useUtilStore} from "@/stores/util.store.ts";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);
 const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
 
-const utilStore = useUtilStore();
 const loading = ref<boolean>(true);
 const loadingBar = ref<boolean>(false);
 
@@ -38,15 +36,12 @@ async function getProductDetails() {
 }
 
 onBeforeMount(async () => {
-  utilStore.toggleLoadingBar();
   const route = useRoute();
   const catalogId = route.params.catalogId as string;
   catalogIdAsNumber = parseInt(catalogId, 10);
 
   await catalogStore.getCatalogWithProductsById(catalogIdAsNumber);
   setUpCatalog();
-
-  utilStore.toggleLoadingBar();
 })
 
 function setUpCatalog() {
