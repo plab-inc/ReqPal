@@ -117,13 +117,30 @@ function checkProductsColumn(productRow: string) {
         console.error('Product column does not start with ";;;"');
         return false;
     }
+
     const fields = productRow.split(';;;')[1].split(';');
+
     for (const field of fields){
         if (field === '') {
             console.error('Product-Name/-URL column contains empty field');
             return false;
         }
     }
+    if (fields.length % 2 !== 0) {
+        console.error('Product column does not contain pairs of product names and URLs');
+        return false;
+    }
+
+    for (let i = 0; i < fields.length; i += 2) {
+        const productURL = fields[i + 1].trim();
+
+        if (!productURL.startsWith('http://') && !productURL.startsWith('https://')) {
+            console.error(`Product URL "${productURL}" is not valid.`);
+            return false;
+        }
+
+    }
+
     return true;
 }
 function checkRequirementColumns(line: string, products: number) {
