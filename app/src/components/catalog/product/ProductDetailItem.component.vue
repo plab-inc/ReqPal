@@ -11,21 +11,23 @@ interface Props {
 
 const props = defineProps<Props>();
 
+function openProductPage(url: string) {
+  window.open(url, '_blank');
+}
+
 </script>
 
 <template>
-  <v-card class="ma-2 pa-2" max-height="200" max-width="500">
+  <v-card class="ma-2 pa-2" max-height="200" max-width="500" @click="openProductPage(product.product_url)">
     <v-skeleton-loader v-if="loading" type="heading, list-item-two-line"></v-skeleton-loader>
     <v-container v-if="!loading">
       <v-row no-gutters>
-        <v-col cols="8" class="d-flex align-center">
-          <a :href="product.product_url" target="_blank" rel="noopener noreferrer">
+        <v-col cols="8" class="d-flex align-center text-h6 font-weight-bold">
             {{ product.product_name }}
-          </a>
         </v-col>
         <v-col cols="4" class="d-flex align-center justify-end">
-          <ProductQualification :size="50"
-              :qualification="requirement?.products[product.product_name].qualification + ''"></ProductQualification>
+          <ProductQualification :size="70"
+              :qualification="requirement?.products[product.product_name]?.qualification + ''"></ProductQualification>
         </v-col>
       </v-row>
       <v-row>
