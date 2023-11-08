@@ -51,6 +51,7 @@ import {ConversionError, DatabaseError, PrivilegeError} from "@/errors/custom.er
 import {Catalog} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
 import CatalogService from "@/services/database/catalog.service.ts";
+import router from "@/router";
 import * as XLSX from "xlsx";
 
 interface Props {
@@ -112,6 +113,7 @@ function uploadCSVToDB(File: File){
         CatalogService.push.uploadCatalogToDatabase(catalog)
             .then(() => {
               AlertService.addSuccessAlert('Katalog erfolgreich hochgeladen.');
+              router.push({name: 'Catalogs'});
             })
             .catch((error: any) => {
               if(error.code == 42501){

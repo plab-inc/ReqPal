@@ -17,7 +17,6 @@
     "@supabase/supabase-js": "2.38.1",
     "@vueuse/components": "^10.3.0",
     "@vueuse/core": "^10.2.1",
-    "@vueuse/sound": "^2.0.1",
     "pinia": "^2.1.4",
     "react-dnd-html5-backend": "^16.0.1",
     "uuid": "^9.0.1",

@@ -1,4 +1,4 @@
-;;;Miro;;Moral;;Conceptboard;
+;;;Miro;https://miro.com;Moral;https://www.figma.com;Conceptboard;https://conceptboard.com
 Req-ID;Titel;Beschreibung;Qualifizierung;Kommentar;Qualifizierung;Kommentar;Qualifizierung;Kommentar
 Example-Req-1;Symbole, Schrift, Kanten, Notizen;Der Service soll die Erstellung von Tafeln (Board) mit geometrischen Figuren (Rechteck, Kreis, Oval, …), Beschriftungen, Kanten, Notizen zu Objekten ermöglichen.;2;Miro-Drawing-1-Kommentar;1;Moral-Drawing-1-Kommentar;2;Conceptboard-Drawing-1-Kommentar
 Example-Req-2;Sperren und Bearbeiten;Benutzer*innen, die über entsprechende Rechte verfügen sollen die Zugriffsrechte anderer Benutzer*innen einstellen können, so dass ein Board (zeitweise) vor Änderungen geschützt ist oder nur von bestimmten Benutzer*innen geändert werden kann.;2;Miro-Verwaltung-5-Kommentar;5;Moral-Verwaltung-5-Kommentar;5;Conceptboard-Verwaltung-5-Kommentar

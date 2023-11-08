@@ -46,7 +46,7 @@ class CatalogServiceClass {
     private async fetchProductsByRequirementId(requirementId: number) {
         const {data, error} = await supabase
             .from('product_requirements')
-            .select('products(product_id, product_name)')
+            .select('products(product_id, product_name, product_url)')
             .eq('requirement_id', requirementId)
 
         if (error) throw error;
