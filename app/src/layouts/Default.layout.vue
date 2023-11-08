@@ -147,8 +147,9 @@ const audio = new Audio(alertSfx);
 onBeforeMount(async () => {
   if (authStore.user) {
     await profileStore.fetchProfile(authStore.user.id);
-    console.log("Default")
-    await profileStore.fetchPoints(authStore.user.id);
+
+    //TODO Broken
+    //await profileStore.fetchPoints(authStore.user.id);
   }
 })
 
