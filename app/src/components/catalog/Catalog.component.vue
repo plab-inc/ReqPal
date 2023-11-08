@@ -27,7 +27,7 @@ async function getProductDetails() {
   loadingBar.value = true;
   try {
     if (selectedRequirement.value) {
-      await catalogStore.getProductDetailsForRequirement(selectedRequirement.value);
+      await catalogStore.getProductDetailsForRequirement(selectedRequirement.value, catalogProducts.value);
     }
   } catch (error: any) {
     AlertService.addErrorAlert("Fehler beim Abrufen der Produktdetails: " + error.message);
