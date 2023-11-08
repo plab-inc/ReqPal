@@ -105,7 +105,7 @@ CREATE POLICY "policy_catalogs_example"
     FOR SELECT
     TO authenticated
     USING (
-            (SELECT check_user_role(user_id, 'moderator')) = true
+            (SELECT example) = true
     );
 
 DROP POLICY IF EXISTS "policy_requirements" ON public.requirements;
@@ -165,6 +165,16 @@ CREATE POLICY "policy_edit_lessons"
     USING (
             (SELECT check_user_role(auth.uid(), 'moderator')) = true OR
             auth.uid() = user_id
+    );
+
+DROP POLICY IF EXISTS "policy_lessons_example" ON public.lessons;
+CREATE POLICY "policy_lessons_example"
+    ON public.lessons
+    FOR SELECT
+    TO authenticated
+    USING (
+        (SELECT check_user_role(auth.uid(), 'teacher')) = true AND
+        (SELECT example) = true
     );
 
 DROP POLICY IF EXISTS "policy_select_lessons" ON public.lessons;
