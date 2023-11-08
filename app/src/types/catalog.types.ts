@@ -8,6 +8,7 @@ export type ProductDetail = {
 export type Product = {
     product_id?: number;
     product_name: string;
+    product_url: string;
 }
 
 export type Requirement = {

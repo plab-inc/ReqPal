@@ -140,14 +140,17 @@ export interface Database {
         Row: {
           product_id: number
           product_name: string | null
+          product_url: string
         }
         Insert: {
           product_id?: number
           product_name?: string | null
+          product_url: string
         }
         Update: {
           product_id?: number
           product_name?: string | null
+          product_url?: string
         }
         Relationships: []
       }

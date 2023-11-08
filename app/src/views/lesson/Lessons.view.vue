@@ -4,15 +4,7 @@
   <v-container>
     <v-row no-gutters>
       <v-col cols="12" v-if="lessons.length < 1 ">
-        <v-card
-            :title="authStore.isTeacher ? 'Keine eigenen Lektionen verfügbar.' : 'Keine Lektionen verfügbar'"
-            :subtitle="authStore.isTeacher ? 'Sie haben noch keine Lektionen erstellt' :'Ihr Dozent hat aktuell noch keine Lektionen erstellt und veröffentlicht.'"
-            variant="outlined"
-            color="error"
-            elevation="12"
-            class="mb-10"
-        >
-        </v-card>
+
       </v-col>
 
       <v-col cols="12" v-if="authStore.isTeacher">

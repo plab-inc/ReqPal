@@ -19,7 +19,9 @@ const props = defineProps<Props>();
     <v-container v-if="!loading">
       <v-row no-gutters>
         <v-col cols="8" class="d-flex align-center">
-          {{ product.product_name }}
+          <a :href="product.product_url" target="_blank" rel="noopener noreferrer">
+            {{ product.product_name }}
+          </a>
         </v-col>
         <v-col cols="4" class="d-flex align-center justify-end">
           <ProductQualification :size="50"

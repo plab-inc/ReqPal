@@ -7,6 +7,7 @@ interface ProductDetails {
 
 export type Product = {
     product_name: string;
+    product_url: string;
 }
 
 interface Requirement {
@@ -101,32 +102,45 @@ serve(async (req) => {
 });
 
 
-function validateCSVFormat(csvString: string) {
+function validateCSVFormat(csvString: string){
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
-    const productList = productCol.split(';').filter((product)=>product !== '');
+    const productList = productCol.split(';;;')[1].split(';').filter((product)=>product !== '');
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
-    return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length);
+    return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length/2);
 }
-function checkProductsColumn(productCol: string) {
-    if (productCol.length === 0) {
+function checkProductsColumn(productRow: string) {
+    if (productRow.length === 0) {
         console.error('Product column is empty');
         return false;
     }
-    if (!productCol.startsWith(';;;')) {
+    if (!productRow.startsWith(';;;')) {
         console.error('Product column does not start with ";;;"');
         return false;
     }
-    if (!productCol.endsWith(';')) {
-        console.error('Product column does not end with ";"');
-        return false;
-    }
-    const fields = productCol.split(';;').slice(1, -1);
+
+    const fields = productRow.split(';;;')[1].split(';');
+
     for (const field of fields){
         if (field === '') {
-            console.error('Product column contains empty field');
+            console.error('Product-Name/-URL column contains empty field');
             return false;
         }
     }
+    if (fields.length % 2 !== 0) {
+        console.error('Product column does not contain pairs of product names and URLs');
+        return false;
+    }
+
+    for (let i = 0; i < fields.length; i += 2) {
+        const productURL = fields[i + 1].trim();
+
+        if (!productURL.startsWith('http://') && !productURL.startsWith('https://')) {
+            console.error(`Product URL "${productURL}" is not valid.`);
+            return false;
+        }
+
+    }
+
     return true;
 }
 function checkRequirementColumns(line: string, products: number) {
@@ -153,10 +167,21 @@ function checkRequirementColumns(line: string, products: number) {
 }
 function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
     const lines = csvString.replace(/\r/g, "").split("\n");
-    const products = lines[0].slice(3, -1).split(";;").map((productString: string) => ({ product_name: productString }));
+    const products = lines[0].split(";;;")[1].split(';');
+
+    const mappedProducts: Product[] = [];
+
+    for (let i = 0; i < products.length; i += 2) {
+        mappedProducts.push({
+            product_name: products[i],
+            product_url: products[i + 1],
+        });
+    }
+
+
     const requirementsJson: RequirementsJSON = {
         catalog_name: fileName,
-        products: products,
+        products: mappedProducts,
         requirements: []
     };
     for(let i = 2; i < lines.length; i++){
@@ -167,8 +192,8 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
             "description": currentLine[2],
             "productDetails": {}
         };
-        for(let k = 0; k < products.length; k++){
-            const product = products[k];
+        for(let k = 0; k < mappedProducts.length; k++){
+            const product = mappedProducts[k];
             const qualification = currentLine[k * 2 + 3];
             const comment = currentLine[k * 2 + 4];
             item.productDetails[product.product_name] = {
