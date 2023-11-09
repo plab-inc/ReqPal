@@ -14,24 +14,24 @@ const catalogStore = useCatalogStore();
 
 const props = defineProps<{ componentId: string }>();
 const loadingReqs = ref<boolean>(false);
+const requirements = ref<Requirement[]>([]);
+const products = ref<Product[]>([]);
+
+const fields = ref<any>({
+  question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
+  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {toleranceValue: 0}
+});
 
 const selectedCatalogId = ref<number>();
 const selectedRequirement = ref<Requirement>();
-const askForQualification = ref<boolean>(false);
-
-const requirements = ref<Requirement[]>([]);
-const products = ref<Product[]>([]);
-const tolerance = ref<number>(0);
-
-const fields = ref<any>({
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
-  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution'),
-});
+const askForQualification = ref<boolean>(!!fields.value.solution);
 
 init();
 
 async function init() {
   const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options');
+
   if (storedOptions) {
     fields.value.options = storedOptions;
     selectedCatalogId.value = fields.value.options.catalogId;
@@ -40,12 +40,14 @@ async function init() {
     if (foundReq) {
       selectedRequirement.value = foundReq;
     }
-  } else {
-    fields.value.options = {
+    return;
+  }
+
+  fields.value.options = {
       catalogId: undefined,
       requirementId: undefined,
-    }
   }
+
   updateStoreData();
 }
 
@@ -63,6 +65,8 @@ async function onCatalogChange() {
 
 function updateStoreData() {
   lessonFormStore.setComponentData(props.componentId, 'options', fields.value.options);
+  lessonFormStore.setComponentData(props.componentId, 'question', fields.value.question);
+  lessonFormStore.setComponentData(props.componentId, 'solution', fields.value.solution);
 }
 
 function toggleLoadingReqs() {
@@ -90,6 +94,10 @@ watch(selectedRequirement, (newReq) => {
     fields.value.options.requirementId = newReq.requirement_id;
     updateStoreData();
   }
+}, {deep: true});
+
+watch(fields, () => {
+  updateStoreData()
 }, {deep: true});
 </script>
 
@@ -120,6 +128,7 @@ watch(selectedRequirement, (newReq) => {
         <v-text-field
             label="Beschreibung der Aufgabe"
             :rules="[requiredStringRule]"
+            v-model="fields.question"
         ></v-text-field>
       </v-col>
       <v-col>
@@ -131,7 +140,7 @@ watch(selectedRequirement, (newReq) => {
             label="Toleranz"
             tick-size="5"
             show-ticks
-            v-model="tolerance"
+            v-model="fields.solution.toleranceValue"
         >
         </v-slider>
       </v-col>
