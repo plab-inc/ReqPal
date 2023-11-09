@@ -5,6 +5,9 @@ class AuthServiceClass {
     public push = {
         signUp: this.signUp.bind(this),
         resetPassword: this.resetPassword.bind(this),
+        updateEmail: this.updateEmail.bind(this),
+        updatePassword: this.updatePassword.bind(this),
+        updateUsername: this.updateUsername.bind(this)
     };
 
     public pull = {
@@ -24,7 +27,7 @@ class AuthServiceClass {
     }
 
     private async signUp(email: string, password: string, username: string, role: string, teacherUUID?: string) {
-        if(teacherUUID) {
+        if (teacherUUID) {
             const {data, error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
@@ -62,6 +65,35 @@ class AuthServiceClass {
         if (error) throw error;
     }
 
+    private async updateEmail(email: string) {
+        const {data, error} =
+            await supabase.auth.updateUser({email: email})
+
+        if (error) throw error;
+    }
+
+    private async updatePassword(oldPassword: string, newPassword: string) {
+        /*
+        const {data, error} =
+            await supabase.auth.updateUser({password: password})
+        if (error) throw error;
+         */
+        const {error} = await supabase
+            .rpc('change_user_password', {
+                current_plain_password: oldPassword,
+                new_plain_password: newPassword
+            })
+
+        if (error) throw error;
+    }
+
+    private async updateUsername(username: any) {
+        const {data, error} = await supabase.auth.updateUser({
+            data: {username: username}
+        })
+        if (error) throw error;
+    }
+
     private async resetPassword(email: string) {
         const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://thelethalgoose.github.io/Projektarbeit2023/account',
@@ -78,7 +110,7 @@ class AuthServiceClass {
         if (error) throw error;
 
         if (data && data.length > 0) {
-            return data as {id: string, username: string}[];
+            return data as { id: string, username: string }[];
         }
     }
 }
