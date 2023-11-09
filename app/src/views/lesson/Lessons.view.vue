@@ -45,9 +45,8 @@
                   density="default"
               >
                 <v-btn
-                    @click.stop="console.log('copy')"
+                    @click.stop="copyLesson(lesson.lessonDTO.uuid)"
                     color="primary"
-                    disabled
                 >
                   Kopieren
                 </v-btn>
@@ -146,6 +145,7 @@ import lessonService from "@/services/database/lesson.service.ts";
 import alertService from "@/services/util/alert.service.ts";
 import {Lesson, LessonDTO} from "@/types/lesson.types.ts";
 import LessonDetailsStudent from "@/components/lesson/lessonGenerator/LessonDetailsStudent.component.vue";
+import {v4 as uuidv4} from "uuid";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
@@ -162,6 +162,18 @@ async function editLesson(lessonUUID: string) {
     }
   });
 }
+
+async function copyLesson(lessonUUID: string) {
+  await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
+    if (lesson) {
+      lesson.uuid = uuidv4();
+      lessonFormStore.hydrate(lesson);
+      router.push({path: '/builder'});
+    }
+  });
+}
+
+
 
 function togglePublished(lesson: LessonDTO) {
   lessonService.push.togglePublished(lesson.uuid).then(() => {
