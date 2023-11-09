@@ -45,8 +45,18 @@ export const useAuthStore = defineStore('auth', {
             this.user = null;
             this.session = null;
         },
+        async updateEmail(email: string) {
+            await authService.push.updateEmail(email);
+        },
+
+        async updatePassword(oldPassword: string, newPassword: string) {
+            await authService.push.updatePassword(oldPassword, newPassword);
+        },
         async resetPassword(email: string) {
             await authService.push.resetPassword(email);
+        },
+        async updateUsername(username: string) {
+            await authService.push.updateUsername(username);
         },
         async getTeachers() {
             return await authService.pull.getTeachers();
