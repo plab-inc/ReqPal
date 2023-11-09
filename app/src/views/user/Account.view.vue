@@ -58,7 +58,7 @@
               type="password"
               label="Altes Passwort"
               prepend-icon="mdi-lock-check"
-              :rules="[requiredRule]"
+              :rules="[requiredRule, requiredAtLeast6CharsRule]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -69,7 +69,7 @@
               type="password"
               label="Neues Passwort"
               prepend-icon="mdi-lock"
-              :rules="[requiredRule]"
+              :rules="[requiredRule, requiredAtLeast6CharsRule]"
           ></v-text-field>
         </v-col>
         <v-col cols="2">
@@ -85,9 +85,8 @@
 import {ref} from 'vue';
 import {useProfileStore} from "@/stores/profile.store.js";
 import {useAuthStore} from "@/stores/auth.store.ts";
-import {requiredEmailRule, requiredRule} from "@/utils/validationRules.ts";
+import {requiredAtLeast6CharsRule, requiredEmailRule, requiredRule} from "@/utils/validationRules.ts";
 import alertService from "@/services/util/alert.service.ts";
-import {ca} from "vuetify/locale";
 
 const avatarOptions = [
   {name: 'Owl', src: 'avatars/owl.png'},
@@ -127,12 +126,12 @@ async function updatePassword() {
     return;
   }
 
-  if (password.value) {
+  if (oldPassword.value && password.value) {
     try {
-      await authStore.updatePassword(password.value);
+      await authStore.updatePassword(oldPassword.value, password.value);
       alertService.addSuccessAlert("Das Passwort wurde erfolgreich aktualisiert!");
     } catch (error: any) {
-      alertService.addErrorAlert("Das Passwort konnte nicht aktualisiert werden.");
+      alertService.addErrorAlert("Das Passwort konnte nicht aktualisiert werden: " + error.message);
     }
   }
 }
