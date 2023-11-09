@@ -62,12 +62,13 @@ function setUpCatalog() {
 </script>
 
 <template>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      {{ catalog?.catalog_name }}
+    </v-col>
+  </v-row>
+  <v-divider></v-divider>
   <v-container>
-    <v-row>
-      <v-col>
-        <div class="text-md-h3 text-sm-h4 text-h6">{{ catalog?.catalog_name }}</div>
-      </v-col>
-    </v-row>
     <v-row>
       <v-col>
         <RequirementItem :requirement="selectedRequirement"></RequirementItem>

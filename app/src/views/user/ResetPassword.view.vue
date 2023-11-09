@@ -1,35 +1,34 @@
 <template>
-  <v-container>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h3">
+      Passwort zurücksetzen
+    </v-col>
+  </v-row>
+  <v-divider></v-divider>
+  <v-form v-model="isFormValid" @submit.prevent="submit" ref="resetPasswordForm" fast-fail class="mt-10">
     <v-row>
       <v-col>
-        <h1 class="text-h2">Passwort zurücksetzen</h1>
-      </v-col>
-    </v-row>
-    <v-form v-model="isFormValid" @submit.prevent="submit" ref="resetPasswordForm" fast-fail class="mt-10">
-      <v-row>
-        <v-col>
-          <v-text-field
+        <v-text-field
             v-model="email"
             label="E-Mail"
             prepend-inner-icon="mdi-email-outline"
             :rules="[rules.required, rules.email]"
             type="email"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn type="submit" :disabled="!isFormValid" block> Passwort Zurücksetzen</v-btn>
-        </v-col>
-      </v-row>
-    </v-form>
-    <v-row>
-      <v-col>
-        <v-btn variant="plain" key="login" to="/login"> Bereits registriert? </v-btn>
-        <v-btn variant="plain" key="signup" to="/signup"> Noch nicht registriert? </v-btn>
+        ></v-text-field>
       </v-col>
     </v-row>
-  </v-container>
+    <v-row>
+      <v-col>
+        <v-btn type="submit" :disabled="!isFormValid" block> Passwort Zurücksetzen</v-btn>
+      </v-col>
+    </v-row>
+  </v-form>
+  <v-row>
+    <v-col>
+      <v-btn variant="plain" key="login" to="/login"> Bereits registriert?</v-btn>
+      <v-btn variant="plain" key="signup" to="/signup"> Noch nicht registriert?</v-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
