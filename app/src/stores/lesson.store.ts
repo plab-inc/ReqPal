@@ -221,7 +221,7 @@ export const useLessonStore = defineStore('lesson', {
                 c.type === 'MultipleChoice' ||
                 c.type === 'TrueOrFalse' ||
                 c.type === 'Slider' ||
-                c.type === 'Products')
+                c.type === 'Requirement')
         },
 
         clearComponents() {
