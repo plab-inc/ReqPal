@@ -125,5 +125,17 @@ export const useCatalogStore = defineStore('catalog', {
                 }
             }
         },
+
+        async fetchProductDetailsByRequirementWithoutQualification(requiremendId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualification(requiremendId);
+        },
+
+        async fetchProductDetailsByRequirementWithQualification(requiremendId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirement(requiremendId);
+        },
+
+        async fetchProductById(productId: number) {
+            return await catalogService.pull.fetchProductById(productId);
+        }
     }
 });
