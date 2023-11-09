@@ -49,8 +49,8 @@ export const useAuthStore = defineStore('auth', {
             await authService.push.updateEmail(email);
         },
 
-        async updatePassword(oldPassword: string, newPassword: string) {
-            await authService.push.updatePassword(oldPassword, newPassword);
+        async updatePassword(newPassword: string) {
+            await authService.push.updatePassword(newPassword);
         },
         async resetPassword(email: string) {
             await authService.push.resetPassword(email);
