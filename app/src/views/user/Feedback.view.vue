@@ -1,5 +1,9 @@
 <template>
-  <h1>Feedback</h1>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      Feedback
+    </v-col>
+  </v-row>
   <v-divider></v-divider>
   <v-container>
     <v-row>
