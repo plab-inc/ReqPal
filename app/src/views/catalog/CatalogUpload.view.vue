@@ -44,7 +44,7 @@
 import CatalogUpload from "@/components/catalog/CatalogUpload.component.vue";
 
 function downloadExample(type: string){
-  const url = import.meta.env.BASE_URL + 'Example_Requirements_Catalog.' + type;
+  const url = import.meta.env.BASE_URL + 'Example_Requirements_Catalog_' + type.toUpperCase() + '.' + type;
   const link = document.createElement('a');
   link.href = url;
   link.download = "";
