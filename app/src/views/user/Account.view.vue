@@ -54,17 +54,6 @@
       <v-row>
         <v-col cols="8">
           <v-text-field
-              v-model="oldPassword"
-              type="password"
-              label="Altes Passwort"
-              prepend-icon="mdi-lock-check"
-              :rules="[requiredRule, requiredAtLeast6CharsRule]"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="8">
-          <v-text-field
               v-model="password"
               type="password"
               label="Neues Passwort"
@@ -104,7 +93,6 @@ const isPasswordFormValid = ref(false);
 
 const username = ref(authStore.user?.user_metadata.username);
 const email = ref(authStore.user?.email);
-const oldPassword = ref('');
 const password = ref();
 
 onMounted(async () => {
@@ -119,16 +107,10 @@ async function checkUsernameExists() {
 async function updatePassword() {
 
   password.value = password.value.trim();
-  oldPassword.value = oldPassword.value.trim();
 
-  if (oldPassword.value === password.value) {
-    alertService.addWarningAlert("Passwörter müssen unterschiedlich sein.");
-    return;
-  }
-
-  if (oldPassword.value && password.value) {
+  if (password.value) {
     try {
-      await authStore.updatePassword(oldPassword.value, password.value);
+      await authStore.updatePassword(password.value);
       alertService.addSuccessAlert("Das Passwort wurde erfolgreich aktualisiert!");
     } catch (error: any) {
       alertService.addErrorAlert("Das Passwort konnte nicht aktualisiert werden: " + error.message);
