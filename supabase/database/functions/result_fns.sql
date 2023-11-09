@@ -13,9 +13,10 @@ DECLARE
     max_points          double precision := 0;
     points_per_question double precision := 0;
     data_obj            jsonb;
-    product_answers     int4             := 0;
+    requirement_answers int4             := 0;
     total_answers       int4             := 0;
-    product_option      jsonb;
+    req_exists          jsonb            := NULL;
+    temp_id             uuid;
 BEGIN
     lesson_uuid := data ->> 'uuid';
 
@@ -44,17 +45,17 @@ BEGIN
         SELECT *
         FROM jsonb_array_elements(data -> 'answers')
         LOOP
-            IF ((data_obj ->> 'type') = 'Products') THEN
-                FOR product_option IN
-                    SELECT *
-                    FROM jsonb_array_elements(data_obj -> 'options')
-                    LOOP
-                    -- do not count products as answers that do not check for qualification
-                        IF (product_option ->> 'checkQualification')::boolean THEN
-                            product_answers := product_answers + 1;
-                            exit;
-                        END IF;
-                    END LOOP;
+            IF ((data_obj ->> 'type') = 'Requirement') THEN
+                temp_id := (data_obj ->> 'uuid')::uuid;
+
+                Select solution
+                into req_exists
+                From questions
+                where uuid = temp_id;
+
+                If req_exists IS NOT NULL THEN
+                    requirement_answers := requirement_answers + 1;
+                end if;
             END IF;
         END LOOP;
 
@@ -62,13 +63,18 @@ BEGIN
         SELECT *
         FROM jsonb_array_elements(data -> 'answers')
         LOOP
-            IF ((data_obj ->> 'type') != 'Products') THEN
+            IF ((data_obj ->> 'type') != 'Requirement') THEN
                 total_answers := total_answers + 1;
             end if;
         END LOOP;
 
-    total_answers := total_answers + product_answers;
-    points_per_question = (max_points - (used_hints_count * 10)) / total_answers;
+    total_answers := total_answers + requirement_answers;
+
+    IF total_answers > 0 then
+        points_per_question = (max_points - (used_hints_count * 10)) / total_answers;
+    else
+        points_per_question := 0;
+    end if;
 
     IF points_per_question < 0 THEN
         points_per_question := 0;
@@ -107,7 +113,8 @@ BEGIN
                 LOOP
                     question_uuid := (newAnswer ->> 'uuid')::uuid;
                     UPDATE user_answers
-                    SET answer = newAnswer -> 'options', max_points = points_per_question
+                    SET answer     = newAnswer -> 'options',
+                        max_points = points_per_question
                     WHERE lesson_id = lesson_uuid
                       AND user_id = auth.uid()
                       AND question_id = question_uuid;
@@ -258,42 +265,73 @@ $$
 
 DROP FUNCTION IF EXISTS evaluate_product_qualification(uuid, jsonb, double precision);
 
+
 CREATE
     OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
 AS
 $$
 DECLARE
-    solution        jsonb;
-    compared_result jsonb;
+    q_solution      jsonb;
+    compared_result jsonb            := '[]';
     score           double precision := 0;
     result          jsonb;
     correctAnswers  double precision := 0;
     totalAnswers    double precision := 0;
     percentage      double precision := 1.0;
     user_result     jsonb;
-    answers         jsonb;
+    product_answers jsonb;
+    p_qualification int;
+    product_answer  jsonb;
+    tolerance_value int;
+    req_id          int;
+    temp_result     bool;
+    temp_input      int;
+    temp_id         int;
 BEGIN
 
-    SELECT jsonb_agg(elem)
-    INTO answers
-    FROM jsonb_array_elements(answer) elem
-    WHERE (elem ->> 'checkQualification')::boolean;
+    req_id := (answer ->> 'requirementId')::int;
+    product_answers := (answer ->> 'products')::jsonb;
 
     SELECT questions.solution
-    INTO solution
+    INTO q_solution
     FROM questions
     WHERE questions.uuid = question_id;
 
-    compared_result := json_agg(jsonb_build_object(
-            'id', q_option ->> 'id',
-            'isCorrect', (
-                (o_option ->> 'input')::int BETWEEN
-                    ((q_option ->> 'qualification')::int - (q_option ->> 'tolerance')::int) AND
-                    ((q_option ->> 'qualification')::int + (q_option ->> 'tolerance')::int)
-                )::BOOLEAN))
-                       FROM json_array_elements(solution::JSON) AS q_option
-                                LEFT JOIN json_array_elements(answers::JSON) AS o_option
-                                          ON (q_option ->> 'id')::int = (o_option ->> 'id')::int;
+    IF q_solution IS NULL THEN
+        return NULL;
+    END IF;
+
+    SELECT ((q_solution ->> 'toleranceValue')::int)
+    INTO tolerance_value;
+
+    FOR product_answer IN
+        SELECT *
+        FROM jsonb_array_elements(product_answers)
+        LOOP
+            temp_id := ((product_answer ->> 'id')::int);
+
+            SELECT qualification
+            INTO p_qualification
+            FROM product_requirements
+            WHERE product_id = temp_id
+              AND requirement_id = req_id;
+
+            temp_input := (product_answer ->> 'input')::int;
+
+            IF (temp_input BETWEEN (p_qualification - tolerance_value) AND (p_qualification + tolerance_value)) THEN
+                temp_result := true;
+            else
+                temp_result := false;
+            end if;
+
+            compared_result = jsonb_insert(
+                    compared_result,
+                    '{-1}',
+                    jsonb_build_object(
+                            'id', (product_answer ->> 'id')::int,
+                            'isCorrect', temp_result),
+                    true);
+        END LOOP;
 
     FOR result IN SELECT * FROM jsonb_array_elements(compared_result)
         LOOP
@@ -302,7 +340,7 @@ BEGIN
             END IF;
         END LOOP;
 
-    totalAnswers := jsonb_array_length(answers);
+    totalAnswers := jsonb_array_length(product_answers);
     percentage := correctAnswers / totalAnswers;
     score := max_points * percentage;
 

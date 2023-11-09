@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
         isLoggedIn: (state) => !!state.user,
         isAdmin: (state) => state.userMetadata?.userroles?.includes('admin'),
         isTeacher: (state) => state.appMetadata?.userroles?.includes('teacher'),
+        isModerator: (state) => state.appMetadata?.userroles?.includes('moderator'),
     },
     actions: {
         setSession(session: Session | null) {

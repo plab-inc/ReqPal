@@ -1,7 +1,11 @@
 <template>
-  <h1>Account</h1>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      Mein Account
+    </v-col>
+  </v-row>
+  <v-divider></v-divider>
   <v-container>
-
     <v-form v-model="isUserFormValid" @submit.prevent="saveChanges">
       <v-row>
         <v-col cols="8">
@@ -70,7 +74,6 @@
         </v-col>
       </v-row>
     </v-form>
-
   </v-container>
 </template>
 
