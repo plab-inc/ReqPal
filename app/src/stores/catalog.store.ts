@@ -1,6 +1,15 @@
 import {defineStore} from 'pinia';
 import catalogService from "@/services/database/catalog.service.ts";
-import {Catalog, CatalogDTO, Product, ProductDetail, Requirement} from "@/types/catalog.types.ts";
+import {
+    Catalog,
+    CatalogDTO,
+    Product,
+    ProductDetail,
+    ProductDTO,
+    ProductRequirementDTO,
+    Requirement,
+    RequirementDTO
+} from "@/types/catalog.types.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 
 interface CatalogState {
@@ -51,69 +60,82 @@ export const useCatalogStore = defineStore('catalog', {
             );
         },
 
-        async getCatalogWithProductsById(id: number) {
+        async getCatalogWithProductsById(catalogId: number) {
 
-            const catalogData = await catalogService.pull.fetchCatalogByCatalogId(id);
-            const requirementsData = await catalogService.pull.fetchRequirementsByCatalogId(id);
+            const catalogData: CatalogDTO | undefined = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
+            const productData: ProductDTO[] | undefined = await catalogService.pull.fetchProductsByCatalogId(catalogId);
+            const requirementsData: RequirementDTO[] | undefined = await catalogService.pull.fetchRequirementsByCatalogId(catalogId);
 
             const catalogRequirements: Requirement[] = [];
             const catalogProducts: Product[] = [];
 
             if (requirementsData) {
-                for (const requirements of requirementsData) {
-                    for (const req of requirements.requirements) {
-                        catalogRequirements.push({
-                            requirement_id: req.requirement_id,
-                            reqId: req.reqid,
-                            title: req.title,
-                            description: req.description,
-                            products: {}
-                        })
-                    }
+                for (const requirement of requirementsData) {
 
-                    const req = requirements.requirements[0]
-                    const productData = await catalogService.pull.fetchProductsByRequirementId(req.requirement_id);
-                    if (productData) {
-                        productData.forEach(p => {
-                            catalogProducts.push({
-                                product_id: p.products?.product_id,
-                                product_name: p.products?.product_name ? p.products?.product_name : "Product",
-                                product_url: p.products?.product_url ? p.products?.product_url : "Url"
-                            })
-                        })
-                    }
+                    catalogRequirements.push({
+                        requirement_id: requirement.requirement_id,
+                        reqId: requirement.reqid,
+                        title: requirement.title,
+                        description: requirement.description,
+                        products: {}
+                    })
                 }
             }
 
-            if (catalogData && catalogData.length > 0) {
-                const catalog = catalogData[0];
+            if (productData) {
+                for (const product of productData) {
+                    catalogProducts.push({
+                        product_id: product.product_id,
+                        product_name: product.product_name,
+                        product_url: product.product_url
+                    })
+                }
+            }
+
+            if (catalogData) {
                 this.currentCatalog = {
-                    catalog_id: catalog.catalog_id,
-                    catalog_name: catalog.catalog_name ? catalog.catalog_name : "Catalog",
+                    catalog_id: catalogData.catalog_id,
+                    catalog_name: catalogData.catalog_name ? catalogData.catalog_name : "Catalog",
                     products: catalogProducts,
                     requirements: catalogRequirements
                 }
             }
         },
 
-        async getProductDetailsForRequirement(req: Requirement) {
+        async getProductDetailsForRequirement(requirement: Requirement, products: Product[]) {
 
             if (this.currentCatalog) {
-                for (const product of this.currentCatalog?.products) {
-                    if (product.product_name) {
-                        const productDetail = await catalogService.pull.fetchProductDetailsByRequirement(product.product_name, req.requirement_id);
+                const productDetails: ProductRequirementDTO[] | undefined = await catalogService.pull.fetchProductDetailsByRequirement(requirement.requirement_id);
 
-                        if (productDetail) {
-                            const reqProduct: ProductDetail = {
-                                qualification: productDetail.qualification ? productDetail.qualification : "",
-                                comment: productDetail.comment ? productDetail.comment : "",
-                            }
-                            if ((product.product_name)) req.products[product.product_name] = reqProduct;
+                if (productDetails) {
+
+                    const detailsMap = new Map(productDetails.map(detail => [detail.product_id, detail]));
+
+                    requirement.products = products.reduce((acc, product) => {
+                        const detail = detailsMap.get(product.product_id!);
+                        if (detail) {
+                            acc[product.product_name] = {
+                                qualification: detail.qualification || '',
+                                comment: detail.comment || ''
+                            };
                         }
-                    }
+                        return acc;
+                    }, {} as { [p: string]: ProductDetail });
+
                 }
             }
         },
 
+        async fetchProductDetailsByRequirementWithoutQualification(requiremendId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualification(requiremendId);
+        },
+
+        async fetchProductDetailsByRequirementWithQualification(requiremendId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirement(requiremendId);
+        },
+
+        async fetchProductById(productId: number) {
+            return await catalogService.pull.fetchProductById(productId);
+        }
     }
 });

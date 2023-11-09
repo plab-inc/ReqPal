@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {requiredHyperlinkRule, requiredStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
+import {requiredHyperlinkRule, requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.component.vue";
 
 const icons = [

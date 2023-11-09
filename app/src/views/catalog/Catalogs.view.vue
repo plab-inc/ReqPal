@@ -1,7 +1,10 @@
 <template>
-  <h1>Meine Kataloge ({{ catalogs.length }}/{{ MAX_CATALOGS }})</h1>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      Meine Kataloge ({{ catalogs.length }}/{{ MAX_CATALOGS }})
+    </v-col>
+  </v-row>
   <v-divider></v-divider>
-  <v-container>
     <v-row>
       <v-col>
         <v-list>
@@ -78,7 +81,6 @@
         </v-btn>
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script setup lang="ts">

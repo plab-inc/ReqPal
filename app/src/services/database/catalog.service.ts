@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {Catalog, CatalogDTO} from "@/types/catalog.types";
+import {Catalog, CatalogDTO, ProductDTO, ProductRequirementDTO, RequirementDTO} from "@/types/catalog.types";
 
 class CatalogServiceClass {
 
@@ -13,62 +13,97 @@ class CatalogServiceClass {
         fetchCatalogs: this.fetchCatalogs.bind(this),
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
-        fetchProductsByRequirementId: this.fetchProductsByRequirementId.bind(this),
-        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this)
+        fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
+        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this),
+        fetchProductDetailsByRequirementWithoutQualification: this.fetchProductDetailsByRequirementWithoutQualification.bind(this),
+        fetchProductById: this.fetchProductById.bind(this)
     }
 
-    private async fetchRequirementsByCatalogId(catalogId: number) {
+    private async fetchRequirementsByCatalogId(catalogId: number): Promise<RequirementDTO[] | undefined> {
         const {data, error} = await supabase
             .from('catalogs')
-            .select('requirements(requirement_id, reqid, title, description)')
-            .eq('catalog_id', catalogId);
+            .select('requirements(requirement_id, catalog_id, reqid, title, description)')
+            .eq('catalog_id', catalogId)
+            .single();
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
-            return data;
-        }
+        return data?.requirements?.map((req: any) => ({
+            requirement_id: req.requirement_id,
+            catalog_id: req.catalog_id,
+            reqid: req.reqid,
+            title: req.title,
+            description: req.description
+        }));
     }
 
-    private async fetchCatalogById(catalogId: number) {
+    private async fetchCatalogById(catalogId: number): Promise<CatalogDTO | undefined> {
         const {data, error} = await supabase
             .from('catalogs')
-            .select('catalog_id, catalog_name')
-            .eq('catalog_id', catalogId);
+            .select('*')
+            .eq('catalog_id', catalogId)
+            .single();
 
         if (error) throw error;
 
         if (data) {
-            return data;
+            return data as CatalogDTO;
         }
     }
 
-    private async fetchProductsByRequirementId(requirementId: number) {
+    private async fetchProductsByCatalogId(catalogId: number): Promise<ProductDTO[] | undefined> {
         const {data, error} = await supabase
-            .from('product_requirements')
+            .from('product_catalogs')
             .select('products(product_id, product_name, product_url)')
+            .eq('catalog_id', catalogId)
+
+        if (error) throw error;
+
+        return data?.reduce((productDTOS: ProductDTO[], item) => {
+            if (item.products) productDTOS.push(item.products);
+            return productDTOS;
+        }, []) || undefined;
+    }
+
+    private async fetchProductDetailsByRequirement(requirementId: number): Promise<ProductRequirementDTO[] | undefined> {
+        const {data, error} = await supabase
+            .from('product_requirements')
+            .select('product_requirement_id, qualification, comment, requirement_id, product_id')
             .eq('requirement_id', requirementId)
 
         if (error) throw error;
 
         if (data) {
-            return data;
+            return data as ProductRequirementDTO[];
         }
     }
 
-    private async fetchProductDetailsByRequirement(productName: string, requirementId: number) {
+    private async fetchProductDetailsByRequirementWithoutQualification(requirementId: number): Promise<ProductRequirementDTO[] | undefined> {
         const {data, error} = await supabase
             .from('product_requirements')
-            .select('products(product_name), qualification, comment')
+            .select('product_requirement_id, comment, requirement_id, product_id')
             .eq('requirement_id', requirementId)
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
-            return data.find((item: any) => item.products.product_name === productName) || null;
+        if (data) {
+            return data as ProductRequirementDTO[];
         }
     }
 
+    private async fetchProductById(productId: number): Promise<ProductDTO | undefined> {
+        const {data, error} = await supabase
+            .from('products')
+            .select('*')
+            .eq('product_id', productId)
+            .single()
+
+        if (error) throw error;
+
+        if (data) {
+            return data as ProductDTO;
+        }
+    }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 

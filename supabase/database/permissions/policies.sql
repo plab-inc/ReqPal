@@ -137,7 +137,7 @@ CREATE POLICY "policy_products"
     ON public.products
     FOR SELECT
     TO authenticated
-    USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+    USING (true);
 
 DROP POLICY IF EXISTS "policy_products_insert" ON public.products;
 CREATE POLICY "policy_products_insert"
