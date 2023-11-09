@@ -39,13 +39,15 @@
               prepend-icon="mdi-email"
           ></v-text-field>
         </v-col>
-        <v-col cols="2">
+      </v-row>
+      <v-row>
+        <v-col>
           <v-btn color="primary" type="submit" :disabled="!isUserFormValid">Änderungen speichern</v-btn>
         </v-col>
       </v-row>
     </v-form>
 
-    <v-form v-model="isPasswordFormValid" @submit.prevent="updatePassword">
+    <v-form v-model="isPasswordFormValid" @submit.prevent="updatePassword" class="mt-5">
       <v-row>
         <v-col cols="8">
           <h1>Passwort</h1>
@@ -61,7 +63,9 @@
               :rules="[requiredRule, requiredAtLeast6CharsRule]"
           ></v-text-field>
         </v-col>
-        <v-col cols="2">
+      </v-row>
+      <v-row>
+        <v-col>
           <v-btn type="submit" :disabled="!isPasswordFormValid" color="primary">Passwort ändern</v-btn>
         </v-col>
       </v-row>
