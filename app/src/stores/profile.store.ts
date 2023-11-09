@@ -14,7 +14,7 @@ export const useProfileStore = defineStore('profile', {
         avatar: '',
     }),
     getters: {
-        getAvatar(): string{
+        getAvatar(): string {
             return 'avatars/' + this.avatar + '.png';
         }
     },
@@ -34,6 +34,20 @@ export const useProfileStore = defineStore('profile', {
                 this.points = data.points;
                 this.points = Math.round(this.points);
             }
+        },
+
+        async checkIfUsernameExists(username: string) {
+            return profileService.pull.checkIfUsernameExists(username);
+        },
+
+        async updateProfileUsername(userUUID: string, username: string) {
+            await profileService.push.updateProfileUsername(userUUID, username);
+            this.username = username;
+        },
+
+        async updateProfileAvatar(userUUID: string, avatar: string) {
+            await profileService.push.updateProfileAvatar(userUUID, avatar);
+            this.avatar = avatar;
         }
     },
 });

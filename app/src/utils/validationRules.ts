@@ -3,6 +3,16 @@ export const requiredStringRule = (value: string | null | any): boolean | string
     if(typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
     return "Benötigt";
 }
+
+export const requiredAtLeast6CharsRule = (value: string | null | any): boolean | string => {
+    if(typeof value === 'string') {
+        if(value.trim().length < 6) {
+            return "Es werden mindestens 6 Zeichen benötigt."
+        }
+    }
+    return true;
+}
+
 export const minMaxWords = (value: string | null | any): boolean | string => {
 
     if(typeof value === 'string') {
