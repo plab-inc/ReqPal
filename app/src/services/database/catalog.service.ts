@@ -14,7 +14,9 @@ class CatalogServiceClass {
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
-        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this)
+        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this),
+        fetchProductDetailsByRequirementWithoutQualification: this.fetchProductDetailsByRequirementWithoutQualification.bind(this),
+        fetchProductById: this.fetchProductById.bind(this)
     }
 
     private async fetchRequirementsByCatalogId(catalogId: number): Promise<RequirementDTO[] | undefined> {
@@ -76,6 +78,32 @@ class CatalogServiceClass {
         }
     }
 
+    private async fetchProductDetailsByRequirementWithoutQualification(requirementId: number): Promise<ProductRequirementDTO[] | undefined> {
+        const {data, error} = await supabase
+            .from('product_requirements')
+            .select('product_requirement_id, comment, requirement_id, product_id')
+            .eq('requirement_id', requirementId)
+
+        if (error) throw error;
+
+        if (data) {
+            return data as ProductRequirementDTO[];
+        }
+    }
+
+    private async fetchProductById(productId: number): Promise<ProductDTO | undefined> {
+        const {data, error} = await supabase
+            .from('products')
+            .select('*')
+            .eq('product_id', productId)
+            .single()
+
+        if (error) throw error;
+
+        if (data) {
+            return data as ProductDTO;
+        }
+    }
 
     private async uploadCatalogToDatabase(catalog: Catalog): Promise<void> {
 
