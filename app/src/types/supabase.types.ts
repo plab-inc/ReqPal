@@ -586,6 +586,13 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      change_user_password: {
+        Args: {
+          current_plain_password: string
+          new_plain_password: string
+        }
+        Returns: Json
+      }
       check_user_role: {
         Args: {
           uid: string
