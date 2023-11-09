@@ -18,6 +18,7 @@
           group
       >
         <v-btn
+            v-if="authStore.isModerator"
             value="showOnlyOwn"
         >
           Nur Eigene Lektionen
@@ -56,12 +57,6 @@
             </v-icon>
           </template>
           <template v-slot:append>
-            <v-badge
-                v-if="!authStore.isTeacher"
-                inline
-                color="error"
-                content="NEU">
-            </v-badge>
             <v-btn-group
                 v-if="authStore.isTeacher"
                 variant="outlined"
@@ -74,6 +69,12 @@
                   color="primary"
               >
                 Kopieren
+              </v-btn>
+              <v-btn v-if="authStore.isModerator"
+                  @click.stop="editLesson(lesson.lessonDTO.uuid)"
+                  color="primary"
+              >
+                Bearbeiten
               </v-btn>
             </v-btn-group>
           </template>
@@ -105,6 +106,7 @@
           </template>
           <template v-slot:append>
             <v-chip
+                v-if="authStore.isModerator"
                 class="mr-10 ma-5"
                 :prepend-avatar="'avatars/' + lesson.creatorAvatar + '.png'"
                 elevation="8"
