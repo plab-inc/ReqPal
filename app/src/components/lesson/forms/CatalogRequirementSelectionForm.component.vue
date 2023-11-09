@@ -115,7 +115,7 @@ watch(fields, () => {
         <RequirementItem v-if="selectedRequirement" :requirement="selectedRequirement" class="mb-5"/>
       </v-col>
       <v-col cols="2" align-self="center">
-        <v-switch color="primary" label="Bewerungen Abfragen" inset v-model="askForQualification"></v-switch>
+        <v-switch color="primary" label="Bewertungen abfragen" inset v-model="askForQualification"></v-switch>
       </v-col>
     </v-row>
     <v-row v-if="selectedRequirement && askForQualification">
