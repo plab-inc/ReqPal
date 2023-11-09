@@ -37,7 +37,7 @@
               v-model="password"
               label="Passwort"
               prepend-inner-icon="mdi-lock-outline"
-              :rules="[rules.required]"
+              :rules="[rules.required, requiredAtLeast6CharsRule]"
               type="password"
           ></v-text-field>
         </v-col>
@@ -84,7 +84,12 @@
 
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
-import {matchingPasswordsRule, requiredEmailRule, requiredRule} from "@/utils/validationRules";
+import {
+  matchingPasswordsRule,
+  requiredAtLeast6CharsRule,
+  requiredEmailRule,
+  requiredRule
+} from "@/utils/validationRules";
 
 import router from "@/router";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
@@ -111,7 +116,7 @@ const submit = async () => {
           .then(() => {
             router.push({name: "Home"})
                 .then(() => {
-                  utilStore.addAlert("Bitte Bestätigen Sie noch Ihre Email", "info");
+                  utilStore.addAlert("Bitte Bestätigen Sie Ihre Email", "info");
                 });
           })
     } catch (error: any) {
