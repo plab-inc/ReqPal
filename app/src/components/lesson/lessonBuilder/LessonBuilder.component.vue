@@ -12,7 +12,6 @@ import SliderForm from "@/components/lesson/forms/SliderForm.component.vue";
 import TextfieldForm from "@/components/lesson/forms/TextfieldForm.component.vue";
 import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequirementSelectionForm.component.vue"
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
-import ProductChoiceForm from "@/components/lesson/forms/ProductChoiceForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router";
@@ -24,7 +23,7 @@ interface ComponentsMap {
 }
 
 const themeColors = useTheme().current.value.colors;
-const templates = ['Requirement', 'Products', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
+const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
 const rules = {
   requiredString: requiredStringRule
 };
@@ -35,7 +34,6 @@ const componentsMap: ComponentsMap = {
   'Slider': markRaw(SliderForm),
   'Textfield': markRaw(TextfieldForm),
   'Note': markRaw(NotesForm),
-  'Products': markRaw(ProductChoiceForm),
 };
 
 const lessonFormStore = useLessonFormStore();
