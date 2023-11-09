@@ -1,13 +1,34 @@
 <template>
-  <h1>Meine Lektionen ({{ lessons.length }}/20) </h1>
-  <v-divider></v-divider>
-  <v-container>
-    <v-row no-gutters>
-      <v-col cols="12" v-if="lessons.length < 1 ">
-
+    <v-row justify="space-between" align="center" class="mb-1">
+      <v-col cols="auto" class="text-h4">
+        Meine Lektionen ({{ lessons.filter((lesson) => { return lesson.creatorUsername === authStore.userMetadata.username}).length }}/20)
       </v-col>
-
-      <v-col cols="12" v-if="authStore.isTeacher">
+      <v-col cols="auto">
+          <v-btn-toggle
+              v-model="filters"
+              variant="outlined"
+              rounded
+              multiple
+              divided
+              color="deep-purple-accent-3"
+              group
+          >
+            <v-btn
+                value="showOnlyOwn"
+            >
+              Nur Eigene Lektionen
+            </v-btn>
+            <v-btn
+                value="showExample"
+            >
+              Beispiel verbergen
+            </v-btn>
+          </v-btn-toggle>
+      </v-col>
+    </v-row>
+    <v-divider></v-divider>
+    <v-row no-gutters>
+      <v-col cols="12" v-if="authStore.isTeacher && !filters.includes('showExample')">
         <v-list>
           <v-list-item
               v-for="lesson in examples"
@@ -60,7 +81,7 @@
       <v-col cols="12" v-if="true">
         <v-list>
           <v-list-item
-              v-for="lesson in lessons"
+              v-for="lesson in filteredLessons"
               :key="lesson.lessonDTO.uuid"
               @click="openLessonDetails(lesson)"
               border
@@ -101,6 +122,12 @@
                   Bearbeiten
                 </v-btn>
                 <v-btn
+                    color="info"
+                    @click.stop="copyLesson(lesson.lessonDTO.uuid)"
+                >
+                  Kopieren
+                </v-btn>
+                <v-btn
                     @click.stop="togglePublished(lesson.lessonDTO)"
                     :color="lesson.lessonDTO.published ? 'warning' : 'success'"
                     min-width="180px"
@@ -132,7 +159,6 @@
         </v-btn>
       </v-col>
     </v-row>
-  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -151,8 +177,17 @@ const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
 
-const lessons: Lesson[] = lessonStore.getLessons;
+const filters = ref<string[]>([]);
+
 const examples: Lesson[] = lessonStore.getExampleLessons;
+const lessons: Lesson[] = lessonStore.getLessons;
+
+const filteredLessons = computed(() => {
+  if (filters.value.includes('showOnlyOwn')) {
+    return lessons.filter(lesson => lesson.creatorUsername === authStore.userMetadata.username);
+  }
+  return lessons;
+});
 
 async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
@@ -167,6 +202,9 @@ async function copyLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
     if (lesson) {
       lesson.uuid = uuidv4();
+      lesson.questions.forEach((question) => {
+        question.uuid = uuidv4();
+      })
       lessonFormStore.hydrate(lesson);
       router.push({path: '/builder'});
     }
