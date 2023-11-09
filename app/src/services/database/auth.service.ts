@@ -72,18 +72,9 @@ class AuthServiceClass {
         if (error) throw error;
     }
 
-    private async updatePassword(oldPassword: string, newPassword: string) {
-        /*
+    private async updatePassword(newPassword: string) {
         const {data, error} =
-            await supabase.auth.updateUser({password: password})
-        if (error) throw error;
-         */
-        const {error} = await supabase
-            .rpc('change_user_password', {
-                current_plain_password: oldPassword,
-                new_plain_password: newPassword
-            })
-
+            await supabase.auth.updateUser({password: newPassword})
         if (error) throw error;
     }
 
