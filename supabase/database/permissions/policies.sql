@@ -1,5 +1,6 @@
 DROP POLICY IF EXISTS "policy_profiles" ON public.profiles;
 DROP POLICY IF EXISTS "policy_profiles_auth" ON public.profiles;
+DROP POLICY IF EXISTS "policy_profiles_update" ON public.profiles;
 DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
 DROP POLICY IF EXISTS "policy_user_points" ON public.user_points;
 DROP POLICY IF EXISTS "policy_user_lesson_progress" ON public.user_lesson_progress;
@@ -32,15 +33,13 @@ CREATE POLICY policy_profiles_auth
     ON public.profiles
     FOR SELECT
     TO authenticated
-    USING ((auth.uid() = id) OR
-           ((select check_user_role(auth.uid(), 'teacher')) AND (teacher = auth.uid())));
+    USING (true);
 
-CREATE POLICY "policy_profiles"
+CREATE POLICY policy_profiles_update
     ON public.profiles
-    FOR SELECT
+    FOR UPDATE
     TO authenticated
-    USING ((auth.uid() = id) OR
-           ((select check_user_role(auth.uid(), 'teacher')) AND (teacher = auth.uid())));
+    USING (auth.uid() = id);
 
 CREATE POLICY "policy_user_points"
     ON public.user_points

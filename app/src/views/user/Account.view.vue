@@ -1,62 +1,83 @@
 <template>
   <h1>Account</h1>
   <v-container>
-    <v-row>
-      <v-col cols="8">
-        <v-select
-            v-model="selectedAvatar"
-            label="Avatar auswählen"
-            :items="avatarOptions"
-            item-title="name"
-            item-value="name"
-            prepend-icon="mdi-camera-account"
-        >
-          <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props" :prepend-avatar="item.raw.src" class="pa-2">
-            </v-list-item>
-          </template>
-        </v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
-        <v-text-field
-            v-model="username"
-            label="Benutzername"
-            prepend-icon="mdi-account-edit"
-            @blur="checkUsernameExists"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
-        <v-text-field
-            v-model="email"
-            label="E-Mail"
-            prepend-icon="mdi-email"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="2">
-        <v-btn @click="updateEmail" color="primary">Ändern</v-btn>
-      </v-col>
-    </v-row>
 
-    <v-row>
-      <v-col cols="8">
-        <v-text-field
-            v-model="oldPassword"
-            type="password"
-            label="Altes Passwort"
-            prepend-icon="mdi-lock-check"
-        ></v-text-field>
-        <v-text-field
-            v-model="password"
-            type="password"
-            label="Neues Passwort"
-            prepend-icon="mdi-lock"
-        ></v-text-field>
-      </v-col>
-    </v-row>
+    <v-form v-model="isUserFormValid" @submit.prevent="saveChanges">
+      <v-row>
+        <v-col cols="8">
+          <v-select
+              v-model="selectedAvatar"
+              label="Avatar auswählen"
+              :items="avatarOptions"
+              item-title="name"
+              item-value="name"
+              prepend-icon="mdi-camera-account"
+          >
+            <template v-slot:item="{ props, item }">
+              <v-list-item v-bind="props" :prepend-avatar="item.raw.src" class="pa-2">
+              </v-list-item>
+            </template>
+          </v-select>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="8">
+          <v-text-field
+              v-model="username"
+              label="Benutzername"
+              prepend-icon="mdi-account-edit"
+              @blur="checkUsernameExists"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="8">
+          <v-text-field
+              v-model="email"
+              label="E-Mail"
+              :rules="[requiredEmailRule]"
+              prepend-icon="mdi-email"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-btn color="primary" type="submit" :disabled="!isUserFormValid">Änderungen speichern</v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+
+    <v-form v-model="isPasswordFormValid" @submit.prevent="updatePassword">
+      <v-row>
+        <v-col cols="8">
+          <h1>Passwort</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="8">
+          <v-text-field
+              v-model="oldPassword"
+              type="password"
+              label="Altes Passwort"
+              prepend-icon="mdi-lock-check"
+              :rules="[requiredRule, requiredAtLeast6CharsRule]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="8">
+          <v-text-field
+              v-model="password"
+              type="password"
+              label="Neues Passwort"
+              prepend-icon="mdi-lock"
+              :rules="[requiredRule, requiredAtLeast6CharsRule]"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-btn type="submit" :disabled="!isPasswordFormValid" color="primary">Passwort ändern</v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+
   </v-container>
 </template>
 
@@ -64,38 +85,116 @@
 import {ref} from 'vue';
 import {useProfileStore} from "@/stores/profile.store.js";
 import {useAuthStore} from "@/stores/auth.store.ts";
+import {requiredAtLeast6CharsRule, requiredEmailRule, requiredRule} from "@/utils/validationRules.ts";
+import alertService from "@/services/util/alert.service.ts";
 
 const avatarOptions = [
-  { name: 'Owl', src: 'avatars/owl.png' },
-  { name: 'Cat', src: 'avatars/cat.png' },
-  { name: 'Panda', src: 'avatars/panda.png' },
-  { name: 'Squirrel', src: 'avatars/squirrel.png' },
+  {name: 'Owl', src: 'avatars/owl.png'},
+  {name: 'Cat', src: 'avatars/cat.png'},
+  {name: 'Panda', src: 'avatars/panda.png'},
+  {name: 'Squirrel', src: 'avatars/squirrel.png'},
+  {name: 'FHDO', src: 'avatars/fhdo.png'},
 ];
 
 const profileStore = useProfileStore();
 const authStore = useAuthStore();
-const selectedAvatar = ref('meh');
+const selectedAvatar = ref('');
+const isUserFormValid = ref(false);
+const isPasswordFormValid = ref(false);
 
 const username = ref(authStore.user?.user_metadata.username);
 const email = ref(authStore.user?.email);
 const oldPassword = ref('');
-const password = ref('');
+const password = ref();
 
+onMounted(async () => {
+  if (authStore.user) await profileStore.fetchProfile(authStore.user.id);
+  selectedAvatar.value = profileStore.avatar;
+})
 
-const checkUsernameExists = async () => {
+async function checkUsernameExists() {
+  return await profileStore.checkIfUsernameExists(username.value);
+}
 
-};
+async function updatePassword() {
 
-const updateEmail = () => {
+  password.value = password.value.trim();
+  oldPassword.value = oldPassword.value.trim();
 
-};
+  if (oldPassword.value === password.value) {
+    alertService.addWarningAlert("Passwörter müssen unterschiedlich sein.");
+    return;
+  }
 
-const updatePassword = () => {
+  if (oldPassword.value && password.value) {
+    try {
+      await authStore.updatePassword(oldPassword.value, password.value);
+      alertService.addSuccessAlert("Das Passwort wurde erfolgreich aktualisiert!");
+    } catch (error: any) {
+      alertService.addErrorAlert("Das Passwort konnte nicht aktualisiert werden: " + error.message);
+    }
+  }
+}
 
-};
+async function saveChanges() {
+  let userUUID: string;
+  if (authStore.user) {
+    userUUID = authStore.user.id;
+  } else {
+    alertService.addErrorAlert("Es ist ein Fehler aufgetreten.")
+    return;
+  }
 
-const updateSettings = () => {
+  const originalUsername = authStore.user?.user_metadata.username;
+  const originalEmail = authStore.user?.email;
+  const originalAvatar = profileStore.avatar;
 
-};
+  selectedAvatar.value = selectedAvatar.value.toLowerCase();
+  username.value = username.value.trim();
+  email.value = email.value?.trim();
+
+  if (originalUsername === username.value && originalEmail === email.value
+      && originalAvatar === selectedAvatar.value) {
+    alertService.addInfoAlert("Es wurden keine Änderungen vorgenommen.");
+    return;
+  }
+
+  if (username.value !== originalUsername) {
+    const exists = await checkUsernameExists();
+    if (exists) {
+      alertService.addWarningAlert("Dieser Benutzername existiert bereits!");
+      return;
+    } else {
+      try {
+        await authStore.updateUsername(username.value);
+        await profileStore.updateProfileUsername(userUUID, username.value);
+      } catch (error: any) {
+        alertService.addErrorAlert("Der Benutzername konnte nicht aktualisiert werden.");
+        return;
+      }
+    }
+  }
+
+  if (email.value && (originalEmail !== email.value)) {
+    try {
+      await authStore.updateEmail(email.value);
+      alertService.addInfoAlert("Bitte bestätigen Sie die Änderung mit dem Link in der Email an Ihre neue Adresse.")
+    } catch (error: any) {
+      alertService.addErrorAlert("Die Email konnte nicht aktualisiert werden.");
+      return;
+    }
+  }
+
+  if (selectedAvatar.value && (originalAvatar !== selectedAvatar.value)) {
+    try {
+      await profileStore.updateProfileAvatar(userUUID, selectedAvatar.value);
+    } catch (error: any) {
+      alertService.addErrorAlert("Der Avatar konnte nicht aktualisiert werden.");
+      return;
+    }
+  }
+
+  alertService.addSuccessAlert("Die Daten wurden erfolgreich aktualisiert!");
+}
 
 </script>
