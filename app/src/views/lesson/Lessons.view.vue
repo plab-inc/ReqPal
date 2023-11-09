@@ -9,12 +9,13 @@
     </v-col>
     <v-col cols="auto">
       <v-btn-toggle
+          elevation="3"
           v-model="filters"
           variant="outlined"
           rounded
           multiple
           divided
-          color="deep-purple-accent-3"
+          color="warning"
           group
       >
         <v-btn
