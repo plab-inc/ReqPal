@@ -25,7 +25,7 @@ BEGIN
                 IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Slider' THEN
                     result_value := evaluate_slider(NEW.question_id, NEW.answer, NEW.max_points);
                 ELSE
-                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Products' THEN
+                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Requirement' THEN
                         result_value := evaluate_product_qualification(NEW.question_id, NEW.answer, NEW.max_points);
                     END IF;
                 END IF;
@@ -90,7 +90,7 @@ BEGIN
                 IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Slider' THEN
                     result_value := evaluate_slider(NEW.question_id, NEW.answer, NEW.max_points);
                 ELSE
-                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Products' THEN
+                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Requirement' THEN
                         result_value := evaluate_product_qualification(NEW.question_id, NEW.answer, NEW.max_points);
                     END IF;
                 END IF;
