@@ -1,164 +1,168 @@
 <template>
-    <v-row justify="space-between" align="center" class="mb-1">
-      <v-col cols="auto" class="text-h4">
-        Meine Lektionen ({{ lessons.filter((lesson) => { return lesson.creatorUsername === authStore.userMetadata.username}).length }}/20)
-      </v-col>
-      <v-col cols="auto">
-          <v-btn-toggle
-              v-model="filters"
-              variant="outlined"
-              rounded
-              multiple
-              divided
-              color="deep-purple-accent-3"
-              group
-          >
-            <v-btn
-                value="showOnlyOwn"
-            >
-              Nur Eigene Lektionen
-            </v-btn>
-            <v-btn
-                value="showExample"
-            >
-              Beispiel verbergen
-            </v-btn>
-          </v-btn-toggle>
-      </v-col>
-    </v-row>
-    <v-divider></v-divider>
-    <v-row no-gutters>
-      <v-col cols="12" v-if="authStore.isTeacher && !filters.includes('showExample')">
-        <v-list>
-          <v-list-item
-              v-for="lesson in examples"
-              :key="lesson.lessonDTO.uuid"
-              @click="openLessonDetails(lesson)"
-              border
-              variant="outlined"
-              rounded
-              base-color="info"
-              min-height="80px"
-              ripple
-              elevation="7"
-              class="ma-5"
-              subtitle="Beispiellektion"
-          >
-            <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
-            <template v-slot:prepend>
-              <v-icon>
-                mdi-clipboard-text
-              </v-icon>
-            </template>
-            <template v-slot:append>
-              <v-badge
-                  v-if="!authStore.isTeacher"
-                  inline
-                  color="error"
-                  content="NEU">
-              </v-badge>
-              <v-btn-group
-                  v-if="authStore.isTeacher"
-                  variant="outlined"
-                  elevation="24"
-                  divided
-                  density="default"
-              >
-                <v-btn
-                    @click.stop="copyLesson(lesson.lessonDTO.uuid)"
-                    color="primary"
-                >
-                  Kopieren
-                </v-btn>
-              </v-btn-group>
-            </template>
-          </v-list-item>
-        </v-list>
-        <v-divider/>
-      </v-col>
-
-      <v-col cols="12" v-if="true">
-        <v-list>
-          <v-list-item
-              v-for="lesson in filteredLessons"
-              :key="lesson.lessonDTO.uuid"
-              @click="openLessonDetails(lesson)"
-              border
-              variant="outlined"
-              rounded
-              min-height="80px"
-              ripple
-              elevation="12"
-              class="ma-5"
-          >
-            <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
-            <template v-slot:prepend>
-              <v-icon>
-                mdi-clipboard-text
-              </v-icon>
-            </template>
-            <template v-slot:append>
-              <v-chip
-                  class="mr-10 ma-5"
-                  :prepend-avatar="'avatars/' + lesson.creatorAvatar + '.png'"
-                  elevation="8"
-              >
-                {{ lesson.creatorUsername }}
-              </v-chip>
-              <LessonDetailsStudent v-if="!authStore.isTeacher" :lesson="lesson"></LessonDetailsStudent>
-              <v-btn-group
-                  v-if="authStore.isTeacher"
-                  variant="outlined"
-                  elevation="24"
-                  divided
-                  density="default"
-              >
-                <v-btn
-                    @click.stop="editLesson(lesson.lessonDTO.uuid)"
-                    color="primary"
-                >
-                  Bearbeiten
-                </v-btn>
-                <v-btn
-                    color="info"
-                    @click.stop="copyLesson(lesson.lessonDTO.uuid)"
-                >
-                  Kopieren
-                </v-btn>
-                <v-btn
-                    @click.stop="togglePublished(lesson.lessonDTO)"
-                    :color="lesson.lessonDTO.published ? 'warning' : 'success'"
-                    min-width="180px"
-                >
-                  {{ lesson.lessonDTO.published ? 'Verbergen' : 'Veröffentlichen' }}
-                </v-btn>
-                <v-btn
-                    @click.stop="openDeleteDialog(lesson.lessonDTO.uuid)"
-                    color="error"
-                >
-                  Löschen
-                </v-btn>
-              </v-btn-group>
-            </template>
-          </v-list-item>
-        </v-list>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      Meine Lektionen ({{
+        lessons.filter((lesson) => {
+          return lesson.creatorUsername === authStore.userMetadata.username
+        }).length
+      }}/20)
+    </v-col>
+    <v-col cols="auto">
+      <v-btn-toggle
+          v-model="filters"
+          variant="outlined"
+          rounded
+          multiple
+          divided
+          color="deep-purple-accent-3"
+          group
+      >
         <v-btn
-            v-if="authStore.isTeacher"
-            color="primary"
-            @click="router.push({path: '/builder'})"
-            block
-            :disabled="lessons.length >= 20"
+            value="showOnlyOwn"
         >
-          Neue Lektion erstellen
+          Nur Eigene Lektionen
         </v-btn>
-      </v-col>
-    </v-row>
+        <v-btn
+            value="showExample"
+        >
+          Beispiel verbergen
+        </v-btn>
+      </v-btn-toggle>
+    </v-col>
+  </v-row>
+  <v-divider></v-divider>
+  <v-row no-gutters>
+    <v-col v-if="authStore.isTeacher && !filters.includes('showExample')">
+      <v-list>
+        <v-list-item
+            v-for="lesson in examples"
+            :key="lesson.lessonDTO.uuid"
+            @click="openLessonDetails(lesson)"
+            border
+            variant="outlined"
+            rounded
+            base-color="info"
+            min-height="80px"
+            ripple
+            elevation="7"
+            class="ma-5"
+            subtitle="Beispiellektion"
+        >
+          <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
+          <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
+          <template v-slot:prepend>
+            <v-icon>
+              mdi-clipboard-text
+            </v-icon>
+          </template>
+          <template v-slot:append>
+            <v-badge
+                v-if="!authStore.isTeacher"
+                inline
+                color="error"
+                content="NEU">
+            </v-badge>
+            <v-btn-group
+                v-if="authStore.isTeacher"
+                variant="outlined"
+                elevation="24"
+                divided
+                density="default"
+            >
+              <v-btn
+                  @click.stop="copyLesson(lesson.lessonDTO.uuid)"
+                  color="primary"
+              >
+                Kopieren
+              </v-btn>
+            </v-btn-group>
+          </template>
+        </v-list-item>
+      </v-list>
+      <v-divider/>
+    </v-col>
+
+    <v-col cols="12" v-if="true">
+      <v-list>
+        <v-list-item
+            v-for="lesson in filteredLessons"
+            :key="lesson.lessonDTO.uuid"
+            @click="openLessonDetails(lesson)"
+            border
+            variant="outlined"
+            rounded
+            min-height="80px"
+            ripple
+            elevation="12"
+            class="ma-5"
+        >
+          <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
+          <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
+          <template v-slot:prepend>
+            <v-icon>
+              mdi-clipboard-text
+            </v-icon>
+          </template>
+          <template v-slot:append>
+            <v-chip
+                class="mr-10 ma-5"
+                :prepend-avatar="'avatars/' + lesson.creatorAvatar + '.png'"
+                elevation="8"
+            >
+              {{ lesson.creatorUsername }}
+            </v-chip>
+            <LessonDetailsStudent v-if="!authStore.isTeacher" :lesson="lesson"></LessonDetailsStudent>
+            <v-btn-group
+                v-if="authStore.isTeacher"
+                variant="outlined"
+                elevation="24"
+                divided
+                density="default"
+            >
+              <v-btn
+                  @click.stop="editLesson(lesson.lessonDTO.uuid)"
+                  color="primary"
+              >
+                Bearbeiten
+              </v-btn>
+              <v-btn
+                  color="info"
+                  @click.stop="copyLesson(lesson.lessonDTO.uuid)"
+              >
+                Kopieren
+              </v-btn>
+              <v-btn
+                  @click.stop="togglePublished(lesson.lessonDTO)"
+                  :color="lesson.lessonDTO.published ? 'warning' : 'success'"
+                  min-width="180px"
+              >
+                {{ lesson.lessonDTO.published ? 'Verbergen' : 'Veröffentlichen' }}
+              </v-btn>
+              <v-btn
+                  @click.stop="openDeleteDialog(lesson.lessonDTO.uuid)"
+                  color="error"
+              >
+                Löschen
+              </v-btn>
+            </v-btn-group>
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col>
+      <v-btn
+          v-if="authStore.isTeacher"
+          color="primary"
+          @click="router.push({path: '/builder'})"
+          block
+          :disabled="lessons.length >= 20"
+      >
+        Neue Lektion erstellen
+      </v-btn>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
