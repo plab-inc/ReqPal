@@ -1,14 +1,14 @@
 // Plugins
 import vue from '@vitejs/plugin-vue'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify'
 import autoImport from 'unplugin-auto-import/vite'
 
 // Utilities
-import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+import {defineConfig} from 'vite'
+import {fileURLToPath, URL} from 'node:url'
 
 //Base path
-const base = process.env.NODE_ENV === 'production' ? '/Projektarbeit2023/' : '/';
+const base = process.env.NODE_ENV === 'production' ? '/' : '/';
 
 // https://vitejs.dev/config/
 export default defineConfig({
