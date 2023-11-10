@@ -9,6 +9,7 @@
     </v-col>
     <v-col cols="auto">
       <v-btn-toggle
+          v-if="authStore.isTeacher"
           elevation="3"
           v-model="filters"
           variant="outlined"
