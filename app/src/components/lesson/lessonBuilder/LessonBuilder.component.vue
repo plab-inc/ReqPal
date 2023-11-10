@@ -75,7 +75,13 @@ async function validate() {
 }
 
 async function uploadLesson() {
-  if (formIsValid.value && components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
+  await validate();
+
+  if(!formIsValid.value) {
+    return;
+  }
+
+  if (components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson)
         .catch(() => {
