@@ -17,17 +17,7 @@ const loadingReqs = ref<boolean>(false);
 const requirements = ref<Requirement[]>([]);
 const products = ref<Product[]>([]);
 
-const fields = ref<{
-  question: string;
-  solution: {
-    toleranceValue: number;
-  };
-  options: {
-    catalogId?: number;
-    requirementId?: number;
-    askForQualification: boolean;
-  };
-}>({
+const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
   solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || { toleranceValue: 0 },
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options') || {
@@ -64,7 +54,6 @@ watch(fields, async (value) => {
 
   if(catalogStore.currentCatalog?.catalog_id !== value.options.catalogId) {
     selectedRequirement.value = undefined;
-    value.options.requirementId = undefined;
   }
 
   if(value.options.catalogId) {
