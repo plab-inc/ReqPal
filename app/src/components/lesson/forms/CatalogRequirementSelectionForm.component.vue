@@ -19,49 +19,15 @@ const products = ref<Product[]>([]);
 
 const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
-  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options'),
-  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {toleranceValue: 0}
+  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {toleranceValue: 0},
+  options: lessonFormStore.getComponentFieldValues(props.componentId, 'options') || {
+    catalogId: undefined,
+    requirementId: undefined,
+    askForQualification: false,
+  }
 });
 
-const selectedCatalogId = ref<number>();
-const selectedRequirement = ref<Requirement>();
-const askForQualification = ref<boolean>(!!fields.value.solution);
-
-init();
-
-async function init() {
-  const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options');
-
-  if (storedOptions) {
-    fields.value.options = storedOptions;
-    selectedCatalogId.value = fields.value.options.catalogId;
-    await onCatalogChange();
-    const foundReq = requirements.value.find(r => r.requirement_id === fields.value.options.requirementId);
-    if (foundReq) {
-      selectedRequirement.value = foundReq;
-    }
-    return;
-  }
-
-  fields.value.options = {
-      catalogId: undefined,
-      requirementId: undefined,
-  }
-
-  updateStoreData();
-}
-
-async function onCatalogChange() {
-  if (selectedCatalogId.value) {
-    toggleLoadingReqs();
-    await catalogStore.getCatalogWithProductsById(selectedCatalogId.value);
-    if (catalogStore.currentCatalog) {
-      requirements.value = catalogStore.currentCatalog.requirements;
-      products.value = catalogStore.currentCatalog.products;
-    }
-    toggleLoadingReqs();
-  }
-}
+const selectedRequirement = ref<Requirement | undefined>();
 
 function updateStoreData() {
   lessonFormStore.setComponentData(props.componentId, 'options', fields.value.options);
@@ -73,39 +39,48 @@ function toggleLoadingReqs() {
   loadingReqs.value = !loadingReqs.value;
 }
 
-watch(selectedRequirement, async (newReq, oldReq) => {
-  if (oldReq != newReq) {
-    fields.value.options.requirementId = newReq?.requirement_id;
-    await catalogStore.getProductDetailsForRequirement(<Requirement>newReq, products.value);
-    updateStoreData();
+watch(selectedRequirement, async (value, oldValue) => {
+  if(value){
+    toggleLoadingReqs();
+    await catalogStore.getProductDetailsForRequirement(<Requirement>value, products.value).then(() => {
+      toggleLoadingReqs();
+    });
+    fields.value.options.requirementId = value.requirement_id;
   }
-}, {deep: true});
+}, {deep: false});
 
-watch(selectedCatalogId, (newCat, oldCat) => {
-  if (newCat !== oldCat) {
-    onCatalogChange();
-    fields.value.options.catalogId = newCat;
-    updateStoreData();
+
+watch(fields, async (value) => {
+
+  if(catalogStore.currentCatalog?.catalog_id !== value.options.catalogId) {
+    selectedRequirement.value = undefined;
+    value.options.requirementId = undefined;
   }
-}, {deep: true});
 
-watch(selectedRequirement, (newReq) => {
-  if (newReq) {
-    fields.value.options.requirementId = newReq.requirement_id;
-    updateStoreData();
+  if(value.options.catalogId) {
+    await catalogStore.getCatalogWithProductsById(value.options.catalogId);
   }
-}, {deep: true});
 
-watch(fields, () => {
-  updateStoreData()
-}, {deep: true});
+  if (catalogStore.currentCatalog) {
+    requirements.value = catalogStore.currentCatalog.requirements;
+    products.value = catalogStore.currentCatalog.products;
+  }
+
+  if(!selectedRequirement.value?.requirement_id && value.options.requirementId) {
+    console.log("fuck")
+    selectedRequirement.value = requirements.value.find(req => req.requirement_id === value.options.requirementId);
+  }
+
+  updateStoreData();
+
+}, {deep: true, immediate: true});
 </script>
 
 <template>
   <v-container>
   <v-row>
     <v-col>
-      <CatalogSelect v-model="selectedCatalogId"></CatalogSelect>
+      <CatalogSelect v-model="fields.options.catalogId"></CatalogSelect>
       <RequirementSelect v-model="selectedRequirement" :loading="loadingReqs"
                          :items="requirements"></RequirementSelect>
     </v-col>
@@ -115,15 +90,15 @@ watch(fields, () => {
         <RequirementItem v-if="selectedRequirement" :requirement="selectedRequirement" class="mb-5"/>
       </v-col>
       <v-col cols="2" align-self="center">
-        <v-switch color="primary" label="Bewertungen abfragen" inset v-model="askForQualification"></v-switch>
+        <v-switch color="primary" label="Bewertungen abfragen" inset v-model="fields.options.askForQualification"></v-switch>
       </v-col>
     </v-row>
-    <v-row v-if="selectedRequirement && askForQualification">
+    <v-row v-if="selectedRequirement && fields.options.askForQualification">
       <v-col v-for="product in products" :key="product.product_name" cols="12" md="6" lg="4">
         <ProductDetailItem :requirement="selectedRequirement" :loading="loadingReqs" :product="product"></ProductDetailItem>
       </v-col>
     </v-row>
-    <v-row v-if="selectedRequirement && askForQualification">
+    <v-row v-if="selectedRequirement && fields.options.askForQualification">
       <v-col>
         <v-text-field
             label="Beschreibung der Aufgabe"
