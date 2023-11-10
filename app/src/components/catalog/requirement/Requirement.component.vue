@@ -48,7 +48,7 @@ onBeforeMount(async () => {
         requirement.value = reqs.find(r => r.requirement_id === fields.value.options.requirementId);
       }
 
-      if (requirement.value) {
+      if (requirement.value && fields.value.options.askForQualification) {
         let result;
         let savedInput = [];
 
@@ -125,9 +125,10 @@ function updateStoreData(options: any) {
 
 watch(products.value, (newProducts) => {
 
-  let updatedOptions: { catalogId: any, requirementId: any, products: { id: number, input: number }[] } = {
+  let updatedOptions: { catalogId: any, requirementId: any, askForQualification: any, products: { id: number, input: number }[] } = {
     catalogId: fields.value.options.catalogId,
     requirementId: fields.value.options.requirementId,
+    askForQualification: fields.value.options.askForQualification,
     products: []
   }
 
@@ -155,11 +156,11 @@ watch(products.value, (newProducts) => {
     </v-card-text>
   </v-card>
 
-  <v-container v-if="products.length > 0">
+  <v-container v-if="fields.options.askForQualification && products.length > 0">
 
     <v-row>
       <v-col>
-        <div class="text-h6 my-5">{{ fields.question }}</div>
+        <div class="text-h6 my-5">{{ fields.options.question }}</div>
       </v-col>
     </v-row>
 
