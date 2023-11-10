@@ -17,9 +17,19 @@ const loadingReqs = ref<boolean>(false);
 const requirements = ref<Requirement[]>([]);
 const products = ref<Product[]>([]);
 
-const fields = ref<any>({
+const fields = ref<{
+  question: string;
+  solution: {
+    toleranceValue: number;
+  };
+  options: {
+    catalogId?: number;
+    requirementId?: number;
+    askForQualification: boolean;
+  };
+}>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || {toleranceValue: 0},
+  solution: lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || { toleranceValue: 0 },
   options: lessonFormStore.getComponentFieldValues(props.componentId, 'options') || {
     catalogId: undefined,
     requirementId: undefined,
@@ -39,7 +49,7 @@ function toggleLoadingReqs() {
   loadingReqs.value = !loadingReqs.value;
 }
 
-watch(selectedRequirement, async (value, oldValue) => {
+watch(selectedRequirement, async (value) => {
   if(value){
     toggleLoadingReqs();
     await catalogStore.getProductDetailsForRequirement(<Requirement>value, products.value).then(() => {
@@ -67,7 +77,6 @@ watch(fields, async (value) => {
   }
 
   if(!selectedRequirement.value?.requirement_id && value.options.requirementId) {
-    console.log("fuck")
     selectedRequirement.value = requirements.value.find(req => req.requirement_id === value.options.requirementId);
   }
 
