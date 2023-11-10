@@ -14,9 +14,8 @@ DECLARE
     points_per_question double precision := 0;
     data_obj            jsonb;
     requirement_answers int4             := 0;
+    temp_option         jsonb;
     total_answers       int4             := 0;
-    req_exists          jsonb            := NULL;
-    temp_id             uuid;
 BEGIN
     lesson_uuid := data ->> 'uuid';
 
@@ -46,16 +45,12 @@ BEGIN
         FROM jsonb_array_elements(data -> 'answers')
         LOOP
             IF ((data_obj ->> 'type') = 'Requirement') THEN
-                temp_id := (data_obj ->> 'uuid')::uuid;
-
-                Select solution
-                into req_exists
-                From questions
-                where uuid = temp_id;
-
-                If req_exists IS NOT NULL THEN
+                temp_option := (data_obj -> 'options');
+                -- do not count requirements as answers that do not check for qualification
+                IF (temp_option ->> 'askForQualification')::boolean IS TRUE THEN
                     requirement_answers := requirement_answers + 1;
-                end if;
+                    exit;
+                END IF;
             END IF;
         END LOOP;
 
@@ -99,10 +94,14 @@ BEGIN
             SELECT *
             FROM jsonb_array_elements(data -> 'answers')
             LOOP
-                question_uuid := (newAnswer ->> 'uuid')::uuid;
-                INSERT INTO user_answers (user_id, lesson_id, question_id, answer, max_points)
-                VALUES (auth.uid(), lesson_uuid, question_uuid, newAnswer -> 'options', points_per_question);
-
+                temp_option := newAnswer -> 'options';
+                IF ((newAnswer ->> 'type') != 'Requirement' OR
+                    (newAnswer ->> 'type') = 'Requirement' AND
+                    (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
+                    question_uuid := (newAnswer ->> 'uuid')::uuid;
+                    INSERT INTO user_answers (user_id, lesson_id, question_id, answer, max_points)
+                    VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option, points_per_question);
+                END IF;
             END LOOP;
 
     ELSE
@@ -111,13 +110,18 @@ BEGIN
                 SELECT *
                 FROM jsonb_array_elements(data -> 'answers')
                 LOOP
-                    question_uuid := (newAnswer ->> 'uuid')::uuid;
-                    UPDATE user_answers
-                    SET answer     = newAnswer -> 'options',
-                        max_points = points_per_question
-                    WHERE lesson_id = lesson_uuid
-                      AND user_id = auth.uid()
-                      AND question_id = question_uuid;
+                    temp_option := newAnswer -> 'options';
+                    IF ((newAnswer ->> 'type') != 'Requirement' OR
+                        (newAnswer ->> 'type') = 'Requirement' AND
+                        (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
+                        question_uuid := (newAnswer ->> 'uuid')::uuid;
+                        UPDATE user_answers
+                        SET answer     = newAnswer -> 'options',
+                            max_points = points_per_question
+                        WHERE lesson_id = lesson_uuid
+                          AND user_id = auth.uid()
+                          AND question_id = question_uuid;
+                    end if;
                 END LOOP;
 
             UPDATE user_finished_lessons
@@ -266,6 +270,7 @@ $$
 DROP FUNCTION IF EXISTS evaluate_product_qualification(uuid, jsonb, double precision);
 
 
+
 CREATE
     OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
 AS
@@ -288,6 +293,11 @@ DECLARE
     temp_input      int;
     temp_id         int;
 BEGIN
+
+    IF (answer ->> 'askForQualification')::boolean IS FALSE THEN
+        raise log 'exit';
+        return json_build_object('score', 0);
+    end if;
 
     req_id := (answer ->> 'requirementId')::int;
     product_answers := (answer ->> 'products')::jsonb;
