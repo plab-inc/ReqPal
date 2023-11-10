@@ -54,7 +54,6 @@ watch(fields, async (value) => {
 
   if(catalogStore.currentCatalog?.catalog_id !== value.options.catalogId) {
     selectedRequirement.value = undefined;
-    value.options.requirementId = undefined;
   }
 
   if(value.options.catalogId) {
