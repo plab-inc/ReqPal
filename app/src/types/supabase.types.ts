@@ -259,7 +259,7 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "questions_lessons_uuid_fk"
+            foreignKeyName: "questions_lesson_uuid_fkey"
             columns: ["lesson_uuid"]
             isOneToOne: false
             referencedRelation: "lessons"
@@ -586,13 +586,6 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      change_user_password: {
-        Args: {
-          current_plain_password: string
-          new_plain_password: string
-        }
-        Returns: Json
-      }
       check_user_role: {
         Args: {
           uid: string
