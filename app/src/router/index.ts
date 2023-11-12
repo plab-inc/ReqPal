@@ -130,6 +130,11 @@ const routes = [
                 component: () => import("@/views/user/Feedback.view.vue"),
             },
             {
+                path: "/legal",
+                name: "Legal",
+                component: () => import("@/views/user/Legal.view.vue"),
+            },
+            {
                 path: "/login",
                 name: "LogIn",
                 component: () => import("@/views/user/LogIn.view.vue"),

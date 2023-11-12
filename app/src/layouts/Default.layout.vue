@@ -80,6 +80,7 @@
               :title="themeStore.currentTheme === 'light' ? 'Toggle Dark Theme' : 'Toggle Light Theme'"
               @click="themeStore.toggleUserTheme">
           </v-list-item>
+          <v-list-item prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal"></v-list-item>
         </v-list>
       </template>
     </v-navigation-drawer>

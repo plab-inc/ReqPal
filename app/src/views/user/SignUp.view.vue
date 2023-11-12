@@ -7,7 +7,7 @@
   <v-divider></v-divider>
 
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signUpForm" fast-fail class="mt-10">
-    <v-row>
+    <v-row no-gutter>
       <v-col cols="11">
         <v-text-field
             v-model="username"
@@ -53,7 +53,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row v-if="!isTeacher">
+    <v-row v-if="!isTeacher" no-gutters>
       <v-col>
         <v-select
             label="Dozent"
@@ -66,7 +66,16 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
+      <v-col>
+        <v-checkbox :rules="[rules.required]">
+          <template v-slot:label>
+            <p> Ich habe die <a href="/legal" target="_blank">Nutzungsbedingungen</a> gelesen und akzeptiere diese.</p>
+          </template>
+        </v-checkbox>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
       <v-col>
         <v-btn block type="submit" :disabled="!isFormValid"> Registrieren</v-btn>
       </v-col>
