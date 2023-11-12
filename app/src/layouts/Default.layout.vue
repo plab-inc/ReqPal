@@ -77,7 +77,7 @@
           <v-list-item v-if="authStore.user" prepend-icon="mdi-logout" title="Logout" @click="logout"></v-list-item>
           <v-list-item
               :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-              :title="themeStore.currentTheme === 'light' ? 'Toggle Dark Theme' : 'Toggle Light Theme'"
+              :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
               @click="themeStore.toggleUserTheme">
           </v-list-item>
           <v-list-item prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal"></v-list-item>
