@@ -17,7 +17,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="1">
-        <v-switch color="primary" v-model="isTeacher" inset label="Dozent"></v-switch>
+        <v-switch color="primary" v-model="isTeacher" inset label=" Ich bin Dozent"></v-switch>
       </v-col>
     </v-row>
     <v-row>
@@ -56,7 +56,7 @@
     <v-row v-if="!isTeacher" no-gutters>
       <v-col>
         <v-select
-            label="Dozent"
+            label="Mein Dozent"
             prepend-inner-icon="mdi-school"
             v-model="selectedTeacher"
             :rules="[rules.required]"
