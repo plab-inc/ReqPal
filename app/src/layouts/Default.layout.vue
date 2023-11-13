@@ -4,8 +4,7 @@
                        indeterminate
                        color="warning"
                        :active="utilStore.showLoadingBar"
-
-    ></v-progress-linear>
+    />
     <v-navigation-drawer
         location="left"
         width="250"
@@ -21,37 +20,56 @@
                      :active="false"
                      :prepend-avatar="profileStore.getAvatar"
                      to="/account"
-        ></v-list-item>
+                     elevation="3"
+                     rounded
+        />
         <v-list-item v-if="!authStore.user"
                      prepend-icon="mdi-login"
                      title="Login" to="Login"
-        ></v-list-item>
+                     rounded
+        />
       </v-list>
-
-      <v-divider></v-divider>
-
+      <v-divider class="my-1"/>
       <v-list nav>
-        <v-list-item prepend-icon="mdi-home" title="Home" to="/" exact></v-list-item>
+        <v-list-item
+            rounded prepend-icon="mdi-home"
+            title="Home" to="/"
+            exact/>
         <div v-if="authStore.user">
-          <v-list-item v-if="authStore.isTeacher" prepend-icon="mdi-school" title="Erstellte Lektionen" to="/lessons"></v-list-item>
+          <v-list-item
+              rounded v-if="authStore.isTeacher"
+              prepend-icon="mdi-school"
+              title="Erstellte Lektionen"
+              to="/lessons"/>
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
               <v-list-item
                   v-bind="props"
                   prepend-icon="mdi-school"
                   title="Lernen"
-              ></v-list-item>
+                  rounded
+              />
             </template>
-            <v-list-item to="/lessons" title="Lektionen"
-                         :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen Lektionen' : 'Noch '+lessonStore.openLessons+' offen'">
-              <template v-slot:append>
-                <v-progress-circular class="ma-1" size="27"
-                                     :model-value="(lessonStore.lessons.length - lessonStore.openLessons / lessonStore.lessons.length) * 100"></v-progress-circular>
+            <v-list-item
+                rounded
+                to="/lessons"
+                title="Lektionen"
+                :subtitle="lessonStore.openLessons <= 0 ? 'Keine Lektionen' : lessonStore.openLessons +'Offen'"
+            >
+              <template v-slot:prepend>
+                <v-progress-circular
+                    class="mr-4"
+                    size="27"
+                    :model-value="(lessonStore.lessons.length - lessonStore.openLessons / lessonStore.lessons.length) * 100"/>
               </template>
             </v-list-item>
-            <v-list-item title="Meine Punkte" :subtitle="profileStore.points">
-              <template v-slot:append>
-                <v-icon class="pr-1" size="30" color="warning">
+            <v-list-item
+                title="Meine Punkte"
+                :subtitle="profileStore.points"
+                rounded
+            >
+              <template v-slot:prepend>
+                <v-icon class="mr-n5 ml-n1" size="34" color="warning">
                   mdi-star-four-points-circle-outline
                 </v-icon>
               </template>
@@ -59,32 +77,38 @@
           </v-list-group>
         </div>
         <div v-if="authStore.user && authStore.isTeacher">
-          <v-divider></v-divider>
-          <v-list-item prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"></v-list-item>
-          <v-list-item prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"></v-list-item>
-          <v-list-item prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"></v-list-item>
-          <v-divider></v-divider>
+          <v-divider class="my-1"/>
+          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"/>
+          <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
+          <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
+          <v-divider class="my-1"/>
         </div>
         <div v-if="authStore.user">
-          <v-list-item prepend-icon="mdi-account" title="Profil" to="/profile"></v-list-item>
-          <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"></v-list-item>
+          <v-list-item rounded prepend-icon="mdi-cog" title="Account Einstellungen" to="/account"/>
+          <v-list-item rounded prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"/>
         </div>
       </v-list>
-
       <template v-slot:append>
-        <v-divider></v-divider>
+        <v-divider class="my-1"/>
         <v-list>
-          <v-list-item v-if="authStore.user" prepend-icon="mdi-logout" title="Logout" @click="logout"></v-list-item>
           <v-list-item
-              :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+              v-if="authStore.user"
+              prepend-icon="mdi-logout"
+              title="Logout" @click="logout"
+          />
+          <v-list-item
+              :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
               :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
-              @click="themeStore.toggleUserTheme">
-          </v-list-item>
-          <v-list-item prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal"></v-list-item>
+              @click="themeStore.toggleUserTheme"
+          />
+          <v-list-item
+              prepend-icon="mdi-scale-balance"
+              title="Rechtliche Hinweise"
+              to="/legal"
+          />
         </v-list>
       </template>
     </v-navigation-drawer>
-
     <v-main>
       <v-container fluid>
         <v-row>
