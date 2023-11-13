@@ -46,6 +46,17 @@ export const productQualificationExplanation: DialogText = {
     confirmLabel: explanationConfirmation,
 }
 
+export const productQualificationTeacherExplanation: DialogText = {
+    title: "Anforderung und Produkt Qualifizierung Aufgabe: Erklärung",
+    message: "Hier können Sie einen von Ihnen hochgeladenen Katalog auswählen und daraufhin eine Anforderung daraus auswählen. Entweder wird die Anforderung alleine in der Lektion" +
+        " angezeigt, so dass dann z.B. ein darauffolgendes Modul Bezug auf die Anforderung nehmen kann, oder Sie können hier direkt eine Produkt Qualifizierungs-Aufgabe zu der Anforderung erstellen. " +
+        "In der Produkt Qualifizierungs-Aufgabe ist das Ziel, die angegebenen Produkte nach ihrer Qualifizierung zu bewerten. Wählen Sie hierfür Produkte aus dem Katalog aus. " +
+        "Mthilfe der bereitgestellten Links und Anforderungen können die Lernenden dann die Produkte evaluieren. " +
+        "Mit dem Slider wird ein Wert zwischen 1 und 5 ausgewählt. Der Wert 1 ist schlecht, also nicht gut geeignet, während " +
+        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut."
+    ,
+    confirmLabel: explanationConfirmation,
+}
 
 export const notesExplanation: DialogText = {
     title: "Notizen: Erklärung",
@@ -55,11 +66,26 @@ export const notesExplanation: DialogText = {
     confirmLabel: explanationConfirmation,
 }
 
+export const notesTeacherExplanation: DialogText = {
+    title: "Notizen: Erklärung",
+    message: "Mithilfe von Textfeldern können sich Lernende Notizen beim Bearbeiten von Lektionen machen. Sie können den Notizfeldern Titel geben, " +
+        "so dass die Lernenden dazu angeregt werden, sich Notizen zu bestimmten Kategorieren zu machen. " +
+        "Hierbei handelt es sich um keine direkte Aufgabe, sondern nur um eine Hilfestellung für die Lernenden.",
+    confirmLabel: explanationConfirmation,
+}
+
 export const productExplanation: DialogText = {
     title: "Produkte: Erklärung",
     message: "In diesem Bereich finden Sie Produkte, die für den weiteren Verlauf dieser Lektion oder für konkrete Aufgaben relevant sein können. " +
         "Betrachten Sie sich die Produkte und klicken Sie bei Bedarf von weiteren Informationen auf das Produkt. " +
         "Sie werden dann zu einer hilfreichen Website oder der offiziellen Website des Produkts weitergeleitet.",
+    confirmLabel: explanationConfirmation,
+}
+
+export const textfieldExplanation: DialogText = {
+    title: "Textfeld: Erklärung",
+    message: "Hier können Sie einen Text eingeben, welcher in der Lektion dann angezeigt wird. Es kann sich dabei um eine Erklärung, einen Hinweis, eine Aufgabenstellung oder" +
+        " eine motivierende Nachricht handeln. Der Text ist unabhängig von den anderen Modulen, kann aber durch Kontext und ihrer Reihenfolge Bezug auf z.B. darauffolgende Module nehmen.",
     confirmLabel: explanationConfirmation,
 }
 
