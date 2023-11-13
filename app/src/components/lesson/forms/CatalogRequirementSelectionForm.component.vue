@@ -8,6 +8,7 @@ import RequirementItem from "@/components/catalog/requirement/RequirementItem.co
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue";
 import {requiredStringRule} from "@/utils/validationRules.ts";
+import Help from "@/components/lesson/modules/Help.component.vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -106,8 +107,8 @@ watch(fields, async (value) => {
       </v-col>
       <v-col>
         <v-slider
-            min="0"
-            max="4"
+            min="1"
+            max="5"
             step="1"
             thumb-label
             label="Toleranz"
@@ -116,6 +117,13 @@ watch(fields, async (value) => {
             v-model="fields.solution.toleranceValue"
         >
         </v-slider>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
+        <div class="mr-2">
+          <Help dialog-type="productQualificationTeacherExplanation"></Help>
+        </div>
       </v-col>
     </v-row>
   </v-container>
