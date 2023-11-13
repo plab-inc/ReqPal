@@ -8,13 +8,19 @@
   <v-container>
     <v-form v-model="isUserFormValid" @submit.prevent="saveChanges">
       <v-row>
-        <v-col cols="8">
+        <v-col cols="8" class="text-h5">
+          Profil
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
           <v-select
               v-model="selectedAvatar"
               label="Avatar auswählen"
               :items="avatarOptions"
               item-title="name"
               item-value="name"
+              variant="outlined"
               prepend-icon="mdi-camera-account"
           >
             <template v-slot:item="{ props, item }">
@@ -25,17 +31,18 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="8">
+        <v-col>
           <v-text-field
               v-model="username"
               label="Benutzername"
               prepend-icon="mdi-account-edit"
+              :rules="[requiredRule]"
               @blur="checkUsernameExists"
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="8">
+        <v-col>
           <v-text-field
               v-model="email"
               label="E-Mail"
@@ -46,19 +53,19 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn color="primary" type="submit" :disabled="!isUserFormValid">Änderungen speichern</v-btn>
+          <v-btn block color="primary" type="submit" :disabled="!isUserFormValid">Änderungen speichern</v-btn>
         </v-col>
       </v-row>
     </v-form>
-
+    <v-divider class="my-5"/>
     <v-form v-model="isPasswordFormValid" @submit.prevent="updatePassword" class="mt-5">
       <v-row>
-        <v-col cols="8">
-          <h1>Passwort</h1>
+        <v-col cols="8" class="text-h5">
+          Passwort
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="8">
+        <v-col>
           <v-text-field
               v-model="password"
               type="password"
@@ -70,7 +77,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn type="submit" :disabled="!isPasswordFormValid" color="primary">Passwort ändern</v-btn>
+          <v-btn block type="submit" :disabled="!isPasswordFormValid" color="primary">Passwort ändern</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -104,7 +111,7 @@ const password = ref();
 
 onMounted(async () => {
   if (authStore.user) await profileStore.fetchProfile(authStore.user.id);
-  selectedAvatar.value = profileStore.avatar;
+  selectedAvatar.value = profileStore.avatar.charAt(0).toUpperCase() + profileStore.avatar.slice(1);
 })
 
 async function checkUsernameExists() {
