@@ -3,6 +3,8 @@
 import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {requiredStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
+import Help from "@/components/lesson/modules/Help.component.vue";
+import Hint from "@/components/lesson/modules/Hint.component.vue";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();
@@ -157,6 +159,13 @@ watch([sliderOptions, sliderSolution], () => {
             :track-color="betweenRange(previewValue) ? 'success' : 'warning'"
             thumb-label>
         </v-slider>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
+        <div class="mr-2">
+          <Help dialog-type="sliderExplanation"></Help>
+        </div>
       </v-col>
     </v-row>
   </v-container>
