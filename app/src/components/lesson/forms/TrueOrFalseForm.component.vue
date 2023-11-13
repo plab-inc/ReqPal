@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import Help from "@/components/lesson/modules/Help.component.vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
@@ -49,6 +50,13 @@ watch(fields, (newFields) => {
             label="Hinweis"
             v-model="fields.hint"
         ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
+        <div class="mr-2">
+          <Help dialog-type="tfExplanation"></Help>
+        </div>
       </v-col>
     </v-row>
   </v-container>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {requiredStringRule, requiredRule} from "@/utils/validationRules.ts";
+import Help from "@/components/lesson/modules/Help.component.vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
@@ -55,6 +56,13 @@ watch(fields, (newFields) => {
             mdi-plus
           </v-icon>
         </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
+        <div class="mr-2">
+          <Help dialog-type="notesTeacherExplanation"></Help>
+        </div>
       </v-col>
     </v-row>
   </v-container>
