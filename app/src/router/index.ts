@@ -150,16 +150,6 @@ const routes = [
                 component: () => import("@/views/user/ResetPassword.view.vue"),
             },
             {
-                path: "/profile",
-                name: "Profile",
-                component: () => import("@/views/user/Profile.view.vue"),
-                meta: {
-                    middleware: [
-                        requiresAuth
-                    ]
-                },
-            },
-            {
                 path: "/account",
                 name: "Account",
                 component: () => import("@/views/user/Account.view.vue"),
