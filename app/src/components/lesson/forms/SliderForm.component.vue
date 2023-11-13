@@ -4,7 +4,6 @@ import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {requiredStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
-import Hint from "@/components/lesson/modules/Hint.component.vue";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();
