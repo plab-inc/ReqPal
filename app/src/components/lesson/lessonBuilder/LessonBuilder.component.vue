@@ -69,6 +69,7 @@ const formIsValid = ref(false);
 const components = lessonFormStore.getComponents;
 const lessons = lessonStore.getLessons;
 const {canDrop, isOver} = toRefs(collect);
+const showToolTips = ref<boolean>(false);
 
 async function validate() {
   await form.value.validate();
@@ -77,7 +78,7 @@ async function validate() {
 async function uploadLesson() {
   await validate();
 
-  if(!formIsValid.value) {
+  if (!formIsValid.value) {
     return;
   }
 
@@ -191,7 +192,16 @@ async function uploadLesson() {
               color="primary"
           >
             <v-col v-for="template in templates" :key="template">
-              <LessonModuleBox :title="template"/>
+              <LessonModuleBox :title="template" :show-tool-tip="showToolTips" :key="template"/>
+            </v-col>
+            <v-col>
+              <v-switch
+                  v-model="showToolTips"
+                  inset
+                  label="Beschreibungen einblenden"
+                  :true-value="true"
+                  :false-value="false"
+              ></v-switch>
             </v-col>
           </v-card>
         </v-col>
@@ -238,7 +248,6 @@ async function uploadLesson() {
           </v-card>
         </v-col>
       </v-row>
-
     </v-form>
   </v-container>
 </template>
