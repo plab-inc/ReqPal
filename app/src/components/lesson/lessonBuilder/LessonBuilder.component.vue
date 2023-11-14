@@ -22,6 +22,10 @@ interface ComponentsMap {
   [key: string]: Component;
 }
 
+const props = defineProps<{
+  showToolTip: boolean
+}>();
+
 const themeColors = useTheme().current.value.colors;
 const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
 const rules = {
@@ -69,7 +73,6 @@ const formIsValid = ref(false);
 const components = lessonFormStore.getComponents;
 const lessons = lessonStore.getLessons;
 const {canDrop, isOver} = toRefs(collect);
-const showToolTips = ref<boolean>(false);
 
 async function validate() {
   await form.value.validate();
@@ -192,16 +195,7 @@ async function uploadLesson() {
               color="primary"
           >
             <v-col v-for="template in templates" :key="template">
-              <LessonModuleBox :title="template" :show-tool-tip="showToolTips" :key="template"/>
-            </v-col>
-            <v-col>
-              <v-switch
-                  v-model="showToolTips"
-                  inset
-                  label="Beschreibungen einblenden"
-                  :true-value="true"
-                  :false-value="false"
-              ></v-switch>
+              <LessonModuleBox :title="template" :show-tool-tip="showToolTip" :key="template"/>
             </v-col>
           </v-card>
         </v-col>
