@@ -6,7 +6,8 @@ import {toRefs} from '@vueuse/core'
 import {vElementHover} from "@vueuse/components";
 
 const props = defineProps<{
-  title: string
+  title: string,
+  showToolTip: boolean
 }>();
 
 const [collect, drag] = useDrag(() => ({
@@ -29,7 +30,7 @@ const componentsTranslationMap: Record<string, { title: string, tooltip: string 
   'Note': {title: 'Notizen', tooltip: 'Ein Freitextfeld für Notizen des Studenten'},
 };
 
-const { isDragging } = toRefs(collect);
+const {isDragging} = toRefs(collect);
 const isHovered = ref(false);
 
 const translatedTitle = computed(() => {
@@ -52,18 +53,18 @@ function onHover(state: boolean) {
       :ref="drag"
       :style="{ opacity: isDragging ? 0.3 : 1 }"
   >
-        <v-card
-            v-element-hover="onHover"
-            :variant="isHovered ? 'outlined' : 'elevated'"
-            border
-            ripple
-            density="compact"
-            :title="translatedTitle"
-        >
-          <v-tooltip location="bottom" activator="parent">
-            {{ translatedTooltip }}
-          </v-tooltip>
-        </v-card>
+    <v-card
+        v-element-hover="onHover"
+        :variant="isHovered ? 'outlined' : 'elevated'"
+        border
+        ripple
+        density="compact"
+        :title="translatedTitle"
+    >
+      <v-tooltip v-if="showToolTip" location="bottom" activator="parent">
+        {{ translatedTooltip }}
+      </v-tooltip>
+    </v-card>
   </div>
 </template>
 
