@@ -55,6 +55,13 @@ export const requiredEmailRule = (value: string): boolean | string => {
     return pattern.test(value) || "Ungültige E-Mail-Adresse";
 };
 
+export const requiredUsernameRule = (value: string): boolean | string => {
+    //no email in username
+    const pattern =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return !pattern.test(value) || "Ihr Nutzername darf keine E-mail Adresse beinhalten";
+};
+
 export const requiredHyperlinkRule = (value: string): boolean | string => {
     if (value === "") return true;
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
