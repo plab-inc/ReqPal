@@ -8,16 +8,18 @@
 
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signUpForm" fast-fail class="mt-10">
     <v-row no-gutter>
-      <v-col cols="11">
+      <v-col sm="9" md="10">
         <v-text-field
             v-model="username"
             label="Username"
             prepend-inner-icon="mdi-account"
-            :rules="[rules.required]"
+            :rules="[requiredRule, requiredUsernameRule]"
         ></v-text-field>
       </v-col>
-      <v-col cols="1">
-        <v-switch color="primary" v-model="isTeacher" inset label=" Ich bin Dozent"></v-switch>
+      <v-col sm="3" md="2" class="d-flex justify-center justify-sm-end">
+        <div>
+          <v-switch color="primary" v-model="isTeacher" inset label=" Ich bin Dozent"></v-switch>
+        </div>
       </v-col>
     </v-row>
     <v-row>
@@ -26,7 +28,7 @@
             v-model="email"
             label="E-Mail"
             prepend-inner-icon="mdi-email-outline"
-            :rules="[rules.required, rules.email]"
+            :rules="[requiredRule, requiredEmailRule]"
             type="email"
         ></v-text-field>
       </v-col>
@@ -37,7 +39,7 @@
             v-model="password"
             label="Passwort"
             prepend-inner-icon="mdi-lock-outline"
-            :rules="[rules.required, requiredAtLeast6CharsRule]"
+            :rules="[requiredRule, requiredAtLeast6CharsRule]"
             type="password"
         ></v-text-field>
       </v-col>
@@ -47,7 +49,7 @@
         <v-text-field
             v-model="confirmPassword"
             label="Passwort wiederholen"
-            :rules="[rules.required, rules.matchingPasswords]"
+            :rules="[requiredRule,  (value: string) => matchingPasswordsRule(value, password)]"
             prepend-inner-icon="mdi-lock-outline"
             type="password"
         ></v-text-field>
@@ -59,7 +61,7 @@
             label="Mein Dozent"
             prepend-inner-icon="mdi-school"
             v-model="selectedTeacher"
-            :rules="[rules.required]"
+            :rules="[requiredRule]"
             :items="teachers"
             :item-title="item => item.username"
             :item-value="item => item.id"
@@ -68,7 +70,7 @@
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <v-checkbox :rules="[rules.required]">
+        <v-checkbox :rules="[requiredRule]">
           <template v-slot:label>
             <p> Ich habe die <a href="/legal" target="_blank">Nutzungsbedingungen</a> gelesen und akzeptiere diese.</p>
           </template>
@@ -95,7 +97,7 @@ import {useAuthStore} from "@/stores/auth.store";
 import {
   matchingPasswordsRule,
   requiredAtLeast6CharsRule,
-  requiredEmailRule,
+  requiredEmailRule, requiredUsernameRule,
   requiredRule
 } from "@/utils/validationRules";
 
@@ -132,12 +134,6 @@ const submit = async () => {
     }
   }
 }
-
-const rules = {
-  required: requiredRule,
-  matchingPasswords: (value: string) => matchingPasswordsRule(value, password.value),
-  email: requiredEmailRule,
-};
 
 onBeforeMount(async () => {
   const data = await authStore.getTeachers();
