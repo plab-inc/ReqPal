@@ -13,7 +13,8 @@ export type DialogType =
     | 'productExplanation'
     | 'productQualificationExplanation'
     | 'productQualificationTeacherExplanation'
-    | 'textfieldExplanation';
+    | 'textfieldExplanation'
+    | 'dividerTeacherExplanation';
 
 interface IAlert {
     id: string;

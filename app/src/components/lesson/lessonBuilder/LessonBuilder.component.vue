@@ -13,6 +13,7 @@ import TextfieldForm from "@/components/lesson/forms/TextfieldForm.component.vue
 import CatalogRequirementSelection from "@/components/lesson/forms/CatalogRequirementSelectionForm.component.vue"
 import NotesForm from "@/components/lesson/forms/NotesForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
+import Divider from "@/components/lesson/forms/DividerForm.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
@@ -27,7 +28,7 @@ const props = defineProps<{
 }>();
 
 const themeColors = useTheme().current.value.colors;
-const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider']
+const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider', 'Divider']
 const rules = {
   requiredString: requiredStringRule
 };
@@ -38,6 +39,7 @@ const componentsMap: ComponentsMap = {
   'Slider': markRaw(SliderForm),
   'Textfield': markRaw(TextfieldForm),
   'Note': markRaw(NotesForm),
+  'Divider': markRaw(Divider)
 };
 
 const lessonFormStore = useLessonFormStore();

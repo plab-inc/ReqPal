@@ -1,11 +1,16 @@
 import {DialogType, useUtilStore} from "@/stores/util.store.ts";
 import {
-    LessonFinished, LessonReset,
+    dividerTeacherExplanation,
+    LessonFinished,
+    LessonReset,
     mcExplanation,
-    notesExplanation, notesTeacherExplanation,
+    notesExplanation,
+    notesTeacherExplanation,
     productExplanation,
-    productQualificationExplanation, productQualificationTeacherExplanation,
-    sliderExplanation, textfieldExplanation,
+    productQualificationExplanation,
+    productQualificationTeacherExplanation,
+    sliderExplanation,
+    textfieldExplanation,
     tfExplanation
 } from "@/utils/dialog.defaults.ts";
 
@@ -73,6 +78,9 @@ class AlertServiceClass {
                 break;
             case "notesTeacherExplanation":
                 this.store.openDialog(notesTeacherExplanation);
+                break;
+            case "dividerTeacherExplanation":
+                this.store.openDialog(dividerTeacherExplanation);
                 break;
             default:
                 break;
