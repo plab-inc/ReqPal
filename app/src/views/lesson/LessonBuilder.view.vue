@@ -25,7 +25,7 @@ const showToolTips = ref<boolean>(true);
         <v-btn
             :value="true"
         >
-          Modulbeschreibungen anzeigen
+          Lernmodul Tooltips
         </v-btn>
       </v-btn-toggle>
     </v-col>
