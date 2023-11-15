@@ -7,7 +7,7 @@ import RequirementSelect from "@/components/catalog/requirement/RequirementSelec
 import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue";
-import {requiredStringRule} from "@/utils/validationRules.ts";
+import {containsAtLeastOneElementRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/modules/Help.component.vue";
 
 const lessonFormStore = useLessonFormStore()
@@ -17,7 +17,6 @@ const props = defineProps<{ componentId: string }>();
 const loadingReqs = ref<boolean>(false);
 const requirements = ref<Requirement[]>([]);
 const products = ref<Product[]>([]);
-const activeProducts = ref<number[]>([]);
 
 const fields = ref<any>({
   question: lessonFormStore.getComponentFieldValues(props.componentId, 'question'),
@@ -36,17 +35,6 @@ function updateStoreData() {
   lessonFormStore.setComponentData(props.componentId, 'options', fields.value.options);
   lessonFormStore.setComponentData(props.componentId, 'question', fields.value.question);
   lessonFormStore.setComponentData(props.componentId, 'solution', fields.value.solution);
-}
-
-function toggleActiveProduct(id?: number) {
-  if (id) {
-    const foundIndex = fields.value.options.productIds.findIndex((p: any) => p === id);
-    if (foundIndex > -1) {
-      fields.value.options.productIds.splice(foundIndex, 1);
-    } else {
-      fields.value.options.productIds.push(id);
-    }
-  }
 }
 
 function toggleLoadingReqs() {
@@ -88,7 +76,6 @@ watch(fields, async (value) => {
 </script>
 
 <template>
-  {{activeProducts}}
   <v-container>
     <v-row>
       <v-col>
@@ -106,25 +93,28 @@ watch(fields, async (value) => {
                   v-model="fields.options.askForQualification"></v-switch>
       </v-col>
     </v-row>
+
     <v-row v-if="selectedRequirement && fields.options.askForQualification">
-      <v-col v-for="(product, index) in products" :key="product.product_name" cols="12" md="6" lg="4">
+      <v-col>
+        <div v-if="fields.options.productIds.length <= 0" class="text-subtitle-1 text-warning">Mindestens ein Produkt
+          muss ausgewählt werden.
+        </div>
+      </v-col>
+      <v-col v-for="(product) in products" :key="product.product_name" cols="12" md="6" lg="4">
         <ProductDetailItem :requirement="selectedRequirement" :loading="loadingReqs"
                            :product="product"></ProductDetailItem>
-        <v-btn-toggle
-            elevation="3"
-            v-model="activeProducts[index]"
-            variant="outlined"
-            rounded
-            divided
-            color="warning"
-        >
-          <v-btn
-              :value="product.product_id"
-              @click="toggleActiveProduct(product.product_id)"
-          >
-            Produkt abfragen
-          </v-btn>
-        </v-btn-toggle>
+        <div class="d-flex justify-center align-center">
+          <div>
+            <v-switch
+                v-model="fields.options.productIds"
+                color="primary"
+                label="Produkt abfragen"
+                :value="product.product_id"
+                hide-details
+                :rules="[containsAtLeastOneElementRule]"
+            ></v-switch>
+          </div>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="selectedRequirement && fields.options.askForQualification">

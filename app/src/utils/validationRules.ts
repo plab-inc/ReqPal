@@ -67,3 +67,9 @@ export const requiredHyperlinkRule = (value: string): boolean | string => {
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
     return pattern.test(value) || "Ungültiger Hyperlink";
 };
+
+export const containsAtLeastOneElementRule = (value: any) : boolean | string => {
+    // Überprüfe, ob mindestens ein Wert in value nicht null oder undefined ist
+    console.log(value)
+    return Array.isArray(value) && value.some(element => element !== null && element !== undefined);
+};
