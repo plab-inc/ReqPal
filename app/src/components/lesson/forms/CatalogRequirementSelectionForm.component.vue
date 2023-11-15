@@ -107,8 +107,8 @@ watch(fields, async (value) => {
       </v-col>
       <v-col>
         <v-slider
-            min="1"
-            max="5"
+            min="0"
+            max="4"
             step="1"
             thumb-label
             label="Toleranz"
