@@ -13,6 +13,9 @@ const loading = ref<boolean>(false);
 const products = ref<Product[]>([]);
 const toleranceValue = ref<number>(0);
 const authStore = useAuthStore();
+const maxValue = 5;
+const minValue = 1;
+
 interface Props {
   componentId: string,
 }
@@ -72,7 +75,7 @@ onBeforeMount(async () => {
                 name: productDTO.product_name,
                 link: productDTO.product_url,
                 solution: p.qualification ? p.qualification : undefined,
-                input: authStore.isTeacher ? p.qualification ? +p.qualification : 0 : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : 0,
+                input: authStore.isTeacher ? p.qualification ? +p.qualification : minValue : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : minValue,
                 comment: p.comment ? p.comment : undefined
               })
             }
@@ -104,7 +107,7 @@ function checkSolution(product: Product) {
 function getMinValueForProduct(product: Product) {
   if (product.solution) {
     const min: number = +product.solution - +toleranceValue.value;
-    if (min < 0) return 0;
+    if (min < minValue) return minValue;
     return min;
   }
   return -1;
@@ -113,7 +116,7 @@ function getMinValueForProduct(product: Product) {
 function getMaxValueForProduct(product: Product) {
   if (product.solution) {
     const max: number = +product.solution + +toleranceValue.value;
-    if (max > +product.solution) return +product.solution;
+    if (max >= maxValue) return maxValue;
     return max;
   }
   return -1;
@@ -209,7 +212,7 @@ watch(products.value, (newProducts) => {
             <v-col md="6">
               <v-row>
                 <v-col>
-                  <div class="text-h6 text-center">Bewertung</div>
+                  <div class="text-h6 text-center">{{ product.solution ? 'Ideale Bewertung' : 'Bewertung' }}</div>
                 </v-col>
                 <v-col>
                   <div class="d-flex align-center justify-center">
