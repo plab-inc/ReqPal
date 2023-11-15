@@ -11,7 +11,6 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
 const products = ref<Product[]>([]);
-const filteredProducts = ref<Product[]>([]);
 const toleranceValue = ref<number>(0);
 const authStore = useAuthStore();
 const maxValue = 5;
@@ -55,8 +54,6 @@ onBeforeMount(async () => {
       if (requirement.value && fields.value.options.askForQualification) {
         let result;
         let savedInput = [];
-
-        filteredProducts.value = fields.value.options.productIds;
 
         if (fields.value.options.hasOwnProperty("products")) {
           savedInput = fields.value.options.products;
