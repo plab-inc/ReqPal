@@ -74,6 +74,12 @@ export const notesTeacherExplanation: DialogText = {
     confirmLabel: explanationConfirmation,
 }
 
+export const dividerTeacherExplanation: DialogText = {
+    title: "Trenner: Erklärung",
+    message: "Mithilfe von Trennern können Sie die Lektion in verschiedene Abschnitte unterteilen. ",
+    confirmLabel: explanationConfirmation,
+}
+
 export const productExplanation: DialogText = {
     title: "Produkte: Erklärung",
     message: "In diesem Bereich finden Sie Produkte, die für den weiteren Verlauf dieser Lektion oder für konkrete Aufgaben relevant sein können. " +
