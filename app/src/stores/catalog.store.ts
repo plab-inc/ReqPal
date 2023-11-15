@@ -51,7 +51,7 @@ export const useCatalogStore = defineStore('catalog', {
         async deleteCatalog(catalogId: number) {
             await catalogService.push.deleteCatalog(catalogId).then(
                 (data: CatalogDTO[]) => {
-                    if(data.length > 0) {
+                    if (data.length > 0) {
                         this.catalogs.splice(this.catalogs.findIndex(c => c.catalog_id === catalogId), 1);
                         return;
                     }
@@ -132,6 +132,14 @@ export const useCatalogStore = defineStore('catalog', {
 
         async fetchProductDetailsByRequirementWithQualification(requiremendId: number) {
             return await catalogService.pull.fetchProductDetailsByRequirement(requiremendId);
+        },
+
+        async fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId: number, productId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId, productId);
+        },
+
+        async fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId: number, productId: number) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId, productId);
         },
 
         async fetchProductById(productId: number) {

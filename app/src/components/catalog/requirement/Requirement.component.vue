@@ -11,6 +11,7 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
 const products = ref<Product[]>([]);
+const filteredProducts = ref<Product[]>([]);
 const toleranceValue = ref<number>(0);
 const authStore = useAuthStore();
 const maxValue = 5;
@@ -55,28 +56,30 @@ onBeforeMount(async () => {
         let result;
         let savedInput = [];
 
+        filteredProducts.value = fields.value.options.productIds;
+
         if (fields.value.options.hasOwnProperty("products")) {
           savedInput = fields.value.options.products;
         }
 
-        if (fields.value.solution) {
-          toleranceValue.value = fields.value.solution.toleranceValue;
-          result = await catalogStore.fetchProductDetailsByRequirementWithQualification(requirement.value.requirement_id);
-        } else {
-          result = await catalogStore.fetchProductDetailsByRequirementWithoutQualification(requirement.value.requirement_id);
-        }
+        for (const productId of fields.value.options.productIds) {
+          if (fields.value.solution) {
+            toleranceValue.value = fields.value.solution.toleranceValue;
+            result = await catalogStore.fetchProductDetailsByRequirementWithQualificationByProductId(requirement.value.requirement_id, productId);
+          } else {
+            result = await catalogStore.fetchProductDetailsByRequirementWithoutQualificationByProductId(requirement.value.requirement_id, productId);
+          }
 
-        if (result) {
-          for (const p of result) {
-            let productDTO = await catalogStore.fetchProductById(p.product_id);
+          if (result) {
+            let productDTO = await catalogStore.fetchProductById(result.product_id);
             if (productDTO) {
               products.value.push({
                 id: productDTO.product_id,
                 name: productDTO.product_name,
                 link: productDTO.product_url,
-                solution: p.qualification ? p.qualification : undefined,
-                input: authStore.isTeacher ? p.qualification ? +p.qualification : minValue : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : minValue,
-                comment: p.comment ? p.comment : undefined
+                solution: result.qualification ? result.qualification : undefined,
+                input: authStore.isTeacher ? result.qualification ? +result.qualification : minValue : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : minValue,
+                comment: result.comment ? result.comment : undefined
               })
             }
           }
@@ -128,10 +131,11 @@ function updateStoreData(options: any) {
 
 watch(products.value, (newProducts) => {
 
-  let updatedOptions: { catalogId: any, requirementId: any, askForQualification: any, products: { id: number, input: number }[] } = {
+  let updatedOptions: { catalogId: any, requirementId: any, askForQualification: any, productIds: any, products: { id: number, input: number }[] } = {
     catalogId: fields.value.options.catalogId,
     requirementId: fields.value.options.requirementId,
     askForQualification: fields.value.options.askForQualification,
+    productIds: fields.value.options.productIds,
     products: []
   }
 
