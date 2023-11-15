@@ -5,7 +5,7 @@ import {DndProvider} from "vue3-dnd";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 
 const lessonFormStore = useLessonFormStore();
-const showToolTips = ref<boolean>(true);
+const filters = ref<string[]>([]);
 </script>
 
 <template>
@@ -16,14 +16,14 @@ const showToolTips = ref<boolean>(true);
     <v-col cols="auto">
       <v-btn-toggle
           elevation="3"
-          v-model="showToolTips"
+          v-model="filters"
           variant="outlined"
           rounded
           divided
           color="warning"
       >
         <v-btn
-            :value="true"
+            value="showToolTips"
         >
           Lernmodul Tooltips
         </v-btn>
@@ -33,7 +33,7 @@ const showToolTips = ref<boolean>(true);
   <v-divider></v-divider>
   <DndProvider :backend="HTML5Backend">
     <v-container>
-      <LessonBuilder :show-tool-tip="showToolTips ? showToolTips : false"/>
+      <LessonBuilder :show-tool-tip="!!filters?.includes('showToolTips')"/>
     </v-container>
   </DndProvider>
 </template>
