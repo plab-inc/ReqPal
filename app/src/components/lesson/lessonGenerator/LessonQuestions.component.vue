@@ -7,6 +7,7 @@ import Slider from "@/components/lesson/modules/Slider.component.vue";
 import Textfield from "@/components/lesson/modules/Textfield.component.vue";
 import Notes from "@/components/lesson/modules/Notes.component.vue";
 import Product from "@/components/lesson/modules/Product.component.vue";
+import Divider from "@/components/lesson/modules/Divider.component.vue";
 
 interface Props {
   components: ComponentEntry[];
@@ -26,13 +27,14 @@ const componentsMap: ComponentsMap = {
   'Textfield': markRaw(Textfield),
   'Note': markRaw(Notes),
   'Products': markRaw(Product),
+  'Divider': markRaw(Divider)
 };
 const getComponentInstance = (componentName: string): Component => {
   return componentsMap[componentName];
 };
 
-function isRequirementOrTextfield(componentType: string): boolean {
-  return componentType === 'Requirement' || componentType === 'Textfield';
+function isRequirementOrTextfieldOrDivider(componentType: string): boolean {
+  return componentType === 'Requirement' || componentType === 'Textfield' || componentType === 'Divider';
 }
 </script>
 
@@ -41,9 +43,9 @@ function isRequirementOrTextfield(componentType: string): boolean {
     <v-row v-for="question in components">
       <v-col class="my-2">
         <v-sheet
-            :class="isRequirementOrTextfield(question.type) ? '' : 'pa-3'"
+            :class="isRequirementOrTextfieldOrDivider(question.type) ? '' : 'pa-3'"
             rounded
-            :elevation="isRequirementOrTextfield(question.type) ? '0' : '3'">
+            :elevation="isRequirementOrTextfieldOrDivider(question.type) ? '0' : '3'">
           <component
               :is="getComponentInstance(question.type)"
               :key="question.uuid"
