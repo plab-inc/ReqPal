@@ -45,9 +45,9 @@ export const requiredNumberRule = (value: null | number | string): boolean | str
     }
 };
 
-
-export const matchingPasswordsRule = (value: string, password: string): boolean | string =>
-    value === password || "Die Passwörter stimmen nicht überein";
+export const matchingPasswordsRule = (value: string, password: string): boolean | string => {
+    return value === password || "Die Passwörter stimmen nicht überein";
+};
 
 export const requiredEmailRule = (value: string): boolean | string => {
     const pattern =
@@ -70,6 +70,5 @@ export const requiredHyperlinkRule = (value: string): boolean | string => {
 
 export const containsAtLeastOneElementRule = (value: any) : boolean | string => {
     // Überprüfe, ob mindestens ein Wert in value nicht null oder undefined ist
-    console.log(value)
     return Array.isArray(value) && value.some(element => element !== null && element !== undefined);
 };
