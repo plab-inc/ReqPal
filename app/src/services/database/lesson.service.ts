@@ -1,5 +1,13 @@
 import {supabase} from "@/plugins/supabase";
-import {LessonAnswer, LessonForm, LessonStatistic, Question, UserAnswer, UserResult} from "@/types/lesson.types.ts";
+import {
+    LessonAnswer,
+    LessonDTO,
+    LessonForm,
+    LessonStatistic,
+    Question,
+    UserAnswer,
+    UserResult
+} from "@/types/lesson.types.ts";
 
 class LessonServiceClass {
 
@@ -30,7 +38,7 @@ class LessonServiceClass {
         checkIfLessonHasSavedProgress: this.checkIfLessonHasSavedProgress.bind(this)
     };
 
-    private async fetchLessons(examples: boolean = false) {
+    private async fetchLessons(examples: boolean = false): Promise<LessonDTO[] | undefined> {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -44,7 +52,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonById(lessonUUID: string) {
+    private async fetchLessonById(lessonUUID: string): Promise<LessonDTO | undefined>  {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -59,7 +67,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchQuestionsForLesson(lessonUUID: string) {
+    private async fetchQuestionsForLesson(lessonUUID: string): Promise<Question[] | undefined>  {
 
         const {data, error} = await supabase
             .from('questions')
@@ -74,7 +82,7 @@ class LessonServiceClass {
 
     }
 
-    private async uploadLesson(lesson: LessonForm) {
+    private async uploadLesson(lesson: LessonForm): Promise<void>  {
         const {error} = await supabase
             .rpc('create_lesson_from_json', {
                 data: lesson
@@ -83,7 +91,7 @@ class LessonServiceClass {
         if (error) throw error;
     }
 
-    private async getLesson(lessonUUID: string) {
+    private async getLesson(lessonUUID: string): Promise<LessonForm | undefined>  {
         const {error, data} = await supabase
             .rpc('get_lesson_json', {
                 p_lesson_uuid: lessonUUID
@@ -106,7 +114,7 @@ class LessonServiceClass {
         return data;
     }
 
-    private async togglePublished(lessonUUID: string) {
+    private async togglePublished(lessonUUID: string): Promise<void> {
         const {error} = await supabase
             .rpc('reverse_boolean_value', {
                 row_uuid: lessonUUID
@@ -116,19 +124,17 @@ class LessonServiceClass {
     }
 
 
-    private async submitUserAnswers(answers: any) {
+    private async submitUserAnswers(answers: any): Promise<void> {
 
-        const {data, error} = await supabase.rpc('create_user_answers_from_json', {
+        const {error} = await supabase.rpc('create_user_answers_from_json', {
             data: answers
         })
 
         if (error) throw error;
 
-        return data;
-
     }
 
-    private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string) {
+    private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string): Promise<Question[] | undefined> {
 
         const {data, error} = await supabase
             .from('questions')
@@ -155,12 +161,13 @@ class LessonServiceClass {
 
         if (data) {
             return data[0];
-        } else {
-            return null;
         }
+
+        return null;
+
     }
 
-    private async fetchLessonUserAnswers(lessonUUID: string, userUUID: string) {
+    private async fetchLessonUserAnswers(lessonUUID: string, userUUID: string): Promise<UserAnswer[] | undefined | null> {
         const {data, error} = await supabase
             .from('user_answers')
             .select('question_id, answer')
@@ -171,11 +178,13 @@ class LessonServiceClass {
 
         if (data) {
             return data as UserAnswer[];
-        } else return null;
+        }
+
+        return null;
 
     }
 
-    private async fetchUserScoreForLesson(lessonUUID: string, userUUID: string) {
+    private async fetchUserScoreForLesson(lessonUUID: string, userUUID: string): Promise<UserResult[] | undefined | null> {
         const {data, error} = await supabase
             .from('user_answers')
             .select('result')
@@ -186,7 +195,9 @@ class LessonServiceClass {
 
         if (data) {
             return data as UserResult[];
-        } else return null;
+        }
+
+        return null;
     }
 
     private async fetchFirstUserScoreForLesson(lessonUUID: string, userUUID: string) {
