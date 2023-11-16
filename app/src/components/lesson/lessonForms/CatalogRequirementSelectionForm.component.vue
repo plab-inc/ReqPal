@@ -139,11 +139,9 @@ watch(fields, async (value) => {
         </v-slider>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <div class="mr-2">
-          <Help dialog-type="productQualificationTeacherExplanation"></Help>
-        </div>
+        <Help dialog-type="productQualificationTeacherExplanation"></Help>
       </v-col>
     </v-row>
   </v-container>

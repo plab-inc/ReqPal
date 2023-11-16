@@ -39,7 +39,7 @@ BEGIN
                     question ->> 'question',
                     v_lesson_uuid,
                     question -> 'solution',
-                    question -> 'hint',
+                    question ->> 'hint',
                     question ->> 'type',
                     question -> 'options',
                     COALESCE(CAST(question ->> 'position' AS integer), 0))

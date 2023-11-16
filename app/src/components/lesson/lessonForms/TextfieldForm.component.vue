@@ -22,26 +22,22 @@ watch(fields, (newFields) => {
 </script>
 
 <template>
-  <v-row>
-    <v-col>
-      <div class="text-subtitle-1">{{ 'Füge hier einen Titel oder eine Beschreibung zur Aufgabe hinzu.' }}</div>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <v-textarea
-          v-model="fields.options"
-          :rules="[requiredStringRule]"
-          label="Beschreibung"
-          variant="outlined"
-          auto-grow></v-textarea>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col class="d-flex flex-grow-1 align-end justify-end">
-      <div class="mr-2">
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-textarea
+            placeholder="Hier kannst du deinen Studierenden weitere Informationen geben."
+            v-model="fields.options"
+            :rules="[requiredStringRule]"
+            label="Beschreibung"
+            variant="outlined"
+            auto-grow></v-textarea>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
         <Help dialog-type="textfieldExplanation"></Help>
-      </div>
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

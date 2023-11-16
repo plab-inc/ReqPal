@@ -34,7 +34,7 @@ watch(fields, (newFields) => {
         :rules="[requiredStringRule]"
     ></v-text-field>
 
-    <v-row>
+    <v-row no-gutters>
       <v-col cols="6">
         <v-radio-group
             label="Lösung zur Frage:"
@@ -52,11 +52,9 @@ watch(fields, (newFields) => {
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <div class="mr-2">
           <Help dialog-type="tfExplanation"></Help>
-        </div>
       </v-col>
     </v-row>
   </v-container>
