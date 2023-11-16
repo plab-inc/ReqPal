@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {multipleChoiceAnswer} from "@/interfaces/Question.interfaces.ts";
 import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+
+interface multipleChoiceAnswer{
+  id: number,
+  description: string,
+  solution: boolean
+}
 
 const minAnswers = 3;
 const maxAnswers = 6;

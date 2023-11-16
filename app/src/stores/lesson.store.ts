@@ -2,7 +2,7 @@ import {defineStore} from 'pinia';
 import {Lesson, LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import LessonService from "@/services/database/lesson.service.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {Question} from "@/types/lesson.types.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import profileService from "@/services/database/profile.service.ts";
