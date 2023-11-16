@@ -2,7 +2,7 @@
 import {useDrop} from 'vue3-dnd'
 import {ref} from 'vue'
 import {DragItemTypes} from "@/types/dragItem.types.ts";
-import {SortableDragItem} from "@/interfaces/DragItems.interfaces.ts";
+import {SortableDragItem} from "@/types/drag.types.ts";
 import Card from "@/components/lesson/drafts/sortable/Card.component.vue";
 
 interface Props {

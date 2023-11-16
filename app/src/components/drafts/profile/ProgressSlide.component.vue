@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import UserProgress from "@/components/profile/userData/UserProgress.component.vue";
-import CompanyDetails from "@/components/profile/company/CompanyDetails.component.vue";
+import UserProgress from "@/components/drafts/profile/userData/UserProgress.component.vue";
+import CompanyDetails from "@/components/drafts/profile/company/CompanyDetails.component.vue";
 </script>
 
 <style scoped>

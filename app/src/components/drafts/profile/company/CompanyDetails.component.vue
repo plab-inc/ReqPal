@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import CompanyProgress from "@/components/profile/company/CompanyProgress.component.vue";
+import CompanyProgress from "@/components/drafts/profile/company/CompanyProgress.component.vue";
 </script>
 
 <style scoped>

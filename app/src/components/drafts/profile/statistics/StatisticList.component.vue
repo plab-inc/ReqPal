@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import StatisticItem from "@/components/profile/statistics/StatisticItem.component.vue";
+import StatisticItem from "@/components/drafts/profile/statistics/StatisticItem.component.vue";
 
 const items = ['Level 30', '1000 Punkte', '20 Lektionen', '35 ohne Fehler']
 

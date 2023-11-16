@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/auth.store";
+import {useAuthStore} from "@/stores/auth.store.ts";
 import {User} from "@supabase/supabase-js";
 import {useProfileStore} from "@/stores/profile.store.ts";
 

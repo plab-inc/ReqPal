@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { useDrop } from 'vue3-dnd';
-import { DragItemTypes } from '@/types/dragItem.types.ts';
-import type { DragAndDropItem } from '@/interfaces/DragItems.interfaces.ts';
-import { useContainerStore } from '@/stores/container.store.ts';
+import {useDrop} from 'vue3-dnd';
+import {DragItemTypes} from '@/types/dragItem.types.ts';
+import type {DragAndDropItem} from '@/types/drag.types.ts';
+import {useContainerStore} from '@/stores/container.store.ts';
 import DraggableBox from './DraggableBox.component.vue';
 import {toRefs} from "@vueuse/core";
 
-import { useTheme } from "vuetify";
+import {useTheme} from "vuetify";
+
 const themeColors = useTheme().current.value.colors;
 
 const props = defineProps({

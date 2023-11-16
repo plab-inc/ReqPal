@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
-import { DragAndDropItem } from "@/interfaces/DragItems.interfaces.ts";
+import {defineStore} from 'pinia';
+import {DragAndDropItem} from "@/types/drag.types.ts";
 
 export const useContainerStore = defineStore('containerStore', {
     state: () => ({
