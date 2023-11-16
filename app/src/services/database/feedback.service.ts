@@ -9,16 +9,14 @@ class FeedbackServiceClass {
     public pull = {
     }
 
-    private async postFeedback(feedback: string) {
-        const {data, error} = await supabase
+    private async postFeedback(feedback: string): Promise<void> {
+        const {error} = await supabase
             .from('user_feedback')
             .insert([
                 { feedback: feedback },
             ])
 
         if (error) throw error;
-
-        return data;
     }
 }
 
