@@ -1,6 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {LessonAnswer, LessonForm, LessonStatistic, UserAnswer, UserResult} from "@/types/lesson.types.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {LessonAnswer, LessonForm, LessonStatistic, Question, UserAnswer, UserResult} from "@/types/lesson.types.ts";
 
 class LessonServiceClass {
 
