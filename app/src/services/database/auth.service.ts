@@ -13,7 +13,6 @@ class AuthServiceClass {
     public pull = {
         signInWithPassword: this.signIn.bind(this),
         signOut: this.signOut.bind(this),
-        getTeachers: this.getTeachers.bind(this)
     }
 
     private async signIn(email: string, password: string) {
@@ -43,21 +42,22 @@ class AuthServiceClass {
             if (error) throw error;
 
             return data;
-        } else {
-            const {data, error} = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    data: {
-                        role: role,
-                        username: username,
-                    }
-                }
-            });
-            if (error) throw error;
-
-            return data;
         }
+
+        const {data, error} = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    role: role,
+                    username: username,
+                }
+            }
+        });
+        if (error) throw error;
+
+        return data;
+
     }
 
     private async signOut() {
@@ -92,18 +92,6 @@ class AuthServiceClass {
         if (error) throw error;
     }
 
-    private async getTeachers() {
-        const {data, error} = await supabase
-            .from('profiles')
-            .select('id, username')
-            .eq('role', 'teacher')
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-            return data as { id: string, username: string }[];
-        }
-    }
 }
 
 const AuthService = new AuthServiceClass();

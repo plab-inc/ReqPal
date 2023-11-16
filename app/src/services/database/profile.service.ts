@@ -1,4 +1,5 @@
 import {supabase} from "@/plugins/supabase";
+import {ProfileDTO} from "@/types/auth.types.ts";
 
 class ProfileServiceClass {
 
@@ -9,13 +10,14 @@ class ProfileServiceClass {
 
     public pull = {
         fetchProfile: this.fetchProfile.bind(this),
+        fetchTeachers: this.getTeachers.bind(this),
         fetchPoints: this.fetchPoints.bind(this),
         getAvatar: this.getAvatar.bind(this),
         getUsername: this.getUsername.bind(this),
         checkIfUsernameExists: this.checkIfUsernameExists.bind(this)
     }
 
-    private async fetchProfile(userId: string) {
+    private async fetchProfile(userId: string): Promise<ProfileDTO | undefined>  {
 
         const {data, error} = await supabase
             .from('profiles')
@@ -67,6 +69,19 @@ class ProfileServiceClass {
 
     }
 
+    private async getTeachers(): Promise<ProfileDTO[] | undefined> {
+        const {data, error} = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('role', 'teacher')
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return data;
+        }
+    }
+
     private async checkIfUsernameExists(username: string) {
         const {data, error, status, count} = await supabase
             .from('profiles')
@@ -81,25 +96,21 @@ class ProfileServiceClass {
     }
 
     private async updateProfileUsername(userUUID: string, username: string) {
-        const {data, error} = await supabase
+        const {error} = await supabase
             .from('profiles')
             .update({username: username})
             .eq('id', userUUID)
 
         if (error) throw error;
-
-        return data;
     }
 
     private async updateProfileAvatar(userUUID: string, avatar: string) {
-        const {data, error} = await supabase
+        const {error} = await supabase
             .from('profiles')
             .update({avatar: avatar})
             .eq('id', userUUID)
 
         if (error) throw error;
-
-        return data;
     }
 }
 
