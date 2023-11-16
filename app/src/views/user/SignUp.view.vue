@@ -7,22 +7,19 @@
   <v-divider></v-divider>
 
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signUpForm" fast-fail class="mt-10">
-    <v-row no-gutter>
-      <v-col sm="9" md="10">
+    <v-row no-gutters justify="space-between">
+      <v-col cols="10">
         <v-text-field
             v-model="username"
+            @blur="checkUsernameExists"
             label="Username"
             prepend-inner-icon="mdi-account"
             :rules="[requiredRule, requiredUsernameRule]"
         ></v-text-field>
       </v-col>
-      <v-col sm="3" md="2" class="d-flex justify-center justify-sm-end">
-        <div>
-          <v-switch color="primary" v-model="isTeacher" inset label=" Ich bin Dozent"></v-switch>
-        </div>
+      <v-col cols="2">
+          <v-switch color="primary" v-model="isTeacher" class="ml-10" inset label="Ich bin Dozent"></v-switch>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <v-text-field
             v-model="email"
@@ -33,7 +30,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters class="my-3">
       <v-col>
         <v-text-field
             v-model="password"
@@ -43,8 +40,6 @@
             type="password"
         ></v-text-field>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <v-text-field
             v-model="confirmPassword"
@@ -54,6 +49,9 @@
             type="password"
         ></v-text-field>
       </v-col>
+    </v-row>
+    <v-row>
+
     </v-row>
     <v-row v-if="!isTeacher" no-gutters>
       <v-col>
@@ -97,16 +95,20 @@ import {useAuthStore} from "@/stores/auth.store";
 import {
   matchingPasswordsRule,
   requiredAtLeast6CharsRule,
-  requiredEmailRule, requiredUsernameRule,
-  requiredRule
+  requiredEmailRule,
+  requiredRule,
+  requiredUsernameRule
 } from "@/utils/validationRules";
 
 import router from "@/router";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
+import {useProfileStore} from "@/stores/profile.store.ts";
 
 const authStore = useAuthStore();
+const profileStore = useProfileStore();
 const utilStore = useUtilStore();
+
 
 const username = ref("");
 const email = ref("");
@@ -117,8 +119,19 @@ const isTeacher = ref<boolean>(false);
 const teachers = ref<{ id: string, username: string }[]>([]);
 const selectedTeacher = ref<string>();
 
+async function checkUsernameExists() {
+  return await profileStore.checkIfUsernameExists(username.value);
+}
+
+
 const submit = async () => {
   if (isFormValid.value) {
+
+    if(await checkUsernameExists()){
+      utilStore.addAlert("Nutzername existiert bereits", "error");
+      return;
+    }
+
     try {
       const role = isTeacher.value ? 'teacher' : 'student';
       const teacher = isTeacher.value ? undefined : selectedTeacher.value;
@@ -136,7 +149,7 @@ const submit = async () => {
 }
 
 onBeforeMount(async () => {
-  const data = await authStore.getTeachers();
+  const data = await profileStore.getTeachers();
   if (data) teachers.value = data;
 })
 </script>

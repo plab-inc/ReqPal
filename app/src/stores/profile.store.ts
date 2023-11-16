@@ -48,6 +48,10 @@ export const useProfileStore = defineStore('profile', {
         async updateProfileAvatar(userUUID: string, avatar: string) {
             await profileService.push.updateProfileAvatar(userUUID, avatar);
             this.avatar = avatar;
+        },
+
+        async getTeachers() {
+            return await profileService.pull.fetchTeachers();
         }
     },
 });
