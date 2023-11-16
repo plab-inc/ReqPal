@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import {ComponentEntry} from "@/stores/lesson.store.ts";
-import TrueOrFalse from "@/components/lesson/modules/TrueOrFalse.component.vue";
+import TrueOrFalse from "@/components/lesson/lessonModules/TrueOrFalse.component.vue";
 import Requirement from "@/components/catalog/requirement/Requirement.component.vue";
-import MultipleChoice from "@/components/lesson/modules/MultipleChoice.component.vue";
-import Slider from "@/components/lesson/modules/Slider.component.vue";
-import Textfield from "@/components/lesson/modules/Textfield.component.vue";
-import Notes from "@/components/lesson/modules/Notes.component.vue";
-import Product from "@/components/lesson/modules/Product.component.vue";
-import Divider from "@/components/lesson/modules/Divider.component.vue";
+import MultipleChoice from "@/components/lesson/lessonModules/MultipleChoice.component.vue";
+import Slider from "@/components/lesson/lessonModules/Slider.component.vue";
+import Textfield from "@/components/lesson/lessonModules/Textfield.component.vue";
+import Notes from "@/components/lesson/lessonModules/Notes.component.vue";
+import Divider from "@/components/lesson/lessonModules/Divider.component.vue";
 
 interface Props {
   components: ComponentEntry[];
@@ -26,7 +25,6 @@ const componentsMap: ComponentsMap = {
   'Slider': markRaw(Slider),
   'Textfield': markRaw(Textfield),
   'Note': markRaw(Notes),
-  'Products': markRaw(Product),
   'Divider': markRaw(Divider)
 };
 const getComponentInstance = (componentName: string): Component => {

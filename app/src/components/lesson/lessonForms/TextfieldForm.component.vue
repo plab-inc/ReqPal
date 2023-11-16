@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import Help from "@/components/lesson/modules/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();

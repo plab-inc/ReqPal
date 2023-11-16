@@ -1,14 +1,14 @@
-export interface SortableDragItem {
+export type SortableDragItem = {
     id: string
     text: string
 }
-export interface DragAndDropItem {
+export type DragAndDropItem = {
     id: string
     top: number
     left: number
     containerId: string
     title: string
 }
-export interface LessonBuilderDragItem {
+export type LessonBuilderDragItem = {
     name: string
 }

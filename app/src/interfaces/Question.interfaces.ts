@@ -1,5 +1,3 @@
-import {inherits} from "@babel/types";
-
 export interface Question {
     [key: string]: any;
     uuid: string;
@@ -20,16 +18,4 @@ export interface multipleChoiceAnswer extends solution{
     id: number,
     description: string,
     solution: boolean
-}
-export interface trueOrFalseAnswer extends solution{
-    solution: boolean
-}
-
-export interface sliderAnswer {
-    id: number,
-    minValue: number,
-    maxValue: number,
-    correctValue: number,
-    tolerance: number,
-    steps: number
 }

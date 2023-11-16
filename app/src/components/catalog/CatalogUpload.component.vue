@@ -20,7 +20,6 @@
               <span>Datei hier ablegen</span>
             </div>
           </v-card-text>
-
         </v-col>
       </v-row>
       <v-row align="center">
