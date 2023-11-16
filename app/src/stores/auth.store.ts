@@ -49,7 +49,6 @@ export const useAuthStore = defineStore('auth', {
         async updateEmail(email: string) {
             await authService.push.updateEmail(email);
         },
-
         async updatePassword(newPassword: string) {
             await authService.push.updatePassword(newPassword);
         },
@@ -58,9 +57,6 @@ export const useAuthStore = defineStore('auth', {
         },
         async updateUsername(username: string) {
             await authService.push.updateUsername(username);
-        },
-        async getTeachers() {
-            return await authService.pull.getTeachers();
         }
     },
 });
