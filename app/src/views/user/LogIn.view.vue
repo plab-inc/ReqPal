@@ -6,7 +6,7 @@
   </v-row>
   <v-divider></v-divider>
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signInForm" fast-fail class="mt-10">
-    <v-row>
+    <v-row no-gutters>
       <v-col>
         <v-text-field
             v-model="email"
@@ -16,8 +16,6 @@
             type="email"
         ></v-text-field>
       </v-col>
-    </v-row>
-    <v-row>
       <v-col>
         <v-text-field
             v-model="password"
