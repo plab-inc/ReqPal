@@ -9,9 +9,7 @@ import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
         <v-divider color="warning"/>
       </v-col>
       <v-col cols="1" class="d-flex flex-grow-1 align-end justify-end">
-        <div class="mr-2">
-          <Help dialog-type="dividerTeacherExplanation"></Help>
-        </div>
+        <Help dialog-type="dividerTeacherExplanation"></Help>
       </v-col>
     </v-row>
   </v-container>
