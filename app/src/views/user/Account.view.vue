@@ -92,11 +92,12 @@ import {requiredAtLeast6CharsRule, requiredEmailRule, requiredRule} from "@/util
 import alertService from "@/services/util/alert.service.ts";
 
 const avatarOptions = [
-  {name: 'Owl', src: 'avatars/owl.png'},
-  {name: 'Cat', src: 'avatars/cat.png'},
+  {name: 'Eule', src: 'avatars/eule.png'},
+  {name: 'Katze', src: 'avatars/katze.png'},
   {name: 'Panda', src: 'avatars/panda.png'},
-  {name: 'Squirrel', src: 'avatars/squirrel.png'},
+  {name: 'Pinguin', src: 'avatars/pinguin.png'},
   {name: 'FHDO', src: 'avatars/fhdo.png'},
+  {name: 'Eichhoernchen', src: 'avatars/eichhoernchen.png'}
 ];
 
 const profileStore = useProfileStore();
