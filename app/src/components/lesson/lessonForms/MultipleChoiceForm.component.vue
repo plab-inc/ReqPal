@@ -82,8 +82,8 @@ watch(fields, (newFields) => {
         :rules="[requiredStringRule]"
     ></v-text-field>
 
-    <v-row>
-      <v-col md="10">
+    <v-row no-gutters>
+      <v-col md="8">
         <v-row v-for="(answer, index) in answers" :key="index">
           <v-col md="7">
             <v-text-field
@@ -107,7 +107,7 @@ watch(fields, (newFields) => {
           </v-col>
         </v-row>
       </v-col>
-      <v-col md="2">
+      <v-col md="4">
         <v-text-field
             label="Hinweis"
             v-model="fields.hint"
@@ -123,11 +123,9 @@ watch(fields, (newFields) => {
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <div class="mr-2">
-          <Help dialog-type="mcExplanation"></Help>
-        </div>
+        <Help dialog-type="mcExplanation"></Help>
       </v-col>
     </v-row>
   </v-container>

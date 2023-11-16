@@ -32,7 +32,7 @@ watch(fields, (newFields) => {
 
 <template>
   <v-container>
-    <v-row v-for="(field, index) in fields.options" :key="index">
+    <v-row  no-gutters v-for="(field, index) in fields.options" :key="index">
       <v-col :cols="index > 0 ? '11':'12'">
         <v-text-field
             :rules="[requiredStringRule]"
@@ -58,11 +58,9 @@ watch(fields, (newFields) => {
         </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <div class="mr-2">
           <Help dialog-type="notesTeacherExplanation"></Help>
-        </div>
       </v-col>
     </v-row>
   </v-container>
