@@ -10,7 +10,7 @@
         <v-col md="3">
           <v-row>
             <v-col>
-              <StatItem :text="currentLesson?.points + ''" :color="'primary'"></StatItem>
+              <StatItem :text="currentLesson?.points + ''" :headline="'Maximal zu erreichende Punktzahl:'" :color="'primary'"></StatItem>
             </v-col>
           </v-row>
         </v-col>
