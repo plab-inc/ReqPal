@@ -1,3 +1,5 @@
+-- Author: Fabian
+
 create or replace function upload_catalog_to_database(p_catalog_name text, p_products jsonb, p_requirements jsonb) returns void
     language plpgsql
 as
@@ -12,18 +14,21 @@ DECLARE
     v_details           jsonb;
 BEGIN
 
-    INSERT INTO catalogs (catalog_name) VALUES (p_catalog_name) RETURNING catalog_id INTO v_catalog_id;
+    INSERT INTO catalogs (catalog_name, user_id) VALUES (p_catalog_name, auth.uid()) RETURNING catalog_id INTO v_catalog_id;
 
     WITH ins AS (
-        INSERT INTO products (product_name)
-            SELECT UPPER(REPLACE(product ->> 'product_name', ' ', ''))
+        INSERT INTO products (product_name, product_url)
+            SELECT UPPER(REPLACE(product ->> 'product_name',' ', '')), product ->> 'product_url'
             FROM jsonb_array_elements(p_products) AS product
             ON CONFLICT (product_name) DO UPDATE
-                SET product_name = EXCLUDED.product_name
+                SET product_name = EXCLUDED.product_name, product_url = EXCLUDED.product_url
             RETURNING product_id)
     SELECT ARRAY_AGG(product_id)
     INTO v_product_ids
     FROM ins;
+
+    INSERT INTO product_catalogs (product_id, catalog_id)
+    SELECT unnest(v_product_ids), v_catalog_id;
 
     FOR v_requirement IN SELECT * FROM jsonb_array_elements(p_requirements)
         LOOP
