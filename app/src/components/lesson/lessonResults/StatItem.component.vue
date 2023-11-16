@@ -19,7 +19,7 @@ const props = defineProps<Props>()
       rounded
       class="d-flex flex-column align-center justify-center flex-wrap text-center"
   >
-    <div v-if="headline" class="text-h6 text-sm-h4 text-md-h5 text-lg-h4 text-center mb-2">{{ headline }}</div>
+    <div v-if="headline" class="text-h6 text-lg-h5 text-center mb-2">{{ headline }}</div>
 
     <div class="d-flex align-center justify-center">
       <div class="text-h6 text-sm-h4 text-md-h5 text-lg-h4">
