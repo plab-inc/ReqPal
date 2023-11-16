@@ -1,4 +1,4 @@
-import { supabase } from "@/plugins/supabase";
+import {supabase} from "@/plugins/supabase";
 
 class PermissionServiceClass {
 
@@ -12,7 +12,7 @@ class PermissionServiceClass {
         hasRole: this.hasRole.bind(this)
     }
 
-    private async updatePermissions(uid: string) {
+    private async updatePermissions(uid: string): Promise<void> {
 
         const { data, error } = await supabase
             .rpc('update_user_permissions', {
@@ -22,7 +22,7 @@ class PermissionServiceClass {
         if (error) console.error(error)
     }
 
-    private async setRoles(uid: string, roles: string[]) {
+    private async setRoles(uid: string, roles: string[]): Promise<void> {
 
         const rolesJson = { roles: roles };
 
@@ -38,7 +38,7 @@ class PermissionServiceClass {
         await this.updatePermissions(uid)
     }
 
-    private async isAdmin() {
+    private async isAdmin(): Promise<boolean | null> {
 
         const { data, error } = await supabase
             .rpc('is_claims_admin', {})
@@ -49,7 +49,7 @@ class PermissionServiceClass {
 
     }
 
-    private async hasRole(uid: string, role: string) {
+    private async hasRole(uid: string, role: string): Promise<boolean | null> {
 
         const { data, error } = await supabase
             .rpc('check_user_role', {
