@@ -1,7 +1,8 @@
-DROP FUNCTION IF EXISTS create_user_answers_from_json(jsonb);
-CREATE
-    OR REPLACE FUNCTION create_user_answers_from_json(data jsonb)
-    RETURNS VOID AS
+-- Author: Laura
+
+create or replace function create_user_answers_from_json(data jsonb) returns void
+    language plpgsql
+as
 $$
 DECLARE
     used_hints_count    int4             := 0;
@@ -133,55 +134,11 @@ BEGIN
         END IF;
     END IF;
 END;
-$$
-    LANGUAGE plpgsql;
+$$;
 
---------------------------------------------
--- EVALUATION FUNCTIONS
---------------------------------------------
-
---------------------------------------------
--- TRUE OR FALSE
---------------------------------------------
-DROP FUNCTION IF EXISTS evaluate_true_or_false(uuid, jsonb, double precision);
-
-CREATE
-    OR REPLACE FUNCTION evaluate_true_or_false(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
-AS
-$$
-DECLARE
-    solution        jsonb;
-    compared_result bool;
-    score           double precision := 0;
-BEGIN
-
-    SELECT questions.solution
-    INTO solution
-    FROM questions
-    WHERE questions.uuid = question_id;
-
-    compared_result := (solution = answer);
-
-    IF
-        (compared_result) THEN
-        score := max_points;
-    END IF;
-
-    return jsonb_build_object('isCorrect', compared_result, 'score', score);
-
-END;
-$$
-    LANGUAGE plpgsql;
-
---------------------------------------------
--- MULTIPLE CHOICE
---------------------------------------------
-
-DROP FUNCTION IF EXISTS evaluate_multiple_choice(uuid, jsonb, double precision);
-
-CREATE
-    OR REPLACE FUNCTION evaluate_multiple_choice(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
-AS
+create or replace function evaluate_multiple_choice(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+    language plpgsql
+as
 $$
 DECLARE
     solution        jsonb;
@@ -222,58 +179,11 @@ BEGIN
     RETURN user_result;
 
 END
-$$
-    LANGUAGE plpgsql;
+$$;
 
---------------------------------------------
--- SLIDER
---------------------------------------------
-
-DROP FUNCTION IF EXISTS evaluate_slider(uuid, jsonb, double precision);
-
-CREATE
-    OR REPLACE FUNCTION evaluate_slider(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
-AS
-$$
-DECLARE
-    solution        jsonb;
-    right_answer    integer;
-    tolerance_value integer;
-    user_input      integer;
-    score           double precision := 0;
-    is_correct      bool             := false;
-BEGIN
-
-    SELECT questions.solution
-    INTO solution
-    FROM questions
-    WHERE questions.uuid = question_id;
-
-    user_input := answer ->> 'input';
-    right_answer := solution ->> 'correctValue';
-    tolerance_value := solution ->> 'toleranceValue';
-
-    IF (user_input <= right_answer + tolerance_value) AND (user_input >= right_answer - tolerance_value) THEN
-        score := max_points;
-        is_correct := true;
-    END IF;
-
-    RETURN json_build_object('score', score, 'isCorrect', is_correct);
-END
-$$
-    LANGUAGE plpgsql;
-
---------------------------------------------
--- PRODUCT QUALIFICATION
---------------------------------------------
-
-DROP FUNCTION IF EXISTS evaluate_product_qualification(uuid, jsonb, double precision);
-
-
-
-CREATE
-    OR REPLACE FUNCTION evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) RETURNS jsonb
-AS
+create or replace function evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+    language plpgsql
+as
 $$
 DECLARE
     q_solution      jsonb;
@@ -294,7 +204,7 @@ DECLARE
     temp_id         int;
 BEGIN
 
-    IF (answer ->> 'askForQualification')::boolean IS FALSE THEN
+    IF (answer->>'askForQualification')::boolean IS FALSE THEN
         raise log 'exit';
         return json_build_object('score', 0);
     end if;
@@ -358,5 +268,62 @@ BEGIN
 
     RETURN user_result;
 END
+$$;
+
+create or replace function evaluate_slider(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+    language plpgsql
+as
 $$
-    LANGUAGE plpgsql;
+DECLARE
+    solution jsonb;
+    right_answer integer;
+    tolerance_value integer;
+    user_input integer;
+    score double precision := 0;
+    is_correct bool := false;
+BEGIN
+
+    SELECT questions.solution
+    INTO solution
+    FROM questions
+    WHERE questions.uuid = question_id;
+
+    user_input := answer->>'input';
+    right_answer := solution->>'correctValue';
+    tolerance_value := solution->>'toleranceValue';
+
+    IF (user_input <= right_answer+tolerance_value) AND (user_input >= right_answer-tolerance_value) THEN
+        score := max_points;
+        is_correct := true;
+    END IF;
+
+    RETURN json_build_object('score', score, 'isCorrect', is_correct);
+END
+$$;
+
+create or replace function evaluate_true_or_false(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+    language plpgsql
+as
+$$
+DECLARE
+    solution        jsonb;
+    compared_result bool;
+    score           double precision := 0;
+BEGIN
+
+    SELECT questions.solution
+    INTO solution
+    FROM questions
+    WHERE questions.uuid = question_id;
+
+    compared_result := (solution = answer);
+
+    IF
+        (compared_result) THEN
+        score := max_points;
+    END IF;
+
+    return jsonb_build_object('isCorrect', compared_result, 'score', score);
+
+END;
+$$;
