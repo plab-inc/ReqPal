@@ -219,8 +219,6 @@ async function copyLesson(lessonUUID: string) {
   });
 }
 
-
-
 function togglePublished(lesson: LessonDTO) {
   lessonService.push.togglePublished(lesson.uuid).then(() => {
     lesson.published = !lesson.published; //Trick in UI, damit Objekt nicht erneut geladen werden muss

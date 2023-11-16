@@ -154,7 +154,7 @@ import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import {useThemeStore} from "@/stores/theme.store.ts";
-import CustomDialog from "@/components/dialog/CustomDialog.component.vue";
+import CustomDialog from "@/components/util/CustomDialog.component.vue";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import alertSfx from "@/assets/sound/alert.mp3";
 import {useLessonStore} from "@/stores/lesson.store.ts";

@@ -4,13 +4,13 @@ import {Requirement} from "@/types/catalog.types.ts";
 import {ref} from "vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.component.vue";
-import Hint from "@/components/lesson/modules/Hint.component.vue";
-import Help from "@/components/lesson/modules/Help.component.vue";
+import Hint from "@/components/lesson/lessonBuilder/Hint.component.vue";
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
 import {useAuthStore} from "@/stores/auth.store.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
-const products = ref<Product[]>([]);
+const products = ref<ProductOptions[]>([]);
 const toleranceValue = ref<number>(0);
 const authStore = useAuthStore();
 const maxValue = 5;
@@ -20,7 +20,7 @@ interface Props {
   componentId: string,
 }
 
-type Product = {
+interface ProductOptions {
   id: number,
   name: string,
   link: string,
@@ -96,7 +96,7 @@ init();
 function init() {
 }
 
-function checkSolution(product: Product) {
+function checkSolution(product: ProductOptions) {
   if (product.solution) {
     let minValue: number = getMinValueForProduct(product);
     let maxValue: number = getMaxValueForProduct(product);
@@ -104,7 +104,7 @@ function checkSolution(product: Product) {
   }
 }
 
-function getMinValueForProduct(product: Product) {
+function getMinValueForProduct(product: ProductOptions) {
   if (product.solution) {
     const min: number = +product.solution - +toleranceValue.value;
     if (min < minValue) return minValue;
@@ -113,7 +113,7 @@ function getMinValueForProduct(product: Product) {
   return -1;
 }
 
-function getMaxValueForProduct(product: Product) {
+function getMaxValueForProduct(product: ProductOptions) {
   if (product.solution) {
     const max: number = +product.solution + +toleranceValue.value;
     if (max >= maxValue) return maxValue;

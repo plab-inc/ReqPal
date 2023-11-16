@@ -3,7 +3,7 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 import Container from "@/components/lesson/drafts/sortable/Container.component.vue";
 import {DndProvider} from "vue3-dnd";
 import {QuestionDTO} from "@/types/lesson.types.ts";
-import {SortableDragItem} from "@/interfaces/DragItems.interfaces.ts";
+import {SortableDragItem} from "@/types/drag.types.ts";
 import {shuffleArray} from "@/utils/helper.ts";
 import {ref} from "vue";
 

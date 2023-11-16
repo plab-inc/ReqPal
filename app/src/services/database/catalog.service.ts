@@ -14,7 +14,6 @@ class CatalogServiceClass {
         fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
         fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
         fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
-        fetchLessonsForCatalog: this.fetchLessonsForCatalog.bind(this),
         fetchProductById: this.fetchProductById.bind(this),
         fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
         fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this)
@@ -150,21 +149,7 @@ class CatalogServiceClass {
         return catalogData;
     }
 
-    async fetchLessonsForCatalog(catalogId: number) {
-        const {data, error} = await supabase
-            .from('lessons')
-            .select('*')
-            .eq('catalog_id', catalogId)
-            .select()
-
-        if (error) throw error;
-
-        if (data) {
-            return data;
-        }
-    }
-
-    async fetchCatalogs(examples: boolean = false) {
+    async fetchCatalogs(examples: boolean = false): Promise<CatalogDTO[] | undefined> {
         const {data, error} = await supabase
             .from('catalogs')
             .select('*')

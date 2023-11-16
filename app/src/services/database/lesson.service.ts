@@ -1,6 +1,14 @@
 import {supabase} from "@/plugins/supabase";
-import {LessonAnswer, LessonForm, LessonStatistic, UserAnswer, UserResult} from "@/types/lesson.types.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {
+    LessonAnswer,
+    LessonDTO,
+    LessonForm,
+    LessonStatistic,
+    Question,
+    UserAnswer,
+    UserResult
+} from "@/types/lesson.types.ts";
+import {Json} from "@/types/supabase.types.ts";
 
 class LessonServiceClass {
 
@@ -31,7 +39,7 @@ class LessonServiceClass {
         checkIfLessonHasSavedProgress: this.checkIfLessonHasSavedProgress.bind(this)
     };
 
-    private async fetchLessons(examples: boolean = false) {
+    private async fetchLessons(examples: boolean = false): Promise<LessonDTO[] | undefined> {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -45,7 +53,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonById(lessonUUID: string) {
+    private async fetchLessonById(lessonUUID: string): Promise<LessonDTO | undefined> {
 
         const {data, error} = await supabase
             .from('lessons')
@@ -60,7 +68,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchQuestionsForLesson(lessonUUID: string) {
+    private async fetchQuestionsForLesson(lessonUUID: string): Promise<Question[] | undefined> {
 
         const {data, error} = await supabase
             .from('questions')
@@ -75,7 +83,7 @@ class LessonServiceClass {
 
     }
 
-    private async uploadLesson(lesson: LessonForm) {
+    private async uploadLesson(lesson: LessonForm): Promise<void> {
         const {error} = await supabase
             .rpc('create_lesson_from_json', {
                 data: lesson
@@ -84,7 +92,7 @@ class LessonServiceClass {
         if (error) throw error;
     }
 
-    private async getLesson(lessonUUID: string) {
+    private async getLesson(lessonUUID: string): Promise<LessonForm | undefined> {
         const {error, data} = await supabase
             .rpc('get_lesson_json', {
                 p_lesson_uuid: lessonUUID
@@ -95,7 +103,7 @@ class LessonServiceClass {
         if (data) return data as LessonForm;
     }
 
-    private async deleteLesson(lessonUUID: string) {
+    private async deleteLesson(lessonUUID: string): Promise<LessonDTO[] | undefined> {
         const {data, error} = await supabase
             .from('lessons')
             .delete()
@@ -104,10 +112,10 @@ class LessonServiceClass {
 
         if (error) throw error;
 
-        return data;
+        return data as LessonDTO[];
     }
 
-    private async togglePublished(lessonUUID: string) {
+    private async togglePublished(lessonUUID: string): Promise<void> {
         const {error} = await supabase
             .rpc('reverse_boolean_value', {
                 row_uuid: lessonUUID
@@ -117,19 +125,17 @@ class LessonServiceClass {
     }
 
 
-    private async submitUserAnswers(answers: any) {
+    private async submitUserAnswers(answers: any): Promise<void> {
 
-        const {data, error} = await supabase.rpc('create_user_answers_from_json', {
+        const {error} = await supabase.rpc('create_user_answers_from_json', {
             data: answers
         })
 
         if (error) throw error;
 
-        return data;
-
     }
 
-    private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string) {
+    private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string): Promise<Question[] | undefined> {
 
         const {data, error} = await supabase
             .from('questions')
@@ -143,7 +149,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string) {
+    private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string): Promise<{ finished: boolean | null, is_started: boolean | null, finished_for_first_time: boolean | null } | undefined> {
         const {data, error} = await supabase
             .from('user_finished_lessons')
             .select('finished, is_started, finished_for_first_time')
@@ -154,14 +160,16 @@ class LessonServiceClass {
             throw error;
         }
 
-        if (data) {
-            return data[0];
-        } else {
-            return null;
+        if (data && data[0]) {
+            return data[0] as {
+                finished: boolean | null,
+                is_started: boolean | null,
+                finished_for_first_time: boolean | null
+            };
         }
     }
 
-    private async fetchLessonUserAnswers(lessonUUID: string, userUUID: string) {
+    private async fetchLessonUserAnswers(lessonUUID: string, userUUID: string): Promise<UserAnswer[] | undefined> {
         const {data, error} = await supabase
             .from('user_answers')
             .select('question_id, answer')
@@ -172,11 +180,10 @@ class LessonServiceClass {
 
         if (data) {
             return data as UserAnswer[];
-        } else return null;
-
+        }
     }
 
-    private async fetchUserScoreForLesson(lessonUUID: string, userUUID: string) {
+    private async fetchUserScoreForLesson(lessonUUID: string, userUUID: string): Promise<UserResult[] | undefined> {
         const {data, error} = await supabase
             .from('user_answers')
             .select('result')
@@ -187,10 +194,10 @@ class LessonServiceClass {
 
         if (data) {
             return data as UserResult[];
-        } else return null;
+        }
     }
 
-    private async fetchFirstUserScoreForLesson(lessonUUID: string, userUUID: string) {
+    private async fetchFirstUserScoreForLesson(lessonUUID: string, userUUID: string): Promise<number | undefined> {
         const {data, error} = await supabase
             .from('user_finished_lessons')
             .select('user_points')
@@ -200,11 +207,11 @@ class LessonServiceClass {
         if (error) throw error;
 
         if (data && data[0]) {
-            return data[0].user_points;
-        } else return null;
+            return data[0].user_points as number;
+        }
     }
 
-    private async setLessonStartedStatus(lessonUUID: string, userUUID: string, status: boolean) {
+    private async setLessonStartedStatus(lessonUUID: string, userUUID: string, status: boolean): Promise<boolean> {
         const {data, error} = await supabase
             .from('user_finished_lessons')
             .update({is_started: status})
@@ -216,13 +223,13 @@ class LessonServiceClass {
         if (error) throw error;
 
         if (data && data.is_started !== null) {
-            return data.is_started;
+            return data.is_started as boolean;
         }
         return false;
 
     }
 
-    private async fetchLessonStatistics(lessonUUID: string) {
+    private async fetchLessonStatistics(lessonUUID: string): Promise<LessonStatistic[] | undefined> {
         const {data, error} = await supabase
             .from('user_finished_lessons')
             .select('finished, user_points')
@@ -233,12 +240,10 @@ class LessonServiceClass {
         if (data) {
             return data as LessonStatistic[];
         }
-        return null;
-
     }
 
-    private async getCountOfStudentsForTeacher(teacherUUID: string) {
-        const {data, error, status, count} = await supabase
+    private async getCountOfStudentsForTeacher(teacherUUID: string): Promise<number> {
+        const {error, count} = await supabase
             .from('profiles')
             .select('teacher', {count: 'exact', head: true})
             .eq('teacher', teacherUUID)
@@ -251,11 +256,11 @@ class LessonServiceClass {
         return 0;
     }
 
-    private async uploadUserProgressToLesson(userUUID: string, lessonAnswer: LessonAnswer) {
+    private async uploadUserProgressToLesson(userUUID: string, lessonAnswer: LessonAnswer): Promise<void> {
         const exists = await this.fetchUserProgressForLesson(userUUID, lessonAnswer.uuid);
 
         if (exists) {
-            const {data, error} = await supabase
+            const {error} = await supabase
                 .from('user_lesson_progress')
                 .update({answers: lessonAnswer.answers})
                 .eq('lesson_id', lessonAnswer.uuid)
@@ -263,7 +268,7 @@ class LessonServiceClass {
 
             if (error) throw error;
         } else {
-            const {data, error} = await supabase
+            const {error} = await supabase
                 .from('user_lesson_progress')
                 .insert([
                     {
@@ -276,7 +281,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string) {
+    private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string): Promise<{ answers: Json } | undefined> {
         const {data, error} = await supabase
             .from('user_lesson_progress')
             .select('answers')
@@ -285,13 +290,12 @@ class LessonServiceClass {
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
-            return data[0];
+        if (data && data[0]) {
+            return data[0] as { answers: Json };
         }
-        return null;
     }
 
-    private async uploadUsedHintForQuestion(userUUID: string, questionUUID: string, lessonUUID: string) {
+    private async uploadUsedHintForQuestion(userUUID: string, questionUUID: string, lessonUUID: string): Promise<void> {
         const {data, error} = await supabase
             .from('user_hints')
             .select('*')
@@ -301,7 +305,7 @@ class LessonServiceClass {
 
         if (error) throw error;
         if (!data || data.length <= 0) {
-            const {data, error} = await supabase
+            const {error} = await supabase
                 .from('user_hints')
                 .insert([
                     {
@@ -314,20 +318,18 @@ class LessonServiceClass {
         }
     }
 
-    private async deleteLessonProgressForUser(lessonUUID: string, userUUID: string) {
-        const {data, error} = await supabase
+    private async deleteLessonProgressForUser(lessonUUID: string, userUUID: string): Promise<void> {
+        const {error} = await supabase
             .from('user_lesson_progress')
             .delete()
             .eq('lesson_id', lessonUUID)
             .eq('user_id', userUUID)
 
         if (error) throw error;
-
-        return data;
     }
 
-    private async checkIfLessonHasSavedProgress(lessonUUID: string, userUUID: string) {
-        const {data, error, status, count} = await supabase
+    private async checkIfLessonHasSavedProgress(lessonUUID: string, userUUID: string): Promise<boolean> {
+        const {error, count} = await supabase
             .from('user_lesson_progress')
             .select('lesson_id, user_id', {count: 'exact', head: true})
             .eq('lesson_id', lessonUUID)
@@ -335,7 +337,7 @@ class LessonServiceClass {
 
         if (error) throw error;
 
-        if(count) return count > 0;
+        if (count) return count > 0;
         return false;
     }
 }

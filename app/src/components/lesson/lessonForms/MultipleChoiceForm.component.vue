@@ -1,0 +1,138 @@
+<script setup lang="ts">
+import {requiredStringRule} from "@/utils/validationRules.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+
+interface multipleChoiceAnswer{
+  id: number,
+  description: string,
+  solution: boolean
+}
+
+const minAnswers = 3;
+const maxAnswers = 6;
+
+const props = defineProps<{ componentId: string }>();
+
+const lessonFormStore = useLessonFormStore();
+
+const fields = ref<any>({
+  question: "",
+  hint: "",
+});
+
+const answers = ref<multipleChoiceAnswer[]>([]);
+
+init();
+
+function init() {
+  const storedOptions = lessonFormStore.getComponentFieldValues(props.componentId, 'options') || [];
+  const storedSolutions = lessonFormStore.getComponentFieldValues(props.componentId, 'solution') || [];
+
+  fields.value.question = lessonFormStore.getComponentFieldValues(props.componentId, 'question');
+  fields.value.hint = lessonFormStore.getComponentFieldValues(props.componentId, 'hint');
+
+  const initialAnswers = storedOptions.map((option: any, index: number) => ({
+    id: option.id,
+    description: option.description,
+    solution: storedSolutions[index].solution
+  }));
+
+  while (initialAnswers.length < minAnswers) {
+    initialAnswers.push(createNewAnswer(initialAnswers.length));
+  }
+
+  answers.value = initialAnswers;
+  updateStoreData(answers.value);
+}
+
+function createNewAnswer(id: number): multipleChoiceAnswer {
+  return {id, description: "", solution: false};
+}
+
+function updateStoreData(newAnswers: multipleChoiceAnswer[]) {
+  const options = newAnswers.map(a => ({id: a.id, description: a.description.trim()}));
+  const solutions = newAnswers.map(a => ({id: a.id, solution: a.solution}));
+
+  lessonFormStore.setComponentData(props.componentId, 'options', options);
+  lessonFormStore.setComponentData(props.componentId, 'solution', solutions);
+}
+
+function addAnswer() {
+  answers.value.push(createNewAnswer(answers.value.length));
+}
+
+function removeAnswer(index: number) {
+  answers.value.splice(index, 1);
+}
+
+watch(answers, updateStoreData, {deep: true});
+watch(fields, (newFields) => {
+  lessonFormStore.setComponentData(props.componentId, 'question', newFields.question);
+  lessonFormStore.setComponentData(props.componentId, 'hint', newFields.hint);
+}, {deep: true});
+
+</script>
+
+<template>
+  <v-container>
+    <v-text-field
+        v-model="fields.question"
+        label="Multiple Choice Frage"
+        :rules="[requiredStringRule]"
+    ></v-text-field>
+
+    <v-row>
+      <v-col md="10">
+        <v-row v-for="(answer, index) in answers" :key="index">
+          <v-col md="7">
+            <v-text-field
+                v-model="answer.description"
+                :label="'Antwort ' + (index + 1)"
+                :rules="[requiredStringRule]"
+            ></v-text-field>
+          </v-col>
+          <v-col md="3" sm="8">
+            <v-radio-group v-model="answer.solution" label="Lösung der Antwort:">
+              <v-radio label="Richtig" :value="true"></v-radio>
+              <v-radio label="Falsch" :value="false"></v-radio>
+            </v-radio-group>
+          </v-col>
+          <v-col md="2" sm="4">
+            <v-btn v-if="index >= minAnswers" @click="removeAnswer(index)" icon>
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col md="2">
+        <v-text-field
+            label="Hinweis"
+            v-model="fields.hint"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4" icon>
+          <v-icon>
+            mdi-plus
+          </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="d-flex flex-grow-1 align-end justify-end">
+        <div class="mr-2">
+          <Help dialog-type="mcExplanation"></Help>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+
+<style scoped>
+</style>
