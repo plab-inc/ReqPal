@@ -1,3 +1,5 @@
+-- Author: Fabian, Laura
+
 create or replace function handle_new_user() returns trigger
     security definer
     SET search_path = public
@@ -5,7 +7,7 @@ create or replace function handle_new_user() returns trigger
 as
 $$
 DECLARE
-    user_role  text;
+    user_role text;
     teacher_id uuid := NULL;
 begin
     user_role := new.raw_user_meta_data ->> 'role';
@@ -30,17 +32,9 @@ begin
 end;
 $$;
 
-CREATE OR REPLACE FUNCTION get_teacher_uuid(user_uuid UUID)
-    RETURNS UUID AS
-$$
-DECLARE
-    teacher_uuid UUID;
-BEGIN
-    SELECT teacher
-    INTO teacher_uuid
-    FROM profiles
-    WHERE profiles.id = user_uuid;
-
-    RETURN teacher_uuid;
-END;
-$$ LANGUAGE plpgsql;
+drop trigger if exists handle_new_user_trigger on auth.users;
+create trigger handle_new_user_trigger
+    after insert
+    on auth.users
+    for each row
+execute procedure public.handle_new_user();
