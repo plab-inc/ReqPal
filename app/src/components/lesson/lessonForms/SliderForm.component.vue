@@ -2,8 +2,8 @@
 
 import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {requiredStringRule, requiredNumberRule} from "@/utils/validationRules.ts";
-import Help from "@/components/lesson/modules/Help.component.vue";
+import {requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import AchievementItem from "@/components/profile/achievements/AchievementItem.component.vue";
+import AchievementItem from "@/components/drafts/profile/achievements/AchievementItem.component.vue";
 
 const items = ['1000 Punkte', 'Erste Lektion', 'Fehlerfrei']
 

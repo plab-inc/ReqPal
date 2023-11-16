@@ -26,11 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import AchievementList from "@/components/profile/achievements/AchievementList.component.vue";
-import UserDetails from "@/components/profile/userData/UserDetails.component.vue";
-import StatisticList from "@/components/profile/statistics/StatisticList.component.vue";
-import ProgressSlide from "@/components/profile/ProgressSlide.component.vue";
-
+import AchievementList from "@/components/drafts/profile/achievements/AchievementList.component.vue";
+import UserDetails from "@/components/drafts/profile/userData/UserDetails.component.vue";
+import StatisticList from "@/components/drafts/profile/statistics/StatisticList.component.vue";
+import ProgressSlide from "@/components/drafts/profile/ProgressSlide.component.vue";
 </script>
 <style scoped>
 </style>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import Hint from "@/components/lesson/modules/Hint.component.vue"
-import Help from "@/components/lesson/modules/Help.component.vue"
+import Hint from "@/components/lesson/lessonBuilder/Hint.component.vue"
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 

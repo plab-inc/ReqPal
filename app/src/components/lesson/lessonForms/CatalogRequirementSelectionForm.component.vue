@@ -8,7 +8,7 @@ import RequirementItem from "@/components/catalog/requirement/RequirementItem.co
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue";
 import {containsAtLeastOneElementRule, requiredStringRule} from "@/utils/validationRules.ts";
-import Help from "@/components/lesson/modules/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
