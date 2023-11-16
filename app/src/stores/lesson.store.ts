@@ -291,7 +291,7 @@ export const useLessonStore = defineStore('lesson', {
             const authStore = useAuthStore();
             const lesson = this.findLesson(lessonUUID);
             if (authStore.user && lesson && lesson.hasSavedProgress) {
-                const data = await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
+                await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
                 if (lesson) lesson.hasSavedProgress = false;
             }
 
