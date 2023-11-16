@@ -2,7 +2,7 @@ import {defineStore} from 'pinia';
 import {Lesson, LessonAnswer, LessonDTO, UserAnswer} from "@/types/lesson.types";
 import lessonService from "@/services/database/lesson.service.ts";
 import LessonService from "@/services/database/lesson.service.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {Question} from "@/types/lesson.types.ts";
 import {DatabaseError} from "@/errors/custom.errors.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 import profileService from "@/services/database/profile.service.ts";
@@ -130,10 +130,12 @@ export const useLessonStore = defineStore('lesson', {
 
         async deleteLesson(lessonUUID: string) {
             await lessonService.push.deleteLesson(lessonUUID).then(
-                (data: LessonDTO[]) => {
-                    if (data.length > 0) {
-                        this.lessons.splice(this.lessons.findIndex(c => c.lessonDTO.uuid === lessonUUID), 1);
-                        return;
+                (data: LessonDTO[] | undefined) => {
+                    if (data) {
+                        if (data.length > 0) {
+                            this.lessons.splice(this.lessons.findIndex(c => c.lessonDTO.uuid === lessonUUID), 1);
+                            return;
+                        }
                     }
                     throw new DatabaseError("Lektion konnte nicht gelöscht werden.", 500);
                 }
@@ -253,7 +255,7 @@ export const useLessonStore = defineStore('lesson', {
             if (lesson) {
                 if (authStore.user && lesson.isFinished) {
                     const points = await lessonService.pull.fetchFirstUserScoreForLesson(lessonUUID, authStore.user.id);
-                    if (points !== null) {
+                    if (points) {
                         lesson.userScore = Math.round(points);
                     } else {
                         lesson.userScore = -1;
@@ -289,7 +291,7 @@ export const useLessonStore = defineStore('lesson', {
             const authStore = useAuthStore();
             const lesson = this.findLesson(lessonUUID);
             if (authStore.user && lesson && lesson.hasSavedProgress) {
-                const data = await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
+                await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
                 if (lesson) lesson.hasSavedProgress = false;
             }
 

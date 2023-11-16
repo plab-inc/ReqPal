@@ -1,8 +1,19 @@
 import {Database} from "@/types/supabase.types.ts";
-import {Question} from "@/interfaces/Question.interfaces.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
+
+export type Question = {
+    [key: string]: any;
+    uuid: string;
+    question: string | null;
+    options: string[] | null;
+    hint: string | null;
+
+    solution?: any | null;
+    position?: number | null;
+    type?: string | null;
+}
 
 export type Lesson = {
     lessonDTO: LessonDTO,

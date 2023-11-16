@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
-import {Question} from "@/interfaces/Question.interfaces.ts";
+import {LessonForm, Question} from "@/types/lesson.types.ts";
 import {v4 as uuidv4} from 'uuid';
-import {LessonForm} from "@/types/lesson.types.ts";
 
 interface ComponentEntry {
     uuid: string;
