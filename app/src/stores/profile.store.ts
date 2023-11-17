@@ -14,8 +14,8 @@ export const useProfileStore = defineStore('profile', {
         avatar: '',
     }),
     getters: {
-        getAvatar(): string {
-            return 'avatars/' + this.avatar + '.png';
+        getAvatarURL(): string {
+            return import.meta.env.BASE_URL + 'avatars/' + this.avatar + '.png';
         }
     },
     actions: {
