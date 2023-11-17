@@ -12,21 +12,21 @@ export interface Database {
       catalogs: {
         Row: {
           catalog_id: number
-          catalog_name: string | null
-          example: boolean | null
-          user_id: string | null
+          catalog_name: string
+          example: boolean
+          user_id: string
         }
         Insert: {
           catalog_id?: number
-          catalog_name?: string | null
-          example?: boolean | null
-          user_id?: string | null
+          catalog_name: string
+          example?: boolean
+          user_id: string
         }
         Update: {
           catalog_id?: number
-          catalog_name?: string | null
-          example?: boolean | null
-          user_id?: string | null
+          catalog_name?: string
+          example?: boolean
+          user_id?: string
         }
         Relationships: [
           {
@@ -42,7 +42,7 @@ export interface Database {
         Row: {
           created_at: string
           description: string
-          example: boolean | null
+          example: boolean
           points: number
           published: boolean
           title: string
@@ -52,7 +52,7 @@ export interface Database {
         Insert: {
           created_at?: string
           description: string
-          example?: boolean | null
+          example?: boolean
           points: number
           published?: boolean
           title: string
@@ -62,7 +62,7 @@ export interface Database {
         Update: {
           created_at?: string
           description?: string
-          example?: boolean | null
+          example?: boolean
           points?: number
           published?: boolean
           title?: string
@@ -99,19 +99,19 @@ export interface Database {
       }
       product_catalogs: {
         Row: {
-          catalog_id: number | null
+          catalog_id: number
           id: number
-          product_id: number | null
+          product_id: number
         }
         Insert: {
-          catalog_id?: number | null
+          catalog_id: number
           id?: number
-          product_id?: number | null
+          product_id: number
         }
         Update: {
-          catalog_id?: number | null
+          catalog_id?: number
           id?: number
-          product_id?: number | null
+          product_id?: number
         }
         Relationships: [
           {
@@ -191,21 +191,21 @@ export interface Database {
         Row: {
           avatar: string
           id: string
-          role: string | null
+          role: string
           teacher: string | null
           username: string
         }
         Insert: {
           avatar?: string
           id: string
-          role?: string | null
+          role?: string
           teacher?: string | null
           username: string
         }
         Update: {
           avatar?: string
           id?: string
-          role?: string | null
+          role?: string
           teacher?: string | null
           username?: string
         }
@@ -269,21 +269,21 @@ export interface Database {
       }
       requirements: {
         Row: {
-          catalog_id: number | null
+          catalog_id: number
           description: string | null
           reqid: string | null
           requirement_id: number
           title: string | null
         }
         Insert: {
-          catalog_id?: number | null
+          catalog_id: number
           description?: string | null
           reqid?: string | null
           requirement_id?: number
           title?: string | null
         }
         Update: {
-          catalog_id?: number | null
+          catalog_id?: number
           description?: string | null
           reqid?: string | null
           requirement_id?: number
@@ -352,7 +352,7 @@ export interface Database {
           answer: Json | null
           lesson_id: string
           max_points: number | null
-          question_id: string | null
+          question_id: string
           result: Json | null
           user_id: string
           uuid: string
@@ -361,7 +361,7 @@ export interface Database {
           answer?: Json | null
           lesson_id: string
           max_points?: number | null
-          question_id?: string | null
+          question_id: string
           result?: Json | null
           user_id: string
           uuid?: string
@@ -370,7 +370,7 @@ export interface Database {
           answer?: Json | null
           lesson_id?: string
           max_points?: number | null
-          question_id?: string | null
+          question_id?: string
           result?: Json | null
           user_id?: string
           uuid?: string
@@ -404,19 +404,19 @@ export interface Database {
           created_at: string
           feedback: string
           id: number
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
           feedback: string
           id?: number
-          user_id?: string | null
+          user_id?: string
         }
         Update: {
           created_at?: string
           feedback?: string
           id?: number
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -434,9 +434,9 @@ export interface Database {
           finished_for_first_time: boolean | null
           id: string
           is_started: boolean | null
-          lesson_id: string | null
+          lesson_id: string
           used_hints: number | null
-          user_id: string | null
+          user_id: string
           user_points: number | null
         }
         Insert: {
@@ -444,9 +444,9 @@ export interface Database {
           finished_for_first_time?: boolean | null
           id?: string
           is_started?: boolean | null
-          lesson_id?: string | null
+          lesson_id: string
           used_hints?: number | null
-          user_id?: string | null
+          user_id: string
           user_points?: number | null
         }
         Update: {
@@ -454,9 +454,9 @@ export interface Database {
           finished_for_first_time?: boolean | null
           id?: string
           is_started?: boolean | null
-          lesson_id?: string | null
+          lesson_id?: string
           used_hints?: number | null
-          user_id?: string | null
+          user_id?: string
           user_points?: number | null
         }
         Relationships: [
@@ -479,21 +479,21 @@ export interface Database {
       user_hints: {
         Row: {
           id: string
-          lesson_id: string | null
-          question_id: string | null
-          user_id: string | null
+          lesson_id: string
+          question_id: string
+          user_id: string
         }
         Insert: {
           id?: string
-          lesson_id?: string | null
-          question_id?: string | null
-          user_id?: string | null
+          lesson_id: string
+          question_id: string
+          user_id: string
         }
         Update: {
           id?: string
-          lesson_id?: string | null
-          question_id?: string | null
-          user_id?: string | null
+          lesson_id?: string
+          question_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -523,20 +523,20 @@ export interface Database {
         Row: {
           answers: Json | null
           id: string
-          lesson_id: string | null
-          user_id: string | null
+          lesson_id: string
+          user_id: string
         }
         Insert: {
           answers?: Json | null
           id?: string
-          lesson_id?: string | null
-          user_id?: string | null
+          lesson_id: string
+          user_id: string
         }
         Update: {
           answers?: Json | null
           id?: string
-          lesson_id?: string | null
-          user_id?: string | null
+          lesson_id?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -558,18 +558,18 @@ export interface Database {
       user_points: {
         Row: {
           id: number
-          points: number | null
-          user_id: string | null
+          points: number
+          user_id: string
         }
         Insert: {
           id?: number
-          points?: number | null
-          user_id?: string | null
+          points?: number
+          user_id: string
         }
         Update: {
           id?: number
-          points?: number | null
-          user_id?: string | null
+          points?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -682,13 +682,6 @@ export interface Database {
       is_claims_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
-      }
-      json_cmp: {
-        Args: {
-          left: Json
-          right: Json
-        }
-        Returns: number
       }
       reverse_boolean_value: {
         Args: {
