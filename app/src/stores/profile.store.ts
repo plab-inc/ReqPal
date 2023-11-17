@@ -30,7 +30,7 @@ export const useProfileStore = defineStore('profile', {
 
         async fetchPoints(userId: string) {
             const data = await profileService.pull.fetchPoints(userId);
-            if (data.points) {
+            if (data?.points) {
                 this.points = data.points;
                 this.points = Math.round(this.points);
             }

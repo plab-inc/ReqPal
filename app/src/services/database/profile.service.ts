@@ -36,6 +36,7 @@ class ProfileServiceClass {
             .from('user_points')
             .select('points')
             .eq('user_id', userId)
+            .maybeSingle()
 
         if (error) throw error;
 
