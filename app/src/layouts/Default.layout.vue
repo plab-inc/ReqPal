@@ -18,7 +18,8 @@
                      :title="authStore.user?.user_metadata.username"
                      :subtitle="authStore.user?.email"
                      :active="false"
-                     :prepend-avatar="profileStore.getAvatar"
+                     :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
+                     :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
                      to="/account"
                      elevation="3"
                      rounded
@@ -172,9 +173,7 @@ const audio = new Audio(alertSfx);
 onBeforeMount(async () => {
   if (authStore.user) {
     await profileStore.fetchProfile(authStore.user.id);
-
-    //TODO Broken
-    //await profileStore.fetchPoints(authStore.user.id);
+    await profileStore.fetchPoints(authStore.user.id);
   }
 })
 
@@ -190,7 +189,8 @@ const logout = () => {
 }
 
 watch(() => utilStore.alerts.length, (newLength, oldLength) => {
-  if (newLength > oldLength) {
+  const audioContext = new (window.AudioContext)();
+  if ((newLength > oldLength) && audioContext.state !== 'suspended') {
     audio.volume = 0.2;
     audio.play();
   }
