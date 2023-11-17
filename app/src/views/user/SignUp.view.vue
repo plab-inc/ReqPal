@@ -57,6 +57,7 @@
       <v-col>
         <v-select
             label="Mein Dozent"
+            variant="outlined"
             prepend-inner-icon="mdi-school"
             v-model="selectedTeacher"
             :rules="[requiredRule]"
