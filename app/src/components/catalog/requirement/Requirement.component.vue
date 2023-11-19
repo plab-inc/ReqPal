@@ -171,7 +171,7 @@ watch(products.value, (newProducts) => {
     <v-container v-if="fields.options.askForQualification && products.length > 0">
       <v-row>
         <v-col class="text-h6">
-          {{ fields.question }}
+          {{ fields?.question }}
         </v-col>
       </v-row>
       <v-row>
