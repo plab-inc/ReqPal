@@ -17,6 +17,7 @@ DECLARE
     requirement_answers int4             := 0;
     temp_option         jsonb;
     total_answers       int4             := 0;
+    old_answer          jsonb;
 BEGIN
     lesson_uuid := data ->> 'uuid';
 
@@ -111,18 +112,37 @@ BEGIN
                 SELECT *
                 FROM jsonb_array_elements(data -> 'answers')
                 LOOP
-                    temp_option := newAnswer -> 'options';
-                    IF ((newAnswer ->> 'type') != 'Requirement' OR
-                        (newAnswer ->> 'type') = 'Requirement' AND
-                        (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
-                        question_uuid := (newAnswer ->> 'uuid')::uuid;
-                        UPDATE user_answers
-                        SET answer     = newAnswer -> 'options',
-                            max_points = points_per_question
-                        WHERE lesson_id = lesson_uuid
-                          AND user_id = auth.uid()
-                          AND question_id = question_uuid;
-                    end if;
+                    question_uuid := (newAnswer ->> 'uuid')::uuid;
+
+                    SELECT answer
+                    INTO old_answer
+                    FROM user_answers
+                    WHERE lesson_id = lesson_uuid
+                      AND user_id = auth.uid()
+                      AND question_id = question_uuid;
+
+                    IF NOT FOUND THEN
+                        temp_option := newAnswer -> 'options';
+                        IF ((newAnswer ->> 'type') != 'Requirement' OR
+                            (newAnswer ->> 'type') = 'Requirement' AND
+                            (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
+                            INSERT INTO user_answers (user_id, lesson_id, question_id, answer, max_points)
+                            VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option, points_per_question);
+                        END IF;
+                    ELSE
+                        temp_option := newAnswer -> 'options';
+                        IF ((newAnswer ->> 'type') != 'Requirement' OR
+                            (newAnswer ->> 'type') = 'Requirement' AND
+                            (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
+                            question_uuid := (newAnswer ->> 'uuid')::uuid;
+                            UPDATE user_answers
+                            SET answer     = newAnswer -> 'options',
+                                max_points = points_per_question
+                            WHERE lesson_id = lesson_uuid
+                              AND user_id = auth.uid()
+                              AND question_id = question_uuid;
+                        END IF;
+                    END IF;
                 END LOOP;
 
             UPDATE user_finished_lessons
