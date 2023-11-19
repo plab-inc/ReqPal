@@ -15,14 +15,8 @@ const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const profileStore = useProfileStore();
 
 const finishedForFirstTime = ref<boolean>(true);
-
 const userScore = lessonStore.getCurrentLesson?.userScore;
-const fullScore = ref<boolean>(false);
-const newScore = ref<number>(0);
-
-if (userScore && currentLesson) {
-  fullScore.value = userScore >= currentLesson.points;
-}
+const newScore = ref<number>();
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
@@ -74,7 +68,8 @@ onBeforeMount(async () => {
               </v-col>
 
               <v-col md="6" order="2" order-md="3" class="d-flex align-center justify-center">
-                <ScoreItem v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
+                <ScoreItem v-if="currentLesson && newScore !== undefined" :score="newScore"
+                           :max-score="currentLesson?.points"></ScoreItem>
               </v-col>
               <v-col md="6" order="4" order-md="4" class="d-flex align-center justify-center">
                 <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore"
@@ -87,7 +82,7 @@ onBeforeMount(async () => {
                 <div class="text-h4 text-center">Punktzahl</div>
               </v-col>
               <v-col class="d-flex align-center justify-center">
-                <ScoreItem v-if="currentLesson" :score="userScore ? userScore : 0"
+                <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore"
                            :max-score="currentLesson?.points"></ScoreItem>
               </v-col>
             </v-row>
