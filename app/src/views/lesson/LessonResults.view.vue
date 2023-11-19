@@ -14,14 +14,8 @@ const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const profileStore = useProfileStore();
 
 const finishedForFirstTime = ref<boolean>(true);
-
 const userScore = lessonStore.getCurrentLesson?.userScore;
-const fullScore = ref<boolean>(false);
-const newScore = ref<number>(0);
-
-if (userScore && currentLesson) {
-  fullScore.value = userScore >= currentLesson.points;
-}
+const newScore = ref<number>();
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
@@ -73,10 +67,11 @@ onBeforeMount(async () => {
               <v-container>
                 <v-row class="mt-1" v-if="!finishedForFirstTime">
                   <v-col md="6" order="2" order-md="1" class="d-flex justify-center">
-                    <ScoreItem :show-icon="false" v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
+                    <ScoreItem v-if="currentLesson && newScore !== undefined" :score="newScore" :show-icon="false"
+                               :max-score="currentLesson?.points"></ScoreItem>
                   </v-col>
                   <v-col md="6" order="3" order-md="2" class="d-flex align-center justify-center">
-                    <ScoreItem :show-icon="true" v-if="currentLesson && userScore !== undefined" :score="userScore"
+                    <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
                                :max-score="currentLesson?.points"></ScoreItem>
                   </v-col>
                   <v-col md="6" order="1" order-md="3" class="text-h5 text-center">
@@ -89,7 +84,7 @@ onBeforeMount(async () => {
 
                 <v-row v-if="finishedForFirstTime">
                   <v-col class="d-flex align-center justify-center">
-                    <ScoreItem :show-icon="true" v-if="currentLesson" :score="userScore ? userScore : 0"
+                    <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
                                :max-score="currentLesson?.points"></ScoreItem>
                   </v-col>
                   <v-col class="text-h5 text-center">
