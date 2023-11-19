@@ -34,7 +34,7 @@ async function onHintClick() {
 </script>
 
 <template>
-  <v-tooltip :text="'Hinweis'" location="top">
+  <v-tooltip :text="'Hinweis'" location="top" v-if="hint.trim() !== ''">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props"
              size="40"
