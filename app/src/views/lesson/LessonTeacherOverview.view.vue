@@ -99,7 +99,8 @@ async function init() {
     const data = await lessonStore.getCountOfStudentsForTeacher();
     if (data) studentCount.value = data;
 
-    if (studentCount.value < 10) {
+    // for testing purpose < 1 instead of < 10
+    if (studentCount.value < 1) {
       notEnoughData.value = true;
     } else {
       stats.value = await lessonStore.getLessonStatistics(currentLesson.uuid);
