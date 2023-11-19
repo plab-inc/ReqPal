@@ -67,3 +67,17 @@ CREATE POLICY "policy_products_update"
     ON public.products
     FOR UPDATE
     USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+
+DROP POLICY IF EXISTS "policy_product_catalog_insert" ON public.product_catalogs;
+CREATE POLICY "policy_product_catalog_insert"
+    ON public.product_catalogs
+    FOR INSERT
+    TO authenticated
+    WITH CHECK ((select check_user_role(auth.uid(), 'teacher')) = true);
+
+DROP POLICY IF EXISTS "policy_product_catalog_select" ON public.product_catalogs;
+CREATE POLICY "policy_product_catalog_select"
+    ON public.product_catalogs
+    FOR SELECT
+    TO authenticated
+    USING (true);
