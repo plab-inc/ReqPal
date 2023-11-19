@@ -3,7 +3,6 @@
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
-import StatItem from "@/components/lesson/lessonResults/StatItem.component.vue";
 import LessonQuestions from "@/components/lesson/lessonGenerator/LessonQuestions.component.vue";
 import AlertService from "@/services/util/alert.service.ts";
 import FeedbackItem from "@/components/lesson/lessonResults/FeedbackItem.component.vue";
@@ -15,14 +14,8 @@ const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const profileStore = useProfileStore();
 
 const finishedForFirstTime = ref<boolean>(true);
-
 const userScore = lessonStore.getCurrentLesson?.userScore;
-const fullScore = ref<boolean>(false);
-const newScore = ref<number>(0);
-
-if (userScore && currentLesson) {
-  fullScore.value = userScore >= currentLesson.points;
-}
+const newScore = ref<number>();
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
@@ -40,75 +33,84 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+
+  <v-row justify="space-between" align="center">
+    <v-col cols="10" class="text-h4">
+      {{ currentLesson?.title }}
+    </v-col>
+    <v-col cols="auto" class="text-h4" align-self="center">
+      {{ userScore }}/{{ currentLesson?.points }}
+      <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+    </v-col>
+  </v-row>
+  <v-row align="center" no-gutters>
+    <v-col cols="11" class="text-h5">
+      {{ currentLesson?.description }}
+    </v-col>
+  </v-row>
+  <v-divider/>
+
+
   <v-container v-if="!isFinished">
     <div class="text-h2">Diese Lektion wurde noch nicht bearbeitet!</div>
   </v-container>
 
-  <div v-else>
-    <v-container>
-      <v-row>
-        <v-col md="9">
-          <div class="text-h3">Ergebnisse</div>
-          <div class="text-h3 mt-4">{{ currentLesson?.title }}</div>
-          <div class="text-h5 mt-4">{{ currentLesson?.description }}</div>
-        </v-col>
-        <v-col md="3">
-          <v-row>
-            <v-col>
-              <StatItem :headline="'Ihre Gesamtpunkte:'" :text="profileStore.points + ''" :color="'primary'"></StatItem>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col>
-          <v-container class="my-5">
-
-            <v-row v-if="!finishedForFirstTime" class="mt-10">
-              <v-col md="6" order="1" order-md="1">
-                <div class="text-h4 text-center">Neue Punktzahl</div>
-              </v-col>
-              <v-col md="6" order="3" order-md="2">
-                <div class="text-h4 text-center">Punktzahl beim ersten Durchlauf</div>
-              </v-col>
-
-              <v-col md="6" order="2" order-md="3" class="d-flex align-center justify-center">
-                <ScoreItem v-if="currentLesson" :score="newScore" :max-score="currentLesson?.points"></ScoreItem>
-              </v-col>
-              <v-col md="6" order="4" order-md="4" class="d-flex align-center justify-center">
-                <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore"
-                           :max-score="currentLesson?.points"></ScoreItem>
-              </v-col>
-            </v-row>
-
-            <v-row v-if="finishedForFirstTime" class="mt-10">
-              <v-col>
-                <div class="text-h4 text-center">Punktzahl</div>
-              </v-col>
-              <v-col class="d-flex align-center justify-center">
-                <ScoreItem v-if="currentLesson" :score="userScore ? userScore : 0"
-                           :max-score="currentLesson?.points"></ScoreItem>
-              </v-col>
-            </v-row>
-
-            <v-row class="mt-10">
-              <v-col>
-                <FeedbackItem :color="'info'" :new-score="newScore"></FeedbackItem>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-col>
-      </v-row>
-
-    </v-container>
-
-    <v-divider></v-divider>
-
-    <v-row class="mt-4">
+  <v-container v-if="isFinished">
+    <v-row>
       <v-col>
-        <LessonQuestions :components="lessonStore.getComponents"></LessonQuestions>
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-title class="text-h5">
+              Meine Statistiken
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-container>
+                <v-row class="mt-1" v-if="!finishedForFirstTime">
+                  <v-col md="6" order="2" order-md="1" class="d-flex justify-center">
+                    <ScoreItem v-if="currentLesson && newScore !== undefined" :score="newScore" :show-icon="false"
+                               :max-score="currentLesson?.points"></ScoreItem>
+                  </v-col>
+                  <v-col md="6" order="3" order-md="2" class="d-flex align-center justify-center">
+                    <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
+                               :max-score="currentLesson?.points"></ScoreItem>
+                  </v-col>
+                  <v-col md="6" order="1" order-md="3" class="text-h5 text-center">
+                    Neue Punktzahl
+                  </v-col>
+                  <v-col md="6" order="2" order-md="4" class="text-h5 text-center">
+                    Punktzahl beim ersten Durchlauf
+                  </v-col>
+                </v-row>
+
+                <v-row v-if="finishedForFirstTime">
+                  <v-col class="d-flex align-center justify-center">
+                    <ScoreItem v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
+                               :max-score="currentLesson?.points"></ScoreItem>
+                  </v-col>
+                  <v-col class="text-h5 text-center">
+                    Erreichte Punkte
+                  </v-col>
+                </v-row>
+
+                <v-row class="mt-5" justify="center" no-gutters>
+                  <v-col cols="12">
+                    <FeedbackItem :color="'info'" :new-score="newScore"></FeedbackItem>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
+
+  <v-divider></v-divider>
+
+  <v-row>
+    <v-col>
+      <LessonQuestions :components="lessonStore.getComponents"></LessonQuestions>
+    </v-col>
+  </v-row>
+
 </template>

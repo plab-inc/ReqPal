@@ -4,7 +4,7 @@
       Meine Kataloge ({{ catalogs.length }}/{{ MAX_CATALOGS }})
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
     <v-row>
       <v-col>
         <v-list>
