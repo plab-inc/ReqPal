@@ -21,8 +21,8 @@ function openProductPage(url: string) {
   <v-card class="ma-2 pa-2" max-height="200" max-width="500" @click="openProductPage(product.product_url)">
     <v-skeleton-loader v-if="loading" type="heading, list-item-two-line"></v-skeleton-loader>
     <v-container v-if="!loading">
-      <v-row no-gutters>
-        <v-col cols="8" class="d-flex align-center text-h6 font-weight-bold">
+      <v-row no-gutters justify="start">
+        <v-col cols="8" class="text-h6 font-weight-bold" align-self="center">
             {{ product.product_name }}
         </v-col>
         <v-col cols="4" class="d-flex align-center justify-end">

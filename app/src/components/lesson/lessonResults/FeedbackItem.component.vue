@@ -52,21 +52,15 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-
-  <v-sheet
-      :elevation="9"
-      :min-height="120"
-      :min-width="120"
-      :color="color"
-      rounded
+  <v-card
+      variant="outlined"
+      :elevation="12"
       class="d-flex align-center justify-center flex-wrap text-center"
+      :min-height="80"
+      :color="color"
   >
-    <div class="text-h6 text-sm-h4 text-md-h5 text-lg-h4">
-      {{ feedback }}
-    </div>
-
-  </v-sheet>
-
+    {{ feedback }}
+  </v-card>
 </template>
 
 <style scoped>

@@ -74,6 +74,7 @@ CREATE POLICY "policy_user_finished_lessons"
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
 DROP POLICY IF EXISTS "policy_user_finished_lessons_teacher" ON public.user_finished_lessons;
+     --for testing purpose count is >= 1 instead of >= 10
 CREATE POLICY "policy_user_finished_lessons_teacher"
     ON public.user_finished_lessons
     FOR SELECT
@@ -84,5 +85,5 @@ CREATE POLICY "policy_user_finished_lessons_teacher"
             SELECT COUNT(*)
             FROM public.profiles
             WHERE teacher = auth.uid()
-            HAVING COUNT(*) >= 10))
+            HAVING COUNT(*) >= 1))
     );

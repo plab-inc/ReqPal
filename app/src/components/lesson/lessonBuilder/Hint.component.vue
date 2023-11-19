@@ -14,7 +14,7 @@ const lessonStore = useLessonStore();
 const authStore = useAuthStore();
 
 function openWarningDialog() {
-  if (authStore.isTeacher) {
+  if (authStore.isTeacher || (!lessonStore.currentLesson?.isStarted && lessonStore.currentLesson?.isFinished)) {
     openHintDialog();
   } else {
     alertService.openDialog('Warnung: Hinweise anzeigen',
@@ -34,11 +34,13 @@ async function onHintClick() {
 </script>
 
 <template>
-  <v-tooltip :text="'Hinweis'" location="top">
+  <v-tooltip :text="'Hinweis'" location="top" v-if="hint.trim() !== ''">
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props"
+             :elevation="8"
              size="40"
-             icon="mdi-lightbulb"
+             color="warning"
+             icon="mdi-lightbulb-on-outline"
              @click="openWarningDialog"></v-btn>
     </template>
   </v-tooltip>

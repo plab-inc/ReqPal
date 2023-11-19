@@ -4,7 +4,7 @@
       Registrieren als als <span class="text-info">{{ isTeacher ? 'Dozent' : 'Student' }}</span>
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
 
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signUpForm" fast-fail class="mt-10">
     <v-row no-gutters justify="space-between">
@@ -57,6 +57,7 @@
       <v-col>
         <v-select
             label="Mein Dozent"
+            variant="outlined"
             prepend-inner-icon="mdi-school"
             v-model="selectedTeacher"
             :rules="[requiredRule]"

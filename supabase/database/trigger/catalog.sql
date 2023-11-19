@@ -24,3 +24,19 @@ create trigger check_max_catalogs_trigger
     on catalogs
     for each row
 execute procedure check_max_catalogs();
+
+create or replace function delete_related_questions() returns trigger
+    language plpgsql
+as
+$$
+BEGIN
+    DELETE FROM questions
+    WHERE (options ->> 'catalogId')::int = OLD.catalog_id;
+    RETURN OLD;
+END;
+$$;
+
+drop trigger if exists delete_related_questions_trigger on catalogs;
+CREATE TRIGGER delete_related_questions_trigger
+    AFTER DELETE ON catalogs
+    FOR EACH ROW EXECUTE FUNCTION delete_related_questions();
