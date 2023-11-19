@@ -223,7 +223,7 @@ watch(products.value, (newProducts) => {
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col>
+                    <v-col cols="11">
                       <div>
                         <v-slider
                             v-model="product.input"
@@ -237,12 +237,8 @@ watch(products.value, (newProducts) => {
                         </v-slider>
                       </div>
                     </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col class="d-flex flex-grow-1 align-end justify-end">
-                      <div>
-                        <Hint v-if="product.comment" :hint="product.comment" :questionId="fields.questionId"></Hint>
-                      </div>
+                    <v-col cols="1">
+                      <Hint v-if="product.comment" :hint="product.comment" :questionId="fields.questionId"></Hint>
                     </v-col>
                   </v-row>
                 </v-container>
