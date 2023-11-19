@@ -2,7 +2,8 @@
 
 interface Props {
   score: number,
-  maxScore: number
+  maxScore: number,
+  showIcon: boolean
 }
 
 const props = defineProps<Props>()
@@ -22,11 +23,9 @@ if (props.maxScore > 0) {
 
 <template>
 
-  <v-progress-circular :model-value="percentage" :size="250" :width="12" :color="color">
-    <div class="text-h6 text-sm-h5 text-md-h5 text-lg-h4">
+  <v-progress-circular class="text-h6" :model-value="percentage" :size="180" :width="12" :color="color">
       {{ score + ' / ' + maxScore }}
-    </div>
-    <v-icon class="ml-1" size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+    <v-icon v-if="showIcon" class="ml-1" size="35" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
   </v-progress-circular>
 
 </template>

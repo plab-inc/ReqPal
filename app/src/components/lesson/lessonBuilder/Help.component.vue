@@ -14,6 +14,8 @@ const props = defineProps<Props>();
     <template v-slot:activator="{ props }">
       <v-btn v-bind="props"
              icon="mdi-help"
+             :elevation="8"
+             color="info"
              size="40"
              @click="AlertService.addHelpDialog(dialogType)"></v-btn>
     </template>

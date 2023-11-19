@@ -4,7 +4,7 @@
       Willkommen Zurück!
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signInForm" fast-fail class="mt-10">
     <v-row no-gutters>
       <v-col>

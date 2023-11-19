@@ -4,7 +4,7 @@
       Mein Account
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
   <v-container>
     <v-form v-model="isUserFormValid" @submit.prevent="saveChanges">
       <v-row>
@@ -12,7 +12,7 @@
           Profil
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters class="mt-5">
         <v-col>
           <v-select
               v-model="selectedAvatar"
@@ -30,7 +30,7 @@
           </v-select>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters>
         <v-col>
           <v-text-field
               v-model="username"
@@ -41,7 +41,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters>
         <v-col>
           <v-text-field
               v-model="email"
@@ -64,7 +64,7 @@
           Passwort
         </v-col>
       </v-row>
-      <v-row>
+      <v-row no-gutters class="mt-5">
         <v-col>
           <v-text-field
               v-model="password"

@@ -32,18 +32,18 @@ const getComponentInstance = (componentName: string): Component => {
 };
 
 function isRequirementOrTextfieldOrDivider(componentType: string): boolean {
-  return componentType === 'Requirement' || componentType === 'Textfield' || componentType === 'Divider';
+  return componentType === 'Textfield' || componentType === 'Divider';
 }
 </script>
 
 <template>
   <v-container v-if="components">
-    <v-row v-for="question in components">
+    <v-row v-for="question in components" no-gutters>
       <v-col class="my-2">
         <v-sheet
             :class="isRequirementOrTextfieldOrDivider(question.type) ? '' : 'pa-3'"
             rounded
-            :elevation="isRequirementOrTextfieldOrDivider(question.type) ? '0' : '3'">
+            :elevation="isRequirementOrTextfieldOrDivider(question.type) ? '0' : '8'">
           <component
               :is="getComponentInstance(question.type)"
               :key="question.uuid"
