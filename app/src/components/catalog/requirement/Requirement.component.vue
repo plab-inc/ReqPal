@@ -164,17 +164,11 @@ watch(products.value, (newProducts) => {
       {{ requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar' }}
     </v-card-title>
     <v-card-text class="text-h5 mt-1">
-      {{ requirement?.description ? requirement?.description : 'Wähle eine Anforderung' }}
+      {{ requirement?.description }}
     </v-card-text>
   </v-card>
 
-  <v-sheet
-      v-if="fields.options.askForQualification && products.length > 0"
-      elevation="6"
-      rounded
-      class="mt-5"
-  >
-    <v-container>
+    <v-container v-if="fields.options.askForQualification && products.length > 0">
       <v-row>
         <v-col class="text-h6">
           {{ fields.question }}
@@ -255,7 +249,6 @@ watch(products.value, (newProducts) => {
         </v-col>
       </v-row>
     </v-container>
-  </v-sheet>
 </template>
 
 <style scoped>

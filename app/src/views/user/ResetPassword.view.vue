@@ -4,7 +4,7 @@
       Passwort zurücksetzen
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="resetPasswordForm" fast-fail class="mt-10">
     <v-row>
       <v-col>
