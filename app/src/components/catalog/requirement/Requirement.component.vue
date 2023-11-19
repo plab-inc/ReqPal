@@ -133,7 +133,10 @@ watch(products.value, (newProducts) => {
     requirementId: any,
     askForQualification: any,
     productIds: any,
-    products: { id: number, input: number }[]
+    products: {
+      id: number,
+      input: number
+    }[]
   } = {
     catalogId: fields.value.options.catalogId,
     requirementId: fields.value.options.requirementId,
@@ -154,113 +157,109 @@ watch(products.value, (newProducts) => {
 </script>
 
 <template>
-  <v-card variant="flat">
-    <v-container>
-      <v-card :loading="loading"
-              variant="outlined"
-              color="success"
-      >
-        <v-card-title class="text-h4 text-decoration-underline">
-          {{ requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar' }}
-        </v-card-title>
-        <v-card-text class="text-h5 mt-1">
-          {{ requirement?.description ? requirement?.description : 'Wähle eine Anforderung' }}
-        </v-card-text>
-      </v-card>
-
-      <div v-if="fields.options.askForQualification && products.length > 0">
-
-        <v-row>
-          <v-col>
-            <div class="text-h6 my-5">{{ fields.question }}</div>
-          </v-col>
-        </v-row>
-
-        <v-card variant="flat">
-
-          <v-row>
-            <v-col :lg="12/products.length >= 3 ? 12/products.length : 3" v-for="product in products" class="my-5">
-              <v-hover>
-                <template v-slot:default="{ isHovering, props }">
-                  <v-card
-                      variant="outlined"
-                      v-bind="props"
-                      :color="isHovering ? 'info' : undefined"
-                  >
-                    <v-container>
-                      <v-row>
-                        <v-col v-if="product.solution">
-                          <div class="text-h6 mb-2">Ihre Antwort: {{ product.input }}</div>
-                          <div class="text-h6 mb-2">Richtige Antwort: {{ product.solution }}</div>
-                          <div
-                              v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
-                              class="text-h6 mb-2">
-                            Toleranzbereich zwischen: {{ getMinValueForProduct(product) }} und {{
-                              getMaxValueForProduct(product)
-                            }}
-                          </div>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="9">
-                          <v-card-title class="text-h4">
-                            {{ product.name }}
-                          </v-card-title>
-                          <v-card-text>
-                            <router-link to="" @click="openLink(product.link)" class="text-h6 link text-info">
-                              {{ product.link }}
-                            </router-link>
-                          </v-card-text>
-                        </v-col>
-                        <v-col cols="3">
-                          <div class="d-flex align-center justify-end mr-lg-3">
-                            <ProductQualification :size="80"
-                                                  :qualification="product.solution ? product.solution + '' : product.input + ''">
-                            </ProductQualification>
-                          </div>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col>
-                          <div>
-                            <v-slider
-                                v-model="product.input"
-                                :readonly="!!product.solution"
-                                :min="1"
-                                :max="5"
-                                :step="1"
-                                :color="product.solution && checkSolution(product) ? 'success' : 'orange'"
-                                track-color="warning"
-                                thumb-label>
-                            </v-slider>
-                          </div>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col class="d-flex flex-grow-1 align-end justify-end">
-                          <div>
-                            <Hint v-if="product.comment" :hint="product.comment" :questionId="fields.questionId"></Hint>
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card>
-                </template>
-              </v-hover>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col class="d-flex justify-end">
-              <div>
-                <Help dialog-type="productQualificationExplanation"></Help>
-              </div>
-            </v-col>
-          </v-row>
-        </v-card>
-
-      </div>
-    </v-container>
+  <v-card :loading="loading"
+          variant="outlined"
+  >
+    <v-card-title class="text-h4 text-decoration-underline">
+      {{ requirement?.title ? requirement?.title : 'Der Katalog zu dieser Komponente ist nicht mehr verfügbar' }}
+    </v-card-title>
+    <v-card-text class="text-h5 mt-1">
+      {{ requirement?.description ? requirement?.description : 'Wähle eine Anforderung' }}
+    </v-card-text>
   </v-card>
+
+  <v-sheet
+      v-if="fields.options.askForQualification && products.length > 0"
+      elevation="6"
+      rounded
+      class="mt-5"
+  >
+    <v-container>
+      <v-row>
+        <v-col class="text-h6">
+          {{ fields.question }}
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col :lg="12/products.length >= 3 ? 12/products.length : 3" v-for="product in products">
+          <v-hover>
+            <template v-slot:default="{ isHovering, props }">
+              <v-card
+                  variant="outlined"
+                  v-bind="props"
+                  :color="isHovering ? 'info' : undefined"
+              >
+                <v-container>
+                  <v-row>
+                    <v-col v-if="product.solution">
+                      <div class="text-h6 mb-2">Ihre Antwort: {{ product.input }}</div>
+                      <div class="text-h6 mb-2">Richtige Antwort: {{ product.solution }}</div>
+                      <div
+                          v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
+                          class="text-h6 mb-2">
+                        Toleranzbereich zwischen: {{ getMinValueForProduct(product) }} und {{
+                          getMaxValueForProduct(product)
+                        }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="9">
+                      <v-card-title class="text-h4">
+                        {{ product.name }}
+                      </v-card-title>
+                      <v-card-text>
+                        <router-link to="" @click="openLink(product.link)" class="text-h6 link text-info">
+                          {{ product.link }}
+                        </router-link>
+                      </v-card-text>
+                    </v-col>
+                    <v-col cols="3">
+                      <div class="d-flex align-center justify-end mr-lg-3">
+                        <ProductQualification :size="80"
+                                              :qualification="product.solution ? product.solution + '' : product.input + ''">
+                        </ProductQualification>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <div>
+                        <v-slider
+                            v-model="product.input"
+                            :readonly="!!product.solution"
+                            :min="1"
+                            :max="5"
+                            :step="1"
+                            :color="product.solution && checkSolution(product) ? 'success' : 'orange'"
+                            track-color="warning"
+                            thumb-label>
+                        </v-slider>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col class="d-flex flex-grow-1 align-end justify-end">
+                      <div>
+                        <Hint v-if="product.comment" :hint="product.comment" :questionId="fields.questionId"></Hint>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+            </template>
+          </v-hover>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="d-flex justify-end">
+          <div>
+            <Help dialog-type="productQualificationExplanation"></Help>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-sheet>
 </template>
 
 <style scoped>
