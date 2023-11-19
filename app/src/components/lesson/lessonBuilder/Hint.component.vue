@@ -14,7 +14,7 @@ const lessonStore = useLessonStore();
 const authStore = useAuthStore();
 
 function openWarningDialog() {
-  if (authStore.isTeacher) {
+  if (authStore.isTeacher || (!lessonStore.currentLesson?.isStarted && lessonStore.currentLesson?.isFinished)) {
     openHintDialog();
   } else {
     alertService.openDialog('Warnung: Hinweise anzeigen',
