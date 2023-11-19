@@ -55,13 +55,15 @@
                 rounded
                 to="/lessons"
                 title="Lektionen"
-                :subtitle="lessonStore.openLessons <= 0 ? 'Keine Lektionen' : lessonStore.openLessons +'Offen'"
+                :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
             >
               <template v-slot:prepend>
                 <v-progress-circular
                     class="mr-4"
                     size="27"
-                    :model-value="(lessonStore.lessons.length - lessonStore.openLessons / lessonStore.lessons.length) * 100"/>
+                    :model-value="openLessonsPercentage"
+                    :color="openLessonsColor"
+                />
               </template>
             </v-list-item>
             <v-list-item
@@ -168,6 +170,9 @@ const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
+const openLessonsColor = ref<string>('error');
+const openLessonsPercentage = ref<number>(100);
+
 const audio = new Audio(alertSfx);
 
 onBeforeMount(async () => {
@@ -195,5 +200,20 @@ watch(() => utilStore.alerts.length, (newLength, oldLength) => {
     audio.play();
   }
 });
+
+watch(() => lessonStore.openLessons, () => {
+  if(lessonStore.openLessons === 0 || lessonStore.lessons.length === 0){
+    openLessonsColor.value = 'success';
+    openLessonsPercentage.value = 100;
+    return;
+  }
+  if(lessonStore.openLessons === lessonStore.lessons.length){
+    openLessonsColor.value = 'error';
+    openLessonsPercentage.value = 100;
+    return;
+  }
+  openLessonsColor.value = 'warning';
+  openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
+}, {immediate: true})
 
 </script>
