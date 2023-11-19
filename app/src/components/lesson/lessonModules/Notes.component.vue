@@ -65,13 +65,7 @@ watch(textInput, (newTextInput) => {
         Notizen
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <v-container>
-          <v-row>
-            <v-col class="d-flex justify-end">
-              <Help dialog-type="notesExplanation"></Help>
-            </v-col>
-          </v-row>
-          <v-row>
+          <v-row class="mt-1">
             <v-col v-for="(option, index) in fields.options" :key="index" :cols="12/fields.options.length">
               <v-textarea v-model="textInput[option.id]"
                           :label="option.label"
@@ -79,7 +73,11 @@ watch(textInput, (newTextInput) => {
                           auto-grow></v-textarea>
             </v-col>
           </v-row>
-        </v-container>
+          <v-row no-gutters>
+            <v-col class="d-flex justify-end">
+              <Help dialog-type="notesExplanation"></Help>
+            </v-col>
+          </v-row>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>

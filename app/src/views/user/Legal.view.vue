@@ -4,7 +4,7 @@
       Nutzungsbedingungen
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider/>
   <v-container>
     <p>Herzlich Willkommen bei Projektarbeit2023. Diese rechtlichen Hinweise gelten für alle Nutzer, die sich auf unserer Website anmelden.</p>
     <p>Durch die Registrierung auf unserer Website verpflichten Sie sich, wahre, aktuelle und vollständige Informationen über sich selbst anzugeben. Die Anmeldung erfolgt durch Ausfüllen unseres Anmeldeformulars und Bestätigung Ihrer E-Mail-Adresse.</p>
