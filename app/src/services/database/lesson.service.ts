@@ -349,7 +349,7 @@ class LessonServiceClass {
     }
 
     private async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string): Promise<boolean> {
-        const {data, error, status, count} = await supabase
+        const {error, count} = await supabase
             .from('lessons')
             .select('title', {count: 'exact', head: true})
             .eq('title', lessonTitle)
