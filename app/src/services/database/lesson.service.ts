@@ -36,7 +36,8 @@ class LessonServiceClass {
         fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
         getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this),
         fetchUserProgressForLesson: this.fetchUserProgressForLesson.bind(this),
-        checkIfLessonHasSavedProgress: this.checkIfLessonHasSavedProgress.bind(this)
+        checkIfLessonHasSavedProgress: this.checkIfLessonHasSavedProgress.bind(this),
+        checkIfLessonTitleExists: this.checkIfLessonTitleExists.bind(this)
     };
 
     private async fetchLessons(examples: boolean = false): Promise<LessonDTO[] | undefined> {
@@ -149,7 +150,11 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string): Promise<{ finished: boolean | null, is_started: boolean | null, finished_for_first_time: boolean | null } | undefined> {
+    private async fetchLessonStatusForUser(lessonUUID: string, userUUID: string): Promise<{
+        finished: boolean | null,
+        is_started: boolean | null,
+        finished_for_first_time: boolean | null
+    } | undefined> {
         const {data, error} = await supabase
             .from('user_finished_lessons')
             .select('finished, is_started, finished_for_first_time')
@@ -281,7 +286,9 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string): Promise<{ answers: Json } | undefined> {
+    private async fetchUserProgressForLesson(userUUID: string, lessonUUID: string): Promise<{
+        answers: Json
+    } | undefined> {
         const {data, error} = await supabase
             .from('user_lesson_progress')
             .select('answers')
@@ -338,6 +345,21 @@ class LessonServiceClass {
         if (error) throw error;
 
         if (count) return count > 0;
+        return false;
+    }
+
+    private async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string): Promise<boolean> {
+        const {data, error, status, count} = await supabase
+            .from('lessons')
+            .select('title', {count: 'exact', head: true})
+            .eq('title', lessonTitle)
+            .not('uuid', 'eq', lessonUUID);
+
+        if (error) throw error;
+
+        if (count) {
+            return count > 0;
+        }
         return false;
     }
 }
