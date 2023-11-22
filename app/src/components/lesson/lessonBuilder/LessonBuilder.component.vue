@@ -18,6 +18,7 @@ import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useLessonStore} from "@/stores/lesson.store.ts";
+import alertService from "@/services/util/alert.service.ts";
 
 interface ComponentsMap {
   [key: string]: Component;
@@ -29,9 +30,7 @@ const props = defineProps<{
 
 const themeColors = useTheme().current.value.colors;
 const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider', 'Divider']
-const rules = {
-  requiredString: requiredStringRule
-};
+
 const componentsMap: ComponentsMap = {
   'TrueOrFalse': markRaw(TrueOrFalse),
   'Requirement': markRaw(CatalogRequirementSelection),
@@ -76,7 +75,16 @@ const components = lessonFormStore.getComponents;
 const lessons = lessonStore.getLessons;
 const {canDrop, isOver} = toRefs(collect);
 
+async function checkLessonTitleExists() {
+  const exists = await lessonStore.checkIfLessonTitleExists(lessonFormStore.lessonTitle, lessonFormStore.uuid);
+  if (exists) {
+    alertService.addWarningAlert("Dieser Titel existiert bereits!");
+  }
+  return exists;
+}
+
 async function validate() {
+  await checkLessonTitleExists();
   await form.value.validate();
 }
 
@@ -88,6 +96,9 @@ async function uploadLesson() {
   }
 
   if (components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
+
+    if (await checkLessonTitleExists()) return;
+
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson)
         .catch(() => {
@@ -112,7 +123,7 @@ async function uploadLesson() {
         <v-col cols="10" class="pr-5">
           <v-text-field
               clearable
-              :rules="[rules.requiredString]"
+              :rules="[requiredStringRule]"
               label="Titel der Lektion"
               variant="outlined"
               v-model="lessonFormStore.lessonTitle"
@@ -131,7 +142,7 @@ async function uploadLesson() {
           <v-text-field
               clearable
               label="Beschreibung der Lektion"
-              :rules="[rules.requiredString]"
+              :rules="[requiredStringRule]"
               variant="outlined"
               v-model="lessonFormStore.lessonDescription"
           ></v-text-field>

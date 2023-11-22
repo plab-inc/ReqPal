@@ -16,7 +16,7 @@
               <v-progress-circular indeterminate model-value="20" color="warning"></v-progress-circular>
             </div>
             <div v-else>
-              <v-icon  class="mr-2" size="32">mdi-file-upload</v-icon>
+              <v-icon class="mr-2" size="32">mdi-file-upload</v-icon>
               <span>Datei hier ablegen</span>
             </div>
           </v-card-text>
@@ -37,7 +37,8 @@
       </v-row>
       <v-row align="center">
         <v-col>
-          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Katalog Hochladen</v-btn>
+          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Katalog Hochladen
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -52,6 +53,8 @@ import AlertService from "@/services/util/alert.service.ts";
 import CatalogService from "@/services/database/catalog.service.ts";
 import router from "@/router";
 import * as XLSX from "xlsx";
+import alertService from "@/services/util/alert.service.ts";
+import {useCatalogStore} from "@/stores/catalog.store.ts";
 
 interface Props {
   maxFileSize?: number;
@@ -81,21 +84,25 @@ async function readFileAsBinaryString(file: File): Promise<string> {
 async function xlsxToCsv(xlsxFile: File): Promise<File> {
   try {
     const data = await readFileAsBinaryString(xlsxFile);
-    const workbook = XLSX.read(data, { type: 'binary' });
+    const workbook = XLSX.read(data, {type: 'binary'});
     const wsname = workbook.SheetNames[0];
     const ws = workbook.Sheets[wsname];
-    const csv = XLSX.utils.sheet_to_csv(ws, { FS: ';' });
-    const csvBlob = new Blob([csv], { type: 'text/csv' });
+    const csv = XLSX.utils.sheet_to_csv(ws, {FS: ';'});
+    const csvBlob = new Blob([csv], {type: 'text/csv'});
     return new File([csvBlob], xlsxFile.name, {type: 'text/csv'});
   } catch (error) {
     throw error;
   }
 }
 
-async function handleFileUpload(file: File): Promise<void>{
+async function handleFileUpload(file: File): Promise<void> {
   loading.value = true;
 
   if (file) {
+    if (await checkCatalogNameExists(file.name)) {
+      loading.value = false;
+      return;
+    }
     if (file.name.endsWith('.xlsx')) {
       file = await xlsxToCsv(file);
     }
@@ -103,7 +110,7 @@ async function handleFileUpload(file: File): Promise<void>{
   }
 }
 
-function uploadCSVToDB(File: File){
+function uploadCSVToDB(File: File) {
 
   state.borderColor = 'transparent';
 
@@ -115,10 +122,10 @@ function uploadCSVToDB(File: File){
               router.push({name: 'Catalogs'});
             })
             .catch((error: any) => {
-              if(error.code == 42501){
-                throw new PrivilegeError("Rechte zum Hochladen fehlen.",error.code);
-              }else{
-                throw new DatabaseError("Fehler beim Hochladen des Katalogs.",error.code);
+              if (error.code == 42501) {
+                throw new PrivilegeError("Rechte zum Hochladen fehlen.", error.code);
+              } else {
+                throw new DatabaseError("Fehler beim Hochladen des Katalogs.", error.code);
               }
             })
             .finally(() => {
@@ -147,7 +154,7 @@ const state = reactive({
 
 const props = withDefaults(defineProps<Props>(), {
   maxFileSize: 1048576,
-  acceptedFileTypes: () => ['.csv','.xlsx']
+  acceptedFileTypes: () => ['.csv', '.xlsx']
 });
 const handleDragOver = () => {
   state.borderColor = themeColors.warning;
@@ -159,7 +166,7 @@ const handleDragLeave = () => {
 }
 const handleDrop = (e: DragEvent) => {
   handleDragLeave();
-  if(e.dataTransfer){
+  if (e.dataTransfer) {
     const droppedFiles = Array.from(e.dataTransfer.files).filter(validateFile);
 
     state.files = [droppedFiles[0]];
@@ -184,6 +191,16 @@ const validateFile = (file: File) => {
   }
 
   return props.acceptedFileTypes.includes(fileType) && fileSize <= props.maxFileSize;
+}
+
+async function checkCatalogNameExists(fileName: string) {
+  const catalogStore = useCatalogStore();
+  const catalogName = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
+  const exists = await catalogStore.checkIfCatalogNameExists(catalogName);
+  if (exists) {
+    alertService.addWarningAlert("Dieser Name existiert bereits!");
+  }
+  return exists;
 }
 
 </script>

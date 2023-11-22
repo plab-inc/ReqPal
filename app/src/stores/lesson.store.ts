@@ -410,6 +410,10 @@ export const useLessonStore = defineStore('lesson', {
             if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
                 await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
             }
+        },
+
+        async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string) {
+            return await LessonService.pull.checkIfLessonTitleExists(lessonTitle, lessonUUID);
         }
 
     },
