@@ -16,7 +16,8 @@ class CatalogServiceClass {
         fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
         fetchProductById: this.fetchProductById.bind(this),
         fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
-        fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this)
+        fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this),
+        checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this)
     }
 
     private async fetchRequirementsByCatalogId(catalogId: number): Promise<RequirementDTO[] | undefined> {
@@ -172,7 +173,20 @@ class CatalogServiceClass {
         if (error) throw error;
 
         return data;
+    }
 
+    private async checkIfCatalogNameExists(catalogName: string): Promise<boolean> {
+        const {error, count} = await supabase
+            .from('catalogs')
+            .select('catalog_name', {count: 'exact', head: true})
+            .eq('catalog_name', catalogName)
+
+        if (error) throw error;
+
+        if (count) {
+            return count > 0;
+        }
+        return false;
     }
 
 }
