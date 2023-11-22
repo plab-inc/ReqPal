@@ -140,6 +140,10 @@ export const useCatalogStore = defineStore('catalog', {
 
         async fetchProductById(productId: number) {
             return await catalogService.pull.fetchProductById(productId);
+        },
+
+        async checkIfCatalogNameExists(catalogName: string) {
+            return await catalogService.pull.checkIfCatalogNameExists(catalogName);
         }
     }
 });
