@@ -175,13 +175,13 @@ watch(products.value, (newProducts) => {
         </v-col>
       </v-row>
       <v-row>
-        <v-col :lg="12/products.length >= 3 ? 12/products.length : 3" v-for="product in products">
+        <v-col :lg="12/products.length >= 3 ? (12/products.length) : 3" v-for="product in products">
           <v-hover>
             <template v-slot:default="{ isHovering, props }">
               <v-card
-                  variant="outlined"
                   v-bind="props"
                   :color="isHovering ? 'info' : undefined"
+                  height="200"
               >
                 <v-container>
                   <v-row>
@@ -199,7 +199,7 @@ watch(products.value, (newProducts) => {
                   </v-row>
                   <v-row>
                     <v-col cols="9">
-                      <v-card-title class="text-h4">
+                      <v-card-title class="text-h5">
                         {{ product.name }}
                       </v-card-title>
                       <v-card-text>
@@ -209,16 +209,15 @@ watch(products.value, (newProducts) => {
                       </v-card-text>
                     </v-col>
                     <v-col cols="3">
-                      <div class="d-flex align-center justify-end mr-lg-3">
-                        <ProductQualification :size="80"
+                      <div class="d-flex align-center justify-end">
+                        <ProductQualification :size="70"
                                               :qualification="product.solution ? product.solution + '' : product.input + ''">
                         </ProductQualification>
                       </div>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col cols="11">
-                      <div>
+                  <v-row no-gutters justify="space-between" align-content="end">
+                    <v-col cols="10">
                         <v-slider
                             v-model="product.input"
                             :readonly="!!product.solution"
@@ -229,9 +228,8 @@ watch(products.value, (newProducts) => {
                             track-color="warning"
                             thumb-label>
                         </v-slider>
-                      </div>
                     </v-col>
-                    <v-col cols="1">
+                    <v-col cols="auto">
                       <Hint v-if="product.comment" :hint="product.comment" :questionId="fields.questionId"></Hint>
                     </v-col>
                   </v-row>
