@@ -1,7 +1,7 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h4">
-      Feedback
+      Feedback zur App
     </v-col>
   </v-row>
   <v-divider/>
