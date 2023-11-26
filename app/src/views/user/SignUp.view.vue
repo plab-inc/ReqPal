@@ -1,7 +1,7 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h3">
-      Registrieren als als <span class="text-info">{{ isTeacher ? 'Dozent' : 'Student' }}</span>
+      Registrieren als <span class="text-info">{{ isTeacher ? 'Dozent' : 'Student' }}</span>
     </v-col>
   </v-row>
   <v-divider/>
