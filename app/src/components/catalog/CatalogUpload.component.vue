@@ -37,7 +37,12 @@
       </v-row>
       <v-row align="center">
         <v-col>
-          <v-btn color="primary" @click="handleFileUpload(state.files[0])" block :disabled="loading">Katalog Hochladen
+          <v-btn
+              color="primary"
+              @click="handleFileUpload(state.files[0])" block
+              :disabled="loading || state.files.length === 0"
+          >
+            Katalog Hochladen
           </v-btn>
         </v-col>
       </v-row>
@@ -50,10 +55,10 @@ import {useTheme} from "vuetify";
 import {ConversionError, DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
 import {Catalog} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
+import alertService from "@/services/util/alert.service.ts";
 import CatalogService from "@/services/database/catalog.service.ts";
 import router from "@/router";
 import * as XLSX from "xlsx";
-import alertService from "@/services/util/alert.service.ts";
 import {useCatalogStore} from "@/stores/catalog.store.ts";
 
 interface Props {
