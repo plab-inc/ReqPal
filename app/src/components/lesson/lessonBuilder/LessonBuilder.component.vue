@@ -237,6 +237,7 @@ async function uploadLesson() {
                 Module zurücksetzen
               </v-btn>
               <v-btn
+                  :disabled="formIsValid"
                   variant="outlined"
                   color="info"
                   @click="validate()"
