@@ -41,6 +41,7 @@
               rounded v-if="authStore.isTeacher"
               prepend-icon="mdi-school"
               title="Erstellte Lektionen"
+              :active="router.currentRoute.value.path.startsWith('/lessons')"
               to="/lessons"/>
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
@@ -55,6 +56,7 @@
                 rounded
                 to="/lessons"
                 title="Lektionen"
+                :active="router.currentRoute.value.path.startsWith('/lessons')"
                 :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
             >
               <template v-slot:prepend>
@@ -81,7 +83,13 @@
         </div>
         <div v-if="authStore.user && authStore.isTeacher">
           <v-divider class="my-1"/>
-          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"/>
+          <v-list-item
+              rounded
+              prepend-icon="mdi-text-box-multiple"
+              title="Meine Kataloge"
+              :active="routeToCatalogNotBuilder()"
+              to="/catalogs"
+          />
           <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
           <v-divider class="my-1"/>
@@ -104,6 +112,7 @@
               :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
               @click="themeStore.toggleUserTheme"
           />
+          <v-list-item rounded prepend-icon="mdi-email-fast" title="Feedback" to="feedback"/>
           <v-list-item
               prepend-icon="mdi-scale-balance"
               title="Rechtliche Hinweise"
@@ -191,6 +200,10 @@ const removeAlertWithDelay = (alertId: string, delay = 10000) => {
 const logout = () => {
   authStore.signOut();
   router.push('/')
+}
+
+function routeToCatalogNotBuilder() {
+  return (router.currentRoute.value.path.startsWith('/catalogs') && !router.currentRoute.value.path.startsWith('/catalogs/upload'))
 }
 
 watch(() => utilStore.alerts.length, (newLength, oldLength) => {
