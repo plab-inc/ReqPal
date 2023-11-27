@@ -74,27 +74,27 @@ class AuthServiceClass {
     }
 
     private async updateEmail(email: string) {
-        const {data, error} =
+        const {error} =
             await supabase.auth.updateUser({email: email})
 
         if (error) throw error;
     }
 
     private async updatePassword(newPassword: string) {
-        const {data, error} =
+        const {error} =
             await supabase.auth.updateUser({password: newPassword})
         if (error) throw error;
     }
 
     private async updateUsername(username: any) {
-        const {data, error} = await supabase.auth.updateUser({
+        const {error} = await supabase.auth.updateUser({
             data: {username: username}
         })
         if (error) throw error;
     }
 
     private async resetPassword(email: string) {
-        const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
+        const {error} = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://www.lethalgoose.com/account',
         });
         if (error) throw error;

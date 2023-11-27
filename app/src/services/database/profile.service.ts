@@ -82,7 +82,7 @@ class ProfileServiceClass {
     }
 
     private async checkIfUsernameExists(username: string): Promise<boolean | undefined> {
-        const {error, status, count} = await supabase
+        const {error, count} = await supabase
             .from('profiles')
             .select('username', {count: 'exact', head: true})
             .eq('username', username)
