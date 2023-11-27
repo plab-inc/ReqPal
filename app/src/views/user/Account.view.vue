@@ -36,8 +36,7 @@
               v-model="username"
               label="Benutzername"
               prepend-icon="mdi-account-edit"
-              :rules="[requiredRule]"
-              @blur="checkUsernameExists"
+              :rules="[requiredRule, usernameDoesNotExistExcludingUUID]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -88,7 +87,11 @@
 import {ref} from 'vue';
 import {useProfileStore} from "@/stores/profile.store.js";
 import {useAuthStore} from "@/stores/auth.store.ts";
-import {requiredAtLeast6CharsRule, requiredEmailRule, requiredRule} from "@/utils/validationRules.ts";
+import {
+  requiredAtLeast6CharsRule,
+  requiredEmailRule,
+  requiredRule, usernameDoesNotExistExcludingUUID,
+} from "@/utils/validationRules.ts";
 import alertService from "@/services/util/alert.service.ts";
 
 const avatarOptions = [
@@ -114,10 +117,6 @@ onMounted(async () => {
   if (authStore.user) await profileStore.fetchProfile(authStore.user.id);
   selectedAvatar.value = profileStore.avatar.charAt(0).toUpperCase() + profileStore.avatar.slice(1);
 })
-
-async function checkUsernameExists() {
-  return await profileStore.checkIfUsernameExists(username.value);
-}
 
 async function updatePassword() {
 
@@ -157,18 +156,12 @@ async function saveChanges() {
   }
 
   if (username.value !== originalUsername) {
-    const exists = await checkUsernameExists();
-    if (exists) {
-      alertService.addWarningAlert("Dieser Benutzername existiert bereits!");
+    try {
+      await authStore.updateUsername(username.value);
+      await profileStore.updateProfileUsername(userUUID, username.value);
+    } catch (error: any) {
+      alertService.addErrorAlert("Der Benutzername konnte nicht aktualisiert werden.");
       return;
-    } else {
-      try {
-        await authStore.updateUsername(username.value);
-        await profileStore.updateProfileUsername(userUUID, username.value);
-      } catch (error: any) {
-        alertService.addErrorAlert("Der Benutzername konnte nicht aktualisiert werden.");
-        return;
-      }
     }
   }
 
