@@ -114,6 +114,16 @@ async function uploadLesson() {
   throw new Error('Die Lektion konnte nicht erstellt werden');
 }
 
+function openDeleteDialog(componentUUID: string) {
+  alertService.openDialog(
+      "Modul löschen",
+      "Möchtest du dieses Modul wirklich löschen? Das Löschen ist unwiderruflich",
+      "Ja",
+      "Nein",
+      () => lessonFormStore.removeComponentById(componentUUID)
+  )
+}
+
 </script>
 
 <template>
@@ -167,7 +177,7 @@ async function uploadLesson() {
                     <v-btn
                         class="ma-2"
                         icon="mdi-delete"
-                        @click="lessonFormStore.removeComponentById(componentEntry.uuid)"
+                        @click="openDeleteDialog(componentEntry.uuid)"
                     ></v-btn>
                     <v-btn v-if="lessonFormStore.getComponentIndexById(componentEntry.uuid) !== components.length-1"
                            class="ma-2"
