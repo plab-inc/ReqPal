@@ -74,10 +74,13 @@ serve(async (req) => {
         }
 
         const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
-        validateCSVFormat(csvString);
+        const csvLines = csvString.replace(/\r/g, "").split("\n");
+        const firstRowWithProductsIndex = findFirstRowWithProducts(csvLines);
+
+        validateCSVFormat(csvLines, firstRowWithProductsIndex);
 
         const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
-        const json = convertCSVtoJSONString(csvString, fileNameWithoutExtension);
+        const json = convertCSVtoJSONString(csvLines, firstRowWithProductsIndex, fileNameWithoutExtension);
 
         return new Response(JSON.stringify(json, null, 2), {
             headers: {
@@ -91,7 +94,7 @@ serve(async (req) => {
     } catch (error) {
 
         if (error instanceof ValidationError) {
-            return new Response(JSON.stringify(error.message), {
+            return new Response(JSON.stringify({error: error.message}), {
                 headers: {
                     ...corsHeaders,
                     'Content-Type': 'application/json'
@@ -100,7 +103,7 @@ serve(async (req) => {
             });
         }
 
-        return new Response(JSON.stringify(error.message), {
+        return new Response(JSON.stringify({error: error.message}), {
             headers: {
                 ...corsHeaders,
                 'Content-Type': 'application/json'
@@ -110,14 +113,23 @@ serve(async (req) => {
     }
 });
 
+function findFirstRowWithProducts(lines: string[]): number {
+    for (let i = 0; i < Math.min(lines.length, 5); i++) {
+        if (lines[i].startsWith(';;;')) {
+            return i;
+        }
+    }
+    throw new ValidationError('Keine gültige Zeile mit ";;;" in den ersten 5 Zeilen gefunden.');
+}
 
-function validateCSVFormat(csvString: string){
-    const productCol = csvString.replace(/\r/g, "").split("\n")[0];
+
+function validateCSVFormat(csvLines: string[], indexOfProductsRow: number){
+
+    const productCol = csvLines[indexOfProductsRow];
     checkProductsColumn(productCol);
 
     const productList = productCol.split(';;;')[1].split(';').filter((product)=>product !== '');
-    const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
-    checkRequirementColumns(requirementRowTitlesCol, productList.length / 2);
+    checkRequirementColumns(csvLines[indexOfProductsRow+1], productList.length / 2);
 }
 function checkProductsColumn(productRow: string) {
     if (productRow.length === 0) {
@@ -176,9 +188,9 @@ function checkRequirementColumns(line: string, products: number) {
     }
     return true;
 }
-function convertCSVtoJSONString(csvString: string, fileName: string): RequirementsJSON {
-    const lines = csvString.replace(/\r/g, "").split("\n");
-    const products = lines[0].split(";;;")[1].split(';');
+function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number,  fileName: string): RequirementsJSON {
+
+    const products = csvLines[indexOfProductsRow].split(";;;")[1].split(';');
 
     const mappedProducts: Product[] = [];
 
@@ -195,8 +207,8 @@ function convertCSVtoJSONString(csvString: string, fileName: string): Requiremen
         products: mappedProducts,
         requirements: []
     };
-    for(let i = 2; i < lines.length; i++){
-        const currentLine = lines[i].split(";");
+    for(let i = indexOfProductsRow + 2; i < csvLines.length; i++){
+        const currentLine = csvLines[i].split(";");
         const item: Requirement = {
             "reqId": currentLine[0],
             "title": currentLine[1],
