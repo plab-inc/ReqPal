@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import profileService from "@/services/database/profile.service.ts";
+import {useAuthStore} from "@/stores/auth.store.ts";
 
 interface ProfileState {
     username: string | null;
@@ -38,6 +39,13 @@ export const useProfileStore = defineStore('profile', {
 
         async checkIfUsernameExists(username: string) {
             return profileService.pull.checkIfUsernameExists(username);
+        },
+
+        async checkIfUsernameExistsExcludingUUID(username: string) {
+            const authStore = useAuthStore();
+            if(authStore.user) {
+                return profileService.pull.checkIfUsernameExistsExcludingUUID(username, authStore.user.id);
+            }
         },
 
         async updateProfileUsername(userUUID: string, username: string) {
