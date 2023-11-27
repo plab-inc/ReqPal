@@ -14,7 +14,8 @@ class ProfileServiceClass {
         fetchPoints: this.fetchPoints.bind(this),
         getAvatar: this.getAvatar.bind(this),
         getUsername: this.getUsername.bind(this),
-        checkIfUsernameExists: this.checkIfUsernameExists.bind(this)
+        checkIfUsernameExists: this.checkIfUsernameExists.bind(this),
+        checkIfUsernameExistsExcludingUUID: this.checkIfUsernameExistsExcludingUUID.bind(this)
     }
 
     private async fetchProfile(userId: string): Promise<ProfileDTO | undefined> {
@@ -86,6 +87,20 @@ class ProfileServiceClass {
             .from('profiles')
             .select('username', {count: 'exact', head: true})
             .eq('username', username)
+
+        if (error) throw error;
+
+        if (count) {
+            return count > 0;
+        }
+    }
+
+    private async checkIfUsernameExistsExcludingUUID(username: string, userUUID: string): Promise<boolean | undefined> {
+        const {error, count} = await supabase
+            .from('profiles')
+            .select('username', {count: 'exact', head: true})
+            .eq('username', username)
+            .not('id', 'eq', userUUID);
 
         if (error) throw error;
 
