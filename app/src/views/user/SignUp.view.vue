@@ -11,14 +11,13 @@
       <v-col cols="10">
         <v-text-field
             v-model="username"
-            @blur="checkUsernameExists"
             label="Username"
             prepend-inner-icon="mdi-account"
-            :rules="[requiredRule, requiredUsernameRule]"
+            :rules="[requiredRule, requiredUsernameRule, usernameDoesNotExistRule]"
         ></v-text-field>
       </v-col>
       <v-col cols="2">
-          <v-switch color="primary" v-model="isTeacher" class="ml-10" inset label="Ich bin Dozent"></v-switch>
+        <v-switch color="primary" v-model="isTeacher" class="ml-10" inset label="Ich bin Dozent"></v-switch>
       </v-col>
       <v-col>
         <v-text-field
@@ -98,18 +97,17 @@ import {
   requiredAtLeast6CharsRule,
   requiredEmailRule,
   requiredRule,
-  requiredUsernameRule
+  requiredUsernameRule, usernameDoesNotExistRule
 } from "@/utils/validationRules";
 
 import router from "@/router";
-import {AuthenticationError} from "@/errors/custom.errors.ts";
+import {AuthenticationError, UserAlreadyRegisteredError} from "@/errors/custom.errors.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const utilStore = useUtilStore();
-
 
 const username = ref("");
 const email = ref("");
@@ -120,18 +118,8 @@ const isTeacher = ref<boolean>(false);
 const teachers = ref<{ id: string, username: string }[]>([]);
 const selectedTeacher = ref<string>();
 
-async function checkUsernameExists() {
-  return await profileStore.checkIfUsernameExists(username.value);
-}
-
-
 const submit = async () => {
   if (isFormValid.value) {
-
-    if(await checkUsernameExists()){
-      utilStore.addAlert("Nutzername existiert bereits", "error");
-      return;
-    }
 
     try {
       const role = isTeacher.value ? 'teacher' : 'student';
@@ -144,6 +132,9 @@ const submit = async () => {
                 });
           })
     } catch (error: any) {
+      if (error instanceof UserAlreadyRegisteredError) {
+        throw error;
+      }
       throw new AuthenticationError(error.message, error.code);
     }
   }
