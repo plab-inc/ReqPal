@@ -1,12 +1,14 @@
+import {useProfileStore} from "@/stores/profile.store.ts";
+
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {
-    if(typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
+    if (typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
     return "Benötigt";
 }
 
 export const requiredAtLeast6CharsRule = (value: string | null | any): boolean | string => {
-    if(typeof value === 'string') {
-        if(value.trim().length < 6) {
+    if (typeof value === 'string') {
+        if (value.trim().length < 6) {
             return "Es werden mindestens 6 Zeichen benötigt."
         }
     }
@@ -15,7 +17,7 @@ export const requiredAtLeast6CharsRule = (value: string | null | any): boolean |
 
 export const minMaxWords = (value: string | null | any): boolean | string => {
 
-    if(typeof value === 'string') {
+    if (typeof value === 'string') {
         const words = value.split(/\s+/).length;
         const characters = value.length;
         if (words >= 15 && words <= 100 && characters <= 500) {
@@ -68,7 +70,21 @@ export const requiredHyperlinkRule = (value: string): boolean | string => {
     return pattern.test(value) || "Ungültiger Hyperlink";
 };
 
-export const containsAtLeastOneElementRule = (value: any) : boolean | string => {
+export const containsAtLeastOneElementRule = (value: any): boolean | string => {
     // Überprüfe, ob mindestens ein Wert in value nicht null oder undefined ist
     return Array.isArray(value) && value.some(element => element !== null && element !== undefined);
+};
+
+export const usernameDoesNotExistRule = async (value: any): Promise<boolean | string> => {
+    const profileStore = useProfileStore();
+    const result = await profileStore.checkIfUsernameExists(value);
+    if (result) return "Der Nutzername existiert bereits.";
+    return true;
+};
+
+export const usernameDoesNotExistExcludingUUID = async (value: any): Promise<boolean | string> => {
+    const profileStore = useProfileStore();
+    const result = await profileStore.checkIfUsernameExistsExcludingUUID(value);
+    if (result) return "Der Nutzername existiert bereits.";
+    return true;
 };
