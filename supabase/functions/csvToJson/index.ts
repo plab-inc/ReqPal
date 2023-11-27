@@ -30,6 +30,13 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+class ValidationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ValidationError";
+    }
+}
+
 serve(async (req) => {
 
     if (req.method === 'OPTIONS') {
@@ -66,9 +73,12 @@ serve(async (req) => {
         }
 
         const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
-        if (!validateCSVFormat(csvString)) {
+
+        try{
+            validateCSVFormat(csvString);
+        }catch (error) {
             return new Response(JSON.stringify({
-                error: "Invalid CSV format"
+                error: error.message
             }), {
                 headers: {
                     ...corsHeaders,
@@ -113,11 +123,11 @@ function validateCSVFormat(csvString: string){
 function checkProductsColumn(productRow: string) {
     if (productRow.length === 0) {
         console.error('Product column is empty');
-        return false;
+        throw new ValidationError('Product column is empty');
     }
     if (!productRow.startsWith(';;;')) {
         console.error('Product column does not start with ";;;"');
-        return false;
+        throw new ValidationError('Product column does not start with ";;;"');
     }
 
     const fields = productRow.split(';;;')[1].split(';');
@@ -125,12 +135,12 @@ function checkProductsColumn(productRow: string) {
     for (const field of fields){
         if (field === '') {
             console.error('Product-Name/-URL column contains empty field');
-            return false;
+            throw new ValidationError('Product-Name/-URL column contains empty field');
         }
     }
     if (fields.length % 2 !== 0) {
         console.error('Product column does not contain pairs of product names and URLs');
-        return false;
+        throw new ValidationError('Product column does not contain pairs of product names and URLs');
     }
 
     for (let i = 0; i < fields.length; i += 2) {
@@ -138,7 +148,7 @@ function checkProductsColumn(productRow: string) {
 
         if (!productURL.startsWith('http://') && !productURL.startsWith('https://')) {
             console.error(`Product URL "${productURL}" is not valid.`);
-            return false;
+            throw new ValidationError(`Product URL "${productURL}" is not valid.`);
         }
 
     }
@@ -150,19 +160,19 @@ function checkRequirementColumns(line: string, products: number) {
     const productFields = line.split(';').slice(3);
     if (productFields.length % 2 !== 0 || productFields.length / 2 !== products) {
         console.error('Invalid number of product fields');
-        return false;
+        throw new ValidationError('Invalid number of product fields');
     }
     for(let i = 0; i < productFields.length; i += 2){
         if (productFields[i] !== 'Qualifizierung' || productFields[i + 1] !== 'Kommentar') {
             console.error('Invalid product colum titles');
-            return false;
+            throw new ValidationError('Invalid product colum titles');
         }
     }
     const correctTitles = ['Req-ID', 'Titel', 'Beschreibung'];
     for (let i = 0; i < correctTitles.length; i++) {
         if (requirementFields[i] !== correctTitles[i]) {
             console.error('Invalid requirement column titles');
-            return false;
+            throw new ValidationError('Invalid requirement column titles');
         }
     }
     return true;
