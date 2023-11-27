@@ -98,8 +98,8 @@ export const textfieldExplanation: DialogText = {
 export const LessonFinished: DialogText = {
     title: "Lektion beenden",
     message: "Möchten Sie wirklich die Lektion beenden und Ihre Lösungen einreichen? Die Lösungen können dann nicht mehr verändert werden.",
-    confirmLabel: "Lektion beenden",
-    cancelLabel: "Zurück zur Lektion"
+    confirmLabel: "Ja",
+    cancelLabel: "Nein"
 }
 
 export const LessonReset: DialogText = {
@@ -107,8 +107,8 @@ export const LessonReset: DialogText = {
     message: "Möchten Sie wirklich die Lektion zurücksetzen und Ihre eingereichten Antworten löschen? " +
         "Die Lösungen können dann nicht mehr eingesehen werden. Sie können keine weiteren Punkte dazuverdienen, aber die Lektion " +
         "zu Übungszwecken erneut bearbeiten. Ihre gesammelten Punkte behalten Sie trotzdem.",
-    confirmLabel: "Lektion zurücksetzen",
-    cancelLabel: "Zurück zur Lektion"
+    confirmLabel: "Ja",
+    cancelLabel: "Nein"
 }
 
 
