@@ -1,11 +1,14 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
-    <v-col cols="auto" class="text-h4">
+    <v-col v-if="authStore.isTeacher" cols="auto" class="text-h4">
       Meine Lektionen ({{
-        lessons.filter((lesson) => {
-          return lesson.creatorUsername === authStore.userMetadata.username
-        }).length
+        lessons.length
       }}/20)
+    </v-col>
+    <v-col v-else cols="auto" class="text-h4">
+      Abgeschlossene Lektionen ({{
+        lessons.filter(l => l.isFinished).length
+      }}/{{ lessons.length }})
     </v-col>
     <v-col cols="auto">
       <v-btn-toggle
@@ -73,8 +76,8 @@
                 Kopieren
               </v-btn>
               <v-btn v-if="authStore.isModerator"
-                  @click.stop="editLesson(lesson.lessonDTO.uuid)"
-                  color="primary"
+                     @click.stop="editLesson(lesson.lessonDTO.uuid)"
+                     color="primary"
               >
                 Bearbeiten
               </v-btn>
@@ -227,7 +230,7 @@ function togglePublished(lesson: LessonDTO) {
 
 async function openLessonDetails(lesson: Lesson) {
 
-  if(authStore.isTeacher) {
+  if (authStore.isTeacher) {
     await router.push({name: 'LessonTeacherOverview', params: {lessonUUID: lesson.lessonDTO.uuid}});
   } else if (lesson.isFinished && !lesson.isStarted) {
     await router.push({name: 'LessonResults', params: {lessonUUID: lesson.lessonDTO.uuid}});
@@ -239,7 +242,7 @@ async function openLessonDetails(lesson: Lesson) {
 function openDeleteDialog(lessonUUID: string) {
   alertService.openDialog(
       "Lektion löschen",
-      "Möchtest du die Lektion wirklich löschen? Das löschen is unwiederruflich",
+      "Möchtest du die Lektion wirklich löschen? Das Löschen ist unwiderruflich",
       "Ja",
       "Nein",
       () => deleteLesson(lessonUUID)
