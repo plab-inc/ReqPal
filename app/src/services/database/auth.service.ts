@@ -1,4 +1,5 @@
 import {supabase} from "@/plugins/supabase";
+import {UserAlreadyRegisteredError} from "@/errors/custom.errors.ts";
 
 class AuthServiceClass {
 
@@ -26,12 +27,14 @@ class AuthServiceClass {
     }
 
     private async signUp(email: string, password: string, username: string, role: string, teacherUUID?: string) {
+        let userData;
+        let signUpError;
+
         if (teacherUUID) {
             const {data, error} = await supabase.auth.signUp({
                 email: email,
                 password: password,
                 options: {
-                    emailRedirectTo: 'https://www.lethalgoose.com/',
                     data: {
                         role: role,
                         username: username,
@@ -39,25 +42,30 @@ class AuthServiceClass {
                     }
                 }
             });
-            if (error) throw error;
-
-            return data;
+            userData = data;
+            signUpError = error;
+        } else {
+            const {data, error} = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        role: role,
+                        username: username,
+                    }
+                }
+            });
+            userData = data;
+            signUpError = error;
         }
 
-        const {data, error} = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    role: role,
-                    username: username,
-                }
-            }
-        });
-        if (error) throw error;
+        if (signUpError) throw signUpError;
 
-        return data;
+        if (userData && userData.user && userData.user.identities && userData.user.identities.length === 0) {
+            throw new UserAlreadyRegisteredError("Ein Nutzer mit der E-Mail " + email + " ist bereits registriert.");
+        }
 
+        return userData;
     }
 
     private async signOut() {

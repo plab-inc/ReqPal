@@ -1,5 +1,11 @@
 import AlertService from "@/services/util/alert.service.ts";
-import {PrivilegeError, DatabaseError, ConversionError, AuthenticationError} from "@/errors/custom.errors.ts";
+import {
+    PrivilegeError,
+    DatabaseError,
+    ConversionError,
+    AuthenticationError,
+    UserAlreadyRegisteredError
+} from "@/errors/custom.errors.ts";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 
@@ -21,11 +27,16 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof AuthenticationError) {
-        if(error.message === 'Email not confirmed') {
+        if (error.message === 'Email not confirmed') {
             AlertService.addErrorAlert("Ihre Email wurde noch nicht bestätigt.");
             return;
         }
         AlertService.addErrorAlert("Fehler bei der Anmeldung/Registrierung/Zurücksetzen des Passworts.");
+        return;
+    }
+
+    if (error instanceof UserAlreadyRegisteredError) {
+        AlertService.addErrorAlert(error.message);
         return;
     }
 
@@ -38,4 +49,4 @@ const globalErrorHandler = (event: ErrorEvent): void => {
     AlertService.addErrorAlert("Ein unerwarteter Fehler ist aufgetreten.");
 };
 
-export { unhandledRejectionHandler, globalErrorHandler };
+export {unhandledRejectionHandler, globalErrorHandler};
