@@ -81,3 +81,10 @@ export const usernameDoesNotExistRule = async (value: any): Promise<boolean | st
     if (result) return "Der Nutzername existiert bereits.";
     return true;
 };
+
+export const usernameDoesNotExistExcludingUUID = async (value: any): Promise<boolean | string> => {
+    const profileStore = useProfileStore();
+    const result = await profileStore.checkIfUsernameExistsExcludingUUID(value);
+    if (result) return "Der Nutzername existiert bereits.";
+    return true;
+};
