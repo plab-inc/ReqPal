@@ -14,10 +14,11 @@ class ProfileServiceClass {
         fetchPoints: this.fetchPoints.bind(this),
         getAvatar: this.getAvatar.bind(this),
         getUsername: this.getUsername.bind(this),
-        checkIfUsernameExists: this.checkIfUsernameExists.bind(this)
+        checkIfUsernameExists: this.checkIfUsernameExists.bind(this),
+        checkIfUsernameExistsExcludingUUID: this.checkIfUsernameExistsExcludingUUID.bind(this)
     }
 
-    private async fetchProfile(userId: string): Promise<ProfileDTO | undefined>  {
+    private async fetchProfile(userId: string): Promise<ProfileDTO | undefined> {
 
         const {data, error} = await supabase
             .from('profiles')
@@ -31,7 +32,7 @@ class ProfileServiceClass {
 
     }
 
-    private async fetchPoints(userId: string) {
+    private async fetchPoints(userId: string): Promise<{ points: number } | null> {
         const {data, error} = await supabase
             .from('user_points')
             .select('points')
@@ -43,7 +44,7 @@ class ProfileServiceClass {
         return data;
     }
 
-    private async getUsername(userId: string) {
+    private async getUsername(userId: string): Promise<{ username: string }> {
         const {data, error} = await supabase
             .from('profiles')
             .select('username')
@@ -56,7 +57,7 @@ class ProfileServiceClass {
 
     }
 
-    private async getAvatar(userId: string) {
+    private async getAvatar(userId: string): Promise<{ avatar: string }> {
         const {data, error} = await supabase
             .from('profiles')
             .select('avatar')
@@ -66,7 +67,6 @@ class ProfileServiceClass {
         if (error) throw error;
 
         return data;
-
     }
 
     private async getTeachers(): Promise<ProfileDTO[] | undefined> {
@@ -82,8 +82,8 @@ class ProfileServiceClass {
         }
     }
 
-    private async checkIfUsernameExists(username: string) {
-        const {data, error, status, count} = await supabase
+    private async checkIfUsernameExists(username: string): Promise<boolean | undefined> {
+        const {error, count} = await supabase
             .from('profiles')
             .select('username', {count: 'exact', head: true})
             .eq('username', username)
@@ -95,7 +95,21 @@ class ProfileServiceClass {
         }
     }
 
-    private async updateProfileUsername(userUUID: string, username: string) {
+    private async checkIfUsernameExistsExcludingUUID(username: string, userUUID: string): Promise<boolean | undefined> {
+        const {error, count} = await supabase
+            .from('profiles')
+            .select('username', {count: 'exact', head: true})
+            .eq('username', username)
+            .not('id', 'eq', userUUID);
+
+        if (error) throw error;
+
+        if (count) {
+            return count > 0;
+        }
+    }
+
+    private async updateProfileUsername(userUUID: string, username: string): Promise<void> {
         const {error} = await supabase
             .from('profiles')
             .update({username: username})
@@ -104,7 +118,7 @@ class ProfileServiceClass {
         if (error) throw error;
     }
 
-    private async updateProfileAvatar(userUUID: string, avatar: string) {
+    private async updateProfileAvatar(userUUID: string, avatar: string): Promise<void> {
         const {error} = await supabase
             .from('profiles')
             .update({avatar: avatar})
@@ -114,6 +128,6 @@ class ProfileServiceClass {
     }
 }
 
-const ProfileService = new ProfileServiceClass();
+const ProfileService: ProfileServiceClass = new ProfileServiceClass();
 
 export default ProfileService;
