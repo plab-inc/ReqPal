@@ -119,7 +119,7 @@ function findFirstRowWithProducts(lines: string[]): number {
             return i;
         }
     }
-    throw new ValidationError('Keine gültige Zeile mit ";;;" in den ersten 5 Zeilen gefunden.');
+    throw new ValidationError('Keine gültige Startzeile unter den ersten 5 Zeilen gefunden.');
 }
 
 
