@@ -60,6 +60,7 @@ serve(async (req) => {
 
         const formData = await req.formData();
         const csvFile: File = formData.get('csv') as File;
+
         if (!csvFile) {
             return new Response(JSON.stringify({
                 error: "No CSV file found in form data."
@@ -73,25 +74,12 @@ serve(async (req) => {
         }
 
         const csvString = new TextDecoder('utf-8').decode(await csvFile.arrayBuffer());
-
-        try{
-            validateCSVFormat(csvString);
-        }catch (error) {
-            return new Response(JSON.stringify({
-                error: error.message
-            }), {
-                headers: {
-                    ...corsHeaders,
-                    'Content-Type': 'application/json'
-                },
-                status: 400
-            });
-        }
+        validateCSVFormat(csvString);
 
         const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
         const json = convertCSVtoJSONString(csvString, fileNameWithoutExtension);
 
-        const response = new Response(JSON.stringify(json, null, 2), {
+        return new Response(JSON.stringify(json, null, 2), {
             headers: {
                 ...corsHeaders,
                 'Content-Type': 'application/json'
@@ -99,10 +87,19 @@ serve(async (req) => {
             status: 200
         });
 
-        console.log('CSV to JSON conversion successful');
-        return response;
 
     } catch (error) {
+
+        if (error instanceof ValidationError) {
+            return new Response(JSON.stringify({ error: error.message }), {
+                headers: {
+                    ...corsHeaders,
+                    'Content-Type': 'application/json'
+                },
+                status: 400,
+            });
+        }
+
         return new Response(JSON.stringify({ error: error.message }), {
             headers: {
                 ...corsHeaders,
@@ -118,7 +115,9 @@ function validateCSVFormat(csvString: string){
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
     const productList = productCol.split(';;;')[1].split(';').filter((product)=>product !== '');
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
-    return checkProductsColumn(productCol) && checkRequirementColumns(requirementRowTitlesCol, productList.length/2);
+
+    checkProductsColumn(productCol);
+    checkRequirementColumns(requirementRowTitlesCol, productList.length / 2);
 }
 function checkProductsColumn(productRow: string) {
     if (productRow.length === 0) {
