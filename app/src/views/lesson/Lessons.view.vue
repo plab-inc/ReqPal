@@ -2,9 +2,7 @@
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h4">
       Meine Lektionen ({{
-        lessons.filter((lesson) => {
-          return lesson.creatorUsername === authStore.userMetadata.username
-        }).length
+        lessons.length
       }}/20)
     </v-col>
     <v-col cols="auto">
