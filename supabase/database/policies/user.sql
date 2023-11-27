@@ -22,7 +22,7 @@ CREATE POLICY policy_profiles
     ON public.profiles
     FOR SELECT
     TO PUBLIC
-    USING (role = 'teacher');
+    USING (true);
 
 DROP POLICY IF EXISTS "policy_profiles_auth" ON public.profiles;
 CREATE POLICY policy_profiles_auth
