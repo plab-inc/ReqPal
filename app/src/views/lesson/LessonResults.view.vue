@@ -39,7 +39,7 @@ onBeforeMount(async () => {
       {{ currentLesson?.title }}
     </v-col>
     <v-col cols="auto" class="text-h4" align-self="center">
-      {{ userScore }}/{{ currentLesson?.points }}
+      {{ newScore }}/{{ currentLesson?.points }}
       <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
     </v-col>
   </v-row>
