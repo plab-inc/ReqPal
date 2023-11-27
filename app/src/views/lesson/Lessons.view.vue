@@ -239,7 +239,7 @@ async function openLessonDetails(lesson: Lesson) {
 function openDeleteDialog(lessonUUID: string) {
   alertService.openDialog(
       "Lektion löschen",
-      "Möchtest du die Lektion wirklich löschen? Das löschen is unwiederruflich",
+      "Möchtest du die Lektion wirklich löschen? Das Löschen ist unwiderruflich",
       "Ja",
       "Nein",
       () => deleteLesson(lessonUUID)
