@@ -113,10 +113,10 @@ serve(async (req) => {
 
 function validateCSVFormat(csvString: string){
     const productCol = csvString.replace(/\r/g, "").split("\n")[0];
+    checkProductsColumn(productCol);
+
     const productList = productCol.split(';;;')[1].split(';').filter((product)=>product !== '');
     const requirementRowTitlesCol = csvString.replace(/\r/g, "").split("\n")[1];
-
-    checkProductsColumn(productCol);
     checkRequirementColumns(requirementRowTitlesCol, productList.length / 2);
 }
 function checkProductsColumn(productRow: string) {
