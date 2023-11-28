@@ -1,5 +1,7 @@
 import {supabase} from "@/plugins/supabase";
 import {Catalog, CatalogDTO, ProductDTO, ProductRequirementDTO, RequirementDTO} from "@/types/catalog.types";
+import {FunctionsHttpError} from "@supabase/supabase-js";
+import {ConversionError} from "@/errors/custom.errors.ts";
 
 class CatalogServiceClass {
 
@@ -141,13 +143,19 @@ class CatalogServiceClass {
         const formData = new FormData();
         formData.append('csv', csvFile);
 
-        const {data: catalogData, error: catalogError} = await supabase.functions.invoke('csvToJson', {
+        const {data: data, error: error} = await supabase.functions.invoke('csvToJson', {
             body: formData
         });
 
-        if (catalogError || !catalogData) throw catalogError;
+        if (error || !data) {
+            if (error instanceof FunctionsHttpError) {
+                const errorMessage = await error.context.json();
+                throw new ConversionError(errorMessage.error,400);
+            }
+            throw error;
+        }
 
-        return catalogData;
+        return data;
     }
 
     async fetchCatalogs(examples: boolean = false): Promise<CatalogDTO[] | undefined> {

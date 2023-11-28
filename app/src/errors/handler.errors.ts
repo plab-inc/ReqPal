@@ -1,9 +1,9 @@
 import AlertService from "@/services/util/alert.service.ts";
 import {
-    PrivilegeError,
-    DatabaseError,
-    ConversionError,
     AuthenticationError,
+    ConversionError,
+    DatabaseError,
+    PrivilegeError,
     UserAlreadyRegisteredError
 } from "@/errors/custom.errors.ts";
 
@@ -17,7 +17,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof ConversionError) {
-        AlertService.addErrorAlert("Fehler im Format der CSV Datei.");
+        AlertService.addErrorAlert("Fehler im Format der CSV Datei: " + error.message);
         return;
     }
 
