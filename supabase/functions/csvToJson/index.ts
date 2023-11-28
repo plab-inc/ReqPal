@@ -209,12 +209,18 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
     };
     for(let i = indexOfProductsRow + 2; i < csvLines.length; i++){
         const currentLine = csvLines[i].split(";");
+
+        if(currentLine.length === 0 || currentLine[0] === "" || currentLine[1] === ""){
+            break;
+        }
+
         const item: Requirement = {
             "reqId": currentLine[0],
             "title": currentLine[1],
             "description": currentLine[2],
             "productDetails": {}
         };
+
         for(let k = 0; k < mappedProducts.length; k++){
             const product = mappedProducts[k];
             const qualification = currentLine[k * 2 + 3];
@@ -224,7 +230,9 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
                 "comment": comment
             };
         }
+
         requirementsJson.requirements.push(item);
     }
+
     return requirementsJson;
 }
