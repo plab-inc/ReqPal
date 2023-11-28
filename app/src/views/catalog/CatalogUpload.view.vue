@@ -16,12 +16,17 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-card title="Hochladen von Katalogen" prepend-icon="mdi-information-outline" variant="flat">
+              <v-card title="Hochladen von Katalogen" variant="flat">
                 <v-card-text>
-                  <div>Wähle eine CSV oder XLSX Datei aus, um einen neuen Katalog hochzuladen.</div>
-                  <div>Die Datei muss korrket formatiert sein. Beispieldateien kannst du dir hier herunterladen.</div>
-                  <div>Zu jeder Requirement kann es beliebig viele Produkt Spalten geben.</div>
-                  <div>CVS Dateien müssen mit Semikolon Spaltentrennung exportiert werden.</div>
+                  <ul>
+                    <li>Wähle eine CSV oder XLSX Datei aus, um einen neuen Katalog hochzuladen.</li>
+                    <li>Die Datei muss korrekt formatiert sein. Beispieldateien kannst du dir hier herunterladen.</li>
+                    <li>Jede Anforderung (Requirement) kann mit beliebig vielen Produktspalten verbunden sein. Das bedeutet, dass die Anzahl der Spalten in der Datei variabel sein kann.</li>
+                    <li>CSV Dateien müssen mit Semikolon als Spaltentrennung exportiert werden.</li>
+                    <li>Produktspalten sollten jeweils paarweise auftreten: Ein Produktname gefolgt von einer Produkt-URL.</li>
+                    <li>Die URLs müssen mit http:// oder https:// beginnen.</li>
+                    <li>Die folgenden Zeilen nach der Produktzeile sollten die Anforderungen enthalten. Jede Anforderung sollte eine eindeutige ID, einen Titel und eine Beschreibung haben, gefolgt von Qualifizierungsinformationen und Kommentaren für jedes Produkt.</li>
+                  </ul>
                 </v-card-text>
                 <v-card-actions>
                   <v-btn variant="outlined" @click="downloadExample('csv')">
