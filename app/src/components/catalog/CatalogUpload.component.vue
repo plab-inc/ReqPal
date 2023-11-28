@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import {useTheme} from "vuetify";
-import {ConversionError, DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
+import {DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
 import {Catalog} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
 import alertService from "@/services/util/alert.service.ts";
@@ -138,9 +138,6 @@ function uploadCSVToDB(File: File) {
               state.files = [];
               loading.value = false;
             });
-      })
-      .catch((error: any) => {
-        throw new ConversionError("Fehler im Format der Datei.", error.code);
       })
       .finally(() => {
         state.borderColor = themeColors.info;
