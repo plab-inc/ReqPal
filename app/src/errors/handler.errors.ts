@@ -8,7 +8,7 @@ import {
 } from "@/errors/custom.errors.ts";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
-
+    console.log("Handling unhandled rejection error" + event.reason)
     const error = event.reason;
 
     if (error instanceof PrivilegeError) {
