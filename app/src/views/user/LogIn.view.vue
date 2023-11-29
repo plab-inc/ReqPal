@@ -49,6 +49,7 @@ import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 import {AuthenticationError} from "@/errors/custom.errors.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
+import AlertService from "@/services/util/alert.service.ts";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -70,6 +71,7 @@ const submit = async () => {
               });
             }})
     } catch (error: any) {
+      AlertService.addErrorAlert(error.message);
       throw new AuthenticationError(error.message, error.code);
     }
   }
