@@ -11,10 +11,15 @@ const theme = useTheme();
 themeStore.syncWithBrowserSettings();
 applyTheme(themeStore.currentTheme);
 
-console.log(unhandledRejectionHandler)
-console.log(globalErrorHandler)
-window.addEventListener('unhandledrejection', () => console.log("Caught Event unhandled rejection"));
-window.addEventListener('error', globalErrorHandler);
+onMounted(() => {
+  window.addEventListener('unhandledrejection', unhandledRejectionHandler);
+  window.addEventListener('error', globalErrorHandler);
+})
+
+onUnmounted(() => {
+  window.removeEventListener('unhandledrejection', unhandledRejectionHandler);
+  window.removeEventListener('error', globalErrorHandler);
+});
 
 watch(() => themeStore.currentTheme, (newTheme) => {
   applyTheme(newTheme);
