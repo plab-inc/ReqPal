@@ -1,44 +1,6 @@
 -- Author: Laura
 
-create or replace function evaluate_answers_update() returns trigger
-    language plpgsql
-as
-$$
-DECLARE
-    result_value jsonb;
-BEGIN
-    IF NEW.question_id IS NOT NULL THEN
-        IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'TrueOrFalse' THEN
-            result_value := evaluate_true_or_false(NEW.question_id, NEW.answer, NEW.max_points);
-        ELSE
-            IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'MultipleChoice' THEN
-                result_value := evaluate_multiple_choice(NEW.question_id, NEW.answer, NEW.max_points);
-            ELSE
-                IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Slider' THEN
-                    result_value := evaluate_slider(NEW.question_id, NEW.answer, NEW.max_points);
-                ELSE
-                    IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'Requirement' THEN
-                        result_value := evaluate_product_qualification(NEW.question_id, NEW.answer, NEW.max_points);
-                    END IF;
-                END IF;
-            END IF;
-        END IF;
-    END IF;
-
-    NEW.result := result_value;
-
-    RETURN NEW;
-END;
-$$;
-
-drop trigger if exists evaluate_answers_update_trigger on user_answers;
-create trigger evaluate_answers_update_trigger
-    before update
-    on user_answers
-    for each row
-execute procedure evaluate_answers_update();
-
-create or replace function evaluate_answers_insert() returns trigger
+create or replace function evaluate_answers() returns trigger
     language plpgsql
 as
 $$
@@ -47,6 +9,7 @@ DECLARE
     lesson_points  double precision := 0;
     current_points double precision := 0;
     new_points     double precision := 0;
+    lesson_finished_first_time bool := false;
 BEGIN
     IF NEW.question_id IS NOT NULL THEN
         IF (SELECT question_type FROM questions WHERE uuid = NEW.question_id) = 'TrueOrFalse' THEN
@@ -67,6 +30,14 @@ BEGIN
     END IF;
 
     NEW.result := result_value;
+
+    SELECT finished_for_first_time
+    INTO lesson_finished_first_time
+    FROM user_finished_lessons
+    WHERE lesson_id = NEW.lesson_id
+      AND user_id = auth.uid();
+
+    IF lesson_finished_first_time THEN
 
     SELECT user_points.points
     INTO current_points
@@ -90,29 +61,39 @@ BEGIN
     WHERE user_id = auth.uid()
       AND lesson_id = NEW.lesson_id;
 
-    IF NOT FOUND THEN
-        lesson_points := 0;
-    ELSE
-        IF lesson_points IS NULL THEN
-            lesson_points := 0;
-        END IF;
-    END IF;
 
-    UPDATE user_finished_lessons
-    SET user_points = lesson_points + new_points
-    WHERE user_id = auth.uid()
-      AND lesson_id = NEW.lesson_id;
+        IF NOT FOUND THEN
+            lesson_points := 0;
+        ELSE
+            IF lesson_points IS NULL THEN
+                lesson_points := 0;
+            END IF;
+        END IF;
+
+        UPDATE user_finished_lessons
+        SET user_points = lesson_points + new_points
+        WHERE user_id = auth.uid()
+          AND lesson_id = NEW.lesson_id;
+    end if;
 
     RETURN NEW;
 END;
 $$;
+
+drop trigger if exists evaluate_answers_update_trigger on user_answers;
+
+create trigger evaluate_answers_update_trigger
+    before update
+    on user_answers
+    for each row
+execute procedure evaluate_answers();
 
 drop trigger if exists evaluate_answers_insert_trigger on user_answers;
 create trigger evaluate_answers_insert_trigger
     before insert
     on user_answers
     for each row
-execute procedure evaluate_answers_insert();
+execute procedure evaluate_answers();
 
 create or replace function delete_user_answers() returns trigger
     language plpgsql
