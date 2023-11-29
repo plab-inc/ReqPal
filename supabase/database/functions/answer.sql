@@ -108,6 +108,13 @@ BEGIN
 
     ELSE
         IF (lesson_started) THEN
+            UPDATE user_finished_lessons
+            SET finished                = TRUE,
+                is_started              = FALSE,
+                finished_for_first_time = FALSE
+            WHERE lesson_id = lesson_uuid
+              AND user_id = auth.uid();
+
             FOR newAnswer IN
                 SELECT *
                 FROM jsonb_array_elements(data -> 'answers')
@@ -144,13 +151,6 @@ BEGIN
                         END IF;
                     END IF;
                 END LOOP;
-
-            UPDATE user_finished_lessons
-            SET finished                = TRUE,
-                is_started              = FALSE,
-                finished_for_first_time = FALSE
-            WHERE lesson_id = lesson_uuid
-              AND user_id = auth.uid();
         END IF;
     END IF;
 END;
