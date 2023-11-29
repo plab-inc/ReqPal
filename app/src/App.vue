@@ -11,7 +11,9 @@ const theme = useTheme();
 themeStore.syncWithBrowserSettings();
 applyTheme(themeStore.currentTheme);
 
-window.addEventListener('unhandledrejection', unhandledRejectionHandler);
+console.log(unhandledRejectionHandler)
+console.log(globalErrorHandler)
+window.addEventListener('unhandledrejection', () => console.log("Caught Event unhandled rejection"));
 window.addEventListener('error', globalErrorHandler);
 
 watch(() => themeStore.currentTheme, (newTheme) => {
