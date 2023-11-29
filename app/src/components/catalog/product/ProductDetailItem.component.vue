@@ -18,16 +18,16 @@ function openProductPage(url: string) {
 </script>
 
 <template>
-  <v-card class="ma-2 pa-2" max-height="200" max-width="500" @click="openProductPage(product.product_url)">
+  <v-card class="ma-2 fill-height" min-height="150" max-width="500" @click="openProductPage(product.product_url)">
     <v-skeleton-loader v-if="loading" type="heading, list-item-two-line"></v-skeleton-loader>
     <v-container v-if="!loading">
       <v-row no-gutters justify="start">
         <v-col cols="8" class="text-h6 font-weight-bold" align-self="center">
-            {{ product.product_name }}
+          {{ product.product_name }}
         </v-col>
         <v-col cols="4" class="d-flex align-center justify-end">
           <ProductQualification :size="70"
-              :qualification="requirement?.products[product.product_name]?.qualification + ''"></ProductQualification>
+                                :qualification="requirement?.products[product.product_name]?.qualification + ''"></ProductQualification>
         </v-col>
       </v-row>
       <v-row>
@@ -37,7 +37,6 @@ function openProductPage(url: string) {
           </div>
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>

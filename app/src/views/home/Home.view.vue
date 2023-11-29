@@ -16,7 +16,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="7">
+      <v-col sm="7">
         <v-sheet :elevation="14" height="100%" rounded>
           <div class="mx-sm-3">
             <h2 class="text-h4 font-weight-black text-warning" v-text="main_headline"></h2>
@@ -24,7 +24,7 @@
           </div>
         </v-sheet>
       </v-col>
-      <v-col cols="5">
+      <v-col sm="5">
         <v-img style="border-radius: 5px; max-height: 800px"
                src="@/assets/images/loveToLearn.jpg"
         />
@@ -32,12 +32,12 @@
     </v-row>
 
     <v-row>
-      <v-col cols="4">
+      <v-col sm="4" order="2" order-sm="1">
         <v-img style="border-radius: 5px"
                src="@/assets/images/laptop.jpg"
         />
       </v-col>
-      <v-col cols="8">
+      <v-col sm="8" order="1" order-sm="2">
         <v-sheet :elevation="18" height="100%" rounded>
           <div class="mx-sm-3">
             <h2 class="text-h4 font-weight-black text-primary" v-text="feature_headline"></h2>
