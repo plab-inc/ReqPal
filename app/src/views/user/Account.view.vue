@@ -36,7 +36,7 @@
               v-model="username"
               label="Benutzername"
               prepend-icon="mdi-account-edit"
-              :rules="[requiredRule, usernameDoesNotExistExcludingUUID]"
+              :rules="[requiredRule, requiredUniqueUsernameExcludingUUIDRule]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -90,7 +90,7 @@ import {useAuthStore} from "@/stores/auth.store.ts";
 import {
   requiredAtLeast6CharsRule,
   requiredEmailRule,
-  requiredRule, usernameDoesNotExistExcludingUUID,
+  requiredRule, requiredUniqueUsernameExcludingUUIDRule,
 } from "@/utils/validationRules.ts";
 import alertService from "@/services/util/alert.service.ts";
 

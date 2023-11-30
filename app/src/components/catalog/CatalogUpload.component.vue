@@ -1,51 +1,54 @@
 <template>
   <v-card variant="flat">
     <v-container>
-      <v-row align="center">
-        <v-col
-            cols="13"
-            class="dashed-border"
-            @drop.prevent="handleDrop"
-            @dragover.prevent="handleDragOver"
-            @dragleave.prevent="handleDragLeave"
-            :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
-            :class="{ 'loading': loading }"
-        >
-          <v-card-text class="text-center">
-            <div v-if="loading">
-              <v-progress-circular indeterminate model-value="20" color="warning"></v-progress-circular>
-            </div>
-            <div v-else>
-              <v-icon class="mr-2" size="32">mdi-file-upload</v-icon>
-              <span>Datei hier ablegen</span>
-            </div>
-          </v-card-text>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col>
-          <v-file-input
-              label="Datei auswählen"
-              color="secondary"
-              variant="outlined"
-              v-model="state.files"
-              show-icon="false"
-              clearable
-              :disabled="loading"
-          ></v-file-input>
-        </v-col>
-      </v-row>
-      <v-row align="center">
-        <v-col>
-          <v-btn
-              color="primary"
-              @click="handleFileUpload(state.files[0])" block
-              :disabled="loading || state.files.length === 0"
+      <v-form @submit.prevent v-model="formIsValid">
+        <v-row align="center">
+          <v-col
+              cols="13"
+              class="dashed-border"
+              @drop.prevent="handleDrop"
+              @dragover.prevent="handleDragOver"
+              @dragleave.prevent="handleDragLeave"
+              :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
+              :class="{ 'loading': loading }"
           >
-            Katalog Hochladen
-          </v-btn>
-        </v-col>
-      </v-row>
+            <v-card-text class="text-center">
+              <div v-if="loading">
+                <v-progress-circular indeterminate model-value="20" color="warning"></v-progress-circular>
+              </div>
+              <div v-else>
+                <v-icon class="mr-2" size="32">mdi-file-upload</v-icon>
+                <span>Datei hier ablegen</span>
+              </div>
+            </v-card-text>
+          </v-col>
+        </v-row>
+        <v-row align="center">
+          <v-col>
+            <v-file-input
+                label="Datei auswählen"
+                color="secondary"
+                variant="outlined"
+                v-model="state.files"
+                show-icon="false"
+                clearable
+                :disabled="loading"
+                :rules="[requiredUniqueCatalogNameRule(state.files)]"
+            ></v-file-input>
+          </v-col>
+        </v-row>
+        <v-row align="center">
+          <v-col>
+            <v-btn
+                color="primary"
+                @click="handleFileUpload(state.files[0])" block
+                :disabled="!formIsValid || loading || state.files.length === 0"
+            >
+              Katalog Hochladen
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-container>
   </v-card>
 </template>
@@ -55,11 +58,10 @@ import {useTheme} from "vuetify";
 import {DatabaseError, PrivilegeError} from "@/errors/custom.errors.ts";
 import {Catalog} from "@/types/catalog.types.ts";
 import AlertService from "@/services/util/alert.service.ts";
-import alertService from "@/services/util/alert.service.ts";
 import CatalogService from "@/services/database/catalog.service.ts";
 import router from "@/router";
 import * as XLSX from "xlsx";
-import {useCatalogStore} from "@/stores/catalog.store.ts";
+import {requiredUniqueCatalogNameRule} from "@/utils/validationRules.ts";
 
 interface Props {
   maxFileSize?: number;
@@ -67,6 +69,7 @@ interface Props {
 }
 
 const loading = ref(false);
+const formIsValid = ref(false);
 
 async function readFileAsBinaryString(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -103,11 +106,7 @@ async function xlsxToCsv(xlsxFile: File): Promise<File> {
 async function handleFileUpload(file: File): Promise<void> {
   loading.value = true;
 
-  if (file) {
-    if (await checkCatalogNameExists(file.name)) {
-      loading.value = false;
-      return;
-    }
+  if (formIsValid && file) {
     if (file.name.endsWith('.xlsx')) {
       file = await xlsxToCsv(file);
     }
@@ -193,16 +192,6 @@ const validateFile = (file: File) => {
   }
 
   return props.acceptedFileTypes.includes(fileType) && fileSize <= props.maxFileSize;
-}
-
-async function checkCatalogNameExists(fileName: string) {
-  const catalogStore = useCatalogStore();
-  const catalogName = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
-  const exists = await catalogStore.checkIfCatalogNameExists(catalogName);
-  if (exists) {
-    alertService.addWarningAlert("Dieser Name existiert bereits!");
-  }
-  return exists;
 }
 
 </script>
