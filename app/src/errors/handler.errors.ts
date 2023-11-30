@@ -8,7 +8,7 @@ import {
 } from "@/errors/custom.errors.ts";
 
 const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
-
+    console.log("Handling unhandled rejection error" + event.reason)
     const error = event.reason;
 
     if (error instanceof PrivilegeError) {
@@ -27,6 +27,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof AuthenticationError) {
+        console.log("Handling Authentication error")
         if (error.message === 'Email not confirmed') {
             AlertService.addErrorAlert("Ihre Email wurde noch nicht bestätigt.");
             return;
@@ -45,6 +46,7 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 };
 
 const globalErrorHandler = (event: ErrorEvent): void => {
+    console.log("Handling unexpected error")
     console.log(event);
     AlertService.addErrorAlert("Ein unerwarteter Fehler ist aufgetreten.");
 };
