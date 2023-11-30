@@ -26,7 +26,7 @@ export async function requiresTeacher(to: RouteLocationNormalized, from: RouteLo
 
     const authStore = useAuthStore();
 
-    if (authStore.isTeacher) {
+    if (await isAuthenticated() && authStore.isTeacher) {
         return next();
     }
 
@@ -39,10 +39,10 @@ export async function requiresStudent(to: RouteLocationNormalized, from: RouteLo
 
     const authStore = useAuthStore();
 
-    if (!authStore.isTeacher) {
+    if (await isAuthenticated() && !authStore.isTeacher) {
         return next();
     }
 
     alertService.addErrorAlert("Sie haben keine Zugriffsberechtigung.")
-    return next({name: 'Lessons'});
+    return next({name: 'Home'});
 }
