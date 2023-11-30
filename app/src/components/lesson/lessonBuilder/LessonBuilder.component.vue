@@ -5,7 +5,7 @@ import {toRefs} from '@vueuse/core';
 import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {LessonBuilderDragItem} from "@/types/drag.types.ts";
-import {requiredStringRule} from "@/utils/validationRules.ts";
+import {requiredStringRule, requiredUniqueLessonTitleRule} from "@/utils/validationRules.ts";
 import TrueOrFalse from "@/components/lesson/lessonForms/TrueOrFalseForm.component.vue";
 import MultipleChoiceForm from "@/components/lesson/lessonForms/MultipleChoiceForm.component.vue";
 import SliderForm from "@/components/lesson/lessonForms/SliderForm.component.vue";
@@ -75,16 +75,8 @@ const components = lessonFormStore.getComponents;
 const lessons = lessonStore.getLessons;
 const {canDrop, isOver} = toRefs(collect);
 
-async function checkLessonTitleExists() {
-  const exists = await lessonStore.checkIfLessonTitleExists(lessonFormStore.lessonTitle, lessonFormStore.uuid);
-  if (exists) {
-    alertService.addWarningAlert("Dieser Titel existiert bereits!");
-  }
-  return exists;
-}
 
 async function validate() {
-  await checkLessonTitleExists();
   await form.value.validate();
 }
 
@@ -96,8 +88,6 @@ async function uploadLesson() {
   }
 
   if (components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
-
-    if (await checkLessonTitleExists()) return;
 
     let lesson = lessonFormStore.generateLesson();
     await LessonService.push.uploadLesson(lesson)
@@ -133,7 +123,7 @@ function openDeleteDialog(componentUUID: string) {
         <v-col cols="10" class="pr-5">
           <v-text-field
               clearable
-              :rules="[requiredStringRule]"
+              :rules="[requiredStringRule, requiredUniqueLessonTitleRule]"
               label="Titel der Lektion"
               variant="outlined"
               v-model="lessonFormStore.lessonTitle"
