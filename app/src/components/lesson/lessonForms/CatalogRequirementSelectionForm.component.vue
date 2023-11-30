@@ -1,13 +1,11 @@
 <script setup lang="ts">
 
-import {Product, Requirement} from "@/types/catalog.types.ts";
+import {CatalogDTO, Product, Requirement} from "@/types/catalog.types.ts";
 import {useCatalogStore} from "@/stores/catalog.store.ts";
-import CatalogSelect from "@/components/catalog/CatalogSelect.component.vue";
-import RequirementSelect from "@/components/catalog/requirement/RequirementSelect.component.vue";
 import RequirementItem from "@/components/catalog/requirement/RequirementItem.component.vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue";
-import {containsAtLeastOneElementRule, requiredStringRule} from "@/utils/validationRules.ts";
+import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
 
 const lessonFormStore = useLessonFormStore()
@@ -15,7 +13,9 @@ const catalogStore = useCatalogStore();
 
 const props = defineProps<{ componentId: string }>();
 const loadingReqs = ref<boolean>(false);
+const loadingCatalogs = ref<boolean>(false);
 const requirements = ref<Requirement[]>([]);
+const catalogs = ref<CatalogDTO[]>([]);
 const products = ref<Product[]>([]);
 
 const fields = ref<any>({
@@ -40,6 +40,14 @@ function updateStoreData() {
 function toggleLoadingReqs() {
   loadingReqs.value = !loadingReqs.value;
 }
+
+onBeforeMount(async () => {
+  loadingCatalogs.value = true;
+  const catalogStore = useCatalogStore();
+  await catalogStore.fetchCatalogs();
+  catalogs.value = catalogStore.getCustomCatalogs.concat(catalogStore.getExampleCatalogs);
+  loadingCatalogs.value = false;
+})
 
 watch(selectedRequirement, async (value) => {
   if (value) {
@@ -79,9 +87,24 @@ watch(fields, async (value) => {
   <v-container>
     <v-row>
       <v-col>
-        <CatalogSelect v-model="fields.options.catalogId"></CatalogSelect>
-        <RequirementSelect v-model="selectedRequirement" :loading="loadingReqs"
-                           :items="requirements"></RequirementSelect>
+        <v-select
+            label="Katalog wählen"
+            v-model="fields.options.catalogId"
+            :rules="[requiredRule]"
+            :items="catalogs"
+            :item-title="item => item.catalog_name"
+            :item-value="item => item.catalog_id"
+            :loading="loadingCatalogs"
+        ></v-select>
+        <v-select
+            label="Anforderung wählen"
+            v-model="selectedRequirement"
+            :rules="[requiredRule]"
+            :items="requirements"
+            :item-title="item => item.title"
+            :item-value="item => item"
+            :loading="loadingReqs"
+        ></v-select>
       </v-col>
     </v-row>
     <v-row v-if="selectedRequirement">
