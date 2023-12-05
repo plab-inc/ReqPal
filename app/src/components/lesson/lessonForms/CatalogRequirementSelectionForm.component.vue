@@ -124,25 +124,31 @@ watch(fields, async (value) => {
           muss ausgewählt werden.
         </div>
       </v-col>
-      <v-col v-for="(product) in products" :key="product.product_name" cols="12" md="6" lg="4">
-        <ProductDetailItem :requirement="selectedRequirement" :loading="loadingReqs"
-                           :product="product"></ProductDetailItem>
-        <div class="d-flex justify-center align-center">
-          <div>
-            <v-switch
-                v-model="fields.options.productIds"
-                color="primary"
-                label="Produkt abfragen"
-                :value="product.product_id"
-                hide-details
-                :rules="[containsAtLeastOneElementRule]"
-            ></v-switch>
-          </div>
-        </div>
+      <v-col v-for="(product) in products" :key="product.product_name" md="6" lg="4">
+        <v-row>
+          <v-col>
+            <ProductDetailItem :requirement="selectedRequirement" :loading="loadingReqs"
+                               :product="product"></ProductDetailItem>
+          </v-col>
+          <v-col>
+            <div class="d-flex justify-center align-center">
+              <div>
+                <v-switch
+                    v-model="fields.options.productIds"
+                    color="primary"
+                    label="Produkt abfragen"
+                    :value="product.product_id"
+                    hide-details
+                    :rules="[containsAtLeastOneElementRule]"
+                ></v-switch>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row v-if="selectedRequirement && fields.options.askForQualification">
-      <v-col>
+      <v-col cols="12">
         <v-text-field
             label="Beschreibung der Aufgabe"
             :rules="[requiredStringRule]"
