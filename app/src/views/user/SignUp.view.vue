@@ -13,7 +13,7 @@
             v-model="username"
             label="Username"
             prepend-inner-icon="mdi-account"
-            :rules="[requiredRule, requiredUsernameRule, usernameDoesNotExistRule]"
+            :rules="[requiredRule, requiredUsernameRule, requiredUniqueUsernameRule]"
         ></v-text-field>
       </v-col>
       <v-col cols="2">
@@ -97,7 +97,7 @@ import {
   requiredAtLeast6CharsRule,
   requiredEmailRule,
   requiredRule,
-  requiredUsernameRule, usernameDoesNotExistRule
+  requiredUsernameRule, requiredUniqueUsernameRule
 } from "@/utils/validationRules";
 
 import router from "@/router";
