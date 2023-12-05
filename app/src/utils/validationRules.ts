@@ -1,4 +1,7 @@
 import {useProfileStore} from "@/stores/profile.store.ts";
+import {useLessonStore} from "@/stores/lesson.store.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
+import {useCatalogStore} from "@/stores/catalog.store.ts";
 
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {
@@ -75,16 +78,36 @@ export const containsAtLeastOneElementRule = (value: any): boolean | string => {
     return Array.isArray(value) && value.some(element => element !== null && element !== undefined);
 };
 
-export const usernameDoesNotExistRule = async (value: any): Promise<boolean | string> => {
+export const requiredUniqueUsernameRule = async (value: any): Promise<boolean | string> => {
     const profileStore = useProfileStore();
-    const result = await profileStore.checkIfUsernameExists(value);
-    if (result) return "Der Nutzername existiert bereits.";
+    const exists = await profileStore.checkIfUsernameExists(value);
+    if (exists) return "Der Nutzername existiert bereits.";
     return true;
 };
 
-export const usernameDoesNotExistExcludingUUID = async (value: any): Promise<boolean | string> => {
+export const requiredUniqueUsernameExcludingUUIDRule = async (value: any): Promise<boolean | string> => {
     const profileStore = useProfileStore();
-    const result = await profileStore.checkIfUsernameExistsExcludingUUID(value);
-    if (result) return "Der Nutzername existiert bereits.";
+    const exists = await profileStore.checkIfUsernameExistsExcludingUUID(value);
+    if (exists) return "Der Nutzername existiert bereits.";
+    return true;
+};
+
+export const requiredUniqueLessonTitleRule = async (): Promise<boolean | string> => {
+    const lessonStore = useLessonStore();
+    const lessonFormStore = useLessonFormStore();
+    const exists = await lessonStore.checkIfLessonTitleExists(lessonFormStore.lessonTitle, lessonFormStore.uuid);
+    if (exists) return "Der Titel existiert bereits.";
+    return true;
+};
+
+export const requiredUniqueCatalogNameRule = async (value: File[]): Promise<boolean | string> => {
+    const catalogStore = useCatalogStore();
+    for (const file of value) {
+        const name = file.name;
+        const catalogName = name.substring(0, name.lastIndexOf('.')) || name;
+        const exists = await catalogStore.checkIfCatalogNameExists(catalogName);
+        if (exists) return "Der Name existiert bereits.";
+    }
+
     return true;
 };
