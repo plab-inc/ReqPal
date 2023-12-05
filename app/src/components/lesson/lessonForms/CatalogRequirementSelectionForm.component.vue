@@ -104,6 +104,7 @@ watch(fields, async (value) => {
             :item-title="item => item.title"
             :item-value="item => item"
             :loading="loadingReqs"
+            :disabled="!fields.options.catalogId"
         ></v-select>
       </v-col>
     </v-row>
