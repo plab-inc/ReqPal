@@ -25,7 +25,7 @@
     "vue3-dnd": "^2.0.3",
     "xlsx": "^0.18.5",
     "vue3-easy-data-table": "^1.5.47",
-    "vuetify": "^3.3.8",
+    "vuetify": "^3.4.0",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
