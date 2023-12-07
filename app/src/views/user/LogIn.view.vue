@@ -46,6 +46,7 @@ import {useAuthStore} from "@/stores/auth.store";
 import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
+import {AuthenticationError} from "@/errors/custom.errors.ts";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -66,6 +67,9 @@ const submit = async () => {
             });
           }
         })
+        .catch((error) => {
+          throw new AuthenticationError(error.message, error.code);
+        });
   }
 }
 
