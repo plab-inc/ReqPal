@@ -348,7 +348,7 @@ class LessonServiceClass {
         return false;
     }
 
-    private async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string): Promise<boolean> {
+    private async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string): Promise<boolean | undefined> {
         const {error, count} = await supabase
             .from('lessons')
             .select('title', {count: 'exact', head: true})
@@ -360,7 +360,6 @@ class LessonServiceClass {
         if (count) {
             return count > 0;
         }
-        return false;
     }
 }
 
