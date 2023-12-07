@@ -7,9 +7,11 @@ import {
     UserAlreadyRegisteredError
 } from "@/errors/custom.errors.ts";
 
-const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
-    console.log("Handling unhandled rejection error" + event.reason)
-    const error = event.reason;
+const errorHandler = (error: unknown): void => {
+
+    if (error instanceof PromiseRejectionEvent) {
+        error = error.reason;
+    }
 
     if (error instanceof PrivilegeError) {
         AlertService.addErrorAlert("Sie haben nicht die nötigen Rechte um diese Aktion auszuführen.");
@@ -27,7 +29,6 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
     }
 
     if (error instanceof AuthenticationError) {
-        console.log("Handling Authentication error")
         if (error.message === 'Email not confirmed') {
             AlertService.addErrorAlert("Ihre Email wurde noch nicht bestätigt.");
             return;
@@ -45,10 +46,4 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent): void => {
 
 };
 
-const globalErrorHandler = (event: ErrorEvent): void => {
-    console.log("Handling unexpected error")
-    console.log(event);
-    AlertService.addErrorAlert("Ein unerwarteter Fehler ist aufgetreten.");
-};
-
-export {unhandledRejectionHandler, globalErrorHandler};
+export {errorHandler};
