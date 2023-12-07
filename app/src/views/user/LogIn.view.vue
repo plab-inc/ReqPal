@@ -42,14 +42,10 @@
 
 <script setup lang="ts">
 import router from "@/router";
-
 import {useAuthStore} from "@/stores/auth.store";
 import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
-
-import {AuthenticationError} from "@/errors/custom.errors.ts";
 import {useProfileStore} from "@/stores/profile.store.ts";
 import {useUtilStore} from "@/stores/util.store.ts";
-import AlertService from "@/services/util/alert.service.ts";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
@@ -61,19 +57,15 @@ const isFormValid = ref(false);
 
 const submit = async () => {
   if (isFormValid.value) {
-    try {
-      await authStore.signIn(email.value, password.value)
-          .then(() => {
-            if (authStore.session) {
-              profileStore.fetchProfile(authStore.session.user.id);
-              router.push({ name: 'Home' }).then(() => {
-                utilStore.addAlert("Erfolgreich angemeldet", "success");
-              });
-            }})
-    } catch (error: any) {
-      AlertService.addErrorAlert(error.message);
-      throw new AuthenticationError(error.message, error.code);
-    }
+    await authStore.signIn(email.value, password.value)
+        .then(() => {
+          if (authStore.session) {
+            profileStore.fetchProfile(authStore.session.user.id);
+            router.push({name: 'Home'}).then(() => {
+              utilStore.addAlert("Erfolgreich angemeldet", "success");
+            });
+          }
+        })
   }
 }
 
