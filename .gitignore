@@ -4,6 +4,10 @@
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
+# any out directory
+out/
+
+
 # JIRA plugin
 atlassian-ide-plugin.xml
 

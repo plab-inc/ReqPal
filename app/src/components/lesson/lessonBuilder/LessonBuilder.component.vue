@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useDrop} from 'vue3-dnd';
+import {DropTargetMonitor, useDrop} from 'vue3-dnd';
 import {DragItemTypes} from '@/types/dragItem.types.ts';
 import {toRefs} from '@vueuse/core';
 import {useTheme} from "vuetify";
@@ -60,6 +60,10 @@ const [collect, drop] = useDrop(() => ({
       return;
     }
     utilStore.addAlert('Die maximale Anzahl von Lernmodulen pro Lektion wurde erreicht', 'info');
+  },
+
+  hover: (item: object, monitor: DropTargetMonitor) => {
+      console.log(monitor.getClientOffset());
   },
   collect: monitor => ({
     isOver: monitor.isOver(),
