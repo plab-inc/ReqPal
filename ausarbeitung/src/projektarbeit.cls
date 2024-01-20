@@ -11,15 +11,15 @@
 \RequirePackage[scaled]{helvet}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[citestyle=authortitle, bibstyle=numeric, urldate=long, backend=biber]{biblatex}
+\RequirePackage{microtype}
 \RequirePackage{listings}
 \RequirePackage{xcolor}
 \RequirePackage{minted}
 
 %Minted Einstellungen
-\usemintedstyle{tango}
-\setminted{breaklines}
-%\definecolor{bg}{HTML}{282828}
-%\setminted{bgcolor=bg}
+\usemintedstyle{material}
+\definecolor{bg}{HTML}{282828}
+\setminted{bgcolor=bg, linenos, breaklines, baselinestretch=1, tabsize=2, fontsize=\footnotesize}
 
 %Pfade für Grafiken
 \graphicspath{ {./assets/screenshots/} }
@@ -28,31 +28,31 @@
 \DeclareFieldFormat{urldate}{\mkbibparens{Zuletzt abgerufen am: #1}}
 \renewbibmacro*{date}{%
   \iffieldundef{year}
-    {\printtext{o. J.}}
-    {\printdate}}
+  {\printtext{o. J.}}
+  {\printdate}}
 \addbibresource{bibliography/didactic.bib}
 \addbibresource{bibliography/links.bib}
 \addbibresource{bibliography/wirtschaftsinformatik.bib}
 
 %Abschnittstitel mit Autor
 \newcommand{\authoredsection}[2]{
-    \ifthenelse{\equal{#1}{Fabian}}{%
-       \section[#2]{#2\footnote{Autor: Fabian Teufel}}
-    }{%
+  \ifthenelse{\equal{#1}{Fabian}}{%
+    \section[#2]{#2\footnote{Autor: Fabian Teufel}}
+  }{%
     \ifthenelse{\equal{#1}{Laura}}{%
-        \section[#2]{#2\footnote{Autor: Laura Seifert}}
+      \section[#2]{#2\footnote{Autor: Laura Seifert}}
     }{%
-        \section[#2]{#2\footnote{Autoren: Fabian Teufel, Laura Seifert}}
+      \section[#2]{#2\footnote{Autoren: Fabian Teufel, Laura Seifert}}
     }}
 }
 \newcommand{\authoredsubsection}[2]{
-    \ifthenelse{\equal{#1}{Fabian}}{%
-       \subsection[#2]{#2\footnote{Autor: Fabian Teufel}}
-    }{%
+  \ifthenelse{\equal{#1}{Fabian}}{%
+    \subsection[#2]{#2\footnote{Autor: Fabian Teufel}}
+  }{%
     \ifthenelse{\equal{#1}{Laura}}{%
-        \subsection[#2]{#2\footnote{Autor: Laura Seifert}}
+      \subsection[#2]{#2\footnote{Autor: Laura Seifert}}
     }{%
-        \subsection[#2]{#2\footnote{Autoren: Fabian Teufel, Laura Seifert}}
+      \subsection[#2]{#2\footnote{Autoren: Fabian Teufel, Laura Seifert}}
     }}
 }
 
@@ -66,16 +66,16 @@
 
 % Umgebung für das Abstract
 \newenvironment{abstract}
-  {% Beginn der Umgebung
-   \begin{center}
-     \bfseries Zusammenfassung
-   \end{center}
-   \begin{quote}
+{% Beginn der Umgebung
+  \begin{center}
+    \bfseries Zusammenfassung
+  \end{center}
+  \begin{quote}
     \setlength{\parindent}{0pt}
-  }
-  {% Ende der Umgebung
-     \end{quote}
-  }
+    }
+    {% Ende der Umgebung
+  \end{quote}
+}
 
 % Befehle für Titelblatt-Parameter
 \newcommand{\thesistitle}[1]{\gdef\@thesistitle{#1}}
@@ -101,7 +101,7 @@
     \vspace{1cm}
     {\large \@authorone \par}
     \ifx\@authortwo\@empty\else
-        {\large und \@authortwo \par}
+      {\large und \@authortwo \par}
     \fi
     \vfill
     \vspace{1cm}

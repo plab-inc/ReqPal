@@ -1,5 +1,5 @@
 {
-    "editor.minimap.enabled": true,
+    "editor.minimap.enabled": false,
     "editor.renderLineHighlight": "none",
     "editor.linkedEditing": true,
     "editor.inlineSuggest.enabled": true,
@@ -45,5 +45,8 @@
     },
     "[tex]": {
       "editor.defaultFormatter": "James-Yu.latex-workshop"
-    }
+    },
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "latex-workshop.latex.clean.subfolder.enabled": true,
 }
