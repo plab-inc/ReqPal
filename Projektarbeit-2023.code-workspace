@@ -11,7 +11,11 @@
     {
       "name": "supabase-functions",
       "path": "supabase/functions"
-    }
+    },
+        {
+      "name": "ausarbeitung",
+      "path": "ausarbeitung"
+    },
   ],
   "settings": {
         "files.exclude": {
@@ -19,6 +23,7 @@
           "app/": true,
           "supabase/functions/": true
         },
-        "deno.importMap": "./supabase/functions/import_map.json"
+        "deno.importMap": "./supabase/functions/import_map.json",
+        "files.autoSave": "afterDelay"
   }
 }
