@@ -6,17 +6,18 @@
     "editor.wordWrap": "on",
     "latex-workshop.latex.recipes": [
       {
-        "name": "pdflatex 📄 -> biber 🐿️ -> pdflatex 📄",
-        "tools": ["pdflatex", "biber", "pdflatex"]
-      },
-      {
         "name": "pdflatex 📄",
         "tools": ["pdflatex"]
       },
       {
         "name": "biber 🐿️ ",
         "tools": ["biber"]
-      }
+      },
+      {
+        "name": "pdflatex 📄 -> biber 🐿️ -> pdflatex 📄",
+        "tools": ["pdflatex", "biber", "pdflatex"]
+      },
+
     ],
     "latex-workshop.latex.tools": [
       {
