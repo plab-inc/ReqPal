@@ -59,7 +59,7 @@
 % Einstellungen für Kopfzeile und Seitenlayout
 \renewcommand\familydefault{\sfdefault}
 \clearpairofpagestyles
-\cohead*{\pagemark}
+\lohead*{\pagemark}
 \ohead{\headmark}
 \setlength{\parindent}{0pt}
 \setcounter{tocdepth}{3}
