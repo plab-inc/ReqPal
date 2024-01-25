@@ -11,11 +11,7 @@
     {
       "name": "supabase-functions",
       "path": "supabase/functions"
-    },
-        {
-      "name": "ausarbeitung",
-      "path": "ausarbeitung"
-    },
+    }
   ],
   "settings": {
         "files.exclude": {
