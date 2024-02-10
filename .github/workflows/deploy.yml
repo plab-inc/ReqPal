@@ -37,14 +37,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'yarn'
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
         working-directory: ./app
       - name: Type Check
-        run: npm run type-check
+        run: yarn type-check
         working-directory: ./app
       - name: Build
-        run: npm run build:no-tsc
+        run: yarn build:no-tsc
         working-directory: ./app
       - name: Setup Pages
         uses: actions/configure-pages@v3
