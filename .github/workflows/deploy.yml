@@ -39,7 +39,7 @@ jobs:
           node-version: 20
           cache: 'yarn'
       - name: Install dependencies
-        run: yarn install
+        run: run npm install
         working-directory: ./app
       - name: Type Check
         run: yarn type-check
