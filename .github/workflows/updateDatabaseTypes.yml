@@ -1,4 +1,4 @@
-name: Update database types
+name: Update Database Types
 
 on:
   schedule:
