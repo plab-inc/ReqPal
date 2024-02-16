@@ -10,10 +10,20 @@ CREATE POLICY "policy_catalogs"
     FOR ALL
     TO authenticated
     USING (
-            (SELECT check_user_role(auth.uid(), 'moderator')) = true OR
-            auth.uid() = user_id OR
+            (SELECT check_user_role(auth.uid(), 'moderator')) = true
+        OR
+            (auth.uid() = user_id AND(SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    );
+
+DROP POLICY IF EXISTS "policy_catalogs_select" ON public.catalogs;
+CREATE POLICY "policy_catalogs_select"
+    ON public.catalogs
+    FOR SELECT
+    TO authenticated
+    USING (
             get_teacher_uuid(auth.uid() ) = user_id
     );
+
 
 DROP POLICY IF EXISTS "policy_catalogs_example" ON public.catalogs;
 CREATE POLICY "policy_catalogs_example"
