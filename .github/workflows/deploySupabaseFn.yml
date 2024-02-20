@@ -1,3 +1,5 @@
+# https://supabase.com/docs/guides/functions/cicd-workflow
+
 name: Deploy Supabase Functions
 
 on:
