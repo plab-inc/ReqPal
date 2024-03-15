@@ -1,4 +1,6 @@
-name: Update database types
+# https://supabase.com/docs/guides/functions/cicd-workflow
+
+name: Update Database Types
 
 on:
   schedule:

@@ -42,6 +42,16 @@ init();
 
 function init() {
   fields.value.options.forEach((option: any) => {
+    if(option.input === undefined) {
+      const objects = fields.value.options.map((option: any) => ({
+        id: option.id,
+        description: option.description,
+        input: false,
+      }));
+      fields.value.options = objects;
+      updateStoreData(objects)
+    }
+
     selectedAnswers.value[option.id] = option.input !== undefined ? option.input : false;
   })
 }

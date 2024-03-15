@@ -38,19 +38,26 @@ CREATE POLICY policy_profiles_update
     TO authenticated
     USING (auth.uid() = id);
 
-DROP POLICY IF EXISTS "policy_user_points" ON public.user_points;
-CREATE POLICY "policy_user_points"
+DROP POLICY IF EXISTS "policy_user_points_select" ON public.user_points;
+CREATE POLICY "policy_user_points_select"
     ON public.user_points
-    FOR ALL
+    FOR SELECT
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
-DROP POLICY IF EXISTS "policy_user_answers" ON public.user_answers;
-CREATE POLICY "policy_user_answers"
-    ON public.user_answers
-    FOR ALL
+DROP POLICY IF EXISTS "policy_user_points_update" ON public.user_points;
+CREATE POLICY "policy_user_points_update"
+    ON public.user_points
+    FOR UPDATE
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_points_insert" ON public.user_points;
+CREATE POLICY "policy_user_points_insert"
+    ON public.user_points
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
 DROP POLICY IF EXISTS "policy_user_lesson_progress" ON public.user_lesson_progress;
 CREATE POLICY "policy_user_lesson_progress"
@@ -59,17 +66,66 @@ CREATE POLICY "policy_user_lesson_progress"
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
-DROP POLICY IF EXISTS "policy_user_hints" ON public.user_hints;
-CREATE POLICY "policy_user_hints"
+DROP POLICY IF EXISTS "policy_user_hints_select" ON public.user_hints;
+CREATE POLICY "policy_user_hints_select"
     ON public.user_hints
-    FOR ALL
+    FOR SELECT
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 
-DROP POLICY IF EXISTS "policy_user_finished_lessons" ON public.user_finished_lessons;
-CREATE POLICY "policy_user_finished_lessons"
+DROP POLICY IF EXISTS "policy_user_hints_insert" ON public.user_hints;
+CREATE POLICY "policy_user_hints_insert"
+    ON public.user_hints
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_hints_delete" ON public.user_hints;
+CREATE POLICY "policy_user_hints_delete"
+    ON public.user_hints
+    FOR DELETE
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_answers_select" ON public.user_answers;
+CREATE POLICY "policy_user_answers_select"
+    ON public.user_answers
+    FOR SELECT
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_answers_update" ON public.user_answers;
+CREATE POLICY "policy_user_answers_update"
+    ON public.user_answers
+    FOR UPDATE
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_answers_insert" ON public.user_answers;
+CREATE POLICY "policy_user_answers_insert"
+    ON public.user_answers
+    FOR INSERT
+    TO authenticated
+    WITH CHECK  (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_finished_lessons_select" ON public.user_finished_lessons;
+CREATE POLICY "policy_user_finished_lessons_select"
     ON public.user_finished_lessons
-    FOR ALL
+    FOR SELECT
+    TO authenticated
+    USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_finished_lessons_insert" ON public.user_finished_lessons;
+CREATE POLICY "policy_user_finished_lessons_insert"
+    ON public.user_finished_lessons
+    FOR INSERT
+    TO authenticated
+    WITH CHECK ((select check_user_role(auth.uid(), 'student')) = true AND (auth.uid() = user_id));
+
+DROP POLICY IF EXISTS "policy_user_finished_lessons_update" ON public.user_finished_lessons;
+CREATE POLICY "policy_user_finished_lessons_update"
+    ON public.user_finished_lessons
+    FOR UPDATE
     TO authenticated
     USING (((select check_user_role(auth.uid(), 'student')) = true) AND (auth.uid() = user_id));
 

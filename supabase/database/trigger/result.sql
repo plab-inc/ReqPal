@@ -108,6 +108,29 @@ BEGIN
 END;
 $$;
 
+drop trigger if exists delete_user_hints_trigger on user_lesson_progress;
+drop function delete_user_hints();
+
+create or replace function delete_user_hints() returns trigger
+    language plpgsql
+as
+$$
+BEGIN
+    DELETE
+    FROM user_hints
+    WHERE lesson_id = OLD.lesson_id
+      AND user_id = OLD.user_id;
+
+    RETURN OLD;
+END;
+$$;
+
+create trigger delete_user_hints_trigger
+    after delete
+    on user_lesson_progress
+    for each row
+execute procedure delete_user_hints();
+
 drop trigger if exists delete_user_answers_trigger on user_finished_lessons;
 create trigger delete_user_answers_trigger
     after delete

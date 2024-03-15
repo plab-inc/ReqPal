@@ -50,8 +50,8 @@ export const useLessonStore = defineStore('lesson', {
         getSortedCurrentQuestions: (state) => {
             return [...state.currentQuestions].sort((a, b) => a.position - b.position);
         },
-        getComponentFieldValues: (state) => (componentId: string, field: string) => {
-            const component = state.components.find(comp => comp.uuid === componentId);
+        getComponentFieldValues: (state: any) => (componentId: string, field: string) => {
+            const component = state.components.find((comp: any) => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
         getComponents: (state) => {
