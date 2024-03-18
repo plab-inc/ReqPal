@@ -28,7 +28,7 @@ const componentsTranslationMap: Record<string, { title: string, tooltip: string 
   'Slider': {title: 'Slider', tooltip: 'Eine Frage mit einer Skala als Antwortmöglichkeit'},
   'Textfield': {title: 'Info', tooltip: 'Ein Freitextfeld für zusätzliche Informationen '},
   'Note': {title: 'Notizen', tooltip: 'Ein Freitextfeld für Notizen des Studenten'},
-  'Divider': {title: 'Trenner', tooltip: 'Ein optischer Trenner zwischen den Lernmodulen'},
+  'Divider': {title: 'Trenner', tooltip: 'Ein optischer Trenner zwischen den Lektionsbausteinen'},
 };
 
 const {isDragging} = toRefs(collect);
