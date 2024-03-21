@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Requirement} from "@/types/catalog.types.ts";
+// EasyDataTable with MIT Licence (LICENCE.txt) from: https://github.com/HC200ok/vue3-easy-data-table
 
 interface Props {
   selectable: boolean,
