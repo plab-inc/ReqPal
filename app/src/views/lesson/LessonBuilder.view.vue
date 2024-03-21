@@ -22,13 +22,13 @@ const filters = ref<string[]>([]);
           divided
           color="warning"
       >
-        <v-tooltip text="Erklärungen an den Lernmodulen als Tooltip">
+        <v-tooltip text="Erklärungen an den Lektionsbausteinen als Tooltip">
           <template v-slot:activator="{ props }">
             <v-btn
                 value="showToolTips"
                 v-bind="props"
             >
-              Lernmodul Tooltips Anzeigen
+              Lektionsbaustein Tooltip Anzeigen
             </v-btn>
           </template>
         </v-tooltip>
