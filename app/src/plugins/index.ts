@@ -10,6 +10,7 @@ import vuetify from "./vuetify";
 import pinia from "./pinia";
 import router from "../router";
 import Vue3EasyDataTable from 'vue3-easy-data-table';
+// EasyDataTable with MIT Licence (LICENCE.txt) from: https://github.com/HC200ok/vue3-easy-data-table
 import 'vue3-easy-data-table/dist/style.css';
 
 // Types
