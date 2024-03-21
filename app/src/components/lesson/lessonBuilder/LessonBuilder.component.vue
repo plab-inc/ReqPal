@@ -6,14 +6,15 @@ import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {LessonBuilderDragItem} from "@/types/drag.types.ts";
 import {requiredStringRule, requiredUniqueLessonTitleRule} from "@/utils/validationRules.ts";
-import TrueOrFalse from "@/components/lesson/lessonForms/TrueOrFalseForm.component.vue";
-import MultipleChoiceForm from "@/components/lesson/lessonForms/MultipleChoiceForm.component.vue";
-import SliderForm from "@/components/lesson/lessonForms/SliderForm.component.vue";
-import TextfieldForm from "@/components/lesson/lessonForms/TextfieldForm.component.vue";
-import CatalogRequirementSelection from "@/components/lesson/lessonForms/CatalogRequirementSelectionForm.component.vue"
-import NotesForm from "@/components/lesson/lessonForms/NotesForm.component.vue";
+import TrueOrFalse from "@/components/lesson/lessonModuleForms/TrueOrFalseForm.component.vue";
+import MultipleChoiceForm from "@/components/lesson/lessonModuleForms/MultipleChoiceForm.component.vue";
+import SliderForm from "@/components/lesson/lessonModuleForms/SliderForm.component.vue";
+import TextfieldForm from "@/components/lesson/lessonModuleForms/TextfieldForm.component.vue";
+import CatalogRequirementSelection
+  from "@/components/lesson/lessonModuleForms/CatalogRequirementSelectionForm.component.vue"
+import NotesForm from "@/components/lesson/lessonModuleForms/NotesForm.component.vue";
 import LessonModuleBox from "@/components/lesson/lessonBuilder/LessonModuleBox.component.vue";
-import Divider from "@/components/lesson/lessonForms/DividerForm.component.vue";
+import Divider from "@/components/lesson/lessonModuleForms/DividerForm.component.vue";
 import LessonService from "@/services/database/lesson.service.ts";
 import router from "@/router";
 import {useUtilStore} from "@/stores/util.store.ts";
@@ -59,7 +60,7 @@ const [collect, drop] = useDrop(() => ({
       lessonFormStore.addComponent(item.name);
       return;
     }
-    utilStore.addAlert('Die maximale Anzahl von Lernmodulen pro Lektion wurde erreicht', 'info');
+    utilStore.addAlert('Die maximale Anzahl von Lektionsbausteinen pro Lektion wurde erreicht', 'info');
   },
 
   hover: (item: object, monitor: DropTargetMonitor) => {
@@ -110,8 +111,8 @@ async function uploadLesson() {
 
 function openDeleteDialog(componentUUID: string) {
   alertService.openDialog(
-      "Modul löschen",
-      "Möchtest du dieses Modul wirklich löschen? Das Löschen ist unwiderruflich",
+      "Lektionsbaustein löschen",
+      "Möchtest du dieses Lektionsbaustein wirklich löschen? Das Löschen ist unwiderruflich",
       "Ja",
       "Nein",
       () => lessonFormStore.removeComponentById(componentUUID)
@@ -197,7 +198,7 @@ function openDeleteDialog(componentUUID: string) {
                   </v-col>
                   <v-col>
                     {{
-                      !components.length ? "Füge Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lernmodule hinzu indem du sie aus der Rechten Spalte herziehst"
+                      !components.length ? "Füge Lektionsbausteine hinzu indem du sie aus der Rechten Spalte herziehst" : "Füge weitere Lektionsbausteine hinzu indem du sie aus der Rechten Spalte herziehst"
                     }}
                   </v-col>
                 </v-row>
@@ -238,7 +239,7 @@ function openDeleteDialog(componentUUID: string) {
                   color="error"
                   @click="lessonFormStore.clearComponents()"
               >
-                Module zurücksetzen
+                Lektionsbausteine zurücksetzen
               </v-btn>
               <v-btn
                   :disabled="formIsValid"
