@@ -6,7 +6,7 @@
   </v-row>
   <v-divider/>
   <v-container>
-    <p>Herzlich Willkommen bei Projektarbeit2023. Diese rechtlichen Hinweise gelten für alle Nutzer, die sich auf unserer Website anmelden.</p>
+    <p>Herzlich Willkommen bei ReqPal. Diese rechtlichen Hinweise gelten für alle Nutzer, die sich auf unserer Website anmelden.</p>
     <p>Durch die Registrierung auf unserer Website verpflichten Sie sich, wahre, aktuelle und vollständige Informationen über sich selbst anzugeben. Die Anmeldung erfolgt durch Ausfüllen unseres Anmeldeformulars und Bestätigung Ihrer E-Mail-Adresse.</p>
     <p>Ihre persönlichen Daten werden gemäß der DSGVO und anderen relevanten Datenschutzgesetzen behandelt. Wir sammeln Daten, um unseren Service zu verbessern und personalisieren. Sie haben das Recht, auf Ihre Daten zuzugreifen, sie zu korrigieren oder ihre Löschung zu verlangen.</p>
     <p>Die Nutzung unserer Website ist an Bedingungen geknüpft. Verboten ist die Verbreitung illegaler Inhalte, Belästigung anderer Nutzer und jede Aktivität, die gegen geltendes Recht verstößt.</p>

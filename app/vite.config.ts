@@ -6,6 +6,7 @@ import autoImport from 'unplugin-auto-import/vite'
 // Utilities
 import {defineConfig} from 'vite'
 import {fileURLToPath, URL} from 'node:url'
+import svgLoader from 'vite-svg-loader'
 
 //Base path
 const base = process.env.NODE_ENV === 'production' ? '/' : '/';
@@ -20,6 +21,7 @@ export default defineConfig({
     vuetify({
       autoImport: true,
     }),
+    svgLoader(),
     autoImport({
       dts: "src/auto-imports.d.ts",
       imports: [
