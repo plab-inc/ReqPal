@@ -4,12 +4,13 @@
       <v-col>
         <v-parallax style="max-height: 550px; border-radius: 5px" src="@/assets/images/lamps.jpg">
           <div class="d-flex flex-column fill-height justify-center align-center text-white text-center">
-            <h1 class="text-h3 font-weight-medium mb-3">
-              Willkommen bei Projektarbeit2023 (AT)
+            <h1 class="text-h3 font-weight-medium mb-3" hidden>
+              Willkommen bei ReqPal
             </h1>
-            <h4 class="subheading">
+            <reqpal style="width: 50%; height: auto;"></reqpal>
+            <h2>
               Lern- und Übungsumgebung zur funktionalen Bewertung von Standardanwendungssystemen
-            </h4>
+            </h2>
           </div>
         </v-parallax>
       </v-col>
@@ -65,6 +66,7 @@
 
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
+import reqpal from '@/assets/reqpalBanner.svg';
 
 const authStore = useAuthStore();
 
