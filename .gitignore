@@ -7,8 +7,9 @@
 # any out directory
 out/
 
-#lockfiles
-*.lock
+#minted files
+*.pygtex
+*.pygstyle
 
 # JIRA plugin
 atlassian-ide-plugin.xml
