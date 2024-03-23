@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import {useAuthStore} from "@/stores/auth.store";
-import reqpal from '@/assets/reqpalBanner.svg';
+import reqpal from '@/assets/reqPalBanner.svg';
 
 const authStore = useAuthStore();
 
