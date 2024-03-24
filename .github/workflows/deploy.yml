@@ -48,7 +48,7 @@ jobs:
         working-directory: ./app
         env:
           VITE_SUPABASE_URL: ${{ vars.SUPABASE_PROJECT_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
