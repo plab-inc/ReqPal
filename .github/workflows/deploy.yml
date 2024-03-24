@@ -47,7 +47,7 @@ jobs:
         run: yarn build:no-tsc
         working-directory: ./app
         env:
-          VITE_SUPABASE_URL: https://rouarbdbmlahwttlyspf.supabase.co
+          VITE_SUPABASE_URL: ${{ SUPABASE_PROJECT_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
