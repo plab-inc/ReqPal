@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
+import Delete from "@/components/lesson/lessonBuilder/HelperComponents/Delete.component.vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();
@@ -36,7 +37,9 @@ watch(fields, (newFields) => {
     </v-row>
     <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <Help dialog-type="textfieldExplanation"></Help>
+        <Help dialog-type="textfieldExplanation"/>
+        <div class="mx-1"/>
+        <Delete :component-id="props.componentId"/>
       </v-col>
     </v-row>
   </v-container>

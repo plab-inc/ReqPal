@@ -14,6 +14,7 @@ interface LessonFormState {
     lessonDescription: string;
     lessonPoints: number;
     components: ComponentEntry[];
+    insertComponentIndex: number;
 }
 
 export const useLessonFormStore = defineStore('lessonForm', {
@@ -22,7 +23,8 @@ export const useLessonFormStore = defineStore('lessonForm', {
         components: [],
         lessonTitle: '',
         lessonDescription: '',
-        lessonPoints: 250
+        lessonPoints: 250,
+        insertComponentIndex: 0,
     }),
     getters: {
         isDirty: (state) => {
@@ -51,8 +53,37 @@ export const useLessonFormStore = defineStore('lessonForm', {
         getLessonFormPoints: (state) => {
             return state.lessonPoints;
         },
+        getInsertingComponentIndex: (state) => {
+            return state.insertComponentIndex;
+        },
     },
     actions: {
+        setInsertingComponentIndex(containerIndex: number) {
+            this.insertComponentIndex = containerIndex;
+        },
+        moveComponent(id: string, atIndex: number) {
+            const index = this.getComponentIndexById(id);
+            if (index > -1 && atIndex >= 0 && atIndex < this.components.length) {
+                const [component] = this.components.splice(index, 1);
+                this.components.splice(atIndex, 0, component);
+            }
+        },
+        insertComponentAt(componentName: string, index: number) {
+            let uuid: string = uuidv4();
+            const newComponent = {
+                type: componentName,
+                uuid: uuid,
+                data: {uuid: uuid, question: null, options: null, solution: null, hint: null}
+            };
+            if (index === -1) {
+                this.components.unshift(newComponent);
+                return;
+            }
+            if (index >= 0 && index <= this.components.length) {
+                this.components.splice(index, 0, newComponent);
+                return;
+            }
+        },
         addComponent(componentName: string) {
             let uuid: string = uuidv4();
             this.components.push({
@@ -64,24 +95,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
         removeComponentById(id: string) {
             const indexToRemove = this.components.findIndex((component) => component.uuid === id);
             this.components.splice(indexToRemove, 1);
-        },
-        switchComponentWithPrevById(id: string) {
-            const index = this.getComponentIndexById(id);
-
-            if (index > 0) {
-                const temp = this.components[index];
-                this.components[index] = this.components[index - 1];
-                this.components[index - 1] = temp;
-            }
-        },
-        switchComponentWithPostById(id: string) {
-            const index = this.getComponentIndexById(id);
-
-            if (index > -1 && index < this.components.length - 1) {
-                const temp = this.components[index];
-                this.components[index] = this.components[index + 1];
-                this.components[index + 1] = temp;
-            }
         },
         setComponentData(componentId: string, field: string, value: any) {
             const component = this.components.find(comp => comp.uuid === componentId);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue"
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue"
 import {useLessonStore} from "@/stores/lesson.store.ts";
 
 interface Props {

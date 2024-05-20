@@ -19,7 +19,7 @@ interface Item {
 
 const originalIndex = computed(() => props.findCard(props.id).index)
 const [collect, drag] = useDrag(() => ({
-  type: DragItemTypes.CARD,
+  type: DragItemTypes.SORTABLE,
   item: () => ({id: props.id, originalIndex: originalIndex.value}),
   collect: monitor => ({
     isDragging: monitor.isDragging(),
@@ -34,7 +34,7 @@ const [collect, drag] = useDrag(() => ({
 }))
 
 const [, drop] = useDrop(() => ({
-  accept: DragItemTypes.CARD,
+  accept: DragItemTypes.SORTABLE,
   hover({id: draggedId}: Item) {
     if (draggedId !== props.id) {
       const {index: overIndex} = props.findCard(props.id)

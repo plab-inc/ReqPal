@@ -6,7 +6,8 @@ import RequirementItem from "@/components/catalog/requirement/RequirementItem.co
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import ProductDetailItem from "@/components/catalog/product/ProductDetailItem.component.vue";
 import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
+import Delete from "@/components/lesson/lessonBuilder/HelperComponents/Delete.component.vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -171,7 +172,9 @@ watch(fields, async (value) => {
     </v-row>
     <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <Help dialog-type="productQualificationTeacherExplanation"></Help>
+        <Help dialog-type="productQualificationTeacherExplanation"/>
+        <div class="mx-1"/>
+        <Delete :component-id="props.componentId"/>
       </v-col>
     </v-row>
   </v-container>
