@@ -2,8 +2,8 @@
 
 import {ref} from "vue";
 import {requiredBooleanRule} from "@/utils/validationRules.ts";
-import Hint from "@/components/lesson/lessonBuilder/Hint.component.vue";
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Hint from "@/components/lesson/lessonBuilder/HelperComponents/Hint.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import {useAuthStore} from "@/stores/auth.store.ts";
 

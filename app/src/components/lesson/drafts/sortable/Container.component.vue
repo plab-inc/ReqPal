@@ -34,7 +34,7 @@ const moveCard = (id: string, atIndex: number) => {
   cards.value.splice(atIndex, 0, card);
 };
 
-const [, drop] = useDrop(() => ({accept: DragItemTypes.CARD}));
+const [, drop] = useDrop(() => ({accept: DragItemTypes.SORTABLE}));
 </script>
 
 <template>

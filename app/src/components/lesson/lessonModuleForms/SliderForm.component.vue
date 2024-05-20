@@ -3,7 +3,8 @@
 import {ref} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
 import {requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
+import Delete from "@/components/lesson/lessonBuilder/HelperComponents/Delete.component.vue";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();
@@ -162,7 +163,9 @@ watch([sliderOptions, sliderSolution], () => {
     </v-row>
     <v-row no-gutters>
       <v-col class="d-flex flex-grow-1 align-end justify-end">
-        <Help dialog-type="sliderExplanation"></Help>
+        <Help dialog-type="sliderExplanation"/>
+        <div class="mx-1"/>
+        <Delete :component-id="props.componentId"/>
       </v-col>
     </v-row>
   </v-container>

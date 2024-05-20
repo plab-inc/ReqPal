@@ -4,8 +4,8 @@ import {Requirement} from "@/types/catalog.types.ts";
 import {ref} from "vue";
 import {useLessonStore} from "@/stores/lesson.store.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.component.vue";
-import Hint from "@/components/lesson/lessonBuilder/Hint.component.vue";
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Hint from "@/components/lesson/lessonBuilder/HelperComponents/Hint.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
 import {useAuthStore} from "@/stores/auth.store.ts";
 
 const requirement = ref<Requirement>();

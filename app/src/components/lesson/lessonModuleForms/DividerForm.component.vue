@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
+import Help from "@/components/lesson/lessonBuilder/HelperComponents/Help.component.vue";
+import Delete from "@/components/lesson/lessonBuilder/HelperComponents/Delete.component.vue";
+
+const props = defineProps<{ componentId: string }>();
 </script>
 
 <template>
@@ -8,8 +11,10 @@ import Help from "@/components/lesson/lessonBuilder/Help.component.vue";
       <v-col cols="11">
         <v-divider color="warning"/>
       </v-col>
-      <v-col cols="1" class="d-flex flex-grow-1 align-end justify-end">
-        <Help dialog-type="dividerTeacherExplanation"></Help>
+      <v-col cols="1" class="d-flex align-center">
+        <Help dialog-type="dividerTeacherExplanation"/>
+        <div class="mx-1"/>
+        <Delete :component-id="props.componentId"/>
       </v-col>
     </v-row>
   </v-container>

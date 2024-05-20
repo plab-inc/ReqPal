@@ -21,7 +21,3 @@ const props = defineProps<Props>();
     </template>
   </v-tooltip>
 </template>
-
-<style scoped>
-
-</style>
