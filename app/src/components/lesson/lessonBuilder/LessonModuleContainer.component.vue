@@ -68,6 +68,6 @@ const {canDrop, isOver} = toRefs(collect);
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 73vh;
+  min-height: 75vh;
 }
 </style>
