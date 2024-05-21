@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 
-import {ComponentEntry, useLessonStore} from "@/stores/lesson.ts";
+import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import {LessonStatistic} from "@/types/lesson.ts";
 import Score from "@/components/lesson/results/Score.vue";
@@ -126,7 +126,7 @@ async function init() {
   }
 }
 
-const components = ref<ComponentEntry[]>([]);
+const components = ref<LessonModuleEntry[]>([]);
 components.value = lessonStore.getLessonModules;
 
 watch(filters, async (newShowSolutions) => {

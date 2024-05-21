@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ComponentEntry} from "@/stores/lesson.ts";
+import {LessonModuleEntry} from "@/stores/lesson.ts";
 import DividerModule from "@/components/lesson/modules/divider/DividerModule.vue";
 import {Component} from "vue";
 import TrueOrFalseModule from "@/components/lesson/modules/trueOrFalse/TrueOrFalseModule.vue";
@@ -11,7 +11,7 @@ import NotesModule from "@/components/lesson/modules/notes/NotesModule.vue";
 
 
 interface Props {
-  components: ComponentEntry[];
+  components: LessonModuleEntry[];
 }
 
 const props = defineProps<Props>();

@@ -11,11 +11,11 @@ interface LessonState {
     lessons: Lesson[];
     currentLesson: Lesson | null;
     currentQuestions: any;
-    components: ComponentEntry[];
+    lessonModules: LessonModuleEntry[];
     openLessons: number;
 }
 
-export interface ComponentEntry {
+export interface LessonModuleEntry {
     uuid: string;
     type: string;
     data: Question;
@@ -27,7 +27,7 @@ export const useLessonStore = defineStore('lesson', {
         lessons: [],
         currentLesson: null,
         currentQuestions: [],
-        components: [],
+        lessonModules: [],
         openLessons: 0
     }),
 
@@ -54,7 +54,7 @@ export const useLessonStore = defineStore('lesson', {
             return component ? component.data[field] : null;
         },
         getLessonModules: (state) => {
-            return state.components;
+            return state.lessonModules;
         },
         getAmountOfFinishedLessons: (state) => {
             const finishedLessons = state.lessons.filter(l => l.isFinished === true);
@@ -67,7 +67,7 @@ export const useLessonStore = defineStore('lesson', {
             const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
             if (Array.isArray(questions)) {
                 this.currentQuestions = questions;
-                this.setUpComponents();
+                this.setUpLessonModules();
             }
         },
 
@@ -142,21 +142,21 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         loadLessonByUUID(lessonUUID: string) {
-            this.clearComponents();
+            this.clearLessonModules();
             const lesson = this.findLesson(lessonUUID);
             if (lesson) {
                 this.currentLesson = lesson;
             }
         },
 
-        addComponentWithData(componentName: string, componentUUID: string, data: {
+        addLessonModuleWithData(componentName: string, componentUUID: string, data: {
             uuid: string,
             question: any,
             options: any,
             solution: any,
             hint: any
         }) {
-            this.components.push({
+            this.lessonModules.push({
                 type: componentName,
                 uuid: componentUUID,
                 data: data
@@ -164,7 +164,7 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         setLessonModuleData(componentId: string, field: string, value: any) {
-            const component = this.components.find(comp => comp.uuid === componentId);
+            const component = this.lessonModules.find(comp => comp.uuid === componentId);
             if (component && component.data.hasOwnProperty(field)) {
                 component.data[field] = value;
             }
@@ -206,9 +206,9 @@ export const useLessonStore = defineStore('lesson', {
 
                 if (data) {
                     this.currentQuestions = data;
-                    this.setUpComponents();
+                    this.setUpLessonModules();
                     data.forEach(d => {
-                        let component = this.components.find(component => component.data.uuid === d.uuid);
+                        let component = this.lessonModules.find(component => component.data.uuid === d.uuid);
                         if (component) {
                             component.data.solution = d.solution;
                         }
@@ -218,15 +218,15 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         filterComponentsByQuestionOnly() {
-            return this.components.filter(c =>
+            return this.lessonModules.filter(c =>
                 c.type === 'MultipleChoice' ||
                 c.type === 'TrueOrFalse' ||
                 c.type === 'Slider' ||
                 c.type === 'Requirement')
         },
 
-        clearComponents() {
-            this.components = [];
+        clearLessonModules() {
+            this.lessonModules = [];
         },
 
         async getUserResultsForLesson(lessonUUID: string) {
@@ -283,7 +283,7 @@ export const useLessonStore = defineStore('lesson', {
                 }
             }
 
-            this.clearComponents();
+            this.clearLessonModules();
         },
 
         async restartLessonProgressForUser(lessonUUID: string) {
@@ -294,7 +294,7 @@ export const useLessonStore = defineStore('lesson', {
                 if (lesson) lesson.hasSavedProgress = false;
             }
 
-            this.clearComponents();
+            this.clearLessonModules();
         },
 
         async loadUserAnswersForLesson(lessonUUID: string) {
@@ -333,13 +333,13 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        setUpComponents() {
-            this.clearComponents();
+        setUpLessonModules() {
+            this.clearLessonModules();
 
             if (this.currentQuestions.length > 0) {
                 const sortedQuestions = this.getSortedCurrentQuestions;
                 sortedQuestions.forEach(q => {
-                    this.addComponentWithData(q.question_type, q.uuid, {
+                    this.addLessonModuleWithData(q.question_type, q.uuid, {
                         uuid: q.uuid,
                         question: q.question,
                         options: q.options,
@@ -353,7 +353,7 @@ export const useLessonStore = defineStore('lesson', {
         hydrateUserAnswers(answers: UserAnswer[]) {
             answers.forEach(answer => {
                 const comp =
-                    this.components.find(c => c.uuid === answer.question_id);
+                    this.lessonModules.find(c => c.uuid === answer.question_id);
                 if (comp) comp.data.options = answer.answer;
             });
         },
