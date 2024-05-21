@@ -7,8 +7,8 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.middleware";
-import {fetchCatalogs} from "@/middlewares/catalogs.middleware.ts";
+import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
+import {fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
@@ -18,18 +18,18 @@ import {
     loadQuestionsWithSolutions,
     requiresFinishedLesson,
     requiresUnfinishedLesson
-} from "@/middlewares/lesson.middleware.ts";
-import {useUtilStore} from "@/stores/util.store.ts";
+} from "@/middlewares/lesson.ts";
+import {useUtilStore} from "@/stores/util.ts";
 
 const routes = [
     {
         path: "/",
-        component: () => import("@/layouts/Default.layout.vue"),
+        component: () => import("@/layouts/Default.vue"),
         children: [
             {
                 path: "",
                 name: "Home",
-                component: () => import("@/views/home/Home.view.vue"),
+                component: () => import("@/views/home/Home.vue"),
                 meta: {
                     middleware: [
                         fetchLessons
@@ -39,7 +39,7 @@ const routes = [
             {
                 path: "/lessons",
                 name: "Lessons",
-                component: () => import("@/views/lesson/Lessons.view.vue"),
+                component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
                         fetchLessons
@@ -49,7 +49,7 @@ const routes = [
             {
                 path: "/builder",
                 name: "LessonBuilder",
-                component: () => import("@/views/lesson/LessonBuilder.view.vue"),
+                component: () => import("@/views/lesson/LessonBuilder.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
@@ -60,7 +60,7 @@ const routes = [
             {
                 path: "/lessons/:lessonUUID",
                 name: "LessonDetails",
-                component: () => import("@/views/lesson/LessonDetails.view.vue"),
+                component: () => import("@/views/lesson/LessonDetailsStudent.vue"),
                 meta: {
                     middleware: [
                         requiresStudent,
@@ -74,7 +74,7 @@ const routes = [
             {
                 path: "/lessons/:lessonUUID/results",
                 name: "LessonResults",
-                component: () => import("@/views/lesson/LessonResults.view.vue"),
+                component: () => import("@/views/lesson/LessonResults.vue"),
                 meta: {
                     middleware: [
                         requiresStudent,
@@ -88,7 +88,7 @@ const routes = [
             {
                 path: "/lessons/:lessonUUID/teacher-overview",
                 name: "LessonTeacherOverview",
-                component: () => import("@/views/lesson/LessonTeacherOverview.view.vue"),
+                component: () => import("@/views/lesson/LessonDetailsTeacher.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
@@ -100,7 +100,7 @@ const routes = [
             {
                 path: "/catalogs",
                 name: "Catalogs",
-                component: () => import("@/views/catalog/Catalogs.view.vue"),
+                component: () => import("@/views/catalog/CatalogOverview.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
@@ -111,13 +111,13 @@ const routes = [
             {
                 path: "/catalogs/upload",
                 name: "UploadCatalog",
-                component: () => import("@/views/catalog/CatalogUpload.view.vue"),
+                component: () => import("@/views/catalog/CatalogUpload.vue"),
                 meta: {}
             },
             {
                 path: "/catalogs/:catalogId",
                 name: "CatalogDetails",
-                component: () => import("@/views/catalog/CatalogDetail.view.vue"),
+                component: () => import("@/views/catalog/CatalogDetail.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
@@ -127,32 +127,32 @@ const routes = [
             {
                 path: "/feedback",
                 name: "Feedback",
-                component: () => import("@/views/user/Feedback.view.vue"),
+                component: () => import("@/views/user/Feedback.vue"),
             },
             {
                 path: "/legal",
                 name: "Legal",
-                component: () => import("@/views/user/Legal.view.vue"),
+                component: () => import("@/views/user/Legal.vue"),
             },
             {
                 path: "/login",
                 name: "LogIn",
-                component: () => import("@/views/user/LogIn.view.vue"),
+                component: () => import("@/views/user/LogIn.vue"),
             },
             {
                 path: "/signup",
                 name: "SignUp",
-                component: () => import("@/views/user/SignUp.view.vue"),
+                component: () => import("@/views/user/SignUp.vue"),
             },
             {
                 path: "/resetPassword",
                 name: "ResetPassword",
-                component: () => import("@/views/user/ResetPassword.view.vue"),
+                component: () => import("@/views/user/ResetPassword.vue"),
             },
             {
                 path: "/account",
                 name: "Account",
-                component: () => import("@/views/user/Account.view.vue"),
+                component: () => import("@/views/user/Account.vue"),
                 meta: {
                     middleware: [
                         requiresAuth
@@ -162,12 +162,12 @@ const routes = [
             {
                 path: "/error",
                 name: "Error",
-                component: () => import("@/views/util/Error.view.vue"),
+                component: () => import("@/views/util/Error.vue"),
             },
             {
                 path: "/:pathMatch(.*)*",
                 name: "Error",
-                component: () => import("@/views/util/Error.view.vue"),
+                component: () => import("@/views/util/Error.vue"),
             }
         ],
     },

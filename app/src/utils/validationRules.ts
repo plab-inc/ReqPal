@@ -1,7 +1,7 @@
-import {useProfileStore} from "@/stores/profile.store.ts";
-import {useLessonStore} from "@/stores/lesson.store.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.store.ts";
-import {useCatalogStore} from "@/stores/catalog.store.ts";
+import {useProfileStore} from "@/stores/profile.ts";
+import {useLessonStore} from "@/stores/lesson.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
 
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {

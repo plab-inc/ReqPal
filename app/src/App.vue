@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {supabase} from "@/plugins/supabase";
-import {useAuthStore} from "@/stores/auth.store";
-import {useThemeStore} from '@/stores/theme.store';
+import {useAuthStore} from "@/stores/auth.ts";
+import {useThemeStore} from '@/stores/theme.ts';
 import {useTheme} from "vuetify";
-import {errorHandler} from "@/errors/handler.errors.ts";
+import {errorHandler} from "@/errors/handler.ts";
 
 const themeStore = useThemeStore();
 const theme = useTheme();

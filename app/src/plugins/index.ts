@@ -17,7 +17,7 @@ import 'vue3-easy-data-table/dist/style.css';
 import type {App} from "vue";
 
 //Error Handler
-import {errorHandler} from "@/errors/handler.errors.ts";
+import {errorHandler} from "@/errors/handler.ts";
 
 export function registerPlugins(app: App) {
   loadFonts();
