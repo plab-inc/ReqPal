@@ -29,6 +29,7 @@ watch(points, (newPoints) => {
       type="number"
       hide-details
       :min="0"
+      :max="maxPointsPerQuestion"
       clearable
       v-model="points"
       :rules="[requiredRule, requiredPositiveNumberBelowMaximumRule]"
