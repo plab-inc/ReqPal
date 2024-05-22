@@ -105,6 +105,7 @@ import router from "@/router";
 import {AuthenticationError, UserAlreadyRegisteredError} from "@/errors/custom.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {useProfileStore} from "@/stores/profile.ts";
+import { onBeforeMount, ref } from "vue";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();

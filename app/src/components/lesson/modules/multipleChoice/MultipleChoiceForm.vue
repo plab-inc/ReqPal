@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {requiredStringRule} from "@/utils/validationRules.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
+import Help from "@/components/lesson/builder/helper/Help.vue";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import { requiredStringRule } from "@/utils/validationRules.ts";
+import { ref, watch } from "vue";
 
 interface multipleChoiceAnswer{
   id: number,
@@ -68,7 +69,7 @@ function removeAnswer(index: number) {
 }
 
 watch(answers, updateStoreData, {deep: true});
-watch(fields, (newFields) => {
+watch(fields, (newFields: any) => {
   lessonFormStore.setLessonModuleData(props.componentId, 'question', newFields.question);
   lessonFormStore.setLessonModuleData(props.componentId, 'hint', newFields.hint);
 }, {deep: true});
@@ -136,4 +137,6 @@ watch(fields, (newFields) => {
 
 
 <style scoped>
-</style>
+</style>import { ref, watch } from "vue";import { ref, watch } from "vue";
+import { ref, watch } from "vue";
+

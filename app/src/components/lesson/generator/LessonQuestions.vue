@@ -7,7 +7,7 @@ import MultipleChoiceModule from "@/components/lesson/modules/multipleChoice/Mul
 import SliderModule from "@/components/lesson/modules/slider/SliderModule.vue";
 import TextfieldModule from "@/components/lesson/modules/textfield/TextfieldModule.vue";
 import NotesModule from "@/components/lesson/modules/notes/NotesModule.vue";
-
+import { ComponentInstance, markRaw } from "vue";
 
 interface Props {
   components: LessonModuleEntry[];
@@ -16,8 +16,7 @@ interface Props {
 const props = defineProps<Props>();
 
 interface LessonModuleMap {
-  //wird NICHT importiert, führt zu Fehlern
-  [key: string]: Component;
+  [key: string]: ComponentInstance<any>;
 }
 
 const lessonModuleMap: LessonModuleMap = {
@@ -29,7 +28,7 @@ const lessonModuleMap: LessonModuleMap = {
   'Note': markRaw(NotesModule),
   'Divider': markRaw(DividerModule)
 };
-const getLessonModuleInstance = (lessonModuleName: string): Component => {
+const getLessonModuleInstance = (lessonModuleName: string): ComponentInstance<any> => {
   return lessonModuleMap[lessonModuleName];
 };
 
@@ -59,4 +58,4 @@ function isRequirementOrTextfieldOrDivider(componentType: string): boolean {
 
 <style scoped>
 
-</style>
+</style>Component, 

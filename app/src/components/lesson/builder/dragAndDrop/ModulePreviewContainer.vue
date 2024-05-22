@@ -4,6 +4,7 @@ import {useDrag} from 'vue3-dnd'
 import {DragItem} from '@/types/dragItem.ts'
 import {toRefs} from '@vueuse/core'
 import {vElementHover} from "@vueuse/components";
+import { computed, ref } from "vue";
 
 const props = defineProps<{
   title: string,

@@ -8,6 +8,7 @@ import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
 import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
+import { onBeforeMount, ref, watch } from "vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();

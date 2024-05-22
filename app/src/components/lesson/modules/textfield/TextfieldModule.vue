@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useLessonStore} from "@/stores/lesson.ts";
+import { ref } from "vue";
 
 interface Props {
   componentId: string,

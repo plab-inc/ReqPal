@@ -5,6 +5,7 @@ import AlertService from "@/services/util/alert.ts";
 import router from "@/router";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import {LessonDTO} from "@/types/lesson.ts";
+import { ref } from "vue";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;

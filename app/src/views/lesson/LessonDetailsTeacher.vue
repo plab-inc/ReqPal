@@ -79,6 +79,7 @@ import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import {LessonStatistic} from "@/types/lesson.ts";
 import Score from "@/components/lesson/results/Score.vue";
+import { ref, watch } from "vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;

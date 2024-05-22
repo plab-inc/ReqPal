@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import { ref } from "vue";
+
 interface Props {
   score: number,
   maxScore: number,

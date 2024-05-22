@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Requirement} from "@/types/catalog.ts";
+import { computed } from "vue";
 
 // EasyDataTable with MIT Licence (LICENCE.txt) from: https://github.com/HC200ok/vue3-easy-data-table
 

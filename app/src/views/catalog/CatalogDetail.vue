@@ -5,6 +5,8 @@ import AlertService from "@/services/util/alert.ts";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
 import CatalogTable from "@/components/catalog/CatalogTable.vue";
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);

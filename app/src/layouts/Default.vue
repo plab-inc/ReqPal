@@ -170,6 +170,7 @@ import Dialog from "@/components/util/Dialog.vue";
 import {useProfileStore} from "@/stores/profile.ts";
 import alertSfx from "@/assets/sound/alert.mp3";
 import {useLessonStore} from "@/stores/lesson.ts";
+import { onBeforeMount, ref, watch } from "vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();

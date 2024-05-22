@@ -3,6 +3,7 @@ import {requiredStringRule} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
+import { ref, watch } from "vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();

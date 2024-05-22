@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {LessonForm, Question} from "@/types/lesson.ts";
 import {v4 as uuidv4} from 'uuid';
+import { toRaw } from "vue";
 
 interface LessonModuleEntry {
     uuid: string;

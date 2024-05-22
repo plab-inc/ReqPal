@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useCatalogStore} from "@/stores/catalog.ts";
 import {Requirement} from "@/types/catalog.ts";
-import {ref} from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import {useLessonStore} from "@/stores/lesson.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";

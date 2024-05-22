@@ -54,14 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import {useTheme} from "vuetify";
-import {DatabaseError, PrivilegeError} from "@/errors/custom.ts";
-import {Catalog} from "@/types/catalog.ts";
+import { useTheme } from "vuetify";
+import { DatabaseError, PrivilegeError } from "@/errors/custom.ts";
+import { Catalog } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
 import CatalogService from "@/services/database/catalog.ts";
 import router from "@/router";
 import * as XLSX from "xlsx";
-import {requiredUniqueCatalogNameRule} from "@/utils/validationRules.ts";
+import { requiredUniqueCatalogNameRule } from "@/utils/validationRules.ts";
+import { reactive, ref } from "vue";
 
 interface Props {
   maxFileSize?: number;

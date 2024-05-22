@@ -4,6 +4,7 @@ import {DragItem} from '@/types/dragItem.ts'
 import {toRefs} from '@vueuse/core'
 import {getEmptyImage} from "react-dnd-html5-backend";
 import Box from "@/components/drafts/lesson/dragAndDrop/Box.vue";
+import { onMounted } from "vue";
 
 const props = defineProps<{
   id: string;

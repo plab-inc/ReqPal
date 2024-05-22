@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import {useLessonStore} from "@/stores/lesson.ts";
+import { onBeforeMount, ref } from "vue";
 
 interface Props {
   color: string

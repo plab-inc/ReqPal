@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import { ref, watch } from "vue";
 import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";

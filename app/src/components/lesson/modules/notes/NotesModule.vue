@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Help from "@/components/lesson/builder/helper/Help.vue"
 import {useLessonStore} from "@/stores/lesson.ts";
+import { ref, watch } from "vue";
 
 interface Props {
   componentId: string,

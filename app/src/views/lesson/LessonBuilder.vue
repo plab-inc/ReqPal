@@ -3,6 +3,7 @@ import LessonBuilder from "@/components/lesson/builder/LessonBuilder.vue";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "vue3-dnd";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { ref } from "vue";
 
 const lessonFormStore = useLessonFormStore();
 const filters = ref<string[]>([]);

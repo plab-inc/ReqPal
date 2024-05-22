@@ -32,6 +32,7 @@ import feedbackService from "@/services/database/feedback.ts";
 import router from "@/router";
 import {useUtilStore} from "@/stores/util.ts";
 import {DatabaseError} from "@/errors/custom.ts";
+import { ref } from "vue";
 
 const feedback = ref('');
 const isFormValid = ref(false);

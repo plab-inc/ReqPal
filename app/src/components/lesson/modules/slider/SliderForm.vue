@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
+import { ref, watch } from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
