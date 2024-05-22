@@ -67,7 +67,6 @@ BEGIN
                    'uuid', l.uuid,
                    'title', l.title,
                    'description', l.description,
-                   'points', l.points,
                    'questions', COALESCE(
                            jsonb_agg(
                                    jsonb_build_object(
@@ -78,7 +77,8 @@ BEGIN
                                            'position', q.position,
                                            'question', q.question,
                                            'type', q.question_type,
-                                           'solution', q.solution
+                                           'solution', q.solution,
+                                           'points', q.points
                                    )
                                    ORDER BY q.position), '[]'::jsonb))
     INTO result

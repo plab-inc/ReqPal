@@ -154,7 +154,8 @@ export const useLessonStore = defineStore('lesson', {
             question: any,
             options: any,
             solution: any,
-            hint: any
+            hint: any,
+            points: any
         }) {
             this.lessonModules.push({
                 type: componentName,
@@ -344,7 +345,8 @@ export const useLessonStore = defineStore('lesson', {
                         question: q.question,
                         options: q.options,
                         solution: q.solution,
-                        hint: q.hint
+                        hint: q.hint,
+                        points: q.points
                     })
                 })
             }
