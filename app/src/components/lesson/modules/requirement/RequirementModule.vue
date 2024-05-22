@@ -31,6 +31,7 @@ interface ProductOptions {
 
 const props = defineProps<Props>();
 const lessonStore = useLessonStore();
+const points = lessonStore.getLessonModuleFieldValues(props.componentId, 'points');
 const fields = ref<any>({
   options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options'),
   hint: lessonStore.getLessonModuleFieldValues(props.componentId, 'hint'),
@@ -170,8 +171,14 @@ watch(products.value, (newProducts) => {
 
     <v-container v-if="fields.options.askForQualification && products.length > 0">
       <v-row>
-        <v-col class="text-h6">
-          {{ fields?.question }}
+        <v-col cols="auto">
+          <div class="text-h6 text-md-h5"> {{ fields?.question }}</div>
+        </v-col>
+        <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
+          <div class="text-h4">
+            {{ points }}
+            <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+          </div>
         </v-col>
       </v-row>
       <v-row>

@@ -50,7 +50,7 @@ export const useLessonStore = defineStore('lesson', {
             return [...state.currentQuestions].sort((a, b) => a.position - b.position);
         },
         getLessonModuleFieldValues: (state: any) => (componentId: string, field: string) => {
-            const component = state.components.find((comp: any) => comp.uuid === componentId);
+            const component = state.lessonModules.find((comp: any) => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
         getLessonModules: (state) => {
@@ -154,7 +154,8 @@ export const useLessonStore = defineStore('lesson', {
             question: any,
             options: any,
             solution: any,
-            hint: any
+            hint: any,
+            points: any
         }) {
             this.lessonModules.push({
                 type: componentName,
@@ -344,7 +345,8 @@ export const useLessonStore = defineStore('lesson', {
                         question: q.question,
                         options: q.options,
                         solution: q.solution,
-                        hint: q.hint
+                        hint: q.hint,
+                        points: q.points
                     })
                 })
             }
