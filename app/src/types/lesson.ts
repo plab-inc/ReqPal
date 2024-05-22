@@ -31,7 +31,6 @@ export type LessonForm = {
     uuid: string;
     title: string;
     description: string;
-    points: number;
     questions: Question[];
 }
 
