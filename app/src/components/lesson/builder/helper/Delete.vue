@@ -8,7 +8,7 @@ const lessonFormStore = useLessonFormStore();
 function openDeleteDialog() {
   alertService.openDialog(
       "Lektionsbaustein löschen",
-      "Möchtest du dieses Lektionsbaustein wirklich löschen? Das Löschen ist unwiderruflich.",
+      "Möchtest du diesen Lektionsbaustein wirklich löschen? Das Löschen ist unwiderruflich.",
       "Ja",
       "Nein",
       () => lessonFormStore.removeLessonModuleById(props.componentId)
