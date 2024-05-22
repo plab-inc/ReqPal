@@ -90,7 +90,7 @@ watch(inputValue, (newInput) => {
   <v-card variant="flat">
     <v-container>
       <v-row>
-        <v-col cols="11">
+        <v-col cols="auto">
           <div class="text-h6 text-md-h5">Slider</div>
         </v-col>
         <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
