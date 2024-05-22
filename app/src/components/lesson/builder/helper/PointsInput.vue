@@ -27,6 +27,8 @@ watch(points, (newPoints) => {
       label="Maximale Punktzahl"
       variant="outlined"
       type="number"
+      hide-details
+      :min="0"
       clearable
       v-model="points"
       :rules="[requiredRule, requiredPositiveNumberBelowMaximumRule]"
