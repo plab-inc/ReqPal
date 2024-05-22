@@ -50,7 +50,7 @@ export const useLessonStore = defineStore('lesson', {
             return [...state.currentQuestions].sort((a, b) => a.position - b.position);
         },
         getLessonModuleFieldValues: (state: any) => (componentId: string, field: string) => {
-            const component = state.components.find((comp: any) => comp.uuid === componentId);
+            const component = state.lessonModules.find((comp: any) => comp.uuid === componentId);
             return component ? component.data[field] : null;
         },
         getLessonModules: (state) => {
