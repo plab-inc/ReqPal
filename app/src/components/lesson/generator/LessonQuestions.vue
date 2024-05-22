@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {LessonModuleEntry} from "@/stores/lesson.ts";
 import DividerModule from "@/components/lesson/modules/divider/DividerModule.vue";
-import {Component} from "vue";
 import TrueOrFalseModule from "@/components/lesson/modules/trueOrFalse/TrueOrFalseModule.vue";
 import RequirementModule from "@/components/lesson/modules/requirement/RequirementModule.vue";
 import MultipleChoiceModule from "@/components/lesson/modules/multipleChoice/MultipleChoiceModule.vue";
@@ -17,6 +16,7 @@ interface Props {
 const props = defineProps<Props>();
 
 interface LessonModuleMap {
+  //wird NICHT importiert, führt zu Fehlern
   [key: string]: Component;
 }
 
