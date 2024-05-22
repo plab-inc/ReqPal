@@ -9,6 +9,7 @@ export type Question = {
     question: string | null;
     options: string[] | null;
     hint: string | null;
+    points?: number | null;
 
     solution?: any | null;
     position?: number | null;

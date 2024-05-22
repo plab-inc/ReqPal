@@ -73,7 +73,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             const newComponent = {
                 type: componentName,
                 uuid: uuid,
-                data: {uuid: uuid, question: null, options: null, solution: null, hint: null}
+                data: {uuid: uuid, question: null, options: null, solution: null, hint: null, points: null}
             };
             if (index === -1) {
                 this.lessonModules.unshift(newComponent);
@@ -119,6 +119,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                         solution: toRaw(component.data.solution),
                         options: toRaw(component.data.options),
                         hint: toRaw(component.data.hint),
+                        points: component.data.points,
                         type: component.type
                     }
                 })
@@ -140,6 +141,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                         solution: question.solution,
                         options: question.options,
                         hint: question.hint,
+                        points: question.points,
                         position: question.position,
                     }
                 });
