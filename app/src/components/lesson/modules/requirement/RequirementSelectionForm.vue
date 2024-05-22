@@ -8,6 +8,7 @@ import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
 import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
+import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -171,7 +172,10 @@ watch(fields, async (value) => {
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col class="d-flex flex-grow-1 align-end justify-end">
+      <v-col cols="2" v-if="fields.options.askForQualification">
+        <PointsInput :component-id="props.componentId"></PointsInput>
+      </v-col>
+      <v-col :cols="fields.options.askForQualification ? 10 : 12" class="d-flex flex-grow-1 align-end justify-end">
         <Help dialog-type="productQualificationTeacherExplanation"/>
         <div class="mx-1"/>
         <Delete :component-id="props.componentId"/>
