@@ -116,9 +116,9 @@ watch(fields, (newFields) => {
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col>
-        <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4" icon>
+        <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mb-4" icon>
           <v-icon>
             mdi-plus
           </v-icon>
