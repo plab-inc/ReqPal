@@ -183,6 +183,7 @@ import alertService from "@/services/util/alert.ts";
 import {Lesson, LessonDTO} from "@/types/lesson.ts";
 import LessonStatusStudent from "@/components/lesson/toolbar/LessonStatusStudent.vue";
 import {v4 as uuidv4} from "uuid";
+import { computed, ref } from "vue";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();

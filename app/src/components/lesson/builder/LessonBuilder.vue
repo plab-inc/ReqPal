@@ -8,6 +8,7 @@ import {useUtilStore} from "@/stores/util.ts";
 import {useLessonStore} from "@/stores/lesson.ts";
 import SortableModule from "@/components/lesson/builder/dragAndDrop/SortableModuleContainer.vue";
 import ModuleTarget from "@/components/lesson/builder/dragAndDrop/ModuleTarget.vue"
+import { ref } from "vue";
 
 const props = defineProps<{
   showToolTip: boolean

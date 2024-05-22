@@ -9,6 +9,7 @@ import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
+import { onBeforeMount, ref, watch } from "vue";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();

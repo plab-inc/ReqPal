@@ -2,7 +2,7 @@
 import {useDrag, useDrop} from 'vue3-dnd'
 import {DragItem} from "@/types/dragItem.ts";
 import type {Identifier, XYCoord} from 'dnd-core'
-import {computed, ref, unref} from 'vue'
+import { ComponentInstance, computed, markRaw, onMounted, ref, unref } from "vue";
 import {toRefs} from '@vueuse/core'
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import TrueOrFalseForm from "@/components/lesson/modules/trueOrFalse/TrueOrFalseForm.vue";
@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 
 interface LessonModuleFormMap {
-  [key: string]: Component;
+  [key: string]: ComponentInstance<any>;
 }
 
 const lessonModuleFormMap: LessonModuleFormMap = {
@@ -32,7 +32,7 @@ const lessonModuleFormMap: LessonModuleFormMap = {
   'Divider': markRaw(DividerForm)
 };
 
-const getLessonModuleFormInstance = (lessonModuleFormName: string): Component => {
+const getLessonModuleFormInstance = (lessonModuleFormName: string): ComponentInstance<any> => {
   return lessonModuleFormMap[lessonModuleFormName];
 };
 

@@ -4,6 +4,7 @@ import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
+import { ref, watch } from "vue";
 
 const props = defineProps<{ componentId: string }>();
 const lessonFormStore = useLessonFormStore();

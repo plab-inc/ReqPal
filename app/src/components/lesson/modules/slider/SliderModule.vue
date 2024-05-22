@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref, watch } from "vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import {useLessonStore} from "@/stores/lesson.ts";
@@ -43,8 +43,8 @@ function init() {
     correctValue.value = (+solution.correctValue);
   }
 
-  if (!fields.options) {
-    fields.options = {
+  if (!fields.value.options) {
+    fields.value.options = {
       minValue: 0,
       maxValue: 10,
       steps: 1

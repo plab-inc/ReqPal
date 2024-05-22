@@ -7,6 +7,7 @@ import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import AlertService from "@/services/util/alert.ts";
 import Feedback from "@/components/lesson/results/Feedback.vue";
 import Score from "@/components/lesson/results/Score.vue";
+import { onBeforeMount, ref } from "vue";
 
 const lessonStore = useLessonStore();
 const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;

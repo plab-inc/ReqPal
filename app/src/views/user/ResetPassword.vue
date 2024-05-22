@@ -38,6 +38,7 @@ import {requiredEmailRule, requiredRule} from "@/utils/validationRules";
 import AlertService from "@/services/util/alert.ts";
 import {AuthenticationError} from "@/errors/custom.ts";
 import {useUtilStore} from "@/stores/util.ts";
+import { ref } from "vue";
 
 const authStore = useAuthStore();
 const utilStore = useUtilStore();

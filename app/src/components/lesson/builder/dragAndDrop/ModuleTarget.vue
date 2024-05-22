@@ -6,6 +6,7 @@ import {useTheme} from "vuetify";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {LessonBuilderDragItem} from "@/types/drag.ts";
+import { computed, unref } from "vue";
 
 const themeColors = useTheme().current.value.colors;
 const lessonFormStore = useLessonFormStore();

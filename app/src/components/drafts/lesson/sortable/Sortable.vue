@@ -5,7 +5,7 @@ import {DndProvider} from "vue3-dnd";
 import {QuestionDTO} from "@/types/lesson.ts";
 import {SortableDragItem} from "@/types/drag.ts";
 import {shuffleArray} from "@/utils/helper.ts";
-import {ref} from "vue";
+import { onBeforeMount, ref } from "vue";
 
 interface Props {
   question: QuestionDTO;

@@ -5,6 +5,7 @@ import CustomDragLayer from "@/components/drafts/lesson/dragAndDrop/CustomDragLa
 import {useContainerStore} from "@/stores/container.ts";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "vue3-dnd";
+import { computed, ref } from "vue";
 
 const boxStore = useContainerStore();
 

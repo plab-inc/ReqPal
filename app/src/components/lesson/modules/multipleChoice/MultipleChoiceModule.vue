@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
-import Hint from "@/components/lesson/builder/helper/Hint.vue"
-import Help from "@/components/lesson/builder/helper/Help.vue"
-import {useLessonStore} from "@/stores/lesson.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import Help from "@/components/lesson/builder/helper/Help.vue";
+import Hint from "@/components/lesson/builder/helper/Hint.vue";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { ref, watch } from "vue";
 
 interface Props {
   componentId: string,

@@ -4,6 +4,7 @@ import {useAuthStore} from "@/stores/auth.ts";
 import {useThemeStore} from '@/stores/theme.ts';
 import {useTheme} from "vuetify";
 import {errorHandler} from "@/errors/handler.ts";
+import { onMounted, watch } from "vue";
 
 const themeStore = useThemeStore();
 const theme = useTheme();

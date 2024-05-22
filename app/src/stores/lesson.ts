@@ -5,6 +5,7 @@ import LessonService from "@/services/database/lesson.ts";
 import {DatabaseError} from "@/errors/custom.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
+import { toRaw } from "vue";
 
 interface LessonState {
     examples: Lesson[],
