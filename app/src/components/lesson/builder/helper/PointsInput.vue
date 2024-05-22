@@ -2,6 +2,7 @@
 
 import {requiredRule, requiredPositiveNumberBelowMaximumRule, maxPointsPerQuestion} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { ref, watch } from "vue";
 
 const props = defineProps<{ componentId: string }>();
 

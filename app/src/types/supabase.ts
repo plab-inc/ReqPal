@@ -43,7 +43,7 @@ export type Database = {
           created_at: string
           description: string
           example: boolean
-          points: number
+          points: number | null
           published: boolean
           title: string
           user_id: string
@@ -53,7 +53,7 @@ export type Database = {
           created_at?: string
           description: string
           example?: boolean
-          points: number
+          points?: number | null
           published?: boolean
           title: string
           user_id: string
@@ -63,7 +63,7 @@ export type Database = {
           created_at?: string
           description?: string
           example?: boolean
-          points?: number
+          points?: number | null
           published?: boolean
           title?: string
           user_id?: string
@@ -231,6 +231,7 @@ export type Database = {
           hint: string | null
           lesson_uuid: string | null
           options: Json | null
+          points: number | null
           position: number
           question: string | null
           question_type: string
@@ -241,6 +242,7 @@ export type Database = {
           hint?: string | null
           lesson_uuid?: string | null
           options?: Json | null
+          points?: number | null
           position: number
           question?: string | null
           question_type: string
@@ -251,6 +253,7 @@ export type Database = {
           hint?: string | null
           lesson_uuid?: string | null
           options?: Json | null
+          points?: number | null
           position?: number
           question?: string | null
           question_type?: string
