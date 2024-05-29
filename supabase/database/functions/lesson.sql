@@ -7,6 +7,7 @@ $$
 DECLARE
     v_lesson_uuid uuid;
     question      jsonb;
+     total_points  int4 := 0;
 BEGIN
     INSERT INTO lessons (uuid, title, description, user_id, published)
     VALUES ((data ->> 'uuid')::uuid,
@@ -52,7 +53,13 @@ BEGIN
                     options       = EXCLUDED.options,
                     position      = EXCLUDED.position,
                     points        = EXCLUDED.points;
+
+            total_points := total_points + COALESCE(CAST(question ->> 'points' AS integer), 0);
         END LOOP;
+
+    UPDATE lessons
+    SET points = total_points
+    WHERE uuid = v_lesson_uuid;
 END;
 $$;
 
