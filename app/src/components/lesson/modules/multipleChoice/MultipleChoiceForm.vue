@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
+import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import { useLessonFormStore } from "@/stores/lessonForm.ts";
 import { requiredStringRule } from "@/utils/validationRules.ts";
@@ -69,7 +70,7 @@ function removeAnswer(index: number) {
 }
 
 watch(answers, updateStoreData, {deep: true});
-watch(fields, (newFields: any) => {
+watch(fields, (newFields) => {
   lessonFormStore.setLessonModuleData(props.componentId, 'question', newFields.question);
   lessonFormStore.setLessonModuleData(props.componentId, 'hint', newFields.hint);
 }, {deep: true});
@@ -116,9 +117,9 @@ watch(fields, (newFields: any) => {
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col>
-        <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mt-4" icon>
+        <v-btn v-if="answers.length < maxAnswers" @click="addAnswer" class="mb-4" icon>
           <v-icon>
             mdi-plus
           </v-icon>
@@ -126,7 +127,10 @@ watch(fields, (newFields: any) => {
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col class="d-flex flex-grow-1 align-end justify-end">
+      <v-col cols="2">
+        <PointsInput :component-id="props.componentId"></PointsInput>
+      </v-col>
+      <v-col cols="10" class="d-flex flex-grow-1 align-end justify-end">
         <Help dialog-type="mcExplanation"/>
         <div class="mx-1"/>
         <Delete :component-id="props.componentId"/>
@@ -137,6 +141,4 @@ watch(fields, (newFields: any) => {
 
 
 <style scoped>
-</style>import { ref, watch } from "vue";import { ref, watch } from "vue";
-import { ref, watch } from "vue";
-
+</style>

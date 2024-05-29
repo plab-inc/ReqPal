@@ -13,7 +13,6 @@ interface LessonFormState {
     uuid: string;
     lessonTitle: string;
     lessonDescription: string;
-    lessonPoints: number;
     lessonModules: LessonModuleEntry[];
     insertModuleIndex: number;
 }
@@ -24,7 +23,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
         lessonModules: [],
         lessonTitle: '',
         lessonDescription: '',
-        lessonPoints: 250,
         insertModuleIndex: 0,
     }),
     getters: {
@@ -51,9 +49,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
         getLessonModuleFormDescription: (state) => {
             return state.lessonDescription;
         },
-        getLessonModulesFormPoints: (state) => {
-            return state.lessonPoints;
-        },
         getInsertingLessonModuleIndex: (state) => {
             return state.insertModuleIndex;
         },
@@ -74,7 +69,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             const newComponent = {
                 type: componentName,
                 uuid: uuid,
-                data: {uuid: uuid, question: null, options: null, solution: null, hint: null}
+                data: {uuid: uuid, question: null, options: null, solution: null, hint: null, points: null}
             };
             if (index === -1) {
                 this.lessonModules.unshift(newComponent);
@@ -103,7 +98,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.uuid = uuidv4();
             this.lessonTitle = '';
             this.lessonDescription = '';
-            this.lessonPoints = 250;
             this.clearLessonModules();
         },
         generateLesson(): LessonForm {
@@ -111,7 +105,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
                 uuid: this.uuid,
                 title: this.lessonTitle,
                 description: this.lessonDescription,
-                points: this.lessonPoints,
                 questions: this.lessonModules.map(component => {
                     return {
                         uuid: component.uuid,
@@ -120,6 +113,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                         solution: toRaw(component.data.solution),
                         options: toRaw(component.data.options),
                         hint: toRaw(component.data.hint),
+                        points: component.data.points,
                         type: component.type
                     }
                 })
@@ -130,7 +124,6 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.uuid = lesson.uuid;
             this.lessonTitle = lesson.title;
             this.lessonDescription = lesson.description;
-            this.lessonPoints = lesson.points;
             lesson.questions.forEach((question: Question) => {
                 this.lessonModules.push({
                     type: question.type || null,
@@ -141,6 +134,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                         solution: question.solution,
                         options: question.options,
                         hint: question.hint,
+                        points: question.points,
                         position: question.position,
                     }
                 });

@@ -9,6 +9,7 @@ export type Question = {
     question: string | null;
     options: string[] | null;
     hint: string | null;
+    points?: number | null;
 
     solution?: any | null;
     position?: number | null;
@@ -30,7 +31,6 @@ export type LessonForm = {
     uuid: string;
     title: string;
     description: string;
-    points: number;
     questions: Question[];
 }
 

@@ -69,11 +69,11 @@ onBeforeMount(async () => {
                 <v-row class="mt-1" v-if="!finishedForFirstTime">
                   <v-col md="6" order="2" order-md="1" class="d-flex justify-center">
                     <Score v-if="currentLesson && newScore !== undefined" :score="newScore" :show-icon="false"
-                           :max-score="currentLesson?.points"></Score>
+                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
                   </v-col>
                   <v-col md="6" order="3" order-md="2" class="d-flex align-center justify-center">
                     <Score v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
-                           :max-score="currentLesson?.points"></Score>
+                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
                   </v-col>
                   <v-col md="6" order="1" order-md="3" class="text-h5 text-center">
                     Neue Punktzahl
@@ -86,7 +86,7 @@ onBeforeMount(async () => {
                 <v-row v-if="finishedForFirstTime">
                   <v-col class="d-flex align-center justify-center">
                     <Score v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
-                           :max-score="currentLesson?.points"></Score>
+                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
                   </v-col>
                   <v-col class="text-h5 text-center">
                     Erreichte Punkte

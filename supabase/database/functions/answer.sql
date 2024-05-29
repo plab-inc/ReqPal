@@ -11,8 +11,6 @@ DECLARE
     question_uuid       uuid;
     lesson_finished     bool             := false;
     lesson_started      bool             := false;
-    max_points          double precision := 0;
-    points_per_question double precision := 0;
     data_obj            jsonb;
     requirement_answers int4             := 0;
     temp_option         jsonb;
@@ -36,46 +34,6 @@ BEGIN
     IF NOT FOUND THEN
         lesson_started := TRUE;
     end if;
-
-    SELECT lessons.points
-    INTO max_points
-    FROM lessons
-    WHERE uuid = lesson_uuid;
-
-    FOR data_obj IN
-        SELECT *
-        FROM jsonb_array_elements(data -> 'answers')
-        LOOP
-            IF ((data_obj ->> 'type') = 'Requirement') THEN
-                temp_option := (data_obj -> 'options');
-                -- do not count requirements as answers that do not check for qualification
-                IF (temp_option ->> 'askForQualification')::boolean IS TRUE THEN
-                    requirement_answers := requirement_answers + 1;
-                    exit;
-                END IF;
-            END IF;
-        END LOOP;
-
-    FOR data_obj IN
-        SELECT *
-        FROM jsonb_array_elements(data -> 'answers')
-        LOOP
-            IF ((data_obj ->> 'type') != 'Requirement') THEN
-                total_answers := total_answers + 1;
-            end if;
-        END LOOP;
-
-    total_answers := total_answers + requirement_answers;
-
-    IF total_answers > 0 then
-        points_per_question = (max_points - (used_hints_count * 10)) / total_answers;
-    else
-        points_per_question := 0;
-    end if;
-
-    IF points_per_question < 0 THEN
-        points_per_question := 0;
-    END IF;
 
     SELECT finished
     INTO lesson_finished
@@ -101,8 +59,8 @@ BEGIN
                     (newAnswer ->> 'type') = 'Requirement' AND
                     (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
                     question_uuid := (newAnswer ->> 'uuid')::uuid;
-                    INSERT INTO user_answers (user_id, lesson_id, question_id, answer, max_points)
-                    VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option, points_per_question);
+                    INSERT INTO user_answers (user_id, lesson_id, question_id, answer)
+                    VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option);
                 END IF;
             END LOOP;
 
@@ -133,8 +91,8 @@ BEGIN
                         IF ((newAnswer ->> 'type') != 'Requirement' OR
                             (newAnswer ->> 'type') = 'Requirement' AND
                             (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
-                            INSERT INTO user_answers (user_id, lesson_id, question_id, answer, max_points)
-                            VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option, points_per_question);
+                            INSERT INTO user_answers (user_id, lesson_id, question_id, answer)
+                            VALUES (auth.uid(), lesson_uuid, question_uuid, temp_option);
                         END IF;
                     ELSE
                         temp_option := newAnswer -> 'options';
@@ -143,8 +101,7 @@ BEGIN
                             (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
                             question_uuid := (newAnswer ->> 'uuid')::uuid;
                             UPDATE user_answers
-                            SET answer     = newAnswer -> 'options',
-                                max_points = points_per_question
+                            SET answer     = newAnswer -> 'options'
                             WHERE lesson_id = lesson_uuid
                               AND user_id = auth.uid()
                               AND question_id = question_uuid;
@@ -156,7 +113,7 @@ BEGIN
 END;
 $$;
 
-create or replace function evaluate_multiple_choice(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+create or replace function evaluate_multiple_choice(question_id uuid, answer jsonb) returns jsonb
     language plpgsql
 as
 $$
@@ -164,6 +121,7 @@ DECLARE
     solution        jsonb;
     compared_result jsonb;
     user_result     jsonb;
+    maxPoints       int4;
     score           double precision := 0;
     percentage      double precision := 1.0;
     correctAnswers  double precision := 0;
@@ -173,6 +131,11 @@ BEGIN
 
     SELECT questions.solution
     INTO solution
+    FROM questions
+    WHERE questions.uuid = question_id;
+
+    SELECT questions.points
+    INTO maxPoints
     FROM questions
     WHERE questions.uuid = question_id;
 
@@ -193,15 +156,14 @@ BEGIN
 
     totalAnswers := jsonb_array_length(answer);
     percentage := correctAnswers / totalAnswers;
-    score := max_points * percentage;
+    score := maxPoints * percentage;
 
     user_result := json_build_object('score', score, 'results', compared_result);
     RETURN user_result;
-
 END
 $$;
 
-create or replace function evaluate_product_qualification(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+create or replace function evaluate_product_qualification(question_id uuid, answer jsonb) returns jsonb
     language plpgsql
 as
 $$
@@ -216,6 +178,7 @@ DECLARE
     user_result     jsonb;
     product_answers jsonb;
     p_qualification int;
+    maxPoints       int4;
     product_answer  jsonb;
     tolerance_value int;
     req_id          int;
@@ -234,6 +197,11 @@ BEGIN
 
     SELECT questions.solution
     INTO q_solution
+    FROM questions
+    WHERE questions.uuid = question_id;
+
+    SELECT questions.points
+    INTO maxPoints
     FROM questions
     WHERE questions.uuid = question_id;
 
@@ -282,7 +250,7 @@ BEGIN
 
     totalAnswers := jsonb_array_length(product_answers);
     percentage := correctAnswers / totalAnswers;
-    score := max_points * percentage;
+    score := maxPoints * percentage;
 
     user_result := json_build_object('score', score, 'results', compared_result);
 
@@ -290,7 +258,7 @@ BEGIN
 END
 $$;
 
-create or replace function evaluate_slider(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+create or replace function evaluate_slider(question_id uuid, answer jsonb) returns jsonb
     language plpgsql
 as
 $$
@@ -299,6 +267,7 @@ DECLARE
     right_answer integer;
     tolerance_value integer;
     user_input integer;
+    maxPoints       int4;
     score double precision := 0;
     is_correct bool := false;
 BEGIN
@@ -308,12 +277,17 @@ BEGIN
     FROM questions
     WHERE questions.uuid = question_id;
 
+    SELECT questions.points
+    INTO maxPoints
+    FROM questions
+    WHERE questions.uuid = question_id;
+
     user_input := answer->>'input';
     right_answer := solution->>'correctValue';
     tolerance_value := solution->>'toleranceValue';
 
     IF (user_input <= right_answer+tolerance_value) AND (user_input >= right_answer-tolerance_value) THEN
-        score := max_points;
+        score := maxPoints;
         is_correct := true;
     END IF;
 
@@ -321,7 +295,7 @@ BEGIN
 END
 $$;
 
-create or replace function evaluate_true_or_false(question_id uuid, answer jsonb, max_points double precision) returns jsonb
+create or replace function evaluate_true_or_false(question_id uuid, answer jsonb) returns jsonb
     language plpgsql
 as
 $$
@@ -329,6 +303,7 @@ DECLARE
     solution        jsonb;
     compared_result bool;
     score           double precision := 0;
+    maxPoints       int4;
 BEGIN
 
     SELECT questions.solution
@@ -336,14 +311,18 @@ BEGIN
     FROM questions
     WHERE questions.uuid = question_id;
 
+    SELECT questions.points
+    INTO maxPoints
+    FROM questions
+    WHERE questions.uuid = question_id;
+
     compared_result := (solution = answer);
 
     IF
         (compared_result) THEN
-        score := max_points;
+        score := maxPoints;
     END IF;
 
     return jsonb_build_object('isCorrect', compared_result, 'score', score);
-
 END;
 $$;

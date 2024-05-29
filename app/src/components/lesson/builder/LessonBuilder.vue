@@ -62,7 +62,7 @@ async function uploadLesson() {
   <v-container>
     <v-form @submit.prevent ref="form" v-model="formIsValid">
       <v-row no-gutters>
-        <v-col cols="10" class="pr-5">
+        <v-col>
           <v-text-field
               clearable
               :rules="[requiredStringRule, requiredUniqueLessonTitleRule]"
@@ -70,15 +70,6 @@ async function uploadLesson() {
               variant="outlined"
               v-model="lessonFormStore.lessonTitle"
           ></v-text-field>
-        </v-col>
-        <v-col cols="2">
-          <v-text-field
-              label="Punktzahl bei Abschluss"
-              variant="outlined"
-              type="number"
-              v-model="lessonFormStore.lessonPoints"
-              clearable
-          />
         </v-col>
         <v-col>
           <v-text-field

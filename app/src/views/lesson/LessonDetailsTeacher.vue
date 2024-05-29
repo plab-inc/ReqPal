@@ -107,7 +107,7 @@ async function init() {
       stats.value = await lessonStore.getLessonStatistics(currentLesson.uuid);
 
       if (stats.value) {
-        maxScore.value = currentLesson.points;
+        maxScore.value = currentLesson.points ? currentLesson.points : 0;
 
         let allPoints = 0;
 

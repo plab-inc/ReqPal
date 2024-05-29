@@ -24,7 +24,7 @@ const correctValue = ref<number>();
 
 const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
-
+const points = lessonStore.getLessonModuleFieldValues(props.componentId, 'points');
 const fields = ref<any>({
   options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options'),
 });
@@ -90,10 +90,18 @@ watch(inputValue, (newInput) => {
   <v-card variant="flat">
     <v-container>
       <v-row>
+        <v-col cols="auto">
+          <div class="text-h6 text-md-h5">Slider</div>
+        </v-col>
+        <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
+          <div class="text-h4">
+            {{ points }}
+            <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+          </div>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col cols="10">
-          <v-row>
-            <div class="text-h6 text-md-h5 mr-2">Slider</div>
-          </v-row>
           <v-row>
             <v-col>
               <div class="text-h6">{{ question }}</div>

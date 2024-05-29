@@ -73,7 +73,7 @@ class LessonServiceClass {
 
         const {data, error} = await supabase
             .from('questions')
-            .select('uuid,lesson_uuid,question,question_type,options,hint,position')
+            .select('uuid,lesson_uuid,question,question_type,options,hint,position,points')
             .eq('lesson_uuid', lessonUUID)
 
         if (error) throw error;
@@ -140,7 +140,7 @@ class LessonServiceClass {
 
         const {data, error} = await supabase
             .from('questions')
-            .select('uuid,lesson_uuid,question,question_type,options,hint,position, solution')
+            .select('uuid,lesson_uuid,question,question_type,options,hint,position,solution,points')
             .eq('lesson_uuid', lessonUUID)
 
         if (error) throw error;

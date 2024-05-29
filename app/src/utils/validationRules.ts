@@ -3,6 +3,7 @@ import {useLessonStore} from "@/stores/lesson.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {useCatalogStore} from "@/stores/catalog.ts";
 
+export const maxPointsPerQuestion = 1000;
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {
     if (typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
@@ -40,15 +41,44 @@ export const requiredBooleanRule = (value: boolean | null): boolean | string => 
 };
 
 export const requiredNumberRule = (value: null | number | string): boolean | string => {
-    if (typeof value === 'number') {
-        return !Number.isNaN(value) ? true : 'Benötigt';
-    } else if (typeof value === 'string') {
-        const numericValue = parseFloat(value);
-        return !isNaN(numericValue) ? true : 'Benötigt';
-    } else {
+    if (value === null || value === undefined || value === '') {
         return 'Benötigt';
     }
+
+    if (typeof value === 'number') {
+        return !Number.isNaN(value) ? true : 'Benötigt';
+    } else {
+        {
+            const numericValue = parseFloat(value);
+            return !isNaN(numericValue) ? true : 'Benötigt';
+        }
+    }
 };
+
+export const requiredPositiveNumberBelowMaximumRule = (value: null | number | string): boolean | string => {
+
+    if (value === null || value === undefined || value === '') {
+        return 'Zahl muss größer als 0 sein';
+    }
+
+    if (typeof value === 'number') {
+        if (!Number.isNaN(value) && value > 0) {
+            return value <= maxPointsPerQuestion ? true : `Zahl muss kleiner als ${maxPointsPerQuestion} sein`;
+        }
+        return 'Zahl muss größer als 0 sein';
+    } else {
+        {
+            const numericValue = parseFloat(value);
+            {
+                if (!isNaN(numericValue) && numericValue > 0) {
+                    return numericValue <= maxPointsPerQuestion ? true : `Zahl muss kleiner als ${maxPointsPerQuestion} sein`;
+                }
+                return 'Zahl muss größer als 0 sein';
+            }
+        }
+    }
+};
+
 
 export const matchingPasswordsRule = (value: string, password: string): boolean | string => {
     return value === password || "Die Passwörter stimmen nicht überein";

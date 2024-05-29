@@ -30,7 +30,7 @@ function init() {
       }
     }
   } else {
-    if (currentLesson) {
+    if (currentLesson && currentLesson.points) {
       if (newScore.value >= currentLesson.points) {
         feedback.value = 'Perfekte Punktzahl! Fantastische Arbeit!';
       } else if (newScore.value >= currentLesson.points / 2) {
