@@ -92,6 +92,7 @@
           />
           <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
+          <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
           <v-divider class="my-1"/>
         </div>
         <div v-if="authStore.user">
@@ -168,7 +169,6 @@ import {useAuthStore} from "@/stores/auth.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import Dialog from "@/components/util/Dialog.vue";
 import {useProfileStore} from "@/stores/profile.ts";
-import alertSfx from "@/assets/sound/alert.mp3";
 import {useLessonStore} from "@/stores/lesson.ts";
 import { onBeforeMount, ref, watch } from "vue";
 
@@ -182,8 +182,6 @@ const rail = ref(true);
 const drawer = ref(null);
 const openLessonsColor = ref<string>('error');
 const openLessonsPercentage = ref<number>(100);
-
-const audio = new Audio(alertSfx);
 
 onBeforeMount(async () => {
   if (authStore.user) {
@@ -206,14 +204,6 @@ const logout = () => {
 function routeToCatalogNotBuilder() {
   return (router.currentRoute.value.path.startsWith('/catalogs') && !router.currentRoute.value.path.startsWith('/catalogs/upload'))
 }
-
-watch(() => utilStore.alerts.length, (newLength, oldLength) => {
-  const audioContext = new (window.AudioContext)();
-  if ((newLength > oldLength) && audioContext.state !== 'suspended') {
-    audio.volume = 0.2;
-    audio.play();
-  }
-});
 
 watch(() => lessonStore.openLessons, () => {
   if(lessonStore.openLessons === 0 || lessonStore.lessons.length === 0){

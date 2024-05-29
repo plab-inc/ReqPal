@@ -125,6 +125,11 @@ const routes = [
                 }
             },
             {
+                path: "/modeler",
+                name: "BPMN Modeler",
+                component: () => import("@/views/bpmn/Modeler.vue"),
+            },
+            {
                 path: "/feedback",
                 name: "Feedback",
                 component: () => import("@/views/user/Feedback.vue"),

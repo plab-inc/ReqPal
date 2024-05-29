@@ -1,0 +1,12 @@
+{
+  "name": "ReqPal",
+  "uri": "http://lethalgoose.com/schema/bpmn/reqpal",
+  "prefix": "reqpal",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+  ],
+  "emumerations": [],
+  "associations": []
+}
