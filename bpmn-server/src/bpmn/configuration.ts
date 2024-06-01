@@ -1,4 +1,12 @@
-import { Configuration, DataStore, DefaultAppDelegate, Logger, ModelsDatastore, NoCacheManager } from "bpmn-server";
+import {
+	Configuration,
+	DataStore,
+	DefaultAppDelegate,
+	ModelsDatastoreDB,
+	NoCacheManager
+} from "bpmn-server";
+
+import { CustomLogger } from "./logger";
 
 const dotenv = require('dotenv');
 const res = dotenv.config();
@@ -18,13 +26,12 @@ var configuration = new Configuration(
 			}
 		},
 		apiKey: process.env.API_KEY,
-		/* Define Server Services */
+
 		logger: function (server) {
-			new Logger(server);
+			new CustomLogger()
 		},
 		definitions: function (server) {
-			//TODO Move to a DB too maybe
-			return new ModelsDatastore(server);
+			return new ModelsDatastoreDB(server);
 		},
 		appDelegate: function (server) {
 			return new DefaultAppDelegate(server)
