@@ -40,7 +40,11 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import '@bpmn-io/properties-panel/assets/properties-panel.css';
-
+import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule } from 'bpmn-js-properties-panel';
+import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda.json'
+import CustomProperties from './properties/CustomProperties.js';
+import UserTaskLesson from './properties/descriptors/UserTaskLesson.json'
+import CustomElements from '@/components/bpmn/modeler/customElements.ts';
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import CustomElements from './custom/customElements.ts';
 import descriptor from './provider/descriptor.json';
@@ -57,10 +61,16 @@ onMounted(() => {
       parent: propertiesPanel.value
     },
     additionalModules: [
-      CustomElements,
       BpmnPropertiesPanelModule,
-      BpmnPropertiesProviderModule
+      BpmnPropertiesProviderModule,
+      CamundaPlatformPropertiesProviderModule,
+      CustomProperties,
+      CustomElements,
     ],
+    moddleExtensions: {
+      camunda: CamundaBpmnModdle,
+      lesson: UserTaskLesson
+    },
     keyboard: {
       bindTo: window
     }

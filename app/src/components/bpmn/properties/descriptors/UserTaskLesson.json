@@ -1,0 +1,24 @@
+{
+  "name": "UserTaskLesson",
+  "prefix": "reqPal",
+  "uri": "http://foo",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "UserTask",
+      "extends": [
+        "bpmn:UserTask"
+      ],
+      "properties": [
+        {
+          "name": "lesson",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}
