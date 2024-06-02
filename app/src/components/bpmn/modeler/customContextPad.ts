@@ -6,7 +6,6 @@ import ElementFactory from "bpmn-js/lib/features/modeling/ElementFactory";
 import { Translate } from "bpmn-js/lib/features/palette/PaletteProvider";
 import { ContextPadConfig } from "bpmn-js/lib/features/context-pad/ContextPadProvider";
 import { Injector } from "diagram-js/lib/features/hand-tool/HandTool";
-import { Moddle } from "bpmn-js/lib/model/Types";
 import BpmnFactory from "bpmn-js/lib/features/modeling/BpmnFactory";
 
 class CustomContextPad implements ContextPadProvider {

@@ -33,21 +33,22 @@
 </template>
 
 <script setup>
-import BpmnModeler from 'bpmn-js/lib/Modeler';
-import 'bpmn-js/dist/assets/bpmn-js.css';
-import 'bpmn-js/dist/assets/diagram-js.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-import '@bpmn-io/properties-panel/assets/properties-panel.css';
-import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule } from 'bpmn-js-properties-panel';
-import CamundaBpmnModdle from 'camunda-bpmn-moddle/resources/camunda.json'
-import CustomProperties from './properties/CustomProperties.js';
-import UserTaskLesson from './properties/descriptors/UserTaskLesson.json'
-import CustomElements from '@/components/bpmn/modeler/customElements.ts';
+import BpmnModeler from "bpmn-js/lib/Modeler";
+import "bpmn-js/dist/assets/bpmn-js.css";
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+import "@bpmn-io/properties-panel/assets/properties-panel.css";
+import {
+  BpmnPropertiesPanelModule,
+  BpmnPropertiesProviderModule,
+  CamundaPlatformPropertiesProviderModule
+} from "bpmn-js-properties-panel";
+import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
+import CustomProperties from "./properties/CustomProperties.js";
+import UserTaskLesson from "./properties/descriptors/UserTaskLesson.json";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import CustomElements from './custom/customElements.ts';
-import descriptor from './provider/descriptor.json';
+import CustomElements from "./custom/customElements.ts";
 
 const bpmnContainer = ref(null);
 const bpmnModeler = ref(null);

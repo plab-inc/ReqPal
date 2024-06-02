@@ -2,7 +2,6 @@ import {
   Group,
   isSelectEntryEdited,
   isTextAreaEntryEdited,
-  isTextFieldEntryEdited,
   SelectEntry,
   TextAreaEntry
 } from "@bpmn-io/properties-panel";
