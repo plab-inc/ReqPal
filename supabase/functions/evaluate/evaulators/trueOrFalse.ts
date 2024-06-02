@@ -1,5 +1,3 @@
-import { supabaseClient } from '../util/supabaseClient.ts';
-
 interface CommonResult {
   score: number;
   isCorrect: boolean;
