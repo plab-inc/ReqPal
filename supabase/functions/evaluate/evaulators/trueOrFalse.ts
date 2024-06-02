@@ -5,8 +5,8 @@ interface CommonResult {
   isCorrect: boolean;
 }
 
-export const evaluateTrueOrFalse = async (questionId: number, answer: string): Promise<CommonResult> => {
-  const { data, error } = await supabaseClient
+export const evaluateTrueOrFalse = async (questionId: number, answer: string, supabase: any): Promise<CommonResult> => {
+  const { data, error } = await supabase
     .from('questions')
     .select('*')
     .eq("uuid", questionId);

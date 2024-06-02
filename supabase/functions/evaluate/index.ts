@@ -192,6 +192,8 @@ const evaluationRouter = {
 }
 
 serve(async (req) => {
+
+
     const url = new URL(req.url);
     const path = url.pathname.toLowerCase();
 
@@ -219,7 +221,7 @@ serve(async (req) => {
         const request: RequestBody = await req.json();
 
         if (evaluationRouter[path]) {
-            const result = await evaluationRouter[path](request.questionId, request.answer);
+            const result = await evaluationRouter[path](request.questionId, request.answer, supabaseClient);
 
             return new Response(JSON.stringify({request, result}), {
                 headers: {...corsHeaders, 'Content-Type': 'application/json'},
