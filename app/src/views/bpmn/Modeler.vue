@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import BPMNModeler from '@/components/bpmn/Modeler.vue'
+import BPMNModeler from '@/components/scenario/Modeler.vue'
 </script>

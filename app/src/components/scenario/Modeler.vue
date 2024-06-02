@@ -45,10 +45,10 @@ import {
   CamundaPlatformPropertiesProviderModule
 } from "bpmn-js-properties-panel";
 import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
-import CustomProperties from "./properties/CustomProperties.js";
-import UserTaskLesson from "./properties/descriptors/UserTaskLesson.json";
+import CustomProperties from "@/bpmn/properties/CustomProperties.js";
+import UserTaskLesson from "@/bpmn/properties/descriptors/UserTaskLesson.json";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import CustomElements from "./custom/customElements.ts";
+import CustomElements from "@/bpmn/modeler/customElements.ts";
 
 const bpmnContainer = ref(null);
 const bpmnModeler = ref(null);
