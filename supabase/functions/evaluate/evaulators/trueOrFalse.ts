@@ -1,4 +1,4 @@
-import { supabaseClient } from '../util/supabaseClient';
+import { supabaseClient } from '../util/supabaseClient.ts';
 
 interface CommonResult {
   score: number;
