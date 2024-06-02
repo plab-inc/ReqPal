@@ -11,7 +11,7 @@ interface QualificationResult {
   results: {id: number, isCorrect: boolean}[]
 }
 
-export const evaluateQualification = async (questionId: number, answer: QualificationAnswer, supabase: any): Promise<QualificationResult> => {
+export const evaluateQualification = async (questionId: string, answer: QualificationAnswer, supabase: any): Promise<QualificationResult> => {
 
   if(!answer.askForQualification) {
     throw new Error("Error: Answer does not ask for a qualification check.")
