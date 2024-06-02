@@ -15,6 +15,7 @@ class CustomContextPad implements ContextPadProvider {
   private bpmnFactory: BpmnFactory;
   private readonly translate: Translate;
   private readonly autoPlace: any;
+  static $inject: string[];
 
   constructor(config: ContextPadConfig, contextPad: ContextPad, create: Create, bpmnFactory: BpmnFactory, elementFactory: ElementFactory, translate: Translate, injector: Injector) {
     this.create = create;
@@ -94,5 +95,7 @@ class CustomContextPad implements ContextPadProvider {
     });
   }
 }
+
+CustomContextPad.$inject = ['config','contextPad', 'create', 'bpmnFactory', 'elementFactory', 'translate', 'injector'];
 
 export default CustomContextPad;

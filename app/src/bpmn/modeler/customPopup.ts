@@ -3,6 +3,7 @@ import PopupMenuProvider, { PopupMenuEntries, PopupMenuEntriesProvider, } from "
 import PopupMenu, { PopupMenuTarget } from "diagram-js/lib/features/popup-menu/PopupMenu";
 
 class CustomPopupMenu implements PopupMenuProvider {
+  static $inject: string[];
 
   constructor(popupMenu: PopupMenu) {
     popupMenu.registerProvider('bpmn-replace',this);
@@ -24,5 +25,7 @@ class CustomPopupMenu implements PopupMenuProvider {
   }
 
 }
+
+CustomPopupMenu.$inject = ['popupMenu'];
 
 export default CustomPopupMenu;

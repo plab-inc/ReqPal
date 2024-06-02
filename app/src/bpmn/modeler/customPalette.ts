@@ -4,16 +4,16 @@ import Create from "diagram-js/lib/features/create/Create";
 import BpmnFactory from "bpmn-js/lib/features/modeling/BpmnFactory";
 import ElementFactory from "bpmn-js/lib/features/modeling/ElementFactory";
 import { Translate } from "bpmn-js/lib/features/palette/PaletteProvider";
-import Connect from "diagram-js/lib/features/connect/Connect";
 
 class CustomPalette implements PaletteProvider {
 
   private create: Create;
   private bpmnFactory: BpmnFactory;
   private elementFactory: ElementFactory;
-  private translate: Translate;
+  private readonly translate: Translate;
+  static $inject: string[];
 
-  constructor(palette: Palette, create: Create, connect: Connect, bpmnFactory: BpmnFactory, elementFactory: ElementFactory, translate: Translate) {
+  constructor(palette: Palette, create: Create, bpmnFactory: BpmnFactory, elementFactory: ElementFactory, translate: Translate) {
     this.bpmnFactory = bpmnFactory;
     this.create = create;
     this.elementFactory = elementFactory;
@@ -74,5 +74,7 @@ class CustomPalette implements PaletteProvider {
     };
   }
 }
+
+CustomPalette.$inject = ['palette','create', 'bpmnFactory', 'elementFactory', 'translate'];
 
 export default CustomPalette;
