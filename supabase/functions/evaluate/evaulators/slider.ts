@@ -10,7 +10,7 @@ interface SliderAnswer {
   minValue: number
 }
 
-const evaluateSlider = async (questionId: number, answer: SliderAnswer, supabase: any) => {
+export const evaluateSlider = async (questionId: number, answer: SliderAnswer, supabase: any) => {
 
   const {data, error} = await supabase
     .from('questions')

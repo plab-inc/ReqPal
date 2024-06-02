@@ -3,7 +3,7 @@ interface CommonResult {
   isCorrect: boolean;
 }
 
-const evaluateTrueOrFalse = async (questionId: number, answer: string, supabase: any): Promise<CommonResult> => {
+export const evaluateTrueOrFalse = async (questionId: number, answer: string, supabase: any): Promise<CommonResult> => {
   const { data, error } = await supabase
     .from('questions')
     .select('*')

@@ -14,7 +14,7 @@ interface SingleMultipleChoiceResult {
   isCorrect: boolean;
 }
 
-const evaluateMultipleChoice = async (questionId: number, answers: MultipleChoiceAnswer[], supabase: any): Promise<MultipleChoiceResult | SingleMultipleChoiceResult> => {
+export const evaluateMultipleChoice = async (questionId: number, answers: MultipleChoiceAnswer[], supabase: any): Promise<MultipleChoiceResult | SingleMultipleChoiceResult> => {
 
   const {data, error} = await supabase
     .from('questions')
