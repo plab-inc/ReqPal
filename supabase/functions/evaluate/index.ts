@@ -1,35 +1,11 @@
 import {serve} from "https://deno.land/std@0.168.0/http/server.ts";
 import {createClient} from 'npm:@supabase/supabase-js@2.43.3'
+import { evaluateTrueOrFalse } from './evaulators/trueOrFalse.ts';
 
 //Author: Laura
 interface CommonResult {
     score: number;
     isCorrect: boolean;
-}
-
-const evaluateTrueOrFalse = async (supabase: any, questionId: number, answer: string) => {
-
-    const {data, error} = await supabase
-        .from('questions')
-        .select('*')
-        .eq("uuid", questionId)
-
-    if (error) throw error;
-
-    if (data.length > 0) {
-        const question = data[0];
-
-        let result: CommonResult = {isCorrect: false, score: 0}
-
-        if (question.solution === answer) {
-            result.isCorrect = true;
-            result.score = question.points;
-        }
-
-        return result;
-    } else {
-        throw new Error('Question not found');
-    }
 }
 
 interface MultipleChoiceAnswer {
@@ -243,7 +219,7 @@ serve(async (req) => {
         const request: RequestBody = await req.json();
 
         if (evaluationRouter[path]) {
-            const result = await evaluationRouter[path](supabaseClient, request.questionId, request.answer);
+            const result = await evaluationRouter[path](request.questionId, request.answer);
 
             return new Response(JSON.stringify({request, result}), {
                 headers: {...corsHeaders, 'Content-Type': 'application/json'},
