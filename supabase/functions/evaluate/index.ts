@@ -5,7 +5,7 @@ import {
     evaluateQualification,
     evaluateSlider,
     evaluateTrueOrFalse
-} from "./evaulators/index.ts";
+} from "./evaluators/index.ts";
 
 interface RequestBody {
     questionId: number;
