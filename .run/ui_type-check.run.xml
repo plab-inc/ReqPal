@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ui:type-check" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/app/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="type-check" />
+    </scripts>
+    <node-interpreter value="$USER_HOME$/.nvm/versions/node/v20.13.1/bin/node" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>
