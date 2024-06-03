@@ -31,6 +31,11 @@ async function submit() {
 
     if (lessonJson) {
       try {
+        /* Uncomment to use edge function instead of database function
+      const {data: data, error: error} = await supabase.functions.invoke('evaluate/lesson', {
+        body: lessonJson
+      });
+      */
         await lessonStore.submitUserAnswers(lessonJson);
         await router.push({name: 'LessonResults', params: {lessonUUID: currentLesson.uuid}});
       } catch (error: any) {

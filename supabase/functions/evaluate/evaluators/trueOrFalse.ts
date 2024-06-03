@@ -9,8 +9,6 @@ export const evaluateTrueOrFalse = async (questionId: string, answer: string, su
     .select('*')
     .eq("uuid", questionId);
 
-  console.log("evaluating true or false");
-
   if (error) throw error;
 
   if (data.length > 0) {

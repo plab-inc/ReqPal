@@ -4,13 +4,10 @@ import {
     evaluateMultipleChoice,
     evaluateQualification,
     evaluateSlider,
-    evaluateTrueOrFalse
+    evaluateTrueOrFalse,
+    evaluateLesson
 } from "./evaluators/index.ts";
 
-interface RequestBody {
-    questionId: number;
-    answer: string;
-}
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -21,7 +18,28 @@ const evaluationRouter = {
     "/evaluate/trueorfalse": evaluateTrueOrFalse,
     "/evaluate/multiplechoice": evaluateMultipleChoice,
     "/evaluate/slider": evaluateSlider,
-    "/evaluate/qualification": evaluateQualification
+    "/evaluate/qualification": evaluateQualification,
+    "/evaluate/lesson": evaluateLesson
+}
+
+interface RequestBodyQuestion {
+    questionId: number;
+    answer: string;
+}
+interface LessonAnswer {
+    uuid: string,
+    question: string,
+    options: string,
+    type: string
+}
+interface RequestBodyLesson {
+    uuid: string,
+    answers: LessonAnswer[],
+    used_hints: number
+}
+
+function isRequestBodyQuestion(request: any): request is RequestBodyQuestion {
+    return (request as RequestBodyQuestion).questionId !== undefined && (request as RequestBodyQuestion).answer !== undefined;
 }
 
 serve(async (req) => {
@@ -38,23 +56,38 @@ serve(async (req) => {
             Deno.env.get('SUPABASE_ANON_KEY') ?? '',
             {
                 global: {
-                    headers: { Authorization: req.headers.get('Authorization')! },
+                    headers: {Authorization: req.headers.get('Authorization')!},
                 },
             }
         )
 
-        const request: RequestBody = await req.json();
+        const request: RequestBodyQuestion | RequestBodyLesson = await req.json();
 
-        if (evaluationRouter[path]) {
-            const result = await evaluationRouter[path](request.questionId, request.answer, supabaseClient);
+        if (isRequestBodyQuestion(request)) {
+            //evaluate single answer for question type
+            if (evaluationRouter[path]) {
+                const result = await evaluationRouter[path](request.questionId, request.answer, supabaseClient);
 
+                return new Response(JSON.stringify({request, result}), {
+                    headers: {...corsHeaders, 'Content-Type': 'application/json'},
+                    status: 200,
+                });
+            } else {
+                throw new Error('Path not found: Path has to include the question type that shall be evaluated.');
+            }
+        } else {
+            //evaluate whole lesson and persist data
+            const authHeader = req.headers.get('Authorization')!
+            const token = authHeader.replace('Bearer ', '')
+            const { data } = await supabaseClient.auth.getUser(token)
+
+            const result = await evaluateLesson(request.answers, request.uuid, data.user.id, supabaseClient);
             return new Response(JSON.stringify({request, result}), {
                 headers: {...corsHeaders, 'Content-Type': 'application/json'},
                 status: 200,
             });
-        } else {
-            throw new Error('Path not found: Path has to include the question type that shall be evaluated.');
         }
+
     } catch (error) {
         return new Response(JSON.stringify({error: error.message}), {
             headers: {...corsHeaders, 'Content-Type': 'application/json'},
