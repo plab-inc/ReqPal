@@ -1,14 +1,14 @@
 interface QualificationAnswer {
-  products: { id: number, input: number }[]
-  catalogId: number,
-  productIds: number[],
-  requirementId: number,
+  products: { id: string, input: number }[]
+  catalogId: string,
+  productIds: string[],
+  requirementId: string,
   askForQualification: boolean
 }
 
 interface QualificationResult {
   score: number,
-  results: {id: number, isCorrect: boolean}[]
+  results: {id: string, isCorrect: boolean}[]
 }
 
 export const evaluateQualification = async (questionId: string, answer: QualificationAnswer, supabase: any): Promise<QualificationResult> => {

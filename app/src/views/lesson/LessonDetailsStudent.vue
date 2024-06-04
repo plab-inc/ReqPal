@@ -6,6 +6,7 @@ import router from "@/router";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import {LessonDTO} from "@/types/lesson.ts";
 import { ref } from "vue";
+import {supabase} from "@/plugins/supabase.ts";
 
 const lessonStore = useLessonStore();
 const sortedQuestions = lessonStore.getSortedCurrentQuestions;
@@ -31,12 +32,10 @@ async function submit() {
 
     if (lessonJson) {
       try {
-        /* Uncomment to use edge function instead of database function
-      const {data: data, error: error} = await supabase.functions.invoke('evaluate/lesson', {
-        body: lessonJson
-      });
-      */
-        await lessonStore.submitUserAnswers(lessonJson);
+       const {data: data, error: error} = await supabase.functions.invoke('evaluate/lesson', {
+         body: lessonJson
+       });
+
         await router.push({name: 'LessonResults', params: {lessonUUID: currentLesson.uuid}});
       } catch (error: any) {
         AlertService.addErrorAlert("Fehler beim Abschicken der Daten: " + error.message);
