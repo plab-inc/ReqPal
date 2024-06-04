@@ -11,32 +11,24 @@ export type Database = {
     Tables: {
       catalogs: {
         Row: {
-          catalog_id: number
+          catalog_id: string
           catalog_name: string
           example: boolean
           user_id: string
         }
         Insert: {
-          catalog_id?: number
+          catalog_id?: string
           catalog_name: string
           example?: boolean
           user_id: string
         }
         Update: {
-          catalog_id?: number
+          catalog_id?: string
           catalog_name?: string
           example?: boolean
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "catalogs_owner_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       lessons: {
         Row: {
@@ -99,19 +91,19 @@ export type Database = {
       }
       product_catalogs: {
         Row: {
-          catalog_id: number
-          id: number
-          product_id: number
+          catalog_id: string | null
+          id: string
+          product_id: string | null
         }
         Insert: {
-          catalog_id: number
-          id?: number
-          product_id: number
+          catalog_id?: string | null
+          id?: string
+          product_id?: string | null
         }
         Update: {
-          catalog_id?: number
-          id?: number
-          product_id?: number
+          catalog_id?: string | null
+          id?: string
+          product_id?: string | null
         }
         Relationships: [
           {
@@ -133,35 +125,35 @@ export type Database = {
       product_requirements: {
         Row: {
           comment: string | null
-          product_id: number
-          product_requirement_id: number
+          product_id: string
+          product_requirement_id: string
           qualification: string | null
-          requirement_id: number
+          requirement_id: string
         }
         Insert: {
           comment?: string | null
-          product_id: number
-          product_requirement_id?: number
+          product_id: string
+          product_requirement_id?: string
           qualification?: string | null
-          requirement_id: number
+          requirement_id: string
         }
         Update: {
           comment?: string | null
-          product_id?: number
-          product_requirement_id?: number
+          product_id?: string
+          product_requirement_id?: string
           qualification?: string | null
-          requirement_id?: number
+          requirement_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "productrequirements_product_id_fkey"
+            foreignKeyName: "product_requirements_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["product_id"]
           },
           {
-            foreignKeyName: "productrequirements_requirement_id_fkey"
+            foreignKeyName: "product_requirements_requirement_id_fkey"
             columns: ["requirement_id"]
             isOneToOne: false
             referencedRelation: "requirements"
@@ -171,17 +163,17 @@ export type Database = {
       }
       products: {
         Row: {
-          product_id: number
+          product_id: string
           product_name: string
           product_url: string
         }
         Insert: {
-          product_id?: number
+          product_id?: string
           product_name: string
           product_url: string
         }
         Update: {
-          product_id?: number
+          product_id?: string
           product_name?: string
           product_url?: string
         }
@@ -272,24 +264,24 @@ export type Database = {
       }
       requirements: {
         Row: {
-          catalog_id: number
+          catalog_id: string
           description: string | null
           reqid: string | null
-          requirement_id: number
+          requirement_id: string
           title: string | null
         }
         Insert: {
-          catalog_id: number
+          catalog_id: string
           description?: string | null
           reqid?: string | null
-          requirement_id?: number
+          requirement_id?: string
           title?: string | null
         }
         Update: {
-          catalog_id?: number
+          catalog_id?: string
           description?: string | null
           reqid?: string | null
-          requirement_id?: number
+          requirement_id?: string
           title?: string | null
         }
         Relationships: [
@@ -619,7 +611,6 @@ export type Database = {
         Args: {
           question_id: string
           answer: Json
-          max_points: number
         }
         Returns: Json
       }
@@ -627,7 +618,6 @@ export type Database = {
         Args: {
           question_id: string
           answer: Json
-          max_points: number
         }
         Returns: Json
       }
@@ -635,7 +625,6 @@ export type Database = {
         Args: {
           question_id: string
           answer: Json
-          max_points: number
         }
         Returns: Json
       }
@@ -643,7 +632,6 @@ export type Database = {
         Args: {
           question_id: string
           answer: Json
-          max_points: number
         }
         Returns: Json
       }
