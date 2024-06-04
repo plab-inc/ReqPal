@@ -204,6 +204,7 @@ class CatalogServiceClass {
             .from('catalogs')
             .select('catalog_name', {count: 'exact', head: true})
             .eq('catalog_name', catalogName)
+            .eq('example', false)
 
         if (error) throw error;
 
