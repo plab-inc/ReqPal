@@ -22,7 +22,7 @@ class CatalogServiceClass {
         checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this)
     }
 
-    private async fetchRequirementsByCatalogId(catalogId: number): Promise<RequirementDTO[] | undefined> {
+    private async fetchRequirementsByCatalogId(catalogId: string): Promise<RequirementDTO[] | undefined> {
         const {data, error} = await supabase
             .from('catalogs')
             .select('requirements(requirement_id, catalog_id, reqid, title, description)')
@@ -40,7 +40,7 @@ class CatalogServiceClass {
         }));
     }
 
-    private async fetchCatalogById(catalogId: number): Promise<CatalogDTO | undefined> {
+    private async fetchCatalogById(catalogId: string): Promise<CatalogDTO | undefined> {
         const {data, error} = await supabase
             .from('catalogs')
             .select('*')
@@ -54,7 +54,7 @@ class CatalogServiceClass {
         }
     }
 
-    private async fetchProductsByCatalogId(catalogId: number): Promise<ProductDTO[] | undefined> {
+    private async fetchProductsByCatalogId(catalogId: string): Promise<ProductDTO[] | undefined> {
         const {data, error} = await supabase
             .from('product_catalogs')
             .select('products(product_id, product_name, product_url)')
@@ -68,7 +68,7 @@ class CatalogServiceClass {
         }, []) || undefined;
     }
 
-    private async fetchProductDetailsByRequirement(requirementId: number): Promise<ProductRequirementDTO[] | undefined> {
+    private async fetchProductDetailsByRequirement(requirementId: string): Promise<ProductRequirementDTO[] | undefined> {
         const {data, error} = await supabase
             .from('product_requirements')
             .select('product_requirement_id, qualification, comment, requirement_id, product_id')
@@ -81,7 +81,7 @@ class CatalogServiceClass {
         }
     }
 
-    private async fetchProductDetailsByRequirementWithQualificationByProductId(requirementId: number, productId: number): Promise<ProductRequirementDTO | undefined> {
+    private async fetchProductDetailsByRequirementWithQualificationByProductId(requirementId: string, productId: string): Promise<ProductRequirementDTO | undefined> {
         const {data, error} = await supabase
             .from('product_requirements')
             .select('product_requirement_id, comment, requirement_id, product_id, qualification')
@@ -96,7 +96,7 @@ class CatalogServiceClass {
         }
     }
 
-    private async fetchProductDetailsByRequirementWithoutQualificationByProductId(requirementId: number, productId: number): Promise<ProductRequirementDTO | undefined> {
+    private async fetchProductDetailsByRequirementWithoutQualificationByProductId(requirementId: string, productId: string): Promise<ProductRequirementDTO | undefined> {
         const {data, error} = await supabase
             .from('product_requirements')
             .select('product_requirement_id, comment, requirement_id, product_id')
@@ -111,7 +111,7 @@ class CatalogServiceClass {
         }
     }
 
-    private async fetchProductById(productId: number): Promise<ProductDTO | undefined> {
+    private async fetchProductById(productId: string): Promise<ProductDTO | undefined> {
         const {data, error} = await supabase
             .from('products')
             .select('*')
@@ -171,7 +171,7 @@ class CatalogServiceClass {
         }
     }
 
-    async deleteCatalog(catalogId: number): Promise<CatalogDTO[]> {
+    async deleteCatalog(catalogId: string): Promise<CatalogDTO[]> {
         const {data, error} = await supabase
             .from('catalogs')
             .delete()

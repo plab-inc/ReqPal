@@ -95,11 +95,11 @@ const examples = catalogStore.getExampleCatalogs;
 
 const MAX_CATALOGS = 5;
 
-async function openCatalogDetails(catalogId: number) {
+async function openCatalogDetails(catalogId: string) {
   await router.push({name: "CatalogDetails", params: {catalogId: catalogId}});
 }
 
-function openDeleteDialog(catalogId: number) {
+function openDeleteDialog(catalogId: string) {
   alertService.openDialog(
       "Katalog löschen",
       "Möchtest du den Katalog wirklich löschen? Das löschen ist unwiederruflich und weitet sich auf alle Lektionen aus, die diesen Katalog nutzen.",
@@ -109,7 +109,7 @@ function openDeleteDialog(catalogId: number) {
   )
 }
 
-function deleteCatalog(catalogId: number): void {
+function deleteCatalog(catalogId: string): void {
   catalogStore.deleteCatalog(catalogId)
       .then(() => {
         alertService.addSuccessAlert("Katalog gelöscht")

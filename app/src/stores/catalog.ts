@@ -48,7 +48,7 @@ export const useCatalogStore = defineStore('catalog', {
                 this.examples = exampleCatalogData;
             }
         },
-        async deleteCatalog(catalogId: number) {
+        async deleteCatalog(catalogId: string) {
             await catalogService.push.deleteCatalog(catalogId).then(
                 (data: CatalogDTO[]) => {
                     if (data.length > 0) {
@@ -60,7 +60,7 @@ export const useCatalogStore = defineStore('catalog', {
             );
         },
 
-        async getCatalogWithProductsById(catalogId: number) {
+        async getCatalogWithProductsById(catalogId: string) {
 
             const catalogData: CatalogDTO | undefined = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
             const productData: ProductDTO[] | undefined = await catalogService.pull.fetchProductsByCatalogId(catalogId);
@@ -126,19 +126,19 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async fetchProductDetailsByRequirementWithQualification(requiremendId: number) {
+        async fetchProductDetailsByRequirementWithQualification(requiremendId: string) {
             return await catalogService.pull.fetchProductDetailsByRequirement(requiremendId);
         },
 
-        async fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId: number, productId: number) {
+        async fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId: string, productId: string) {
             return await catalogService.pull.fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId, productId);
         },
 
-        async fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId: number, productId: number) {
+        async fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId: string, productId: string) {
             return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId, productId);
         },
 
-        async fetchProductById(productId: number) {
+        async fetchProductById(productId: string) {
             return await catalogService.pull.fetchProductById(productId);
         },
 

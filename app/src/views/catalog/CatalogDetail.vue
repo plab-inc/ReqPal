@@ -40,9 +40,8 @@ async function getProductDetails() {
 onBeforeMount(async () => {
   const route = useRoute();
   const catalogId = route.params.catalogId as string;
-  catalogIdAsNumber = parseInt(catalogId, 10);
 
-  await catalogStore.getCatalogWithProductsById(catalogIdAsNumber);
+  await catalogStore.getCatalogWithProductsById(catalogId);
   setUpCatalog();
 })
 

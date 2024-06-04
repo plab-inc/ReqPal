@@ -6,13 +6,13 @@ export type ProductDetail = {
 }
 
 export type Product = {
-    product_id?: number;
+    product_id?: string;
     product_name: string;
     product_url: string;
 }
 
 export type Requirement = {
-    requirement_id: number;
+    requirement_id: string;
     reqId: string | null;
     title: string | null;
     description: string | null;
@@ -22,7 +22,7 @@ export type Requirement = {
 }
 
 export type Catalog = {
-    catalog_id?: number;
+    catalog_id?: string;
     catalog_name: string;
     products: Product[];
     requirements: Requirement[];
