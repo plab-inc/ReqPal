@@ -140,15 +140,15 @@ function deleteCatalog(catalogId: string): void {
 }
 
 async function downloadCatalog(catalogId: string): Promise<void> {
-    const csvData = await CatalogService.pull.downloadCatalog(catalogId)
+    const { catalog_name, csv } = await CatalogService.pull.downloadCatalog(catalogId);
 
-    const blob = new Blob([csvData], { type: 'text/csv' });
+    const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = `catalog.csv`;
+    a.download = `${catalog_name}.csv`;
 
     document.body.appendChild(a);
     a.click();
