@@ -32,31 +32,7 @@ serve(async (req) => {
       });
     }
 
-    const { data, error } = await supabase
-      .from('catalogs')
-      .select(`
-        catalog_name,
-        product_catalogs(
-          products(
-            product_name,
-            product_url
-          )
-        ),
-        requirements(
-          reqid, 
-          title, 
-          description,
-          productDetails:product_requirements (
-            product:products (
-              product_name
-            ),
-            qualification,
-            comment
-          )
-        )
-      `)
-      .eq('catalog_id', catalog_id)
-      .single();
+    const { data, error } = await fetchCatalogData(supabase, catalog_id);
 
     if (error) {
       throw error;
@@ -70,8 +46,13 @@ serve(async (req) => {
     }
 
     const csv = convertToCSV(data);
-    return new Response(csv, {
-      headers: { ...corsHeaders, 'Content-Type': 'text/csv' },
+    const responseData = {
+      catalog_name: data.catalog_name,
+      csv: csv
+    };
+
+    return new Response(JSON.stringify(responseData), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
     });
 
@@ -82,6 +63,36 @@ serve(async (req) => {
     });
   }
 });
+
+async function fetchCatalogData(supabase, catalog_id) {
+  const { data, error } = await supabase
+    .from('catalogs')
+    .select(`
+      catalog_name,
+      product_catalogs(
+        products(
+          product_name,
+          product_url
+        )
+      ),
+      requirements(
+        reqid, 
+        title, 
+        description,
+        productDetails:product_requirements (
+          product:products (
+            product_name
+          ),
+          qualification,
+          comment
+        )
+      )
+    `)
+    .eq('catalog_id', catalog_id)
+    .single();
+
+  return { data, error };
+}
 
 function convertToCSV(data) {
   let csv = [];
