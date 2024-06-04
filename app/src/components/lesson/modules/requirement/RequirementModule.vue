@@ -21,7 +21,7 @@ interface Props {
 }
 
 interface ProductOptions {
-  id: number,
+  id: string,
   name: string,
   link: string,
   solution?: string | undefined,
@@ -135,7 +135,7 @@ watch(products.value, (newProducts) => {
     askForQualification: any,
     productIds: any,
     products: {
-      id: number,
+      id: string,
       input: number
     }[]
   } = {
