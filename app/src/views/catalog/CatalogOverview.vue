@@ -28,6 +28,21 @@
                 mdi-newspaper-variant
               </v-icon>
             </template>
+            <template v-slot:append>
+              <v-btn-group
+                variant="outlined"
+                elevation="24"
+                divided
+                density="default"
+              >
+                <v-btn
+                  @click.stop="downloadCatalog(catalog.catalog_id)"
+                  color="success"
+                >
+                  Herunterladen
+                </v-btn>
+              </v-btn-group>
+            </template>
           </v-list-item>
         </v-list>
         <v-divider></v-divider>
@@ -57,6 +72,12 @@
                   divided
                   density="default"
               >
+                <v-btn
+                  @click.stop="downloadCatalog(catalog.catalog_id)"
+                  color="success"
+                >
+                  Herunterladen
+                </v-btn>
                 <v-btn
                     @click.stop="openDeleteDialog(catalog.catalog_id)"
                     color="error"
@@ -88,6 +109,8 @@
 import {useCatalogStore} from "@/stores/catalog.ts";
 import router from "@/router";
 import alertService from "@/services/util/alert.ts";
+import CatalogService from "@/services/database/catalog.ts";
+
 
 const catalogStore = useCatalogStore();
 const catalogs = catalogStore.getCustomCatalogs;
@@ -114,6 +137,25 @@ function deleteCatalog(catalogId: string): void {
       .then(() => {
         alertService.addSuccessAlert("Katalog gelöscht")
       })
+}
+
+async function downloadCatalog(catalogId: string): Promise<void> {
+    const csvData = await CatalogService.pull.downloadCatalog(catalogId)
+
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `catalog.csv`;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
 }
 
 </script>

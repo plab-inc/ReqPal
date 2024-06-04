@@ -19,7 +19,9 @@ class CatalogServiceClass {
         fetchProductById: this.fetchProductById.bind(this),
         fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
         fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this),
-        checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this)
+        checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this),
+        downloadCatalog: this.downloadCatalog.bind(this),
+
     }
 
     private async fetchRequirementsByCatalogId(catalogId: string): Promise<RequirementDTO[] | undefined> {
@@ -135,6 +137,20 @@ class CatalogServiceClass {
             })
 
         if (uploadError) throw uploadError;
+
+    }
+
+    private async downloadCatalog(catalogId: string): Promise<any> {
+
+        const {data: data, error: error} = await supabase.functions.invoke('catalogToCsv', {
+            body: { "catalog_id": catalogId }
+        });
+
+        if (error || !data) {
+            throw error;
+        }
+
+        return data;
 
     }
 
