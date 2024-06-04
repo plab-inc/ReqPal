@@ -5,16 +5,13 @@ create or replace function create_user_answers_from_json(data jsonb) returns voi
 as
 $$
 DECLARE
-    used_hints_count    int4             := 0;
+    used_hints_count    int4 := 0;
     lesson_uuid         uuid;
     newAnswer           jsonb;
     question_uuid       uuid;
-    lesson_finished     bool             := false;
-    lesson_started      bool             := false;
-    data_obj            jsonb;
-    requirement_answers int4             := 0;
+    lesson_finished     bool := false;
+    lesson_started      bool := false;
     temp_option         jsonb;
-    total_answers       int4             := 0;
     old_answer          jsonb;
 BEGIN
     lesson_uuid := data ->> 'uuid';
@@ -101,7 +98,7 @@ BEGIN
                             (temp_option ->> 'askForQualification')::boolean IS TRUE) THEN
                             question_uuid := (newAnswer ->> 'uuid')::uuid;
                             UPDATE user_answers
-                            SET answer     = newAnswer -> 'options'
+                            SET answer = newAnswer -> 'options'
                             WHERE lesson_id = lesson_uuid
                               AND user_id = auth.uid()
                               AND question_id = question_uuid;
@@ -181,18 +178,18 @@ DECLARE
     maxPoints       int4;
     product_answer  jsonb;
     tolerance_value int;
-    req_id          int;
+    req_id          uuid;
     temp_result     bool;
     temp_input      int;
-    temp_id         int;
+    temp_id         uuid;
 BEGIN
 
-    IF (answer->>'askForQualification')::boolean IS FALSE THEN
+    IF (answer ->> 'askForQualification')::boolean IS FALSE THEN
         raise log 'exit';
         return json_build_object('score', 0);
     end if;
 
-    req_id := (answer ->> 'requirementId')::int;
+    req_id := (answer ->> 'requirementId')::uuid;
     product_answers := (answer ->> 'products')::jsonb;
 
     SELECT questions.solution
@@ -216,7 +213,7 @@ BEGIN
         SELECT *
         FROM jsonb_array_elements(product_answers)
         LOOP
-            temp_id := ((product_answer ->> 'id')::int);
+            temp_id := ((product_answer ->> 'id')::uuid);
 
             SELECT qualification
             INTO p_qualification
@@ -236,7 +233,7 @@ BEGIN
                     compared_result,
                     '{-1}',
                     jsonb_build_object(
-                            'id', (product_answer ->> 'id')::int,
+                            'id', (product_answer ->> 'id')::uuid,
                             'isCorrect', temp_result),
                     true);
         END LOOP;
@@ -263,13 +260,13 @@ create or replace function evaluate_slider(question_id uuid, answer jsonb) retur
 as
 $$
 DECLARE
-    solution jsonb;
-    right_answer integer;
+    solution        jsonb;
+    right_answer    integer;
     tolerance_value integer;
-    user_input integer;
+    user_input      integer;
     maxPoints       int4;
-    score double precision := 0;
-    is_correct bool := false;
+    score           double precision := 0;
+    is_correct      bool             := false;
 BEGIN
 
     SELECT questions.solution
@@ -282,11 +279,11 @@ BEGIN
     FROM questions
     WHERE questions.uuid = question_id;
 
-    user_input := answer->>'input';
-    right_answer := solution->>'correctValue';
-    tolerance_value := solution->>'toleranceValue';
+    user_input := answer ->> 'input';
+    right_answer := solution ->> 'correctValue';
+    tolerance_value := solution ->> 'toleranceValue';
 
-    IF (user_input <= right_answer+tolerance_value) AND (user_input >= right_answer-tolerance_value) THEN
+    IF (user_input <= right_answer + tolerance_value) AND (user_input >= right_answer - tolerance_value) THEN
         score := maxPoints;
         is_correct := true;
     END IF;
