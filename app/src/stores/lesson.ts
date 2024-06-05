@@ -191,15 +191,6 @@ export const useLessonStore = defineStore('lesson', {
             return null;
         },
 
-        async submitUserAnswers(answers: any) {
-            await lessonService.push.uploadUserAnswers(answers).then(() => {
-                if (this.currentLesson) {
-                    this.currentLesson.isFinished = true;
-                    this.currentLesson.isStarted = false;
-                }
-            });
-        },
-
         async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
             let lesson = this.findLesson(lessonUUID);
