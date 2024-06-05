@@ -30,7 +30,6 @@
     "vue-bpmn": "^0.3.0",
     "vue-router": "^4.3.2",
     "vue3-dnd": "^2.1.0",
-    "vue3-easy-data-table": "^1.5.47",
     "vuetify": "^3.6.7",
     "webfontloader": "^1.6.28",
     "xlsx": "^0.18.5"
