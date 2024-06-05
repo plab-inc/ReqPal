@@ -16,7 +16,6 @@ class LessonServiceClass {
         uploadLesson: this.uploadLesson.bind(this),
         deleteLesson: this.deleteLesson.bind(this),
         togglePublished: this.togglePublished.bind(this),
-        uploadUserAnswers: this.submitUserAnswers.bind(this),
         setLessonStartedStatus: this.setLessonStartedStatus.bind(this),
         uploadUserProgressToLesson: this.uploadUserProgressToLesson.bind(this),
         uploadUsedHintForQuestion: this.uploadUsedHintForQuestion.bind(this),
@@ -123,17 +122,6 @@ class LessonServiceClass {
             })
 
         if (error) console.error(error)
-    }
-
-
-    private async submitUserAnswers(answers: any): Promise<void> {
-
-        const {error} = await supabase.rpc('create_user_answers_from_json', {
-            data: answers
-        })
-
-        if (error) throw error;
-
     }
 
     private async fetchQuestionsWithSolutionsForLesson(lessonUUID: string): Promise<Question[] | undefined> {
