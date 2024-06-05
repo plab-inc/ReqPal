@@ -155,7 +155,6 @@ async function downloadCatalog(catalogId: string): Promise<void> {
 
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-
 }
 
 </script>

@@ -111,39 +111,28 @@ async function handleFileUpload(file: File): Promise<void> {
     if (file.name.endsWith('.xlsx')) {
       file = await xlsxToCsv(file);
     }
-    uploadCSVToDB(file);
+    persistCatalog(file);
   }
 }
 
-function uploadCSVToDB(File: File) {
+function persistCatalog(File: File) {
 
-  state.borderColor = 'transparent';
+  state.borderColor = "transparent";
 
-  CatalogService.convertCSVToCatalog(File)
-      .then((catalog: Catalog) => {
-        CatalogService.push.uploadCatalogToDatabase(catalog)
-            .then(() => {
-              AlertService.addSuccessAlert('Katalog erfolgreich hochgeladen.');
-              router.push({name: 'Catalogs'});
-            })
-            .catch((error: any) => {
-              if (error.code == 42501) {
-                throw new PrivilegeError("Rechte zum Hochladen fehlen.", error.code);
-              } else {
-                throw new DatabaseError("Fehler beim Hochladen des Katalogs.", error.code);
-              }
-            })
-            .finally(() => {
-              state.borderColor = themeColors.info;
-              state.files = [];
-              loading.value = false;
-            });
-      })
-      .finally(() => {
-        state.borderColor = themeColors.info;
-        state.files = [];
-        loading.value = false;
-      });
+  CatalogService.uploadCatalog(File).then(() => {
+      AlertService.addSuccessAlert("Katalog erfolgreich hochgeladen.");
+      router.push({ name: "Catalogs" });
+  }).catch((error: any) => {
+    if (error.code == 42501) {
+      throw new PrivilegeError("Rechte zum Hochladen fehlen.", error.code);
+    } else {
+      throw new DatabaseError("Fehler beim Hochladen des Katalogs.", error.code);
+    }
+  }).finally(() => {
+      state.borderColor = themeColors.info;
+      state.files = [];
+      loading.value = false;
+  });
 }
 
 const themeColors = useTheme().current.value.colors;
