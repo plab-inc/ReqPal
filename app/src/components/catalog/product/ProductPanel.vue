@@ -35,7 +35,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <v-card :loading="loading" variant="flat" title="Produktdetails" class="pb-5 mt-2 mb-2">
+  <v-card :loading="loading" variant="flat" class="pb-5 mt-2">
     <v-row v-if="requirement">
       <v-col v-for="product in products" :key="product.product_name" cols="12" md="6" lg="4">
         <ProductDetail :requirement="requirement" :loading="loading" :product="product"/>

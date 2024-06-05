@@ -30,11 +30,6 @@ const headers = [
       hover
       items-per-page="15"
   >
-    <template v-slot:top>
-      <v-toolbar border color="primary">
-        <v-toolbar-title>Anforderungskatalog</v-toolbar-title>
-      </v-toolbar>
-    </template>
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
