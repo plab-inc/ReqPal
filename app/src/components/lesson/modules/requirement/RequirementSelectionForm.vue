@@ -138,6 +138,7 @@ watch(fields, async (value) => {
               <div>
                 <v-switch
                     v-model="fields.options.productIds"
+                    inset
                     color="primary"
                     label="Produkt abfragen"
                     :value="product.product_id"
