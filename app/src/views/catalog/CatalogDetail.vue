@@ -2,11 +2,9 @@
 import {useCatalogStore} from "@/stores/catalog.ts";
 import {Catalog, Product, Requirement} from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
-import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
-import CatalogTable from "@/components/catalog/CatalogTable.vue";
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
+import CatalogTable from "@/components/catalog/CatalogTable.vue";
 
 const catalog = ref<Catalog>();
 const catalogProducts = ref<Product[]>([]);
@@ -14,28 +12,7 @@ const catalogStore = useCatalogStore();
 let catalogIdAsNumber: number = 0;
 
 const loading = ref<boolean>(true);
-const loadingBar = ref<boolean>(false);
-
 const requirementItems = ref<Requirement[]>([]);
-const selectedRequirement = ref<Requirement>();
-const reqGroupSelection = ref<Requirement[]>([]);
-
-async function onRowClick(item: Requirement) {
-  selectedRequirement.value = item;
-  await getProductDetails();
-}
-
-async function getProductDetails() {
-  loadingBar.value = true;
-  try {
-    if (selectedRequirement.value) {
-      await catalogStore.getProductDetailsForRequirement(selectedRequirement.value, catalogProducts.value);
-    }
-  } catch (error: any) {
-    AlertService.addErrorAlert("Fehler beim Abrufen der Produktdetails: " + error.message);
-  }
-  loadingBar.value = false;
-}
 
 onBeforeMount(async () => {
   const route = useRoute();
@@ -69,23 +46,10 @@ function setUpCatalog() {
     </v-col>
   </v-row>
   <v-divider/>
-  <v-container>
+  <v-container class="mt-2">
     <v-row>
       <v-col>
-        <RequirementItem :requirement="selectedRequirement"></RequirementItem>
-      </v-col>
-      <v-col>
-        <ProductPanel :requirement="selectedRequirement" :products="catalogProducts"
-                      :loading="loadingBar"></ProductPanel>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col>
-        <CatalogTable :loading="loading" :requirement-items="requirementItems" v-model="reqGroupSelection"
-                      :selectable="false"
-                      @on-row-click="onRowClick"
-        ></CatalogTable>
+        <CatalogTable :products="catalogProducts" :loading="loading" :requirement-items="requirementItems"></CatalogTable>
       </v-col>
     </v-row>
   </v-container>
