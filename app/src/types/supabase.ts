@@ -594,46 +594,12 @@ export type Database = {
         }
         Returns: undefined
       }
-      create_user_answers_from_json: {
-        Args: {
-          data: Json
-        }
-        Returns: undefined
-      }
       delete_claim: {
         Args: {
           uid: string
           claim: string
         }
         Returns: string
-      }
-      evaluate_multiple_choice: {
-        Args: {
-          question_id: string
-          answer: Json
-        }
-        Returns: Json
-      }
-      evaluate_product_qualification: {
-        Args: {
-          question_id: string
-          answer: Json
-        }
-        Returns: Json
-      }
-      evaluate_slider: {
-        Args: {
-          question_id: string
-          answer: Json
-        }
-        Returns: Json
-      }
-      evaluate_true_or_false: {
-        Args: {
-          question_id: string
-          answer: Json
-        }
-        Returns: Json
       }
       get_claim: {
         Args: {
