@@ -41,7 +41,7 @@ async function onHintClick() {
              size="40"
              color="warning"
              icon="mdi-lightbulb-on-outline"
-             @click="openWarningDialog"></v-btn>
+             @click.stop="openWarningDialog"></v-btn>
     </template>
   </v-tooltip>
 </template>
