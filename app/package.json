@@ -22,6 +22,7 @@
     "bpmn-js-properties-panel": "^5.16.0",
     "camunda-bpmn-moddle": "^7.0.1",
     "diagram-js": "^14.0.0",
+    "exceljs": "^4.4.0",
     "pinia": "^2.1.7",
     "react-dnd-html5-backend": "^16.0.1",
     "uuid": "^9.0.1",
@@ -31,8 +32,7 @@
     "vue-router": "^4.3.2",
     "vue3-dnd": "^2.1.0",
     "vuetify": "^3.6.7",
-    "webfontloader": "^1.6.28",
-    "xlsx": "^0.18.5"
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@babel/types": "^7.24.5",

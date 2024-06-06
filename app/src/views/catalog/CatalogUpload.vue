@@ -49,7 +49,7 @@
 import CatalogUpload from "@/components/catalog/CatalogUpload.vue";
 
 function downloadExample(type: string){
-  const url = import.meta.env.BASE_URL + 'catalogs/Example_Requirements_Catalog_' + type.toUpperCase() + '.' + type;
+  const url = import.meta.env.BASE_URL + 'catalogs/Example_Requirements_Catalog.' + type;
   const link = document.createElement('a');
   link.href = url;
   link.download = "";

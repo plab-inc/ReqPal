@@ -4,13 +4,13 @@
       <v-form @submit.prevent v-model="formIsValid">
         <v-row align="center">
           <v-col
-              cols="13"
-              class="dashed-border"
-              @drop.prevent="handleDrop"
-              @dragover.prevent="handleDragOver"
-              @dragleave.prevent="handleDragLeave"
-              :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
-              :class="{ 'loading': loading }"
+            cols="13"
+            class="dashed-border"
+            @drop.prevent="handleDrop"
+            @dragover.prevent="handleDragOver"
+            @dragleave.prevent="handleDragLeave"
+            :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
+            :class="{ 'loading': loading }"
           >
             <v-card-text class="text-center">
               <div v-if="loading">
@@ -26,23 +26,23 @@
         <v-row align="center">
           <v-col>
             <v-file-input
-                label="Datei auswählen"
-                color="secondary"
-                variant="outlined"
-                v-model="state.files"
-                show-icon="false"
-                clearable
-                :disabled="loading"
-                :rules="[requiredUniqueCatalogNameRule(state.files)]"
+              label="Datei auswählen"
+              color="secondary"
+              variant="outlined"
+              v-model="state.files"
+              show-icon="false"
+              clearable
+              :disabled="loading"
+              :rules="[requiredUniqueCatalogNameRule(state.files)]"
             ></v-file-input>
           </v-col>
         </v-row>
         <v-row align="center">
           <v-col>
             <v-btn
-                color="primary"
-                @click="handleFileUpload(state.files[0])" block
-                :disabled="!formIsValid || loading || state.files.length === 0"
+              color="primary"
+              @click="handleFileUpload(state.files[0])" block
+              :disabled="!formIsValid || loading || state.files.length === 0"
             >
               Katalog Hochladen
             </v-btn>
@@ -56,11 +56,10 @@
 <script setup lang="ts">
 import { useTheme } from "vuetify";
 import { DatabaseError, PrivilegeError } from "@/errors/custom.ts";
-import { Catalog } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
 import CatalogService from "@/services/database/catalog.ts";
 import router from "@/router";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { requiredUniqueCatalogNameRule } from "@/utils/validationRules.ts";
 import { reactive, ref } from "vue";
 
@@ -72,33 +71,36 @@ interface Props {
 const loading = ref(false);
 const formIsValid = ref(false);
 
-async function readFileAsBinaryString(file: File): Promise<string> {
+async function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = event => {
       const result = event?.target?.result;
-      if (typeof result === 'string') {
+      if (result instanceof ArrayBuffer) {
         resolve(result);
       } else {
-        reject(new Error('Failed to read the file as a binary string.'));
+        reject(new Error("Failed to read the file as an ArrayBuffer."));
       }
     };
-    reader.onerror = () => reject(new Error('Error reading the file.'));
+    reader.onerror = () => reject(new Error("Error reading the file."));
 
-    reader.readAsBinaryString(file);
+    reader.readAsArrayBuffer(file);
   });
 }
 
 async function xlsxToCsv(xlsxFile: File): Promise<File> {
   try {
-    const data = await readFileAsBinaryString(xlsxFile);
-    const workbook = XLSX.read(data, {type: 'binary'});
-    const wsname = workbook.SheetNames[0];
-    const ws = workbook.Sheets[wsname];
-    const csv = XLSX.utils.sheet_to_csv(ws, {FS: ';'});
-    const csvBlob = new Blob([csv], {type: 'text/csv'});
-    return new File([csvBlob], xlsxFile.name, {type: 'text/csv'});
+    const data = await readFileAsArrayBuffer(xlsxFile);
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(data);
+
+    workbook.worksheets[0].spliceRows(0, 1);
+
+    const buffer = await workbook.csv.writeBuffer({ formatterOptions: { delimiter: ";" } });
+    const blob = new Blob([buffer], { type: "text/csv" });
+    return new File([blob], xlsxFile.name.split(".")[0] + ".csv", { type: "text/csv" });
+
   } catch (error) {
     throw error;
   }
@@ -108,7 +110,7 @@ async function handleFileUpload(file: File): Promise<void> {
   loading.value = true;
 
   if (formIsValid && file) {
-    if (file.name.endsWith('.xlsx')) {
+    if (file.name.endsWith(".xlsx")) {
       file = await xlsxToCsv(file);
     }
     persistCatalog(file);
@@ -120,8 +122,8 @@ function persistCatalog(File: File) {
   state.borderColor = "transparent";
 
   CatalogService.uploadCatalog(File).then(() => {
-      AlertService.addSuccessAlert("Katalog erfolgreich hochgeladen.");
-      router.push({ name: "Catalogs" });
+    AlertService.addSuccessAlert("Katalog erfolgreich hochgeladen.");
+    router.push({ name: "Catalogs" });
   }).catch((error: any) => {
     if (error.code == 42501) {
       throw new PrivilegeError("Rechte zum Hochladen fehlen.", error.code);
@@ -129,9 +131,9 @@ function persistCatalog(File: File) {
       throw new DatabaseError("Fehler beim Hochladen des Katalogs.", error.code);
     }
   }).finally(() => {
-      state.borderColor = themeColors.info;
-      state.files = [];
-      loading.value = false;
+    state.borderColor = themeColors.info;
+    state.files = [];
+    loading.value = false;
   });
 }
 
@@ -140,21 +142,21 @@ const themeColors = useTheme().current.value.colors;
 const state = reactive({
   files: [] as File[],
   borderColor: themeColors.info,
-  backgroundColor: 'transparent',
+  backgroundColor: "transparent"
 });
 
 const props = withDefaults(defineProps<Props>(), {
   maxFileSize: 1048576,
-  acceptedFileTypes: () => ['.csv', '.xlsx']
+  acceptedFileTypes: () => [".csv", ".xlsx"]
 });
 const handleDragOver = () => {
   state.borderColor = themeColors.warning;
-  state.backgroundColor = 'rgba(0,0,0,0.3)';
-}
+  state.backgroundColor = "rgba(0,0,0,0.3)";
+};
 const handleDragLeave = () => {
   state.borderColor = themeColors.info;
-  state.backgroundColor = 'transparent';
-}
+  state.backgroundColor = "transparent";
+};
 const handleDrop = (e: DragEvent) => {
   handleDragLeave();
   if (e.dataTransfer) {
@@ -168,9 +170,9 @@ const handleDrop = (e: DragEvent) => {
     }
     */
   }
-}
+};
 const validateFile = (file: File) => {
-  const fileType = '.' + file.name.split('.').pop();
+  const fileType = "." + file.name.split(".").pop();
   const fileSize = file.size;
 
   if (!props.acceptedFileTypes.includes(fileType)) {
@@ -182,7 +184,7 @@ const validateFile = (file: File) => {
   }
 
   return props.acceptedFileTypes.includes(fileType) && fileSize <= props.maxFileSize;
-}
+};
 
 </script>
 
