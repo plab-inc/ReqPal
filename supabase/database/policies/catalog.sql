@@ -10,9 +10,9 @@ CREATE POLICY "policy_catalogs"
     FOR ALL
     TO authenticated
     USING (
-            (SELECT check_user_role(auth.uid(), 'moderator')) = true
+    (SELECT check_user_role(auth.uid(), 'moderator')) = true
         OR
-            (auth.uid() = user_id AND(SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
     );
 
 DROP POLICY IF EXISTS "policy_catalogs_select" ON public.catalogs;
@@ -21,7 +21,7 @@ CREATE POLICY "policy_catalogs_select"
     FOR SELECT
     TO authenticated
     USING (
-            get_teacher_uuid(auth.uid() ) = user_id
+    get_teacher_uuid(auth.uid()) = user_id
     );
 
 DROP POLICY IF EXISTS "policy_catalogs_example" ON public.catalogs;
@@ -93,32 +93,55 @@ CREATE POLICY "policy_product_requirements"
     FOR ALL
     TO authenticated
     USING (
-    EXISTS(
-        SELECT 1
-        FROM requirements
-        WHERE requirements.requirement_id = requirement_id
-    )
+    EXISTS(SELECT 1
+           FROM requirements
+           WHERE requirements.requirement_id = requirement_id)
     );
 
-DROP POLICY IF EXISTS "policy_products" ON public.products;
-CREATE POLICY "policy_products"
+DROP POLICY IF EXISTS "policy_products_select" ON public.products;
+CREATE POLICY "policy_products_select"
     ON public.products
     FOR SELECT
     TO authenticated
     USING (true);
+
+DROP POLICY IF EXISTS "policy_products_delete" ON public.products;
+CREATE POLICY "policy_products_delete"
+    ON public.products
+    FOR DELETE
+    TO authenticated
+    USING (
+    (SELECT check_user_role(auth.uid(), 'moderator')) = true
+        OR
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    );
+
+DROP POLICY IF EXISTS "policy_products_update" ON public.products;
+CREATE POLICY "policy_products_update"
+    ON public.products
+    FOR UPDATE
+    TO authenticated
+    USING (
+    (SELECT check_user_role(auth.uid(), 'moderator')) = true
+        OR
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    );
 
 DROP POLICY IF EXISTS "policy_products_insert" ON public.products;
 CREATE POLICY "policy_products_insert"
     ON public.products
     FOR INSERT
     TO authenticated
-    WITH CHECK ((select check_user_role(auth.uid(), 'teacher')) = true);
-
-DROP POLICY IF EXISTS "policy_products_update" ON public.products;
-CREATE POLICY "policy_products_update"
-    ON public.products
-    FOR UPDATE
-    USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+    WITH CHECK (
+    (SELECT check_user_role(auth.uid(), 'moderator')) = true
+        OR
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true AND (
+        EXISTS (SELECT COUNT(*)
+                FROM public.products
+                WHERE user_id = auth.uid()
+                HAVING COUNT(*) < 10)
+        )
+    );
 
 DROP POLICY IF EXISTS "policy_product_catalogs_insert" ON public.product_catalogs;
 CREATE POLICY "policy_product_catalogs_insert"
@@ -126,7 +149,7 @@ CREATE POLICY "policy_product_catalogs_insert"
     FOR INSERT
     TO authenticated
     WITH CHECK (
-    (select check_user_role(auth.uid(), 'teacher') = true)
+        (select check_user_role(auth.uid(), 'teacher') = true)
     );
 
 DROP POLICY IF EXISTS "policy_product_catalogs_delete" ON public.product_catalogs;
@@ -141,8 +164,7 @@ CREATE POLICY "policy_product_catalogs_delete"
         (SELECT 1
          FROM catalogs
                   JOIN product_catalogs ON catalogs.catalog_id = product_catalogs.catalog_id
-         WHERE catalogs.user_id = auth.uid())
-    ));
+         WHERE catalogs.user_id = auth.uid())));
 
 DROP POLICY IF EXISTS "policy_product_catalogs_select" ON public.product_catalogs;
 CREATE POLICY "policy_product_catalogs_select"
