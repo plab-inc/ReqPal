@@ -51,6 +51,18 @@ export const useCatalogStore = defineStore('catalog', {
             );
         },
 
+        async deleteRequirement(requirementId: string) {
+            await catalogService.push.deleteRequirement(requirementId).then(
+              (data: any) => {
+                  if (data.length > 0) {
+                      this.currentCatalog.requirements.splice(this.currentCatalog.requirements.findIndex(r => r.requirement_id === requirementId), 1);
+                      return;
+                  }
+                  throw new DatabaseError("Requirement could not be deleted", 500);
+              }
+            );
+        },
+
         async getFullCatalogById(catalogId: string) {
 
             const catalog = await catalogService.pull.fetchCatalogByCatalogId(catalogId);

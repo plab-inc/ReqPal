@@ -16,6 +16,7 @@ class CatalogServiceClass {
   public push = {
     uploadCatalog: this.uploadCatalog.bind(this),
     deleteCatalog: this.deleteCatalog.bind(this),
+    deleteRequirement: this.deleteRequirement.bind(this),
     updateRequirement: this.updateRequirement.bind(this)
   };
 
@@ -234,6 +235,18 @@ class CatalogServiceClass {
       .from("catalogs")
       .delete()
       .eq("catalog_id", catalogId)
+      .select();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async deleteRequirement(requirementId: string): Promise<RequirementDTO[]> {
+    const { data, error } = await supabase
+      .from("requirements")
+      .delete()
+      .eq("requirement_id", requirementId)
       .select();
 
     if (error) throw error;

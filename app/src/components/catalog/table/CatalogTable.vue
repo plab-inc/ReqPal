@@ -10,13 +10,27 @@
     items-per-page="15"
   >
     <template v-slot:item.actions="{ item }">
-      <v-icon
-        size="small"
-        icon="mdi-pencil"
-        @click.stop="openEditDialog(item)"
-      />
+      <div style="display: flex; align-items: center;">
+        <v-btn
+          class="ml-1"
+          density="compact"
+          color="success"
+          variant="plain"
+          size="medium"
+          icon="mdi-pencil"
+          @click.stop="openEditDialog(item)"
+        />
+        <v-btn
+          class="ml-2"
+          density="compact"
+          color="error"
+          variant="plain"
+          size="medium"
+          icon="mdi-delete"
+          @click.stop="deleteRequirement(item)"
+        />
+      </div>
     </template>
-
     <template v-if="catalogStore.getCurrentCatalog" v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
@@ -34,8 +48,11 @@ import { Requirement } from "@/types/catalog.ts";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
 import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { DeleteRequirement } from "@/utils/dialogs.ts";
 
 const catalogStore = useCatalogStore();
+const utilStore = useUtilStore();
 const expanded = ref<any>([]);
 const editDialog = ref(false);
 const editedItem = ref<any | null>(null);
@@ -50,6 +67,12 @@ const headers = [
 function openEditDialog(item: Requirement) {
   editedItem.value = item;
   editDialog.value = true;
+}
+
+function deleteRequirement(item: Requirement) {
+  utilStore.openDialog(DeleteRequirement, () => {
+    catalogStore.deleteRequirement(item.requirement_id);
+  });
 }
 
 function updateDialog(value: boolean) {
