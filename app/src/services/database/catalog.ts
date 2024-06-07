@@ -1,5 +1,13 @@
 import { supabase } from "@/plugins/supabase";
-import { Catalog, CatalogDTO, ProductDTO, ProductRequirementDTO, RequirementDTO } from "@/types/catalog.ts";
+import {
+  Catalog,
+  CatalogDTO,
+  Product,
+  ProductDetail,
+  ProductDTO,
+  ProductRequirementDTO,
+  RequirementDTO
+} from "@/types/catalog.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { ConversionError } from "@/errors/custom.ts";
 
@@ -7,7 +15,12 @@ class CatalogServiceClass {
 
   public push = {
     uploadCatalog: this.uploadCatalog.bind(this),
-    deleteCatalog: this.deleteCatalog.bind(this)
+    deleteCatalog: this.deleteCatalog.bind(this),
+    uploadProduct: this.uploadProduct.bind(this),
+    updateProduct: this.updateProduct.bind(this),
+    deleteProduct: this.deleteProduct.bind(this),
+    addProductToCatalogAndRequirements: this.addProductToCatalogAndRequirements.bind(this),
+    updateProductDetailsForRequirement: this.updateProductDetailsForRequirement.bind(this)
   };
 
   public pull = {
@@ -158,6 +171,75 @@ class CatalogServiceClass {
 
   }
 
+  private async uploadProduct(product: Product, userUUID: string) {
+    const {error} = await supabase
+        .from('products')
+        .insert([
+          {
+            product_name: product.product_name,
+            product_url: product.product_url,
+            user_id: userUUID
+          },
+        ])
+
+    if (error) throw error;
+  }
+
+  private async addProductToCatalogAndRequirements(productId: string, catalog: Catalog) {
+    const {error: catalogError } = await supabase
+        .from('product_catalogs')
+        .insert([
+          {
+            catalog_id: catalog.catalog_id,
+            product_id: productId
+          },
+        ])
+
+    if (catalogError) throw catalogError;
+
+    //adding new product to requirements of the catalog with default values
+    //using a bulk create operation which is handled in a single transaction
+    const productRequirements = catalog.requirements.map((requirement) => ({
+      requirement_id: requirement.requirement_id,
+      product_id: productId,
+    }));
+
+    const { error: reqError } = await supabase
+        .from('product_requirements')
+        .insert(productRequirements);
+
+    if(reqError) throw reqError;
+  }
+
+  private async updateProduct(product: ProductDTO) {
+    const { error } = await supabase
+        .from("products")
+        .update({
+          product_name: product.product_name,
+          product_url: product.product_url
+        })
+        .eq("product_id", product.product_id);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  private async updateProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {
+    const { error } = await supabase
+        .from("product_requirements")
+        .update({
+          qualification: productDetails.qualification,
+          comment: productDetails.comment
+        })
+        .eq("product_id", productId)
+        .eq("requirement_id", requirementId);
+
+    if (error) {
+      throw error;
+    }
+  }
+
   async fetchCatalogs(examples: boolean = false): Promise<CatalogDTO[] | undefined> {
     const { data, error } = await supabase
       .from("catalogs")
@@ -177,6 +259,18 @@ class CatalogServiceClass {
       .delete()
       .eq("catalog_id", catalogId)
       .select();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async deleteProduct(productId: string): Promise<ProductDTO[]> {
+    const { data, error } = await supabase
+        .from("products")
+        .delete()
+        .eq("product_id", productId)
+        .select();
 
     if (error) throw error;
 
