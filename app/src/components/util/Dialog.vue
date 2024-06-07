@@ -53,7 +53,7 @@ openDialog.value = props.modelValue;
 
 <template>
   <v-dialog @click:outside="cancel" v-model="openDialog" max-width="800px">
-    <v-card variant="elevated" class="pa-4">
+    <v-card variant="elevated" class="pa-1">
       <v-row>
         <v-col cols="1" class="d-flex align-center">
           <v-icon class="ml-2" icon="mdi-information" size="60"></v-icon>
