@@ -100,25 +100,23 @@ CREATE POLICY "policy_product_requirements"
     )
     );
 
-DROP POLICY IF EXISTS "policy_products" ON public.products;
-CREATE POLICY "policy_products"
+DROP POLICY IF EXISTS "policy_products_select" ON public.products;
+CREATE POLICY "policy_products_select"
     ON public.products
     FOR SELECT
     TO authenticated
     USING (true);
 
-DROP POLICY IF EXISTS "policy_products_insert" ON public.products;
-CREATE POLICY "policy_products_insert"
+DROP POLICY IF EXISTS "policy_products" ON public.products;
+CREATE POLICY "policy_products"
     ON public.products
-    FOR INSERT
+    FOR ALL
     TO authenticated
-    WITH CHECK ((select check_user_role(auth.uid(), 'teacher')) = true);
-
-DROP POLICY IF EXISTS "policy_products_update" ON public.products;
-CREATE POLICY "policy_products_update"
-    ON public.products
-    FOR UPDATE
-    USING ((select check_user_role(auth.uid(), 'teacher')) = true);
+    USING (
+    (SELECT check_user_role(auth.uid(), 'moderator')) = true
+        OR
+    (auth.uid() = user_id AND(SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    );
 
 DROP POLICY IF EXISTS "policy_product_catalogs_insert" ON public.product_catalogs;
 CREATE POLICY "policy_product_catalogs_insert"
