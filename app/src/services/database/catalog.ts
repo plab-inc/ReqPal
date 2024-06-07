@@ -1,20 +1,29 @@
 import { supabase } from "@/plugins/supabase";
-import { Catalog, CatalogDTO, ProductDTO, ProductRequirementDTO, RequirementDTO } from "@/types/catalog.ts";
+import {
+  Catalog,
+  CatalogDTO,
+  ProductDTO,
+  ProductRequirementDTO,
+  Requirement,
+  RequirementDTO
+} from "@/types/catalog.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { ConversionError } from "@/errors/custom.ts";
+import { mapToCatalog } from "@/mapper/catalog.ts";
 
 class CatalogServiceClass {
 
   public push = {
     uploadCatalog: this.uploadCatalog.bind(this),
-    deleteCatalog: this.deleteCatalog.bind(this)
+    deleteCatalog: this.deleteCatalog.bind(this),
+    updateRequirement: this.updateRequirement.bind(this)
   };
 
   public pull = {
     fetchRequirementsByCatalogId: this.fetchRequirementsByCatalogId.bind(this),
     fetchCatalogs: this.fetchCatalogs.bind(this),
     fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
-    fetchCatalogByCatalogId: this.fetchCatalogById.bind(this),
+    fetchCatalogByCatalogId: this.fetchFullCatalogById.bind(this),
     fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
     fetchProductById: this.fetchProductById.bind(this),
     fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
@@ -41,18 +50,44 @@ class CatalogServiceClass {
     }));
   }
 
-  private async fetchCatalogById(catalogId: string): Promise<CatalogDTO | undefined> {
+  private async fetchFullCatalogById(catalogId: string): Promise<Catalog | undefined> {
     const { data, error } = await supabase
       .from("catalogs")
-      .select("*")
+      .select(`
+      catalog_id,
+      catalog_name,
+      products:product_catalogs(
+        products(
+          product_id,
+          product_name,
+          product_url
+        )
+      ),
+       requirements(
+        requirement_id,
+        reqid, 
+        title, 
+        description,
+        productDetails:product_requirements (
+          product:products (
+            product_name
+          ),
+          qualification,
+          comment
+        )
+      )
+    `)
       .eq("catalog_id", catalogId)
+      .order("reqid", { referencedTable: "requirements" })
       .single();
 
     if (error) throw error;
 
     if (data) {
-      return data as CatalogDTO;
+      return mapToCatalog(data) as Catalog;
     }
+
+    return undefined;
   }
 
   private async fetchProductsByCatalogId(catalogId: string): Promise<ProductDTO[] | undefined> {
@@ -139,6 +174,25 @@ class CatalogServiceClass {
     return data;
   }
 
+  private async updateRequirement(requirement: Requirement) {
+    const { data, error } = await supabase
+      .from("requirements")
+      .update({
+        title: requirement.title,
+        description: requirement.description,
+        reqid: requirement.reqId
+      })
+      .eq("requirement_id", requirement.requirement_id);
+
+    if (data) {
+      return;
+    }
+
+    if (error) {
+      throw error;
+    }
+  }
+
   async uploadCatalog(csvFile: File): Promise<void> {
 
     const formData = new FormData();
@@ -154,6 +208,10 @@ class CatalogServiceClass {
         throw new ConversionError(errorMessage.error, 400);
       }
       throw error;
+    }
+
+    if (data) {
+      return;
     }
 
   }

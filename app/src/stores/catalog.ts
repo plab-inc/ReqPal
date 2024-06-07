@@ -1,16 +1,7 @@
-import {defineStore} from 'pinia';
+import { defineStore } from "pinia";
 import catalogService from "@/services/database/catalog.ts";
-import {
-    Catalog,
-    CatalogDTO,
-    Product,
-    ProductDetail,
-    ProductDTO,
-    ProductRequirementDTO,
-    Requirement,
-    RequirementDTO
-} from "@/types/catalog.ts";
-import {DatabaseError} from "@/errors/custom.ts";
+import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
+import { DatabaseError } from "@/errors/custom.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -60,46 +51,14 @@ export const useCatalogStore = defineStore('catalog', {
             );
         },
 
-        async getCatalogWithProductsById(catalogId: string) {
+        async getFullCatalogById(catalogId: string) {
 
-            const catalogData: CatalogDTO | undefined = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
-            const productData: ProductDTO[] | undefined = await catalogService.pull.fetchProductsByCatalogId(catalogId);
-            const requirementsData: RequirementDTO[] | undefined = await catalogService.pull.fetchRequirementsByCatalogId(catalogId);
+            const catalog = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
 
-            const catalogRequirements: Requirement[] = [];
-            const catalogProducts: Product[] = [];
-
-            if (requirementsData) {
-                for (const requirement of requirementsData) {
-
-                    catalogRequirements.push({
-                        requirement_id: requirement.requirement_id,
-                        reqId: requirement.reqid,
-                        title: requirement.title,
-                        description: requirement.description,
-                        products: {}
-                    })
-                }
+            if (catalog) {
+                this.currentCatalog = catalog;
             }
 
-            if (productData) {
-                for (const product of productData) {
-                    catalogProducts.push({
-                        product_id: product.product_id,
-                        product_name: product.product_name,
-                        product_url: product.product_url
-                    })
-                }
-            }
-
-            if (catalogData) {
-                this.currentCatalog = {
-                    catalog_id: catalogData.catalog_id,
-                    catalog_name: catalogData.catalog_name ? catalogData.catalog_name : "Catalog",
-                    products: catalogProducts,
-                    requirements: catalogRequirements
-                }
-            }
         },
 
         async getProductDetailsForRequirement(requirement: Requirement, products: Product[]) {

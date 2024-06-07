@@ -2,7 +2,7 @@
   <v-data-table
     v-model:expanded="expanded"
     :headers="headers"
-    :items="requirementItems"
+    :items="catalogStore.getCurrentCatalog?.requirements"
     item-value="requirement_id"
     show-expand
     expand-on-click
@@ -17,10 +17,10 @@
       />
     </template>
 
-    <template v-slot:expanded-row="{ columns, item }">
+    <template v-if="catalogStore.getCurrentCatalog" v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
-          <ProductPanel :requirement="item" :products="products"></ProductPanel>
+          <ProductPanel :requirement="item" :products="catalogStore.getCurrentCatalog?.products"></ProductPanel>
         </td>
       </tr>
     </template>
@@ -29,21 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Product, Requirement } from "@/types/catalog.ts";
+import { ref } from "vue";
+import { Requirement } from "@/types/catalog.ts";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
 import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
+import { useCatalogStore } from "@/stores/catalog.ts";
 
-interface Props {
-  requirementItems: Requirement[],
-  loading: boolean,
-  products: Product[]
-}
-
-const props = defineProps<Props>();
+const catalogStore = useCatalogStore();
 const expanded = ref<any>([]);
 const editDialog = ref(false);
-const editedItem = ref<Requirement | null>(null);
+const editedItem = ref<any | null>(null);
 
 const headers = [
   { title: 'Anforderung', value: 'reqId', sortable: true },

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import {CatalogDTO, Product, Requirement} from "@/types/catalog.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { CatalogDTO, Product, Requirement } from "@/types/catalog.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
 import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
-import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
+import { containsAtLeastOneElementRule, requiredRule, requiredStringRule } from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
@@ -70,7 +70,7 @@ watch(fields, async (value) => {
   }
 
   if (value.options.catalogId) {
-    await catalogStore.getCatalogWithProductsById(value.options.catalogId);
+    await catalogStore.getFullCatalogById(value.options.catalogId);
   }
 
   if (catalogStore.currentCatalog) {

@@ -46,7 +46,7 @@ onBeforeMount(async () => {
   if (fields.value.options) {
     if (fields.value.options.catalogId && fields.value.options.requirementId) {
       const catalogStore = useCatalogStore();
-      await catalogStore.getCatalogWithProductsById(fields.value.options.catalogId);
+      await catalogStore.getFullCatalogById(fields.value.options.catalogId);
       const reqs = catalogStore.currentCatalog?.requirements;
       if (reqs) {
         requirement.value = reqs.find(r => r.requirement_id === fields.value.options.requirementId);
