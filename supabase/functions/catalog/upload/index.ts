@@ -1,5 +1,5 @@
 interface ProductDetails {
-  qualification: number;
+  qualification: string;
   comment: string;
 }
 
@@ -205,7 +205,7 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
 
     for (let k = 0; k < mappedProducts.length; k++) {
       const product = mappedProducts[k];
-      const qualification = Number(currentLine[k * 2 + 3]);
+      const qualification = currentLine[k * 2 + 3];
       const comment = currentLine[k * 2 + 4];
       item.productDetails[product.product_name] = {
         qualification: qualification,
