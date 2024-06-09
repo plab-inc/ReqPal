@@ -10,8 +10,9 @@
       class="pa-1"
     >
       <v-card-title>
-        Edit Requirement: {{ localEditedRequirement.reqId }}
+        Requirement {{ localEditedRequirement.reqId }} Bearbeiten
       </v-card-title>
+      <v-divider />
       <v-card-text>
         <v-row>
           <v-col cols="8">
@@ -22,6 +23,7 @@
           </v-col>
         </v-row>
         <v-textarea v-model="localEditedRequirement.description" label="Beschreibung" variant="outlined" />
+        <v-divider class="mb-1" />
         <v-row>
           <v-col
             :cols="(Object.keys(localEditedRequirement.products).indexOf(key.toString()) % 3 === 2 ? 12 : 6)"
@@ -34,12 +36,13 @@
             <v-text-field variant="outlined" label="Kommentar" v-model="productDetail.comment" />
             <v-slider
               color="warning"
-              hint="Qualifizierung"
               v-model="productDetail.qualification"
               :max="5"
               :min="0"
               :step="1"
-              rounded
+              hide-details
+              show-ticks
+              density="compact"
               thumb-label
             />
           </v-col>
@@ -55,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw, watch } from "vue";
+import { ref, watch } from "vue";
 import catalogService from "@/services/database/catalog.ts";
 import { Requirement } from "@/types/catalog.ts";
 
@@ -64,7 +67,7 @@ const props = defineProps({
   editedItem: Object
 });
 
-const localEditedRequirement = ref<any>({ ...toRaw(props.editedItem) });
+const localEditedRequirement = ref<any>();
 
 const emit = defineEmits(["update:dialog"]);
 
@@ -74,17 +77,39 @@ function close() {
 
 function save() {
 
-  if (JSON.stringify(toRaw(props.editedItem)) !== JSON.stringify(toRaw(localEditedRequirement.value))) {
+  if (!areRequirementEquals()) {
     console.log("Update Requirements");
     catalogService.push.updateRequirement(localEditedRequirement.value as Requirement);
     Object.assign(props.editedItem as Requirement, localEditedRequirement.value as Requirement);
   }
 
+  if (!areProductsEquals()) {
+    console.log("Update Product Requirements");
+  }
+
   close();
 }
 
+function areRequirementEquals() {
+  const localCopy = JSON.parse(JSON.stringify(localEditedRequirement.value));
+  const propsCopy = JSON.parse(JSON.stringify(props.editedItem));
+
+  delete localCopy.products;
+  delete propsCopy.products;
+
+  return JSON.stringify(localCopy) == JSON.stringify(propsCopy);
+}
+
+function areProductsEquals() {
+  const localCopy = JSON.parse(JSON.stringify(localEditedRequirement.value.products));
+  const propsCopy = JSON.parse(JSON.stringify(props.editedItem?.products));
+
+  return JSON.stringify(localCopy) == JSON.stringify(propsCopy);
+}
+
+
 watch(() => props.editedItem, (newVal) => {
-  localEditedRequirement.value = { ...newVal };
+  localEditedRequirement.value = JSON.parse(JSON.stringify(newVal));
 }, { immediate: true });
 
 </script>

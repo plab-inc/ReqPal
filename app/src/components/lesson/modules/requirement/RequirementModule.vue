@@ -75,7 +75,7 @@ onBeforeMount(async () => {
                 id: productDTO.product_id,
                 name: productDTO.product_name,
                 link: productDTO.product_url,
-                solution: result.qualification ? result.qualification : undefined,
+                solution: result.qualification ? result.qualification.toString() : undefined,
                 input: authStore.isTeacher ? result.qualification ? +result.qualification : minValue : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : minValue,
                 comment: result.comment ? result.comment : undefined
               });
