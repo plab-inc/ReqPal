@@ -1,7 +1,8 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import catalogService from "@/services/database/catalog.ts";
-import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
-import { DatabaseError } from "@/errors/custom.ts";
+import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
+import {DatabaseError} from "@/errors/custom.ts";
+import CatalogService from "@/services/database/catalog.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -115,6 +116,19 @@ export const useCatalogStore = defineStore('catalog', {
 
         async checkIfCatalogNameExists(catalogName: string) {
             return await catalogService.pull.checkIfCatalogNameExists(catalogName);
+        },
+
+        async updateProductForCurrentCatalog(product: Product) {
+            if (!this.currentCatalog) {
+                throw Error("No current catalog found.")
+            }
+
+            const productIndex = this.currentCatalog.products.findIndex(p => p.product_id === product.product_id);
+
+            if (productIndex <= -1) {
+                throw Error("Product not found for current catalog.")
+            }
+            await CatalogService.push.updateProduct(product);
         }
     }
 });

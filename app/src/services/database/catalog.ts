@@ -263,19 +263,22 @@ class CatalogServiceClass {
     if(reqError) throw reqError;
   }
 
-  private async updateProduct(product: ProductDTO) {
-    const { error } = await supabase
-        .from("products")
-        .update({
-          product_name: product.product_name,
-          product_url: product.product_url
-        })
-        .eq("product_id", product.product_id);
+    private async updateProduct(product: Product) {
+        if (!product.product_id) {
+            throw new Error("Product Id not found.")
+        }
+        const {error} = await supabase
+            .from("products")
+            .update({
+                product_name: product.product_name,
+                product_url: product.product_url
+            })
+            .eq("product_id", product.product_id);
 
-    if (error) {
-      throw error;
+        if (error) {
+            throw error;
+        }
     }
-  }
 
   private async updateProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {
     const { error } = await supabase
