@@ -1,7 +1,7 @@
-import {Database} from "@/types/supabase.ts";
+import { Database } from "@/types/supabase.ts";
 
 export type ProductDetail = {
-    qualification: string;
+    qualification: number;
     comment: string;
 }
 

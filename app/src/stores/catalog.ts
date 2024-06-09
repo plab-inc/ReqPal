@@ -86,7 +86,7 @@ export const useCatalogStore = defineStore('catalog', {
                         const detail = detailsMap.get(product.product_id!);
                         if (detail) {
                             acc[product.product_name] = {
-                                qualification: detail.qualification || '',
+                                qualification: detail.qualification || 0,
                                 comment: detail.comment || ''
                             };
                         }
