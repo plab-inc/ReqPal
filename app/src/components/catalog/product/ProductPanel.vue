@@ -1,45 +1,77 @@
 <script setup lang="ts">
 
-import {Product, Requirement} from "@/types/catalog.ts";
-import ProductDetail from "@/components/catalog/product/ProductDetail.vue"
-import AlertService from "@/services/util/alert.ts";
+import {Product} from "@/types/catalog.ts";
+import ProductItem from "@/components/catalog/product/ProductItem.vue";
 import {onBeforeMount, ref} from "vue";
 import {useCatalogStore} from "@/stores/catalog.ts";
 
-interface Props {
-  requirement: Requirement | undefined,
-  products: Product[]
-}
-
-const loading = ref<boolean>(false);
-const props = defineProps<Props>();
-
 const catalogStore = useCatalogStore();
+const products = ref<Product[]>([]);
+const page = ref(1);
 
-async function getProductDetails() {
-
-  try {
-    if (props.requirement) {
-      await catalogStore.getProductDetailsForRequirement(props.requirement, props.products);
-    }
-  } catch (error: any) {
-    AlertService.addErrorAlert("Fehler beim Abrufen der Produktdetails: " + error.message);
-  }
-
-}
 onBeforeMount(async () => {
-  loading.value = true;
-  await getProductDetails();
-  loading.value = false;
+  if (catalogStore.getCurrentCatalog) {
+    products.value = catalogStore.getCurrentCatalog?.products;
+  }
 })
 </script>
 
 <template>
-  <v-card :loading="loading" variant="flat" class="pb-5 mt-2">
-    <v-row v-if="requirement">
-      <v-col v-for="product in products" :key="product.product_name" cols="12" md="6" lg="4">
-        <ProductDetail :requirement="requirement" :loading="loading" :product="product"/>
-      </v-col>
-    </v-row>
-  </v-card>
+  <v-expansion-panels>
+    <v-expansion-panel title="Produkte">
+      <v-expansion-panel-text>
+
+        <div v-if="products.length > 0">
+          <v-data-iterator :items="products" :items-per-page="3" :page="page">
+
+            <template v-slot:default="{ items }">
+              <v-row>
+                <template
+                    v-for="(item, i) in items"
+                    :key="item.raw.product_id"
+                >
+                  <v-col cols="4">
+                    <ProductItem :product="item.raw"></ProductItem>
+                  </v-col>
+                </template>
+              </v-row>
+            </template>
+
+            <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
+              <div class="d-flex align-center justify-center pa-4">
+                <v-btn
+                    :disabled="page === 1"
+                    density="comfortable"
+                    icon="mdi-arrow-left"
+                    variant="tonal"
+                    rounded
+                    @click="prevPage"
+                ></v-btn>
+
+                <div class="mx-2 text-caption">
+                  Page {{ page }} of {{ pageCount }}
+                </div>
+
+                <v-btn
+                    :disabled="page >= pageCount"
+                    density="comfortable"
+                    icon="mdi-arrow-right"
+                    variant="tonal"
+                    rounded
+                    @click="nextPage"
+                ></v-btn>
+              </div>
+            </template>
+          </v-data-iterator>
+        </div>
+
+        <v-row v-if="products.length <= 0">
+          <v-col>
+            <p>Diesem Katalog wurden noch keine Produkte zugeordnet!</p>
+          </v-col>
+        </v-row>
+
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>

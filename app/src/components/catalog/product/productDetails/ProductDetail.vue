@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { Product, Requirement } from "@/types/catalog.ts";
-import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
+import ProductQualification from "@/components/catalog/product/productDetails/ProductQualification.vue";
 
 interface Props {
   requirement: Requirement | undefined,

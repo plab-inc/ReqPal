@@ -1,4 +1,5 @@
 <template>
+  <ProductPanel class="mb-5"></ProductPanel>
   <v-data-table
     v-model:expanded="expanded"
     :headers="headers"
@@ -34,7 +35,7 @@
     <template v-if="catalogStore.getCurrentCatalog" v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
-          <ProductPanel :requirement="item" :products="catalogStore.getCurrentCatalog?.products"></ProductPanel>
+          <ProductDetailPanel :requirement="item" :products="catalogStore.getCurrentCatalog?.products"></ProductDetailPanel>
         </td>
       </tr>
     </template>
@@ -45,6 +46,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Requirement } from "@/types/catalog.ts";
+import ProductDetailPanel from "@/components/catalog/product/productDetails/ProductDetailPanel.vue";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
 import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
