@@ -2,11 +2,11 @@ import { supabase } from "@/plugins/supabase";
 import {
   Catalog,
   CatalogDTO,
-  Product,
-  ProductDetail,
   ProductDTO,
   ProductRequirementDTO,
-  RequirementDTO
+  ProductDetail,
+  Requirement,
+  RequirementDTO, Product
 } from "@/types/catalog.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { ConversionError } from "@/errors/custom.ts";
@@ -18,8 +18,7 @@ class CatalogServiceClass {
     uploadCatalog: this.uploadCatalog.bind(this),
     deleteCatalog: this.deleteCatalog.bind(this),
     deleteRequirement: this.deleteRequirement.bind(this),
-    updateRequirement: this.updateRequirement.bind(this)
-    deleteCatalog: this.deleteCatalog.bind(this),
+    updateRequirement: this.updateRequirement.bind(this),
     uploadProduct: this.uploadProduct.bind(this),
     updateProduct: this.updateProduct.bind(this),
     deleteProduct: this.deleteProduct.bind(this),
@@ -330,17 +329,17 @@ class CatalogServiceClass {
     return data;
   }
 
-  async deleteProduct(productId: string): Promise<ProductDTO[]> {
-    const { data, error } = await supabase
-        .from("products")
-        .delete()
-        .eq("product_id", productId)
-        .select();
+    async deleteProduct(productId: string): Promise<ProductDTO[]> {
+        const { data, error } = await supabase
+            .from("products")
+            .delete()
+            .eq("product_id", productId)
+            .select();
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return data;
-  }
+        return data;
+    }
 
   private async checkIfCatalogNameExists(catalogName: string): Promise<boolean> {
     const { error, count } = await supabase
