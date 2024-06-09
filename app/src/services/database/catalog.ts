@@ -4,9 +4,9 @@ import {
   CatalogDTO,
   ProductDTO,
   ProductRequirementDTO,
-    ProductDetail,
+  ProductDetail,
   Requirement,
-  RequirementDTO
+  RequirementDTO, Product
 } from "@/types/catalog.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { ConversionError } from "@/errors/custom.ts";
@@ -18,8 +18,7 @@ class CatalogServiceClass {
     uploadCatalog: this.uploadCatalog.bind(this),
     deleteCatalog: this.deleteCatalog.bind(this),
     deleteRequirement: this.deleteRequirement.bind(this),
-    updateRequirement: this.updateRequirement.bind(this)
-    deleteCatalog: this.deleteCatalog.bind(this),
+    updateRequirement: this.updateRequirement.bind(this),
     uploadProduct: this.uploadProduct.bind(this),
     updateProduct: this.updateProduct.bind(this),
     deleteProduct: this.deleteProduct.bind(this),
