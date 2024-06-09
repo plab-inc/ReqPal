@@ -97,7 +97,7 @@ class CatalogServiceClass {
     return undefined;
   }
 
-  private async fetchProductsByCatalogId(catalogId: string): Promise<ProductDTO[] | undefined> {
+  private async fetchProductsByCatalogId(catalogId: string): Promise<Product[] | undefined> {
     const { data, error } = await supabase
       .from("product_catalogs")
       .select("products(product_id, product_name, product_url)")
@@ -105,9 +105,9 @@ class CatalogServiceClass {
 
     if (error) throw error;
 
-    return data?.reduce((productDTOS: ProductDTO[], item) => {
-      if (item.products) productDTOS.push(item.products);
-      return productDTOS;
+    return data?.reduce((products: Product[], item) => {
+      if (item.products) products.push(item.products);
+      return products;
     }, []) || undefined;
   }
 
