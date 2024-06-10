@@ -81,17 +81,30 @@
             </v-list-item>
           </v-list-group>
         </div>
+        <v-list-group value="Kataloge" v-if="authStore.user && authStore.isTeacher">
+          <template v-slot:activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              prepend-icon="mdi-text-box-multiple"
+              title="Kataloge"
+              rounded
+              :active="routeRelatedToCatalog()"
+            />
+          </template>
+          <v-list-item
+            rounded
+            prepend-icon="mdi-text-box-multiple"
+            title="Meine Kataloge"
+            :active="false"
+            to="/catalogs"
+          />
+          <v-list-item :active="false" rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
+          <v-list-item :active="false" rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen"
+                       to="/catalogs/upload" />
+        </v-list-group>
+
         <div v-if="authStore.user && authStore.isTeacher">
           <v-divider class="my-1"/>
-          <v-list-item
-              rounded
-              prepend-icon="mdi-text-box-multiple"
-              title="Meine Kataloge"
-              :active="routeToCatalogNotBuilder()"
-              to="/catalogs"
-          />
-          <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
-          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
           <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
           <v-divider class="my-1"/>
@@ -165,12 +178,12 @@
 
 <script lang="ts" setup>
 import router from "@/router";
-import {useUtilStore} from "@/stores/util.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useThemeStore} from "@/stores/theme.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useThemeStore } from "@/stores/theme.ts";
 import Dialog from "@/components/util/Dialog.vue";
-import {useProfileStore} from "@/stores/profile.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
 import { onBeforeMount, ref, watch } from "vue";
 
 const utilStore = useUtilStore();
@@ -202,8 +215,8 @@ const logout = () => {
   router.push('/')
 }
 
-function routeToCatalogNotBuilder() {
-  return (router.currentRoute.value.path.startsWith('/catalogs') && !router.currentRoute.value.path.startsWith('/catalogs/upload'))
+function routeRelatedToCatalog() {
+  return router.currentRoute.value.path.startsWith("/catalogs") || router.currentRoute.value.path.startsWith("/products");
 }
 
 watch(() => lessonStore.openLessons, () => {
