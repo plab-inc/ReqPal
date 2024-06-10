@@ -91,6 +91,7 @@
               to="/catalogs"
           />
           <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
+          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
           <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
           <v-divider class="my-1"/>
