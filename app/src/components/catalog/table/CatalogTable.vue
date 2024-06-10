@@ -72,7 +72,7 @@ const editedItem = ref<any | null>(null);
 const isNew = ref(false);
 
 const headers = [
-  { title: "Anforderung", value: "reqId", sortable: true },
+  { title: "Anforderung", value: "label", sortable: true },
   { title: "Titel", value: "title", sortable: true },
   { title: "Beschreibung", value: "description", sortable: true },
   { title: "Aktionen", key: "actions", sortable: false }
@@ -90,7 +90,7 @@ function openEditDialog(item: Requirement | null, newRequirement: boolean) {
       };
     }
 
-    editedItem.value = { reqId: "", title: "", description: "", products: products };
+    editedItem.value = { label: "", title: "", description: "", products: products };
     isNew.value = true;
   }
   if (!newRequirement) {

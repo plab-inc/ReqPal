@@ -47,7 +47,7 @@ class CatalogServiceClass {
   private async fetchRequirementsByCatalogId(catalogId: string): Promise<RequirementDTO[] | undefined> {
     const { data, error } = await supabase
       .from("catalogs")
-      .select("requirements(requirement_id, catalog_id, reqid, title, description)")
+      .select("requirements(requirement_id, catalog_id, label, title, description)")
       .eq("catalog_id", catalogId)
       .single();
 
@@ -56,7 +56,7 @@ class CatalogServiceClass {
     return data?.requirements?.map((req: any) => ({
       requirement_id: req.requirement_id,
       catalog_id: req.catalog_id,
-      reqid: req.reqid,
+      label: req.label,
       title: req.title,
       description: req.description
     }));
@@ -77,7 +77,7 @@ class CatalogServiceClass {
       ),
        requirements(
         requirement_id,
-        reqid, 
+        label, 
         title, 
         description,
         productDetails:product_requirements (
@@ -91,7 +91,7 @@ class CatalogServiceClass {
       )
     `)
       .eq("catalog_id", catalogId)
-      .order("reqid", { referencedTable: "requirements" })
+      .order("label", { referencedTable: "requirements" })
       .single();
 
     if (error) throw error;
@@ -205,7 +205,7 @@ class CatalogServiceClass {
       .update({
         title: requirement.title,
         description: requirement.description,
-        reqid: requirement.reqId
+        label: requirement.label
       })
       .eq("requirement_id", requirement.requirement_id);
 
@@ -223,7 +223,7 @@ class CatalogServiceClass {
       .from("requirements")
       .insert({
         catalog_id: catalogId,
-        reqid: requirement.reqId,
+        label: requirement.label,
         title: requirement.title,
         description: requirement.description
       })

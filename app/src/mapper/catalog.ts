@@ -19,7 +19,7 @@ export const mapToCatalog = (input: any): Catalog => {
 
     return {
       requirement_id: item.requirement_id,
-      reqId: item.reqid,
+      label: item.label,
       title: item.title,
       description: item.description,
       products: productDetails

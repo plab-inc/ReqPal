@@ -11,7 +11,7 @@
     >
       <v-form ref="form" v-model="formValid">
         <v-card-title>
-          {{ isNew ? "Neue Anforderung" : localEditedRequirement.reqId }}
+          {{ isNew ? "Neue Anforderung" : localEditedRequirement.label }}
         </v-card-title>
         <v-divider />
         <v-card-text>
@@ -21,7 +21,7 @@
                             variant="outlined" />
             </v-col>
             <v-col cols="4">
-              <v-text-field v-model="localEditedRequirement.reqId" :rules="[requiredStringRule]" label="Requirement Id"
+              <v-text-field v-model="localEditedRequirement.label" :rules="[requiredStringRule]" label="Requirement Id"
                             variant="outlined" />
             </v-col>
           </v-row>

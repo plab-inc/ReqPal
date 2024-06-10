@@ -14,8 +14,8 @@ export type Product = {
 
 export type Requirement = {
     requirement_id: string;
-    reqId: string | null;
-    title: string | null;
+    label: string;
+    title: string;
     description: string | null;
     products: {
         [product_id: string]: ProductDetail;

@@ -1,18 +1,23 @@
-interface ProductDetails {
-  qualification: string;
+interface ProductDetail {
+  product_name: string,
+  qualification: number;
   comment: string;
 }
 
 export type Product = {
+  product_id: string;
   product_name: string;
   product_url: string;
 }
 
-interface Requirement {
-  reqId: string;
+export type Requirement = {
+  requirement_id: string;
+  label: string;
   title: string;
-  description: string;
-  productDetails: { [key: string]: ProductDetails };
+  description: string | null;
+  products: {
+    [product_id: string]: ProductDetail;
+  };
 }
 
 interface RequirementsJSON {
@@ -197,7 +202,7 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
     }
 
     const item: Requirement = {
-      reqId: currentLine[0],
+      label: currentLine[0],
       title: currentLine[1],
       description: currentLine[2],
       productDetails: {}
@@ -207,7 +212,8 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
       const product = mappedProducts[k];
       const qualification = currentLine[k * 2 + 3];
       const comment = currentLine[k * 2 + 4];
-      item.productDetails[product.product_name] = {
+      item.productDetails[product.product_id] = {
+        product_name: product.product_name,
         qualification: qualification,
         comment: comment
       };

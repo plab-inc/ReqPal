@@ -53,7 +53,7 @@ async function fetchCatalogData(supabase, catalog_id) {
         )
       ),
       requirements(
-        reqid, 
+        label, 
         title, 
         description,
         productDetails:product_requirements (
@@ -89,17 +89,17 @@ function convertToCSV(data) {
 
   data.requirements.forEach(req => {
     let row = [
-      req.reqid,
+      req.label,
       req.title,
       req.description
     ];
     let productMap = {};
     req.productDetails.forEach(detail => {
-      productMap[detail.product.product_name] = detail;
+      productMap[detail.product_id] = detail;
     });
     products.forEach(product => {
-      if (product.product_name in productMap) {
-        row.push(productMap[product.product_name].qualification, productMap[product.product_name].comment);
+      if (product.product_id in productMap) {
+        row.push(productMap[product.product_id].qualification, productMap[product.product_id].comment);
       } else {
         row.push('', '');
       }
