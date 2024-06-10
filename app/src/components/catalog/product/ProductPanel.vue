@@ -5,10 +5,12 @@ import ProductItem from "@/components/catalog/product/ProductItem.vue";
 import {onBeforeMount, ref} from "vue";
 import {useCatalogStore} from "@/stores/catalog.ts";
 import EditProducts from "@/components/catalog/product/EditProducts.vue";
+import alertService from "@/services/util/alert.ts";
 
 const catalogStore = useCatalogStore();
 const products = ref<Product[]>([]);
 const page = ref(1);
+const selectedProduct = ref<Product>();
 
 const editDialog = ref(false);
 
@@ -20,10 +22,37 @@ function updateDialog(value: boolean) {
   editDialog.value = value;
 }
 
-onBeforeMount(async () => {
+async function removeProductFromCatalog() {
+  console.log("removing... " + selectedProduct.value?.product_name)
+  if (selectedProduct.value?.product_id) {
+    await catalogStore.removeProductFromCatalogAndRequirements(selectedProduct.value?.product_id);
+    alertService.addSuccessAlert("Produkt wurde vom Katalog entfernt.")
+    refreshProducts();
+  }
+}
+
+async function openDialog(product: Product) {
+
+  if (product) {
+    selectedProduct.value = product;
+    alertService.openDialog("Produkt entfernen",
+        "Wollen Sie wirklich das Produkt " + selectedProduct.value.product_name +
+        " von diesem Katalog entfernen? Das Produkt wird nicht vollständig gelöscht.",
+        "Entfernen", "Abbrechen", removeProductFromCatalog)
+  } else {
+    alertService.addWarningAlert("Es wurde kein Produkt ausgewählt.")
+  }
+}
+
+function refreshProducts() {
   if (catalogStore.getCurrentCatalog) {
+    products.value = [];
     products.value = catalogStore.getCurrentCatalog?.products;
   }
+}
+
+onBeforeMount(async () => {
+  refreshProducts();
 })
 </script>
 
@@ -54,7 +83,20 @@ onBeforeMount(async () => {
                       :key="item.raw.product_id"
                   >
                     <v-col cols="4">
-                      <ProductItem :product="item.raw"></ProductItem>
+                      <div class="d-flex flex-column flex-sm-row justify-start align-center">
+                        <div class="flex-grow-1">
+                          <ProductItem :product="item.raw"></ProductItem>
+                        </div>
+                        <div class="flex-shrink-1">
+                          <v-btn
+                              density="compact"
+                              color="error"
+                              variant="plain"
+                              size="medium"
+                              icon="mdi-minus-circle-outline"
+                              @click="openDialog(item.raw)"></v-btn>
+                        </div>
+                      </div>
                     </v-col>
                   </template>
                 </v-row>

@@ -45,3 +45,18 @@ BEGIN
         END LOOP;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION remove_product_from_catalog(productId uuid, catalogId uuid)
+    RETURNS VOID AS $$
+BEGIN
+    DELETE FROM product_catalogs
+    WHERE product_id = productId AND catalog_id = catalogId;
+
+    DELETE FROM product_requirements
+    WHERE product_id = productId AND requirement_id IN (
+        SELECT requirement_id
+        FROM requirements
+        WHERE catalog_id = catalogId
+    );
+END;
+$$ LANGUAGE plpgsql;

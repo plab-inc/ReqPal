@@ -129,6 +129,15 @@ export const useCatalogStore = defineStore('catalog', {
                 throw Error("Product not found for current catalog.")
             }
             await CatalogService.push.updateProduct(product);
+        },
+
+        async removeProductFromCatalogAndRequirements(productId: string) {
+            if (!this.currentCatalog || !this.currentCatalog.catalog_id) {
+                throw Error("No current catalog found.")
+            }
+
+            await CatalogService.push.removeProductFromCatalogAndRequirements(productId, this.currentCatalog.catalog_id);
+            this.currentCatalog.products = this.currentCatalog.products.filter(product => product.product_id !== productId);
         }
     }
 });
