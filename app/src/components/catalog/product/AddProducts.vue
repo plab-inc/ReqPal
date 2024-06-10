@@ -129,7 +129,7 @@ async function addProductsToCatalog() {
 
 async function createNewProduct() {
   try {
-    const data = await catalogStore.uploadProductFromUser(newProduct.value);
+    const data = await catalogStore.addProductFromUser(newProduct.value);
     if (data) {
       filteredProducts.value.push({...data})
       AlertService.addSuccessAlert("Produkt erstellt!");

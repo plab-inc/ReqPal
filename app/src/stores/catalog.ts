@@ -142,10 +142,10 @@ export const useCatalogStore = defineStore('catalog', {
             this.currentCatalog.products = this.currentCatalog.products.filter(product => product.product_id !== productId);
         },
 
-        async uploadProductFromUser(product: Product) {
+        async addProductFromUser(product: Product) {
             const authStore = useAuthStore();
             if (authStore.user) {
-                return await CatalogService.push.uploadProduct(product, authStore.user.id);
+                return await CatalogService.push.addProduct(product, authStore.user.id);
             }
         },
 

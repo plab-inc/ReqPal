@@ -1,6 +1,6 @@
 <template>
   <ProductPanel class="mb-5"></ProductPanel>
-  <v-data-table
+  <v-data-table-virtual
     v-model:expanded="expanded"
     :headers="headers"
     :items="catalogStore.getCurrentCatalog?.requirements"
@@ -8,7 +8,7 @@
     show-expand
     expand-on-click
     hover
-    items-per-page="15"
+    height="70vh"
   >
     <template v-slot:item.actions="{ item }">
       <div style="display: flex; align-items: center;">
@@ -19,7 +19,7 @@
           variant="plain"
           size="medium"
           icon="mdi-pencil"
-          @click.stop="openEditDialog(item)"
+          @click.stop="openEditDialog(item, false)"
         />
         <v-btn
           class="ml-2"
@@ -35,17 +35,28 @@
     <template v-if="catalogStore.getCurrentCatalog" v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
-          <ProductDetailPanel :requirement="item" :products="catalogStore.getCurrentCatalog?.products"></ProductDetailPanel>
+          <ProductDetailPanel :requirement="item"
+                              :products="catalogStore.getCurrentCatalog?.products"></ProductDetailPanel>
         </td>
       </tr>
     </template>
-  </v-data-table>
-  <EditRequirement :dialog="editDialog" :editedItem="editedItem" @update:dialog="updateDialog"/>
+    <template v-slot:top>
+      <v-btn
+        class="mb-4"
+        color="primary"
+        max-width="20rem"
+        @click="openNewRequirementDialog"
+      >
+        Anforderung hinzufügen
+      </v-btn>
+    </template>
+  </v-data-table-virtual>
+  <EditRequirement :dialog="editDialog" :editedItem="editedItem" :isNew="isNew" @update:dialog="updateDialog" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Requirement } from "@/types/catalog.ts";
+import { ProductDetail, Requirement } from "@/types/catalog.ts";
 import ProductDetailPanel from "@/components/catalog/product/productDetails/ProductDetailPanel.vue";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
 import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
@@ -58,17 +69,39 @@ const utilStore = useUtilStore();
 const expanded = ref<any>([]);
 const editDialog = ref(false);
 const editedItem = ref<any | null>(null);
+const isNew = ref(false);
 
 const headers = [
-  { title: 'Anforderung', value: 'reqId', sortable: true },
-  { title: 'Titel', value: 'title', sortable: true },
-  { title: 'Beschreibung', value: 'description', sortable: true },
-  { title: 'Aktionen', key: 'actions', sortable: false },
+  { title: "Anforderung", value: "reqId", sortable: true },
+  { title: "Titel", value: "title", sortable: true },
+  { title: "Beschreibung", value: "description", sortable: true },
+  { title: "Aktionen", key: "actions", sortable: false }
 ];
 
-function openEditDialog(item: Requirement) {
-  editedItem.value = item;
+function openEditDialog(item: Requirement | null, newRequirement: boolean) {
+  if (newRequirement) {
+    let products: { [product_id: string]: ProductDetail } = {};
+
+    for (const product of catalogStore.getCurrentCatalog?.products || []) {
+      products[product.product_id] = {
+        product_name: product.product_name,
+        qualification: 0,
+        comment: product.product_name + "-Qualifizierungs-Kommentar"
+      };
+    }
+
+    editedItem.value = { reqId: "", title: "", description: "", products: products };
+    isNew.value = true;
+  }
+  if (!newRequirement) {
+    editedItem.value = item;
+    isNew.value = false;
+  }
   editDialog.value = true;
+}
+
+function openNewRequirementDialog() {
+  openEditDialog(null, true);
 }
 
 function deleteRequirement(item: Requirement) {
