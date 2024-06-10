@@ -7,7 +7,7 @@
           :color="isHovering ? 'info' : undefined"
           variant="outlined"
           class="ma-2 fill-height"
-          min-height="150" max-width="500"
+          min-height="150"
           @click="openProductPage(product.product_url)">
         <v-card-title>
           {{ product.product_name }}

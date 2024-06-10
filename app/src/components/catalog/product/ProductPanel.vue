@@ -102,11 +102,11 @@ onBeforeMount(async () => {
                       :key="item.raw.product_id"
                   >
                     <v-col cols="4">
-                      <div class="d-flex flex-column flex-sm-row justify-start align-center">
-                        <div class="flex-grow-1">
+                      <v-row>
+                        <v-col sm="11">
                           <ProductItem :product="item.raw"></ProductItem>
-                        </div>
-                        <div class="flex-shrink-1">
+                        </v-col>
+                        <v-col sm="1">
                           <v-btn
                               density="compact"
                               color="error"
@@ -114,8 +114,8 @@ onBeforeMount(async () => {
                               size="medium"
                               icon="mdi-minus-circle-outline"
                               @click="openDialog(item.raw)"></v-btn>
-                        </div>
-                      </div>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </template>
                 </v-row>
@@ -159,6 +159,7 @@ onBeforeMount(async () => {
       </v-expansion-panel>
     </v-expansion-panels>
     <EditProducts v-if="editDialog" :dialog="editDialog" :products="products" @update:dialog="updateEditDialog"/>
-    <AddProducts v-if="addDialog" :dialog="addDialog" :products="products" @productsAdded="refreshProducts" @update:dialog="updateAddDialog"/>
+    <AddProducts v-if="addDialog" :dialog="addDialog" :products="products" @productsAdded="refreshProducts"
+                 @update:dialog="updateAddDialog"/>
   </div>
 </template>
