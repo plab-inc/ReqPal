@@ -80,7 +80,7 @@ const localEditedRequirement = ref<Requirement>(JSON.parse(JSON.stringify(props.
 const catalogStore = useCatalogStore();
 
 const formValid = ref(false);
-const form = ref(null);
+const form = ref();
 
 const emit = defineEmits(["update:dialog"]);
 
@@ -89,8 +89,7 @@ function close() {
 }
 
 async function save() {
-  const isValid = await form.value.validate();
-  if (!isValid) {
+  if (form.value && !(await form.value.validate())) {
     return;
   }
 
