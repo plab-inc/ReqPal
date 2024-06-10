@@ -23,7 +23,6 @@ function updateDialog(value: boolean) {
 onBeforeMount(async () => {
   if (catalogStore.getCurrentCatalog) {
     products.value = catalogStore.getCurrentCatalog?.products;
-    products.value.push({product_url: "bla", product_name: "test", product_id: "hallo"});
   }
 })
 </script>
