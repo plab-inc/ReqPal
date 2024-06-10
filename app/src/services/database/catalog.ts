@@ -2,11 +2,12 @@ import { supabase } from "@/plugins/supabase";
 import {
   Catalog,
   CatalogDTO,
+  Product,
+  ProductDetail,
   ProductDTO,
   ProductRequirementDTO,
-  ProductDetail,
   Requirement,
-  RequirementDTO, Product
+  RequirementDTO
 } from "@/types/catalog.ts";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { ConversionError } from "@/errors/custom.ts";
@@ -78,7 +79,8 @@ class CatalogServiceClass {
         title, 
         description,
         productDetails:product_requirements (
-          product:products (
+          product:products(
+            product_id,
             product_name
           ),
           qualification,

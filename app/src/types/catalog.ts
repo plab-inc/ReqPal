@@ -1,12 +1,13 @@
 import { Database } from "@/types/supabase.ts";
 
 export type ProductDetail = {
+    product_name: string,
     qualification: number;
     comment: string;
 }
 
 export type Product = {
-    product_id?: string;
+    product_id: string;
     product_name: string;
     product_url: string;
 }
@@ -17,12 +18,12 @@ export type Requirement = {
     title: string | null;
     description: string | null;
     products: {
-        [key: string]: ProductDetail;
+        [product_id: string]: ProductDetail;
     };
 }
 
 export type Catalog = {
-    catalog_id?: string;
+    catalog_id: string;
     catalog_name: string;
     products: Product[];
     requirements: Requirement[];

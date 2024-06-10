@@ -10,7 +10,7 @@
       class="pa-1"
     >
       <v-card-title>
-        Requirement {{ localEditedRequirement.reqId }} Bearbeiten
+        {{ localEditedRequirement.reqId }}
       </v-card-title>
       <v-divider />
       <v-card-text>
@@ -31,7 +31,7 @@
             :key="key"
           >
             <div class="text-caption mb-2">
-              {{ key }}
+              {{ productDetail.product_name }}
             </div>
             <v-text-field variant="outlined" label="Kommentar" v-model="productDetail.comment" />
             <v-slider
@@ -67,7 +67,7 @@ const props = defineProps({
   editedItem: Object
 });
 
-const localEditedRequirement = ref<any>();
+const localEditedRequirement = ref<Requirement>(JSON.parse(JSON.stringify(props.editedItem)));
 
 const emit = defineEmits(["update:dialog"]);
 
@@ -76,15 +76,18 @@ function close() {
 }
 
 function save() {
-
   if (!areRequirementEquals()) {
     console.log("Update Requirements");
-    catalogService.push.updateRequirement(localEditedRequirement.value as Requirement);
-    Object.assign(props.editedItem as Requirement, localEditedRequirement.value as Requirement);
+    catalogService.push.updateRequirement(localEditedRequirement.value);
+    Object.assign(props.editedItem as Requirement, localEditedRequirement.value);
   }
 
   if (!areProductsEquals()) {
     console.log("Update Product Requirements");
+    for (const [key, productDetail] of Object.entries(localEditedRequirement.value.products)) {
+      catalogService.push.updateProductDetailsForRequirement(key, productDetail, localEditedRequirement.value.requirement_id);
+    }
+    Object.assign(props.editedItem as Requirement, localEditedRequirement?.value);
   }
 
   close();
@@ -107,9 +110,8 @@ function areProductsEquals() {
   return JSON.stringify(localCopy) == JSON.stringify(propsCopy);
 }
 
-
-watch(() => props.editedItem, (newVal) => {
-  localEditedRequirement.value = JSON.parse(JSON.stringify(newVal));
+watch(() => props.dialog, () => {
+  localEditedRequirement.value = JSON.parse(JSON.stringify(props.editedItem));
 }, { immediate: true });
 
 </script>

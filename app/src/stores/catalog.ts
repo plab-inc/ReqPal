@@ -1,9 +1,9 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import catalogService from "@/services/database/catalog.ts";
-import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
-import {DatabaseError} from "@/errors/custom.ts";
 import CatalogService from "@/services/database/catalog.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -87,7 +87,8 @@ export const useCatalogStore = defineStore('catalog', {
                     requirement.products = products.reduce((acc, product) => {
                         const detail = detailsMap.get(product.product_id!);
                         if (detail) {
-                            acc[product.product_name] = {
+                            acc[product.product_id] = {
+                                product_name: product.product_name,
                                 qualification: detail.qualification || 0,
                                 comment: detail.comment || ''
                             };

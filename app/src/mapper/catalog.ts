@@ -8,9 +8,10 @@ export const mapToCatalog = (input: any): Catalog => {
   }));
 
   const requirements: Requirement[] = input.requirements.map((item: any) => {
-    const productDetails: { [key: string]: ProductDetail } = {};
+    const productDetails: { [product_id: string]: ProductDetail } = {};
     item.productDetails.forEach((detail: any) => {
-      productDetails[detail.product.product_name] = {
+      productDetails[detail.product.product_id] = {
+        product_name: detail.product.product_name,
         qualification: detail.qualification,
         comment: detail.comment
       };

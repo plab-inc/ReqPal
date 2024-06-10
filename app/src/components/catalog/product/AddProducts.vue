@@ -84,11 +84,11 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {Product} from "@/types/catalog.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { onBeforeMount, ref } from "vue";
+import { Product } from "@/types/catalog.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {requiredHyperlinkRule, requiredStringRule} from "@/utils/validationRules.ts";
+import { requiredHyperlinkRule, requiredStringRule } from "@/utils/validationRules.ts";
 import CatalogService from "@/services/database/catalog.ts";
 
 interface Props {
@@ -106,7 +106,7 @@ const selection = ref<string[]>([]);
 
 const showNewProductForm = ref<boolean>(false);
 const isFormValid = ref<boolean>(false);
-const newProduct = ref<Product>({product_name: "", product_url: ""});
+const newProduct = ref<any>({ product_name: "", product_url: "" });
 
 function close() {
   emit("update:dialog", false);

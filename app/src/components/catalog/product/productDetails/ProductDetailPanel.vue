@@ -1,10 +1,9 @@
 <script setup lang="ts">
 
-import {Product, Requirement} from "@/types/catalog.ts";
-import ProductDetail from "@/components/catalog/product/productDetails/ProductDetail.vue"
-import AlertService from "@/services/util/alert.ts";
-import {onBeforeMount, ref} from "vue";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { Product, Requirement } from "@/types/catalog.ts";
+import ProductDetail from "@/components/catalog/product/productDetails/ProductDetail.vue";
+import { ref } from "vue";
+import { useCatalogStore } from "@/stores/catalog.ts";
 
 interface Props {
   requirement: Requirement | undefined,
@@ -16,22 +15,6 @@ const props = defineProps<Props>();
 
 const catalogStore = useCatalogStore();
 
-async function getProductDetails() {
-
-  try {
-    if (props.requirement) {
-      await catalogStore.getProductDetailsForRequirement(props.requirement, props.products);
-    }
-  } catch (error: any) {
-    AlertService.addErrorAlert("Fehler beim Abrufen der Produktdetails: " + error.message);
-  }
-
-}
-onBeforeMount(async () => {
-  loading.value = true;
-  await getProductDetails();
-  loading.value = false;
-})
 </script>
 
 <template>
