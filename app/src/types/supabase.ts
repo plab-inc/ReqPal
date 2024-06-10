@@ -28,7 +28,15 @@ export type Database = {
           example?: boolean
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "catalogs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lessons: {
         Row: {
@@ -127,21 +135,21 @@ export type Database = {
           comment: string | null
           product_id: string
           product_requirement_id: string
-          qualification: string | null
+          qualification: number
           requirement_id: string
         }
         Insert: {
           comment?: string | null
           product_id: string
           product_requirement_id?: string
-          qualification?: string | null
+          qualification?: number
           requirement_id: string
         }
         Update: {
           comment?: string | null
           product_id?: string
           product_requirement_id?: string
-          qualification?: string | null
+          qualification?: number
           requirement_id?: string
         }
         Relationships: [
@@ -166,18 +174,29 @@ export type Database = {
           product_id: string
           product_name: string
           product_url: string
+          user_id: string | null
         }
         Insert: {
           product_id?: string
           product_name: string
           product_url: string
+          user_id?: string | null
         }
         Update: {
           product_id?: string
           product_name?: string
           product_url?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -639,6 +658,13 @@ export type Database = {
       is_claims_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      remove_product_from_catalog: {
+        Args: {
+          productid: string
+          catalogid: string
+        }
+        Returns: undefined
       }
       reverse_boolean_value: {
         Args: {
