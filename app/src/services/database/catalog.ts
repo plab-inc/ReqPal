@@ -22,6 +22,7 @@ class CatalogServiceClass {
     uploadProduct: this.uploadProduct.bind(this),
     updateProduct: this.updateProduct.bind(this),
     deleteProduct: this.deleteProduct.bind(this),
+    removeProductFromCatalogAndRequirements: this.removeProductFromCatalogAndRequirements.bind(this),
     addProductToCatalogAndRequirements: this.addProductToCatalogAndRequirements.bind(this),
     updateProductDetailsForRequirement: this.updateProductDetailsForRequirement.bind(this)
   };
@@ -33,6 +34,7 @@ class CatalogServiceClass {
     fetchCatalogByCatalogId: this.fetchFullCatalogById.bind(this),
     fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
     fetchProductById: this.fetchProductById.bind(this),
+    fetchProductsByUser: this.fetchProductsByUser.bind(this),
     fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
     fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this),
     checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this),
@@ -168,6 +170,18 @@ class CatalogServiceClass {
     }
   }
 
+  private async fetchProductsByUser(): Promise<Product[] | undefined> {
+    const { data, error } = await supabase
+        .from("products")
+        .select("*")
+
+    if (error) throw error;
+
+    if (data) {
+      return data as Product[];
+    }
+  }
+
   private async downloadCatalog(catalogId: string): Promise<any> {
 
     const { data: data, error: error } = await supabase.functions.invoke("catalog/download", {
@@ -223,18 +237,21 @@ class CatalogServiceClass {
 
   }
 
-  private async uploadProduct(product: Product, userUUID: string) {
-    const {error} = await supabase
+  private async uploadProduct(product: Product, userUUID: string) : Promise<ProductDTO | undefined> {
+    const {data, error} = await supabase
         .from('products')
-        .insert([
+        .insert(
           {
             product_name: product.product_name,
             product_url: product.product_url,
             user_id: userUUID
-          },
-        ])
+          }
+        )
+        .select()
 
     if (error) throw error;
+
+    return data[0] as ProductDTO;
   }
 
   private async addProductToCatalogAndRequirements(productId: string, catalog: Catalog) {
@@ -343,6 +360,17 @@ class CatalogServiceClass {
 
         return data;
     }
+
+  async removeProductFromCatalogAndRequirements(productId: string, catalogId: string): Promise<void> {
+      const { error } = await supabase.rpc('remove_product_from_catalog', {
+        productid: productId,
+        catalogid: catalogId
+      });
+
+      if (error) {
+        throw error;
+      }
+  }
 
   private async checkIfCatalogNameExists(catalogName: string): Promise<boolean> {
     const { error, count } = await supabase

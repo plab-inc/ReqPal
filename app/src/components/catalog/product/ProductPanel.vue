@@ -6,6 +6,7 @@ import {onBeforeMount, ref} from "vue";
 import {useCatalogStore} from "@/stores/catalog.ts";
 import EditProducts from "@/components/catalog/product/EditProducts.vue";
 import alertService from "@/services/util/alert.ts";
+import AddProducts from "@/components/catalog/product/AddProducts.vue";
 
 const catalogStore = useCatalogStore();
 const products = ref<Product[]>([]);
@@ -13,13 +14,22 @@ const page = ref(1);
 const selectedProduct = ref<Product>();
 
 const editDialog = ref(false);
+const addDialog = ref(false);
 
 function openEditDialog() {
   editDialog.value = true;
 }
 
-function updateDialog(value: boolean) {
+function addProduct() {
+  addDialog.value = true;
+}
+
+function updateEditDialog(value: boolean) {
   editDialog.value = value;
+}
+
+function updateAddDialog(value: boolean) {
+  addDialog.value = value;
 }
 
 async function removeProductFromCatalog() {
@@ -70,6 +80,15 @@ onBeforeMount(async () => {
                 size="medium"
                 icon="mdi-pencil"
                 @click.stop="openEditDialog"
+            />
+            <v-btn
+                class="ml-1"
+                density="compact"
+                color="success"
+                variant="plain"
+                size="medium"
+                icon="mdi-plus"
+                @click.stop="addProduct"
             />
           </div>
 
@@ -139,6 +158,7 @@ onBeforeMount(async () => {
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <EditProducts v-if="editDialog" :dialog="editDialog" :products="products" @update:dialog="updateDialog"/>
+    <EditProducts v-if="editDialog" :dialog="editDialog" :products="products" @update:dialog="updateEditDialog"/>
+    <AddProducts v-if="addDialog" :dialog="addDialog" :products="products" @productsAdded="refreshProducts" @update:dialog="updateAddDialog"/>
   </div>
 </template>

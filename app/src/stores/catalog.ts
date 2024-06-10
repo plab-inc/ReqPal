@@ -3,6 +3,7 @@ import catalogService from "@/services/database/catalog.ts";
 import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
 import {DatabaseError} from "@/errors/custom.ts";
 import CatalogService from "@/services/database/catalog.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -54,13 +55,13 @@ export const useCatalogStore = defineStore('catalog', {
 
         async deleteRequirement(requirementId: string) {
             await catalogService.push.deleteRequirement(requirementId).then(
-              (data: any) => {
-                  if (data.length > 0) {
-                      this.currentCatalog?.requirements.splice(this.currentCatalog?.requirements.findIndex(r => r.requirement_id === requirementId), 1);
-                      return;
-                  }
-                  throw new DatabaseError("Requirement could not be deleted", 500);
-              }
+                (data: any) => {
+                    if (data.length > 0) {
+                        this.currentCatalog?.requirements.splice(this.currentCatalog?.requirements.findIndex(r => r.requirement_id === requirementId), 1);
+                        return;
+                    }
+                    throw new DatabaseError("Requirement could not be deleted", 500);
+                }
             );
         },
 
@@ -138,6 +139,23 @@ export const useCatalogStore = defineStore('catalog', {
 
             await CatalogService.push.removeProductFromCatalogAndRequirements(productId, this.currentCatalog.catalog_id);
             this.currentCatalog.products = this.currentCatalog.products.filter(product => product.product_id !== productId);
+        },
+
+        async uploadProductFromUser(product: Product) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                return await CatalogService.push.uploadProduct(product, authStore.user.id);
+            }
+        },
+
+        async addProductToCatalogAndRequirements(product: Product) {
+            if (!this.currentCatalog) {
+                throw Error("No current catalog found.")
+            }
+            if (product.product_id) {
+                await CatalogService.push.addProductToCatalogAndRequirements(product.product_id, this.currentCatalog);
+                this.currentCatalog.products.push(product);
+            }
         }
     }
 });
