@@ -81,7 +81,7 @@
             </v-list-item>
           </v-list-group>
         </div>
-        <v-list-group value="Kataloge" v-if="authStore.user && authStore.isTeacher">
+        <v-list-group subgroup value="Kataloge" v-if="authStore.user && authStore.isTeacher">
           <template v-slot:activator="{ props }">
             <v-list-item
               v-bind="props"
@@ -91,15 +91,10 @@
               :active="routeRelatedToCatalog()"
             />
           </template>
-          <v-list-item
-            rounded
-            prepend-icon="mdi-text-box-multiple"
-            title="Meine Kataloge"
-            :active="false"
-            to="/catalogs"
+          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"
           />
-          <v-list-item :active="false" rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
-          <v-list-item :active="false" rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen"
+          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
+          <v-list-item rounded prepend-icon="mdi-upload" title="Neuer Katalog"
                        to="/catalogs/upload" />
         </v-list-group>
 
