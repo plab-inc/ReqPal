@@ -27,6 +27,7 @@ export type Catalog = {
     catalog_name: string;
     products: Product[];
     requirements: Requirement[];
+    user_id: string;
 }
 
 export type CatalogDTO = Database["public"]["Tables"]["catalogs"]["Row"];

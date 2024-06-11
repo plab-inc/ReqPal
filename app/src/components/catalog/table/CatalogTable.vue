@@ -9,6 +9,7 @@
     expand-on-click
     hover
     height="70vh"
+    no-data-text="Dieser Katalog enthält noch keine Anforderungen"
   >
     <template v-slot:item.actions="{ item }">
       <div style="display: flex; align-items: center;">
@@ -40,7 +41,7 @@
         </td>
       </tr>
     </template>
-    <template v-slot:top>
+    <template v-slot:top v-if="userOwnsCatalog">
       <v-btn
         class="mb-4"
         color="primary"
@@ -55,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, onMounted, ref } from "vue";
 import { ProductDetail, Requirement } from "@/types/catalog.ts";
 import ProductDetailPanel from "@/components/catalog/product/productDetails/ProductDetailPanel.vue";
 import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
@@ -63,20 +64,31 @@ import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { DeleteRequirement } from "@/utils/dialogs.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 const catalogStore = useCatalogStore();
+const authStore = useAuthStore();
 const utilStore = useUtilStore();
 const expanded = ref<any>([]);
 const editDialog = ref(false);
 const editedItem = ref<any | null>(null);
 const isNew = ref(false);
+const userOwnsCatalog = ref(false);
 
 const headers = [
   { title: "Anforderung", value: "label", sortable: true },
   { title: "Titel", value: "title", sortable: true },
-  { title: "Beschreibung", value: "description", sortable: true },
-  { title: "Aktionen", key: "actions", sortable: false }
+  { title: "Beschreibung", value: "description", sortable: true }
 ];
+
+onBeforeMount(() => {
+  if(catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
+    userOwnsCatalog.value = true;
+    headers.push(
+      { title: "Aktionen", value: "actions", sortable: false }
+    )
+  }
+})
 
 function openEditDialog(item: Requirement | null, newRequirement: boolean) {
   if (newRequirement) {

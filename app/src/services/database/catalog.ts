@@ -17,7 +17,9 @@ class CatalogServiceClass {
 
   public push = {
     uploadCatalog: this.uploadCatalog.bind(this),
+    addCatalog: this.addCatalog.bind(this),
     deleteCatalog: this.deleteCatalog.bind(this),
+    updateCatalogName: this.updateCatalogName.bind(this),
     addRequirement: this.addRequirement.bind(this),
     deleteRequirement: this.deleteRequirement.bind(this),
     updateRequirement: this.updateRequirement.bind(this),
@@ -68,6 +70,7 @@ class CatalogServiceClass {
       .select(`
       catalog_id,
       catalog_name,
+      user_id,
       products:product_catalogs(
         products(
           product_id,
@@ -207,15 +210,14 @@ class CatalogServiceClass {
         description: requirement.description,
         label: requirement.label
       })
-      .eq("requirement_id", requirement.requirement_id);
-
-    if (data) {
-      return;
-    }
+      .eq("requirement_id", requirement.requirement_id)
+      .select()
 
     if (error) {
       throw error;
     }
+
+    return data;
   }
 
   private async addRequirement(catalogId: string, requirement: Requirement) {
@@ -339,18 +341,21 @@ class CatalogServiceClass {
   }
 
   private async updateProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("product_requirements")
       .update({
         qualification: productDetails.qualification,
         comment: productDetails.comment
       })
       .eq("product_id", productId)
-      .eq("requirement_id", requirementId);
+      .eq("requirement_id", requirementId)
+      .select();
 
     if (error) {
       throw error;
     }
+
+    return data;
   }
 
   async fetchCatalogs(examples: boolean = false): Promise<CatalogDTO[] | undefined> {
@@ -365,6 +370,31 @@ class CatalogServiceClass {
       return data;
     }
   }
+
+  async updateCatalogName(catalogId: string, catalogName: string): Promise<CatalogDTO[]> {
+    const { data, error } = await supabase
+      .from("catalogs")
+      .update({catalog_name: catalogName})
+      .eq("catalog_id", catalogId)
+      .select();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async addCatalog(catalogName: string, userId: string): Promise<CatalogDTO> {
+    const { data, error } = await supabase
+      .from("catalogs")
+      .insert({catalog_name: catalogName, user_id: userId})
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return data as CatalogDTO;
+  }
+
 
   async deleteCatalog(catalogId: string): Promise<CatalogDTO[]> {
     const { data, error } = await supabase

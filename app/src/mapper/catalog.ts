@@ -29,6 +29,7 @@ export const mapToCatalog = (input: any): Catalog => {
   return {
     catalog_id: input.catalog_id,
     catalog_name: input.catalog_name,
+    user_id: input.user_id,
     products: products,
     requirements: requirements
   };
