@@ -82,7 +82,6 @@ watch(editedCatalogName, (newVal, oldVal) => {
             v-model="editedCatalogName"
             :rules="[catalogNameUniqueRule, requiredStringRule]"
             :append-icon="hasChanged() ? 'mdi-content-save' : 'dummy'"
-            color="success"
             type="text"
             :readonly="!userOwnsCatalog"
             variant="outlined"
