@@ -112,25 +112,8 @@ export const useCatalogStore = defineStore('catalog', {
             return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId, productId);
         },
 
-        async fetchProductById(productId: string) {
-            return await catalogService.pull.fetchProductById(productId);
-        },
-
         async checkIfCatalogNameExists(catalogName: string) {
             return await catalogService.pull.checkIfCatalogNameExists(catalogName);
-        },
-
-        async updateProductForCurrentCatalog(product: Product) {
-            if (!this.currentCatalog) {
-                throw Error("No current catalog found.")
-            }
-
-            const productIndex = this.currentCatalog.products.findIndex(p => p.product_id === product.product_id);
-
-            if (productIndex <= -1) {
-                throw Error("Product not found for current catalog.")
-            }
-            await CatalogService.push.updateProduct(product);
         },
 
         async removeProductFromCatalogAndRequirements(productId: string) {

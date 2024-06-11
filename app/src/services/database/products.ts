@@ -15,7 +15,6 @@ class ProductServiceClass {
     public pull = {
         fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
         fetchProductById: this.fetchProductById.bind(this),
-        fetchExampleProducts: this.fetchExampleProducts.bind(this),
         fetchProductsByUser: this.fetchProductsByUser.bind(this),
     };
 
@@ -47,35 +46,11 @@ class ProductServiceClass {
         }
     }
 
-    private async fetchExampleProducts(): Promise<Product[] | undefined> {
-        const {data, error} = await supabase
-            .from("catalogs")
-            .select(`
-    catalog_id,
-    products:product_catalogs!inner(
-      product_id,
-      product:products(
-        product_id,
-        product_name,
-        product_url
-      )
-    )
-  `)
-            .eq("example", true);
-
-        if (error) throw error;
-
-        if (data) {
-            let result = data.flatMap(catalog => catalog.products.map(pc => pc.product));
-            return result as Product[];
-        }
-        return undefined;
-    }
-
-    private async fetchProductsByUser(): Promise<Product[] | undefined> {
+    private async fetchProductsByUser(userUUID: string): Promise<Product[] | undefined> {
         const {data, error} = await supabase
             .from("products")
             .select("*")
+            .eq("user_id", userUUID)
 
         if (error) throw error;
 
@@ -83,7 +58,6 @@ class ProductServiceClass {
             return data as Product[];
         }
     }
-
 
     private async uploadProduct(product: Product, userUUID: string): Promise<ProductDTO | undefined> {
         const {data, error} = await supabase

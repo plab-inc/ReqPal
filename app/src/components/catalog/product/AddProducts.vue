@@ -89,7 +89,7 @@ import { Product } from "@/types/catalog.ts";
 import { useCatalogStore } from "@/stores/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
 import { requiredHyperlinkRule, requiredStringRule } from "@/utils/validationRules.ts";
-import CatalogService from "@/services/database/catalog.ts";
+import {useProductStore} from "@/stores/product.ts";
 
 interface Props {
   dialog: boolean;
@@ -100,6 +100,7 @@ const props = defineProps<Props>();
 const emit = defineEmits(["update:dialog", "productsAdded"]);
 
 const catalogStore = useCatalogStore();
+const productStore = useProductStore();
 const userProducts = ref<Product[]>([]);
 const filteredProducts = ref<Product[]>([]);
 const selection = ref<string[]>([]);
@@ -142,7 +143,7 @@ async function createNewProduct() {
 }
 
 onBeforeMount(async () => {
-  let data = await CatalogService.pull.fetchProductsByUser();
+  let data = await productStore.fetchProductsByUser();
   if (data) userProducts.value = data;
   filteredProducts.value = userProducts.value.filter(userProduct => {
     return !props.products.some(propProduct => propProduct.product_id === userProduct.product_id);

@@ -5,18 +5,23 @@ import ProductService from "@/services/database/products.ts";
 
 interface ProductState {
     products: Product[]
-    examples: Product[]
     currentProduct: Product | null
 }
 
 export const useProductStore = defineStore('product', {
     state: (): ProductState => ({
         products: [],
-        examples: [],
         currentProduct: null
     }),
 
-    getters: {},
+    getters: {
+        getCurrentProducts: (state) => {
+            return state.products;
+        },
+        getCurrentProduct: (state) => {
+            return state.currentProduct;
+        },
+    },
 
     actions: {
 
@@ -26,11 +31,40 @@ export const useProductStore = defineStore('product', {
             return data;
         },
 
+        async fetchProductsByUser() {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                const data = await ProductService.pull.fetchProductsByUser(authStore.user.id);
+                if (data) this.products = data;
+                return data;
+            }
+        },
+
         async uploadProductFromUser(product: Product) {
             const authStore = useAuthStore();
             if (authStore.user) {
-                return await ProductService.push.uploadProduct(product, authStore.user.id);
+                const newProduct = await ProductService.push.uploadProduct(product, authStore.user.id);
+                if (newProduct) {
+                    this.products.push(newProduct);
+                }
             }
         },
+
+        async updateCurrentProduct(product: Product) {
+            await ProductService.push.updateProduct(product);
+            this.currentProduct = product;
+            const index = this.products.findIndex(p => p.product_id === product.product_id);
+            if (index >= 0) {
+                this.products[index] = this.currentProduct;
+            }
+        },
+
+        async deleteProduct(productId: string) {
+            await ProductService.push.deleteProduct(productId);
+            const index = this.products.findIndex(p => p.product_id === productId);
+            if (index >= 0) {
+                this.products.splice(index, 1);
+            }
+        }
     }
 });

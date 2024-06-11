@@ -24,8 +24,6 @@ class CatalogServiceClass {
     deleteRequirement: this.deleteRequirement.bind(this),
     updateRequirement: this.updateRequirement.bind(this),
     addProduct: this.addProduct.bind(this),
-    updateProduct: this.updateProduct.bind(this),
-    deleteProduct: this.deleteProduct.bind(this),
     removeProductFromCatalogAndRequirements: this.removeProductFromCatalogAndRequirements.bind(this),
     addProductToCatalogAndRequirements: this.addProductToCatalogAndRequirements.bind(this),
     updateProductDetailsForRequirement: this.updateProductDetailsForRequirement.bind(this),
@@ -37,9 +35,6 @@ class CatalogServiceClass {
     fetchCatalogs: this.fetchCatalogs.bind(this),
     fetchProductDetailsByRequirement: this.fetchProductDetailsByRequirement.bind(this),
     fetchCatalogByCatalogId: this.fetchFullCatalogById.bind(this),
-    fetchProductsByCatalogId: this.fetchProductsByCatalogId.bind(this),
-    fetchProductById: this.fetchProductById.bind(this),
-    fetchProductsByUser: this.fetchProductsByUser.bind(this),
     fetchProductDetailsByRequirementWithQualificationByProductId: this.fetchProductDetailsByRequirementWithQualificationByProductId.bind(this),
     fetchProductDetailsByRequirementWithoutQualificationByProductId: this.fetchProductDetailsByRequirementWithoutQualificationByProductId.bind(this),
     checkIfCatalogNameExists: this.checkIfCatalogNameExists.bind(this),
@@ -106,20 +101,6 @@ class CatalogServiceClass {
     return undefined;
   }
 
-  private async fetchProductsByCatalogId(catalogId: string): Promise<Product[] | undefined> {
-    const { data, error } = await supabase
-      .from("product_catalogs")
-      .select("products(product_id, product_name, product_url)")
-      .eq("catalog_id", catalogId);
-
-    if (error) throw error;
-
-    return data?.reduce((products: Product[], item) => {
-      if (item.products) products.push(item.products);
-      return products;
-    }, []) || undefined;
-  }
-
   private async fetchProductDetailsByRequirement(requirementId: string): Promise<ProductRequirementDTO[] | undefined> {
     const { data, error } = await supabase
       .from("product_requirements")
@@ -160,32 +141,6 @@ class CatalogServiceClass {
 
     if (data) {
       return data as ProductRequirementDTO;
-    }
-  }
-
-  private async fetchProductById(productId: string): Promise<ProductDTO | undefined> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("product_id", productId)
-      .single();
-
-    if (error) throw error;
-
-    if (data) {
-      return data as ProductDTO;
-    }
-  }
-
-  private async fetchProductsByUser(): Promise<Product[] | undefined> {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*");
-
-    if (error) throw error;
-
-    if (data) {
-      return data as Product[];
     }
   }
 
@@ -308,23 +263,6 @@ class CatalogServiceClass {
     if (reqError) throw reqError;
   }
 
-  private async updateProduct(product: Product) {
-    if (!product.product_id) {
-      throw new Error("Product Id not found.");
-    }
-    const { error } = await supabase
-      .from("products")
-      .update({
-        product_name: product.product_name,
-        product_url: product.product_url
-      })
-      .eq("product_id", product.product_id);
-
-    if (error) {
-      throw error;
-    }
-  }
-
   private async insertProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {
     const { error } = await supabase
       .from("product_requirements")
@@ -413,18 +351,6 @@ class CatalogServiceClass {
       .from("requirements")
       .delete()
       .eq("requirement_id", requirementId)
-      .select();
-
-    if (error) throw error;
-
-    return data;
-  }
-
-  async deleteProduct(productId: string): Promise<ProductDTO[]> {
-    const { data, error } = await supabase
-      .from("products")
-      .delete()
-      .eq("product_id", productId)
       .select();
 
     if (error) throw error;

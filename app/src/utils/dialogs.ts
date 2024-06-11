@@ -119,5 +119,13 @@ export const DeleteRequirement: DialogText = {
     cancelLabel: "Zurück"
 };
 
+export const DeleteProduct: DialogText = {
+    title: "Produkt löschen",
+    message: "Möchten Sie wirklich das ausgewählte Produkt löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 
 
