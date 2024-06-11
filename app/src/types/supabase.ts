@@ -285,23 +285,23 @@ export type Database = {
         Row: {
           catalog_id: string
           description: string | null
-          reqid: string | null
+          label: string
           requirement_id: string
-          title: string | null
+          title: string
         }
         Insert: {
           catalog_id: string
           description?: string | null
-          reqid?: string | null
+          label: string
           requirement_id?: string
-          title?: string | null
+          title: string
         }
         Update: {
           catalog_id?: string
           description?: string | null
-          reqid?: string | null
+          label?: string
           requirement_id?: string
-          title?: string | null
+          title?: string
         }
         Relationships: [
           {
