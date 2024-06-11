@@ -5,12 +5,15 @@ import { onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import CatalogTable from "@/components/catalog/table/CatalogTable.vue";
 import CatalogService from "@/services/database/catalog.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 const catalogStore = useCatalogStore();
+const authStore = useAuthStore();
 const catalogService = CatalogService;
 const isEditing = ref(true);
 const editedCatalogName = ref('');
 const originalCatalogName = ref('');
+const userOwnsCatalog = ref(false);
 
 const toggleEdit = () => {
   isEditing.value = !isEditing.value;
@@ -35,6 +38,10 @@ const hasChanged = () => {
 onBeforeMount(async () => {
   originalCatalogName.value = catalogStore.currentCatalog?.catalog_name || '';
   editedCatalogName.value = originalCatalogName.value;
+
+  if(catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
+    userOwnsCatalog.value = true;
+  }
 });
 
 watch(editedCatalogName, (newVal, oldVal) => {
@@ -49,10 +56,11 @@ watch(editedCatalogName, (newVal, oldVal) => {
     <v-row justify="start" align="center">
       <v-col cols="auto" class="text-h4">
         <v-text-field
-          width="65vh"
+          min-width="35rem"
           v-model="editedCatalogName"
           :append-icon="hasChanged() ? 'mdi-content-save' : 'dummy'"
           type="text"
+          :readonly="!userOwnsCatalog"
           variant="solo-filled"
           @click:append="hasChanged() ? saveCatalogName() : toggleEdit()"
         />
