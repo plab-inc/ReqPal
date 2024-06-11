@@ -16,7 +16,7 @@ export type Requirement = {
   title: string;
   description: string | null;
   products: {
-    [product_id: string]: ProductDetail;
+    [key: string]: ProductDetail;
   };
 }
 
@@ -215,7 +215,7 @@ export function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: n
       const product = mappedProducts[k];
       const qualification = currentLine[k * 2 + 3];
       const comment = currentLine[k * 2 + 4];
-      item.productDetails[product.product_id] = {
+      item.productDetails[product.product_name] = {
         product_name: product.product_name,
         qualification: qualification,
         comment: comment
