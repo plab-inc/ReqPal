@@ -108,17 +108,28 @@ async function save() {
   }
 
   if (!areRequirementEquals()) {
-    console.log("Update Requirements");
-    await catalogService.push.updateRequirement(localEditedRequirement.value);
-    Object.assign(props.editedItem as Requirement, localEditedRequirement.value);
+    const updatedRequirements = await catalogService.push.updateRequirement(localEditedRequirement.value);
+
+    if(updatedRequirements.length > 0) {
+      console.log("Update Requirements");
+      Object.assign(props.editedItem as Requirement, localEditedRequirement.value);
+    }
+
   }
 
   if (!areProductsEquals()) {
-    console.log("Update Product Requirements");
+    const updatedProductsRequirements = [];
+
     for (const [key, productDetail] of Object.entries(localEditedRequirement.value.products)) {
-      await catalogService.push.updateProductDetailsForRequirement(key, productDetail, localEditedRequirement.value.requirement_id);
+      const updatedProductRequirement = await catalogService.push.updateProductDetailsForRequirement(key, productDetail, localEditedRequirement.value.requirement_id);
+      updatedProductsRequirements.push(...updatedProductRequirement)
     }
-    Object.assign(props.editedItem as Requirement, localEditedRequirement?.value);
+
+    if(updatedProductsRequirements.length > 0){
+      console.log("Update Product Requirements");
+      Object.assign(props.editedItem as Requirement, localEditedRequirement?.value);
+    }
+
   }
 
   close();
