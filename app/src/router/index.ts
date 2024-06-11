@@ -122,6 +122,7 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresTeacher,
+                        fetchCatalogs,
                         fetchCatalog
                     ]
                 }
