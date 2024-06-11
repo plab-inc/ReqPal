@@ -21,14 +21,14 @@
             </v-btn>
           </template>
         </v-tooltip>
-        <v-tooltip text="Leeren Katalog Anlegen" location="bottom">
+        <v-tooltip location="bottom" :text="checkForOnlyOneNewCatalog() ? 'Neuen Katalog Umbenennen': 'Leeren Katalog Anlegen'">
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
-              @click="createCatalog()"
               :disabled="catalogs.length >= MAX_CATALOGS"
+              @click="createOrRenameCatalog()"
             >
-              Neuen Katalog Erstellen
+              {{ !checkForOnlyOneNewCatalog() ? 'Neuen Katalog Erstellen' : 'Neuen Katalog Umbenennen' }}
             </v-btn>
           </template>
         </v-tooltip>
@@ -151,6 +151,10 @@ function openDeleteDialog(catalogId: string) {
   );
 }
 
+function checkForOnlyOneNewCatalog(){
+  return catalogs.some(catalog => catalog.catalog_name === "Neuer Katalog");
+}
+
 function deleteCatalog(catalogId: string): void {
   catalogStore.deleteCatalog(catalogId)
     .then(() => {
@@ -158,11 +162,20 @@ function deleteCatalog(catalogId: string): void {
     });
 }
 
-async function createCatalog() {
-  if(authStore.user?.id){
-    const data = await CatalogService.push.addCatalog('Neuer Katalog', authStore.user.id );
+async function createOrRenameCatalog() {
 
-    if(data){
+  if (checkForOnlyOneNewCatalog()) {
+    const newCatalog = catalogs.find(catalog => catalog.catalog_name === "Neuer Katalog");
+    if (newCatalog) {
+      await openCatalogDetails(newCatalog?.catalog_id);
+    }
+    return;
+  }
+
+  if (authStore.user?.id) {
+    const data = await CatalogService.push.addCatalog("Neuer Katalog", authStore.user?.id);
+
+    if (data) {
       await openCatalogDetails(data.catalog_id);
     }
 
