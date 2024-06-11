@@ -11,7 +11,7 @@
     >
       <v-form ref="form" v-model="formValid">
         <v-card-title>
-          {{ isNew ? "Neue Anforderung" : localEditedRequirement.label }}
+          {{ isNew ? "Neue Anforderung" : (localEditedRequirement.label ? localEditedRequirement.label : 'Requirement Id') }}
         </v-card-title>
         <v-divider />
         <v-card-text>
@@ -21,7 +21,7 @@
                             variant="outlined" />
             </v-col>
             <v-col cols="4">
-              <v-text-field v-model="localEditedRequirement.label" :rules="[requiredStringRule]" label="Requirement Id"
+              <v-text-field v-model="localEditedRequirement.label" :rules="[requiredStringRule, requirementIdUniqueRule]" label="Requirement Id"
                             variant="outlined" />
             </v-col>
           </v-row>
@@ -150,6 +150,21 @@ function areProductsEquals() {
   const propsCopy = JSON.parse(JSON.stringify(props.editedItem?.products));
 
   return JSON.stringify(localCopy) == JSON.stringify(propsCopy);
+}
+
+const requirementIdUniqueRule = (value: string) => {
+
+  const trimmedValue = value.trimStart().trimEnd();
+
+  if(trimmedValue === props.editedItem?.label) {
+    return true;
+  }
+
+  if(catalogStore.getCurrentCatalog?.requirements.find(requirement => requirement.label === trimmedValue)){
+    return 'Diese Requirement Id wird bereits verwendet';
+  }
+
+  return true;
 }
 
 watch(() => props.dialog, () => {

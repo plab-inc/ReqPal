@@ -47,7 +47,7 @@ const catalogNameUniqueRule = (value: string) => {
     return true;
   }
 
-  if(catalogStore.getCustomCatalogs.find(catalog => catalog.catalog_name === trimmedValue.trimStart().trimEnd())){
+  if(catalogStore.getCustomCatalogs.find(catalog => catalog.catalog_name === trimmedValue)){
     return 'Dieser Katalog Name wird bereits verwendet';
   }
 
