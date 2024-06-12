@@ -32,6 +32,7 @@ class LessonServiceClass {
         fetchLessonUserAnswers: this.fetchLessonUserAnswers.bind(this),
         fetchUserScoreForLesson: this.fetchUserScoreForLesson.bind(this),
         fetchFirstUserScoreForLesson: this.fetchFirstUserScoreForLesson.bind(this),
+        fetchNewUserScoreForLesson: this.fetchNewUserScoreForLesson.bind(this),
         fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
         getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this),
         fetchUserProgressForLesson: this.fetchUserProgressForLesson.bind(this),
@@ -201,6 +202,20 @@ class LessonServiceClass {
 
         if (data && data[0]) {
             return data[0].user_points as number;
+        }
+    }
+
+    private async fetchNewUserScoreForLesson(lessonUUID: string, userUUID: string): Promise<number | undefined> {
+        const {data, error} = await supabase
+            .from('user_finished_lessons')
+            .select('new_user_points')
+            .eq('lesson_id', lessonUUID)
+            .eq('user_id', userUUID)
+
+        if (error) throw error;
+
+        if (data && data[0]) {
+            return data[0].new_user_points as number;
         }
     }
 

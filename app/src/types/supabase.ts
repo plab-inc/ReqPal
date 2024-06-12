@@ -449,6 +449,7 @@ export type Database = {
           id: string
           is_started: boolean | null
           lesson_id: string
+          new_user_points: number | null
           used_hints: number | null
           user_id: string
           user_points: number | null
@@ -459,6 +460,7 @@ export type Database = {
           id?: string
           is_started?: boolean | null
           lesson_id: string
+          new_user_points?: number | null
           used_hints?: number | null
           user_id: string
           user_points?: number | null
@@ -469,6 +471,7 @@ export type Database = {
           id?: string
           is_started?: boolean | null
           lesson_id?: string
+          new_user_points?: number | null
           used_hints?: number | null
           user_id?: string
           user_points?: number | null

@@ -78,8 +78,9 @@ export const evaluateLesson = async (answers: Answer[], uuid: string, user: any,
 
     const results: CommonResult[] = await evaluateAnswers(answers, uuid, user, supabaseClient);
 
-    if (lessonFinishedFirstTime && results.length > 0) {
-        await persistTotalScore(results, supabaseClient);
+    if (results.length > 0) {
+        let usedHints = count > 0 ? count : 0;
+        await persistTotalScore(results, uuid, user, usedHints, lessonFinishedFirstTime, supabaseClient);
     }
 
     return {
@@ -146,27 +147,65 @@ async function persistAnswerAndResult(answer: Answer, result: any, lessonUUID: s
     }
 }
 
-async function persistTotalScore(results: CommonResult[], supabaseClient: any) {
+async function persistTotalScore(results: CommonResult[], lessonId: string, user: any, usedHints: number, firstTime: boolean, supabaseClient: any) {
     let score = 0;
+
     results.forEach(res => {
         score += res.score;
     })
 
-    try {
-        const {updatedlessonUserPoints} = await supabaseClient
-            .from('user_finished_lessons')
-            .update({user_points: score})
-
-        const {currentPoints} = await supabaseClient
-            .from('user_points')
-            .select('points')
-        if (currentPoints && currentPoints > 0) {
-            score += currentPoints;
+    if (usedHints > 0) {
+        try {
+            const hintMultiplier = 10;
+            //subtract 10 points per hint
+            score -= (usedHints * hintMultiplier);
+            if (score < 0) {
+                score = 0;
+            }
+        } catch (error: any) {
+            throw error;
         }
-        const {updatedUserPoints} = await supabaseClient
-            .from('user_points')
-            .update({points: score})
+    }
+    try {
+        if (firstTime) {
 
+            const {updatedLessonUserPoints} = await supabaseClient
+                .from('user_finished_lessons')
+                .update({user_points: score})
+                .eq("lesson_id", lessonId)
+                .eq('user_id', user)
+
+            const {data, error} = await supabaseClient
+                .from('user_points')
+                .select('points')
+                .eq('user_id', user)
+                .maybeSingle()
+
+            if (data?.points) {
+                score += data.points;
+
+                const {updatedUserPoints} = await supabaseClient
+                    .from('user_points')
+                    .update({points: score})
+                    .eq('user_id', user)
+            } else {
+                const {data, error} = await supabaseClient
+                    .from('user_points')
+                    .insert(
+                        {
+                            user_id: user,
+                            points: score
+                        },
+                    )
+            }
+        } else {
+
+            const {updatedLessonUserPoints} = await supabaseClient
+                .from('user_finished_lessons')
+                .update({new_user_points: score})
+                .eq("lesson_id", lessonId)
+                .eq('user_id', user)
+        }
     } catch (error) {
         throw error;
     }
