@@ -18,7 +18,7 @@
               <v-text-field variant="outlined" label="Name" v-model="localProduct.product_name"
                             :rules="[requiredStringRule, productNameUniqueRule]"/>
               <v-text-field variant="outlined" label="URL" v-model="localProduct.product_url"
-                            :rules="[requiredHyperlinkRule, requiredStringRule]"/>
+                            :rules="[requiredProductUrlRule, requiredStringRule]"/>
             </v-col>
           </v-row>
         </v-card-text>
@@ -38,7 +38,7 @@
 import {onBeforeMount, ref} from "vue";
 import {Product} from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {requiredHyperlinkRule, requiredStringRule} from "@/utils/validationRules.ts";
+import {requiredProductUrlRule, requiredStringRule} from "@/utils/validationRules.ts";
 import {useProductStore} from "@/stores/product.ts";
 
 interface Props {
@@ -57,13 +57,13 @@ function close() {
 }
 
 const productNameUniqueRule = (value: string) => {
-  const trimmedValue = value.trimStart().trimEnd();
+  const trimmedValue = value.trimStart().trimEnd().toLowerCase();
 
-  if(originalProduct.value && trimmedValue === originalProduct.value.product_name) {
+  if(originalProduct.value && trimmedValue === originalProduct.value.product_name.toLowerCase()) {
     return true;
   }
 
-  if(productStore.getCurrentProducts.find(product => product.product_name === trimmedValue)){
+  if(productStore.getCurrentProducts.find(product => product.product_name.toLowerCase() === trimmedValue)){
     return 'Der Name dieses Produkts wird bereits verwendet';
   }
 

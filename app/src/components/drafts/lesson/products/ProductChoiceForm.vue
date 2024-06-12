@@ -1,7 +1,11 @@
 <script setup lang="ts">
 
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import {requiredHyperlinkRule, requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
+import {
+  requiredNumberRule,
+  requiredProductUrlRule,
+  requiredStringRule
+} from "@/utils/validationRules.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import { computed, ref, watch } from "vue";
 
@@ -155,7 +159,7 @@ watch(products, (newProducts) => {
               v-model="product.link"
               label="Produkt Hyperlink"
               variant="outlined"
-              :rules="[requiredHyperlinkRule, requiredStringRule]"
+              :rules="[requiredProductUrlRule, requiredStringRule]"
           ></v-text-field>
         </v-col>
         <v-col cols="2">
