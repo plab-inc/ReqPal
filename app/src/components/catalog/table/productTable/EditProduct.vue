@@ -57,13 +57,13 @@ function close() {
 }
 
 const productNameUniqueRule = (value: string) => {
-  const trimmedValue = value.trimStart().trimEnd();
+  const trimmedValue = value.trimStart().trimEnd().toLowerCase();
 
-  if(originalProduct.value && trimmedValue === originalProduct.value.product_name) {
+  if(originalProduct.value && trimmedValue === originalProduct.value.product_name.toLowerCase()) {
     return true;
   }
 
-  if(productStore.getCurrentProducts.find(product => product.product_name === trimmedValue)){
+  if(productStore.getCurrentProducts.find(product => product.product_name.toLowerCase() === trimmedValue)){
     return 'Der Name dieses Produkts wird bereits verwendet';
   }
 
