@@ -1,35 +1,53 @@
 <template>
   <v-container fluid>
-    <div class="text-subtitle-1 mb-2">Produkte vom Katalog</div>
-    <div class="d-flex flex-row align-center justify-space-around">
-      <div v-for="product in products" :key="product.product_id">
-        <v-checkbox
-            v-model="selectedProducts"
-            :label="product.product_name"
-            :value="product.product_id"
-        ></v-checkbox>
-      </div>
-    </div>
-    <div class="d-flex flex-row justify-end">
-      <v-btn
-          class="ml-1"
-          density="compact"
-          color="success"
-          variant="plain"
-          size="medium"
-          icon="mdi-content-save-outline"
-          @click="save"
-      />
-      <v-btn
-          class="ml-1"
-          density="compact"
-          color="success"
-          variant="plain"
-          size="medium"
-          icon="mdi-undo"
-          @click="rollback"
-      />
-    </div>
+    <v-card title="Produkte" subtitle="Hier können Produkte zum Katalog hinzugefügt oder von ihm entfernt werden.">
+      <v-card-text>
+        <div class="d-flex flex-row flex-wrap align-center justify-space-around">
+          <div v-for="product in products" :key="product.product_id">
+            <v-checkbox
+                v-model="selectedProducts"
+                :label="product.product_name"
+                :value="product.product_id"
+            ></v-checkbox>
+          </div>
+          <div v-if="products.length <= 0">
+            Es stehen noch keine Produkte zur Verfügung.
+          </div>
+        </div>
+      </v-card-text>
+      <v-card-actions class="d-flex flex-row justify-end">
+        <div>
+          <v-tooltip location="bottom" text="Produktauswahl speichern">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                  v-bind="props"
+                  class="ml-1"
+                  density="compact"
+                  color="success"
+                  variant="plain"
+                  size="medium"
+                  icon="mdi-content-save-outline"
+                  @click="save"
+              />
+            </template>
+          </v-tooltip>
+          <v-tooltip location="bottom" text="Produktauswahl zurücksetzen">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                  v-bind="props"
+                  class="ml-1"
+                  density="compact"
+                  color="info"
+                  variant="plain"
+                  size="medium"
+                  icon="mdi-undo"
+                  @click="rollback"
+              />
+            </template>
+          </v-tooltip>
+        </div>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
@@ -69,6 +87,11 @@ async function save() {
       productsToRemove.push(originalProduct.product_id);
     }
   })
+
+  if (productsToRemove.length === 0 && productsToAdd.length === 0) {
+    AlertService.addInfoAlert("Es wurden keine Änderungen vorgenommen.");
+    return;
+  }
 
   productsToRemove.forEach(prId => {
     catalogStore.removeProductFromCatalogAndRequirements(prId);

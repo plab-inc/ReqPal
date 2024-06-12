@@ -123,7 +123,8 @@ const routes = [
                     middleware: [
                         requiresTeacher,
                         fetchCatalogs,
-                        fetchCatalog
+                        fetchCatalog,
+                        fetchProductsByUser
                     ]
                 }
             },

@@ -16,7 +16,7 @@
                 Produkt
               </div>
               <v-text-field variant="outlined" label="Name" v-model="localProduct.product_name"
-                            :rules="[requiredStringRule]"/>
+                            :rules="[requiredStringRule, productNameUniqueRule]"/>
               <v-text-field variant="outlined" label="URL" v-model="localProduct.product_url"
                             :rules="[requiredHyperlinkRule, requiredStringRule]"/>
             </v-col>
@@ -54,6 +54,20 @@ const originalProduct = ref<Product>();
 
 function close() {
   emit("update:dialog", false);
+}
+
+const productNameUniqueRule = (value: string) => {
+  const trimmedValue = value.trimStart().trimEnd();
+
+  if(originalProduct.value && trimmedValue === originalProduct.value.product_name) {
+    return true;
+  }
+
+  if(productStore.getCurrentProducts.find(product => product.product_name === trimmedValue)){
+    return 'Der Name dieses Produkts wird bereits verwendet';
+  }
+
+  return true;
 }
 
 async function save() {

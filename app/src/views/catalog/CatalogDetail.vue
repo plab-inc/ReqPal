@@ -2,8 +2,7 @@
 import { ref, watch } from 'vue';
 import { useCatalogStore } from "@/stores/catalog.ts";
 import { onBeforeMount } from "vue";
-import { useRoute } from "vue-router";
-import CatalogTable from "@/components/catalog/table/CatalogTable.vue";
+import CatalogTable from "@/components/catalog/table/catalogTable/CatalogTable.vue";
 import CatalogService from "@/services/database/catalog.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import { requiredStringRule } from "@/utils/validationRules.ts";

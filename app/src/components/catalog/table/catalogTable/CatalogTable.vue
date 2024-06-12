@@ -1,5 +1,5 @@
 <template>
-  <ProductSelection class="mt-2 mb-2"></ProductSelection>
+  <ProductSelection v-if="userOwnsCatalog" class="mt-2 mb-2"></ProductSelection>
   <v-data-table-virtual
       v-model:expanded="expanded"
       :headers="headers"
@@ -56,16 +56,15 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, onMounted, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
 import {ProductDetail, Requirement} from "@/types/catalog.ts";
 import ProductDetailPanel from "@/components/catalog/product/productDetails/ProductDetailPanel.vue";
-import ProductPanel from "@/components/catalog/product/ProductPanel.vue";
-import EditRequirement from "@/components/catalog/table/EditRequirement.vue";
+import EditRequirement from "@/components/catalog/table/catalogTable/EditRequirement.vue";
 import {useCatalogStore} from "@/stores/catalog.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {DeleteRequirement} from "@/utils/dialogs.ts";
 import {useAuthStore} from "@/stores/auth.ts";
-import ProductSelection from "@/components/catalog/table/ProductSelection.vue";
+import ProductSelection from "@/components/catalog/table/catalogTable/ProductSelection.vue";
 
 const catalogStore = useCatalogStore();
 const authStore = useAuthStore();

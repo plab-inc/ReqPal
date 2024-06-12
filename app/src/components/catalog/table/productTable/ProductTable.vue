@@ -41,7 +41,7 @@ import {Product} from "@/types/catalog.ts";
 import {useProductStore} from "@/stores/product.ts";
 import {DeleteProduct} from "@/utils/dialogs.ts";
 import {useUtilStore} from "@/stores/util.ts";
-import EditProduct from "@/components/catalog/product/EditProduct.vue";
+import EditProduct from "@/components/catalog/table/productTable/EditProduct.vue";
 
 const productStore = useProductStore();
 const expanded = ref<any>([]);

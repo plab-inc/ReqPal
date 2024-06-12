@@ -36,11 +36,11 @@
 
 <script setup lang="ts">
 
-import ProductTable from "@/components/catalog/table/ProductTable.vue";
+import ProductTable from "@/components/catalog/table/productTable/ProductTable.vue";
 import {useProductStore} from "@/stores/product.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import {ref} from "vue";
-import EditProduct from "@/components/catalog/product/EditProduct.vue";
+import EditProduct from "@/components/catalog/table/productTable/EditProduct.vue";
 
 const MAX_PRODUCTS = 10;
 const productStore = useProductStore();
