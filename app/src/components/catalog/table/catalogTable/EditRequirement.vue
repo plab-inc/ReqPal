@@ -72,7 +72,7 @@ import { requiredStringRule } from "@/utils/validationRules.ts";
 
 const props = defineProps({
   dialog: Boolean,
-  editedItem: Object,
+  editedItem: Object as () => Requirement | null,
   isNew: Boolean
 });
 

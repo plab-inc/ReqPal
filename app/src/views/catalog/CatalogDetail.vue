@@ -91,7 +91,7 @@ watch(editedCatalogName, (newVal, oldVal) => {
           </v-text-field>
         </v-form>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="5">
         <ProductSelection />
       </v-col>
       <v-spacer />
@@ -100,7 +100,7 @@ watch(editedCatalogName, (newVal, oldVal) => {
           variant="outlined"
           size="large"
           color="primary"
-          @click="dialogStore.openEditDialog(null, true)"
+          @click="dialogStore.openEditDialog()"
         >
           Anforderung hinzufügen
         </v-btn>

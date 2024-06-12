@@ -19,7 +19,7 @@
           variant="plain"
           size="medium"
           icon="mdi-pencil"
-          @click.stop="dialogStore.openEditDialog(item, false)"
+          @click.stop="dialogStore.openEditDialog(item)"
         />
         <v-btn
           class="ml-2"

@@ -11,20 +11,27 @@ export const useDialogStore = defineStore("dialogStore", () => {
   const editedItem = ref<Requirement | null>(null);
   const isNew = ref(false);
 
-  function openEditDialog(item: Requirement | null, newRequirement: boolean) {
+  function openEditDialog(item?: Requirement) {
 
-    let products: { [product_id: string]: ProductDetail } = {};
+    if (!item) {
+      let products: { [product_id: string]: ProductDetail } = {};
 
-    for (const product of catalogStore.getCurrentCatalog?.products || []) {
-      products[product.product_id] = {
-        product_name: product.product_name,
-        qualification: 0,
-        comment: product.product_name + "-Qualifizierungs-Kommentar"
-      };
+      for (const product of catalogStore.getCurrentCatalog?.products || []) {
+        products[product.product_id] = {
+          product_name: product.product_name,
+          qualification: 0,
+          comment: product.product_name + "-Qualifizierungs-Kommentar"
+        };
+      }
+      isNew.value = true;
+      editedItem.value = { label: "", title: "", description: "", products: products } as Requirement;
     }
 
-    editedItem.value = newRequirement ? { label: "", title: "", description: "", products: products } : item;
-    isNew.value = newRequirement;
+    if (item) {
+      editedItem.value = item;
+      isNew.value = false;
+    }
+
     editDialog.value = true;
   }
 
