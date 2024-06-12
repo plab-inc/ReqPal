@@ -46,7 +46,7 @@ onBeforeMount(async () => {
   if (fields.value.options) {
     if (fields.value.options.catalogId && fields.value.options.requirementId) {
       const catalogStore = useCatalogStore();
-      await catalogStore.getCatalogWithProductsById(fields.value.options.catalogId);
+      await catalogStore.getFullCatalogById(fields.value.options.catalogId);
       const reqs = catalogStore.currentCatalog?.requirements;
       if (reqs) {
         requirement.value = reqs.find(r => r.requirement_id === fields.value.options.requirementId);
@@ -75,7 +75,7 @@ onBeforeMount(async () => {
                 id: productDTO.product_id,
                 name: productDTO.product_name,
                 link: productDTO.product_url,
-                solution: result.qualification ? result.qualification : undefined,
+                solution: result.qualification ? result.qualification.toString() : undefined,
                 input: authStore.isTeacher ? result.qualification ? +result.qualification : minValue : savedInput.length > 0 ? savedInput.find((p: any) => p.id === productDTO?.product_id).input : minValue,
                 comment: result.comment ? result.comment : undefined
               });

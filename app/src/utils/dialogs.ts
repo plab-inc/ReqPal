@@ -111,5 +111,21 @@ export const LessonReset: DialogText = {
     cancelLabel: "Nein"
 }
 
+export const DeleteRequirement: DialogText = {
+    title: "Requirement löschen",
+    message: "Möchten Sie wirklich die ausgewählte Anforderung löschen? " +
+      "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteProduct: DialogText = {
+    title: "Produkt löschen",
+    message: "Möchten Sie wirklich das ausgewählte Produkt löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 
 

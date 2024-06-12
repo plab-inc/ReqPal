@@ -1,18 +1,23 @@
-interface ProductDetails {
-  qualification: string;
+interface ProductDetail {
+  product_name: string,
+  qualification: number;
   comment: string;
 }
 
 export type Product = {
+  product_id: string;
   product_name: string;
   product_url: string;
 }
 
-interface Requirement {
-  reqId: string;
+export type Requirement = {
+  requirement_id: string;
+  label: string;
   title: string;
-  description: string;
-  productDetails: { [key: string]: ProductDetails };
+  description: string | null;
+  products: {
+    [key: string]: ProductDetail;
+  };
 }
 
 interface RequirementsJSON {
@@ -39,6 +44,7 @@ export async function handleUpload(req: Request, corsHeaders: any, supabase: any
 
     const formData = await req.formData();
     const csvFile: File = formData.get('csv') as File;
+    const returnJsonOnly: boolean = formData.get("returnJsonOnly") === "true";
 
     if (!csvFile) {
       return new Response(JSON.stringify({
@@ -61,13 +67,15 @@ export async function handleUpload(req: Request, corsHeaders: any, supabase: any
     const fileNameWithoutExtension = csvFile.name.substring(0, csvFile.name.lastIndexOf('.'));
     const json = convertCSVtoJSONString(csvLines, firstRowWithProductsIndex, fileNameWithoutExtension);
 
-    const { error: uploadError } = await supabase.rpc('upload_catalog_to_database', {
-      p_catalog_name: json.catalog_name,
-      p_products: json.products,
-      p_requirements: json.requirements
-    });
+    if (!returnJsonOnly) {
+      const { error: uploadError } = await supabase.rpc("upload_catalog_to_database", {
+        p_catalog_name: json.catalog_name,
+        p_products: json.products,
+        p_requirements: json.requirements
+      });
 
-    if (uploadError) throw uploadError;
+      if (uploadError) throw uploadError;
+    }
 
     return new Response(JSON.stringify(json, null, 2), {
       headers: {
@@ -172,7 +180,7 @@ function checkRequirementColumns(line: string, products: number) {
   return true;
 }
 
-function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, fileName: string): RequirementsJSON {
+export function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, fileName: string): RequirementsJSON {
   const products = csvLines[indexOfProductsRow].split(";;;")[1].split(';');
 
   const mappedProducts: Product[] = [];
@@ -197,7 +205,7 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
     }
 
     const item: Requirement = {
-      reqId: currentLine[0],
+      label: currentLine[0],
       title: currentLine[1],
       description: currentLine[2],
       productDetails: {}
@@ -208,6 +216,7 @@ function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: number, 
       const qualification = currentLine[k * 2 + 3];
       const comment = currentLine[k * 2 + 4];
       item.productDetails[product.product_name] = {
+        product_name: product.product_name,
         qualification: qualification,
         comment: comment
       };

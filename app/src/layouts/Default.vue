@@ -36,13 +36,8 @@
             rounded prepend-icon="mdi-home"
             title="Home" to="/"
             exact/>
+        <v-divider class="my-1"/>
         <div v-if="authStore.user">
-          <v-list-item
-              rounded v-if="authStore.isTeacher"
-              prepend-icon="mdi-school"
-              title="Erstellte Lektionen"
-              :active="router.currentRoute.value.path.startsWith('/lessons')"
-              to="/lessons"/>
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
               <v-list-item
@@ -82,15 +77,16 @@
           </v-list-group>
         </div>
         <div v-if="authStore.user && authStore.isTeacher">
+          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs" />
+          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
+          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen"  to="/catalogs/upload"/>
           <v-divider class="my-1"/>
           <v-list-item
-              rounded
-              prepend-icon="mdi-text-box-multiple"
-              title="Meine Kataloge"
-              :active="routeToCatalogNotBuilder()"
-              to="/catalogs"
-          />
-          <v-list-item rounded prepend-icon="mdi-upload" title="Neuen Katalog Hochladen" to="/catalogs/upload"/>
+            rounded v-if="authStore.isTeacher"
+            prepend-icon="mdi-school"
+            title="Erstellte Lektionen"
+            :active="router.currentRoute.value.path.startsWith('/lessons')"
+            to="/lessons"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
           <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
           <v-divider class="my-1"/>
@@ -140,7 +136,7 @@
               </v-alert>
               {{ removeAlertWithDelay(alert.id) }}
             </div>
-            <v-sheet min-height="80vh" rounded="lg">
+            <v-sheet min-height="95vh" rounded="lg">
               <v-container fluid>
                 <router-view></router-view>
               </v-container>
@@ -164,12 +160,12 @@
 
 <script lang="ts" setup>
 import router from "@/router";
-import {useUtilStore} from "@/stores/util.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useThemeStore} from "@/stores/theme.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useThemeStore } from "@/stores/theme.ts";
 import Dialog from "@/components/util/Dialog.vue";
-import {useProfileStore} from "@/stores/profile.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
 import { onBeforeMount, ref, watch } from "vue";
 
 const utilStore = useUtilStore();
@@ -201,8 +197,8 @@ const logout = () => {
   router.push('/')
 }
 
-function routeToCatalogNotBuilder() {
-  return (router.currentRoute.value.path.startsWith('/catalogs') && !router.currentRoute.value.path.startsWith('/catalogs/upload'))
+function routeRelatedToCatalog() {
+  return router.currentRoute.value.path.startsWith("/catalogs") || router.currentRoute.value.path.startsWith("/products");
 }
 
 watch(() => lessonStore.openLessons, () => {

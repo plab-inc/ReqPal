@@ -1,56 +1,105 @@
 <script setup lang="ts">
-import {useCatalogStore} from "@/stores/catalog.ts";
-import {Catalog, Product, Requirement} from "@/types/catalog.ts";
-import AlertService from "@/services/util/alert.ts";
-import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
-import CatalogTable from "@/components/catalog/CatalogTable.vue";
+import { ref, watch } from 'vue';
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { onBeforeMount } from "vue";
+import CatalogTable from "@/components/catalog/table/catalogTable/CatalogTable.vue";
+import CatalogService from "@/services/database/catalog.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { requiredStringRule } from "@/utils/validationRules.ts";
 
-const catalog = ref<Catalog>();
-const catalogProducts = ref<Product[]>([]);
 const catalogStore = useCatalogStore();
-let catalogIdAsNumber: number = 0;
+const authStore = useAuthStore();
+const catalogService = CatalogService;
+const isEditing = ref(true);
+const editedCatalogName = ref('');
+const originalCatalogName = ref('');
+const userOwnsCatalog = ref(false);
+const formValid = ref(false);
+const form = ref();
 
-const loading = ref<boolean>(true);
-const requirementItems = ref<Requirement[]>([]);
+const toggleEdit = () => {
+  isEditing.value = !isEditing.value;
+};
+
+const saveCatalogName = async () => {
+  if(catalogStore.getCurrentCatalog && form.value && (await form.value.validate())) {
+
+    const data = await catalogService.push.updateCatalogName(catalogStore.getCurrentCatalog.catalog_id, editedCatalogName.value.trimStart().trimEnd());
+
+    if(data && data.length > 0) {
+      originalCatalogName.value = editedCatalogName.value;
+      toggleEdit()
+    }
+
+  }
+};
+
+const hasChanged = () => {
+  return editedCatalogName.value !== originalCatalogName.value;
+};
+
+const catalogNameUniqueRule = (value: string) => {
+
+  const trimmedValue = value.trimStart().trimEnd();
+
+  if(trimmedValue === originalCatalogName.value) {
+    return true;
+  }
+
+  if(catalogStore.getCustomCatalogs.find(catalog => catalog.catalog_name === trimmedValue)){
+    return 'Dieser Katalog Name wird bereits verwendet';
+  }
+
+  return true;
+
+}
 
 onBeforeMount(async () => {
-  const route = useRoute();
-  const catalogId = route.params.catalogId as string;
+  originalCatalogName.value = catalogStore.currentCatalog?.catalog_name || '';
+  editedCatalogName.value = originalCatalogName.value;
 
-  await catalogStore.getCatalogWithProductsById(catalogId);
-  setUpCatalog();
-})
-
-function setUpCatalog() {
-  loading.value = true;
-  if (catalogStore.currentCatalog) {
-    catalog.value = catalogStore.currentCatalog;
-    if (catalog.value) {
-      if (catalog.value.requirements) {
-        requirementItems.value = catalog.value.requirements;
-      }
-      catalogProducts.value = catalog.value.products;
-    }
-  } else {
-    AlertService.addWarningAlert("Kein Katalog gefunden mit der id: " + catalogIdAsNumber);
+  if(catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
+    userOwnsCatalog.value = true;
   }
-  loading.value = false;
-}
+});
+
+watch(editedCatalogName, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    isEditing.value = true;
+  }
+});
+
 </script>
 
 <template>
-  <v-row justify="space-between" align="center" class="mb-1">
-    <v-col cols="auto" class="text-h4">
-      {{ catalog?.catalog_name }}
-    </v-col>
-  </v-row>
-  <v-divider/>
-  <v-container class="mt-2">
-    <v-row>
-      <v-col>
-        <CatalogTable :products="catalogProducts" :loading="loading" :requirement-items="requirementItems"></CatalogTable>
+  <div v-if="catalogStore.getCurrentCatalog">
+    <v-row justify="start" align="center">
+      <v-col cols="auto" class="text-h4">
+        <v-form ref="form" v-model="formValid">
+          <v-text-field
+            min-width="35rem"
+            v-model="editedCatalogName"
+            :rules="[catalogNameUniqueRule, requiredStringRule]"
+            :append-icon="hasChanged() ? 'mdi-content-save' : 'dummy'"
+            type="text"
+            :readonly="!userOwnsCatalog"
+            variant="outlined"
+            @click:append="hasChanged() ? saveCatalogName() : toggleEdit()"
+          >
+          </v-text-field>
+        </v-form>
       </v-col>
     </v-row>
-  </v-container>
+    <v-divider />
+    <v-container class="mt-2">
+      <v-row>
+        <v-col>
+          <CatalogTable />
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+  <div v-else>
+    <v-skeleton-loader type="article"></v-skeleton-loader>
+  </div>
 </template>

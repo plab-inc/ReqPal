@@ -7,8 +7,8 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
-import {fetchCatalogs} from "@/middlewares/catalogs.ts";
+import { requiresAuth, requiresStudent, requiresTeacher } from "@/middlewares/auth.ts";
+import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
@@ -19,7 +19,8 @@ import {
     requiresFinishedLesson,
     requiresUnfinishedLesson
 } from "@/middlewares/lesson.ts";
-import {useUtilStore} from "@/stores/util.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import {fetchProduct, fetchProductsByUser} from "@/middlewares/product.ts";
 
 const routes = [
     {
@@ -121,6 +122,31 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresTeacher,
+                        fetchCatalogs,
+                        fetchCatalog,
+                        fetchProductsByUser
+                    ]
+                }
+            },
+            {
+                path: "/products",
+                name: "Products",
+                component: () => import("@/views/product/ProductOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchProductsByUser
+                    ]
+                }
+            },
+            {
+                path: "/products/:productId",
+                name: "ProductDetails",
+                component: () => import("@/views/product/ProductDetails.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchProduct
                     ]
                 }
             },

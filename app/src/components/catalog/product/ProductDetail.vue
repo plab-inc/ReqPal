@@ -38,13 +38,13 @@ function openProductPage(url: string) {
             </v-col>
             <v-col cols="3" class="d-flex align-center justify-end">
               <ProductQualification :size="70"
-                                    :qualification="requirement?.products[product.product_name]?.qualification + ''"></ProductQualification>
+                                    :qualification="requirement?.products[product.product_id]?.qualification + ''"></ProductQualification>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <div v-if="requirement?.products[product.product_name]">
-                {{ requirement?.products[product.product_name].comment }}
+              <div v-if="requirement?.products[product.product_id]">
+                {{ requirement?.products[product.product_id].comment }}
               </div>
             </v-col>
           </v-row>

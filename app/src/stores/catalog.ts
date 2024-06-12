@@ -1,16 +1,9 @@
-import {defineStore} from 'pinia';
+import { defineStore } from "pinia";
 import catalogService from "@/services/database/catalog.ts";
-import {
-    Catalog,
-    CatalogDTO,
-    Product,
-    ProductDetail,
-    ProductDTO,
-    ProductRequirementDTO,
-    Requirement,
-    RequirementDTO
-} from "@/types/catalog.ts";
-import {DatabaseError} from "@/errors/custom.ts";
+import CatalogService from "@/services/database/catalog.ts";
+import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -60,46 +53,26 @@ export const useCatalogStore = defineStore('catalog', {
             );
         },
 
-        async getCatalogWithProductsById(catalogId: string) {
-
-            const catalogData: CatalogDTO | undefined = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
-            const productData: ProductDTO[] | undefined = await catalogService.pull.fetchProductsByCatalogId(catalogId);
-            const requirementsData: RequirementDTO[] | undefined = await catalogService.pull.fetchRequirementsByCatalogId(catalogId);
-
-            const catalogRequirements: Requirement[] = [];
-            const catalogProducts: Product[] = [];
-
-            if (requirementsData) {
-                for (const requirement of requirementsData) {
-
-                    catalogRequirements.push({
-                        requirement_id: requirement.requirement_id,
-                        reqId: requirement.reqid,
-                        title: requirement.title,
-                        description: requirement.description,
-                        products: {}
-                    })
+        async deleteRequirement(requirementId: string) {
+            await catalogService.push.deleteRequirement(requirementId).then(
+                (data: any) => {
+                    if (data.length > 0) {
+                        this.currentCatalog?.requirements.splice(this.currentCatalog?.requirements.findIndex(r => r.requirement_id === requirementId), 1);
+                        return;
+                    }
+                    throw new DatabaseError("Requirement could not be deleted", 500);
                 }
+            );
+        },
+
+        async getFullCatalogById(catalogId: string) {
+
+            const catalog = await catalogService.pull.fetchCatalogByCatalogId(catalogId);
+
+            if (catalog) {
+                this.currentCatalog = catalog;
             }
 
-            if (productData) {
-                for (const product of productData) {
-                    catalogProducts.push({
-                        product_id: product.product_id,
-                        product_name: product.product_name,
-                        product_url: product.product_url
-                    })
-                }
-            }
-
-            if (catalogData) {
-                this.currentCatalog = {
-                    catalog_id: catalogData.catalog_id,
-                    catalog_name: catalogData.catalog_name ? catalogData.catalog_name : "Catalog",
-                    products: catalogProducts,
-                    requirements: catalogRequirements
-                }
-            }
         },
 
         async getProductDetailsForRequirement(requirement: Requirement, products: Product[]) {
@@ -114,8 +87,9 @@ export const useCatalogStore = defineStore('catalog', {
                     requirement.products = products.reduce((acc, product) => {
                         const detail = detailsMap.get(product.product_id!);
                         if (detail) {
-                            acc[product.product_name] = {
-                                qualification: detail.qualification || '',
+                            acc[product.product_id] = {
+                                product_name: product.product_name,
+                                qualification: detail.qualification || 0,
                                 comment: detail.comment || ''
                             };
                         }
@@ -138,12 +112,34 @@ export const useCatalogStore = defineStore('catalog', {
             return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId, productId);
         },
 
-        async fetchProductById(productId: string) {
-            return await catalogService.pull.fetchProductById(productId);
-        },
-
         async checkIfCatalogNameExists(catalogName: string) {
             return await catalogService.pull.checkIfCatalogNameExists(catalogName);
+        },
+
+        async removeProductFromCatalogAndRequirements(productId: string) {
+            if (!this.currentCatalog || !this.currentCatalog.catalog_id) {
+                throw Error("No current catalog found.")
+            }
+
+            await CatalogService.push.removeProductFromCatalogAndRequirements(productId, this.currentCatalog.catalog_id);
+            this.currentCatalog.products = this.currentCatalog.products.filter(product => product.product_id !== productId);
+        },
+
+        async addProductFromUser(product: Product) {
+            const authStore = useAuthStore();
+            if (authStore.user) {
+                return await CatalogService.push.addProduct(product, authStore.user.id);
+            }
+        },
+
+        async addProductToCatalogAndRequirements(product: Product) {
+            if (!this.currentCatalog) {
+                throw Error("No current catalog found.")
+            }
+            if (product.product_id) {
+                await CatalogService.push.addProductToCatalogAndRequirements(product.product_id, this.currentCatalog);
+                this.currentCatalog.products.push(product);
+            }
         }
     }
 });

@@ -10,7 +10,8 @@
     "type-check": "vue-tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint .. --fix --ignore-path .gitignore",
-    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/types/supabase.ts"
+    "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/types/supabase.ts",
+    "update-types-local": "npx supabase gen types typescript --project-id rouarbdbmlahwttlyspf > src/types/supabase.ts"
   },
   "dependencies": {
     "@bpmn-io/properties-panel": "^3.18.2",
@@ -31,7 +32,7 @@
     "vue-bpmn": "^0.3.0",
     "vue-router": "^4.3.2",
     "vue3-dnd": "^2.1.0",
-    "vuetify": "^3.6.7",
+    "vuetify": "^3.6.8",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {

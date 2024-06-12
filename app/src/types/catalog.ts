@@ -1,31 +1,33 @@
-import {Database} from "@/types/supabase.ts";
+import { Database } from "@/types/supabase.ts";
 
 export type ProductDetail = {
-    qualification: string;
+    product_name: string,
+    qualification: number;
     comment: string;
 }
 
 export type Product = {
-    product_id?: string;
+    product_id: string;
     product_name: string;
     product_url: string;
 }
 
 export type Requirement = {
     requirement_id: string;
-    reqId: string | null;
-    title: string | null;
+    label: string;
+    title: string;
     description: string | null;
     products: {
-        [key: string]: ProductDetail;
+        [product_id: string]: ProductDetail;
     };
 }
 
 export type Catalog = {
-    catalog_id?: string;
+    catalog_id: string;
     catalog_name: string;
     products: Product[];
     requirements: Requirement[];
+    user_id: string;
 }
 
 export type CatalogDTO = Database["public"]["Tables"]["catalogs"]["Row"];
