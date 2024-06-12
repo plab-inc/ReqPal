@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import { useCatalogStore } from "@/stores/catalog.ts";
-import { Requirement } from "@/types/catalog.ts";
-import { onBeforeMount, ref, watch } from "vue";
-import { useLessonStore } from "@/stores/lesson.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
+import {Requirement} from "@/types/catalog.ts";
+import {onBeforeMount, ref, watch} from "vue";
+import {useLessonStore} from "@/stores/lesson.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
-import { useAuthStore } from "@/stores/auth.ts";
+import {useAuthStore} from "@/stores/auth.ts";
+import {useProductStore} from "@/stores/product.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
 const products = ref<ProductOptions[]>([]);
 const toleranceValue = ref<number>(0);
 const authStore = useAuthStore();
+const catalogStore = useCatalogStore();
+const productStore = useProductStore();
 const maxValue = 5;
 const minValue = 1;
 
@@ -45,7 +48,6 @@ onBeforeMount(async () => {
 
   if (fields.value.options) {
     if (fields.value.options.catalogId && fields.value.options.requirementId) {
-      const catalogStore = useCatalogStore();
       await catalogStore.getFullCatalogById(fields.value.options.catalogId);
       const reqs = catalogStore.currentCatalog?.requirements;
       if (reqs) {
@@ -69,7 +71,7 @@ onBeforeMount(async () => {
           }
 
           if (result) {
-            let productDTO = await catalogStore.fetchProductById(result.product_id);
+            let productDTO = await productStore.fetchProductById(result.product_id);
             if (productDTO) {
               products.value.push({
                 id: productDTO.product_id,
@@ -154,7 +156,7 @@ watch(products.value, (newProducts) => {
   });
 
   updateStoreData(updatedOptions);
-}, { deep: true });
+}, {deep: true});
 </script>
 
 <template>
@@ -187,11 +189,11 @@ watch(products.value, (newProducts) => {
         <v-hover>
           <template v-slot:default="{ isHovering, props }">
             <v-card
-              @click="openProductPage(product.link)"
-              variant="outlined"
-              v-bind="props"
-              :elevation="isHovering ? 12 : 6"
-              :color="isHovering ? 'info' : undefined"
+                @click="openProductPage(product.link)"
+                variant="outlined"
+                v-bind="props"
+                :elevation="isHovering ? 12 : 6"
+                :color="isHovering ? 'info' : undefined"
             >
               <v-container>
                 <v-row no-gutters>
@@ -199,8 +201,8 @@ watch(products.value, (newProducts) => {
                     <div class="text-h6 mb-2">Ihre Antwort: {{ product.input }}</div>
                     <div class="text-h6 mb-2">Richtige Antwort: {{ product.solution }}</div>
                     <div
-                      v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
-                      class="text-h6 mb-2">
+                        v-if="getMinValueForProduct(product) != getMaxValueForProduct(product)"
+                        class="text-h6 mb-2">
                       Toleranzbereich zwischen: {{ getMinValueForProduct(product) }} und {{
                         getMaxValueForProduct(product)
                       }}
@@ -224,19 +226,19 @@ watch(products.value, (newProducts) => {
                     </div>
                   </v-col>
                 </v-row>
-                <v-spacer class="mb-5" />
+                <v-spacer class="mb-5"/>
                 <v-row no-gutters justify="space-between" align-content="end">
                   <v-col cols="10">
                     <v-slider
-                      v-model="product.input"
-                      :readonly="!!product.solution"
-                      :min="1"
-                      :max="5"
-                      :step="1"
-                      :color="product.solution && checkSolution(product) ? 'success' : 'orange'"
-                      track-color="warning"
-                      thumb-label
-                      @click.stop
+                        v-model="product.input"
+                        :readonly="!!product.solution"
+                        :min="1"
+                        :max="5"
+                        :step="1"
+                        :color="product.solution && checkSolution(product) ? 'success' : 'orange'"
+                        track-color="warning"
+                        thumb-label
+                        @click.stop
                     >
                     </v-slider>
                   </v-col>
