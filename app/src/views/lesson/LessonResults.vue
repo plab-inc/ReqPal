@@ -25,7 +25,11 @@ onBeforeMount(async () => {
       await profileStore.fetchPoints(authStore.user.id);
       const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
       if (data !== null && data !== undefined) finishedForFirstTime.value = data;
-      newScore.value = await lessonStore.getUserResultsForLesson(currentLesson.uuid);
+      if(!finishedForFirstTime.value) {
+        newScore.value = await lessonStore.loadNewUserScoreForLesson(currentLesson.uuid);
+      } else {
+        newScore.value = userScore;
+      }
     } catch (error: any) {
       AlertService.addErrorAlert('Ein Fehler ist aufgetreten.');
     }
@@ -50,7 +54,6 @@ onBeforeMount(async () => {
     </v-col>
   </v-row>
   <v-divider/>
-
 
   <v-container v-if="!isFinished">
     <div class="text-h2">Diese Lektion wurde noch nicht bearbeitet!</div>

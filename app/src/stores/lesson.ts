@@ -256,6 +256,21 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
+        async loadNewUserScoreForLesson(lessonUUID: string) {
+            const authStore = useAuthStore();
+            let lesson = this.findLesson(lessonUUID);
+            if (lesson) {
+                if (authStore.user && lesson.isFinished) {
+                    const points = await lessonService.pull.fetchNewUserScoreForLesson(lessonUUID, authStore.user.id);
+                    if (points) {
+                        return Math.round(points);
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        },
+
         async checkIfLessonHasProgress(lessonUUID: string) {
             const authStore = useAuthStore();
             if (authStore.user && !authStore.isTeacher) {

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 
-import {requiredRule, requiredPositiveNumberBelowMaximumRule, maxPointsPerQuestion} from "@/utils/validationRules.ts";
+import {
+  requiredRule,
+  requiredPositiveNumberBelowMaximumRule,
+  maxPointsPerQuestion,
+  minPointsPerQuestion
+} from "@/utils/validationRules.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import { ref, watch } from "vue";
 
@@ -29,7 +34,7 @@ watch(points, (newPoints) => {
       variant="outlined"
       type="number"
       hide-details
-      :min="0"
+      :min="minPointsPerQuestion"
       :max="maxPointsPerQuestion"
       clearable
       v-model="points"
