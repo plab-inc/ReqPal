@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from "vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
-import { onBeforeMount } from "vue";
 import CatalogTable from "@/components/catalog/table/catalogTable/CatalogTable.vue";
 import CatalogService from "@/services/database/catalog.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import { requiredStringRule } from "@/utils/validationRules.ts";
+import ProductSelection from "@/components/catalog/table/catalogTable/ProductSelection.vue";
+import { useDialogStore } from "@/stores/dialog.ts";
 
 const catalogStore = useCatalogStore();
+const dialogStore = useDialogStore();
 const authStore = useAuthStore();
 const catalogService = CatalogService;
 const isEditing = ref(true);
@@ -23,14 +25,12 @@ const toggleEdit = () => {
 
 const saveCatalogName = async () => {
   if(catalogStore.getCurrentCatalog && form.value && (await form.value.validate())) {
-
     const data = await catalogService.push.updateCatalogName(catalogStore.getCurrentCatalog.catalog_id, editedCatalogName.value.trimStart().trimEnd());
 
     if(data && data.length > 0) {
       originalCatalogName.value = editedCatalogName.value;
       toggleEdit()
     }
-
   }
 };
 
@@ -73,11 +73,13 @@ watch(editedCatalogName, (newVal, oldVal) => {
 
 <template>
   <div v-if="catalogStore.getCurrentCatalog">
-    <v-row justify="start" align="center">
-      <v-col cols="auto" class="text-h4">
+    <v-row align="center" justify="space-between" no-gutters>
+      <v-col cols="4">
         <v-form ref="form" v-model="formValid">
           <v-text-field
-            min-width="35rem"
+            label="Katalogname"
+            hide-details
+            density="comfortable"
             v-model="editedCatalogName"
             :rules="[catalogNameUniqueRule, requiredStringRule]"
             :append-icon="hasChanged() ? 'mdi-content-save' : 'dummy'"
@@ -88,6 +90,20 @@ watch(editedCatalogName, (newVal, oldVal) => {
           >
           </v-text-field>
         </v-form>
+      </v-col>
+      <v-col cols="3">
+        <ProductSelection />
+      </v-col>
+      <v-spacer />
+      <v-col cols="auto">
+        <v-btn
+          variant="outlined"
+          size="large"
+          color="primary"
+          @click="dialogStore.openEditDialog(null, true)"
+        >
+          Anforderung hinzufügen
+        </v-btn>
       </v-col>
     </v-row>
     <v-divider />

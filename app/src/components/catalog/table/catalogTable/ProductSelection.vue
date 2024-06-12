@@ -1,19 +1,18 @@
 <template>
   <v-container class="d-flex align-center">
-    <div style="width: 30rem;">
     <v-select
         chips
         v-model="selectedProducts"
         :items="products"
-        label="Produkte des Katalogs"
+        hide-details
+        density="comfortable"
+        label="Produkte"
         item-title="product_name"
         item-value="product_id"
-        hint="Wähle Produkte für den Katalog aus"
         multiple
         variant="outlined"
         :disabled="products.length <= 0 || isProcessing"
     ></v-select>
-    </div>
     <div v-if="products.length <= 0">
       Es stehen noch keine Produkte zur Verfügung.
     </div>
@@ -52,11 +51,11 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref, watch} from "vue";
-import {Product} from "@/types/catalog.ts";
+import { onBeforeMount, ref, watch } from "vue";
+import { Product } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {useProductStore} from "@/stores/product.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { useProductStore } from "@/stores/product.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
 
 const catalogStore = useCatalogStore();
 const products = ref<Product[]>([]);

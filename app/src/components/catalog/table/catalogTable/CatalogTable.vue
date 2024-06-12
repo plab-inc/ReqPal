@@ -1,34 +1,34 @@
 <template>
   <v-data-table-virtual
-      v-model:expanded="expanded"
-      :headers="headers"
-      :items="catalogStore.getCurrentCatalog?.requirements"
-      item-value="requirement_id"
-      show-expand
-      expand-on-click
-      hover
-      height="70vh"
-      no-data-text="Dieser Katalog enthält noch keine Anforderungen"
+    v-model:expanded="expanded"
+    :headers="headers"
+    :items="catalogStore.getCurrentCatalog?.requirements"
+    item-value="requirement_id"
+    show-expand
+    expand-on-click
+    hover
+    height="70vh"
+    no-data-text="Dieser Katalog enthält noch keine Anforderungen"
   >
     <template v-slot:item.actions="{ item }">
       <div style="display: flex; align-items: center;">
         <v-btn
-            class="ml-1"
-            density="compact"
-            color="success"
-            variant="plain"
-            size="medium"
-            icon="mdi-pencil"
-            @click.stop="openEditDialog(item, false)"
+          class="ml-1"
+          density="compact"
+          color="success"
+          variant="plain"
+          size="medium"
+          icon="mdi-pencil"
+          @click.stop="dialogStore.openEditDialog(item, false)"
         />
         <v-btn
-            class="ml-2"
-            density="compact"
-            color="error"
-            variant="plain"
-            size="medium"
-            icon="mdi-delete"
-            @click.stop="deleteRequirement(item)"
+          class="ml-2"
+          density="compact"
+          color="error"
+          variant="plain"
+          size="medium"
+          icon="mdi-delete"
+          @click.stop="deleteRequirement(item)"
         />
       </div>
     </template>
@@ -40,91 +40,47 @@
         </td>
       </tr>
     </template>
-    <template v-slot:top v-if="userOwnsCatalog">
-      <div class="d-flex flex-column flex-sm-row align-center">
-        <v-btn
-            class="mb-4"
-            color="primary"
-            max-width="20rem"
-            @click="openNewRequirementDialog"
-        >
-          Anforderung hinzufügen
-        </v-btn>
-        <ProductSelection class="mt-2 mb-2 ml-2"></ProductSelection>
-      </div>
-    </template>
   </v-data-table-virtual>
-  <EditRequirement :dialog="editDialog" :editedItem="editedItem" :isNew="isNew" @update:dialog="updateDialog"/>
+  <EditRequirement :dialog="dialogStore.editDialog" :editedItem="dialogStore.editedItem" :isNew="dialogStore.isNew"
+                   @update:dialog="dialogStore.closeDialog" />
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {ProductDetail, Requirement} from "@/types/catalog.ts";
+import { onBeforeMount, ref } from "vue";
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useDialogStore } from "@/stores/dialog.ts";
 import ProductDetailPanel from "@/components/catalog/product/ProductDetailPanel.vue";
 import EditRequirement from "@/components/catalog/table/catalogTable/EditRequirement.vue";
-import {useCatalogStore} from "@/stores/catalog.ts";
-import {useUtilStore} from "@/stores/util.ts";
-import {DeleteRequirement} from "@/utils/dialogs.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import ProductSelection from "@/components/catalog/table/catalogTable/ProductSelection.vue";
+import { Requirement } from "@/types/catalog.ts";
+import { DeleteRequirement } from "@/utils/dialogs.ts";
 
 const catalogStore = useCatalogStore();
 const authStore = useAuthStore();
 const utilStore = useUtilStore();
+const dialogStore = useDialogStore();
 const expanded = ref<any>([]);
-const editDialog = ref(false);
-const editedItem = ref<any | null>(null);
-const isNew = ref(false);
 const userOwnsCatalog = ref(false);
 
 const headers = [
-  {title: "Anforderung", value: "label", sortable: true},
-  {title: "Titel", value: "title", sortable: true},
-  {title: "Beschreibung", value: "description", sortable: true}
+  { title: "Anforderung", value: "label", sortable: true },
+  { title: "Titel", value: "title", sortable: true },
+  { title: "Beschreibung", value: "description", sortable: true }
 ];
 
 onBeforeMount(() => {
   if (catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
     userOwnsCatalog.value = true;
     headers.push(
-        {title: "Aktionen", value: "actions", sortable: false}
-    )
+      { title: "Aktionen", value: "actions", sortable: false }
+    );
   }
-})
-
-function openEditDialog(item: Requirement | null, newRequirement: boolean) {
-  if (newRequirement) {
-    let products: { [product_id: string]: ProductDetail } = {};
-
-    for (const product of catalogStore.getCurrentCatalog?.products || []) {
-      products[product.product_id] = {
-        product_name: product.product_name,
-        qualification: 0,
-        comment: product.product_name + "-Qualifizierungs-Kommentar"
-      };
-    }
-
-    editedItem.value = {label: "", title: "", description: "", products: products};
-    isNew.value = true;
-  }
-  if (!newRequirement) {
-    editedItem.value = item;
-    isNew.value = false;
-  }
-  editDialog.value = true;
-}
-
-function openNewRequirementDialog() {
-  openEditDialog(null, true);
-}
+});
 
 function deleteRequirement(item: Requirement) {
   utilStore.openDialog(DeleteRequirement, () => {
     catalogStore.deleteRequirement(item.requirement_id);
   });
-}
-
-function updateDialog(value: boolean) {
-  editDialog.value = value;
 }
 </script>

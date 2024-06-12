@@ -100,6 +100,8 @@ async function save() {
       for (const [key, productDetail] of Object.entries(localEditedRequirement.value.products)) {
         await catalogService.push.insertProductDetailsForRequirement(key, productDetail, data.requirement_id);
       }
+
+      localEditedRequirement.value.requirement_id = data.requirement_id;
       catalogStore.getCurrentCatalog?.requirements.push(localEditedRequirement.value);
     }
 
