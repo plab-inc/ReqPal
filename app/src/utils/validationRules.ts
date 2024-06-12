@@ -97,10 +97,9 @@ export const requiredUsernameRule = (value: string): boolean | string => {
     return !pattern.test(value) || "Ihr Nutzername darf keine E-mail Adresse beinhalten";
 };
 
-export const requiredHyperlinkRule = (value: string): boolean | string => {
-    if (value === "") return true;
-    const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
-    return pattern.test(value) || "Ungültiger Hyperlink";
+export const requiredProductUrlRule = (value: string): boolean | string => {
+    if (value === "") return false;
+    return (value.startsWith('http://') || value.startsWith('https://')) || "Muss mit http:// oder https:// beginnen.";
 };
 
 export const containsAtLeastOneElementRule = (value: any): boolean | string => {

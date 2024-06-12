@@ -41,7 +41,7 @@
       </tr>
     </template>
     <template v-slot:top v-if="userOwnsCatalog">
-      <div class="d-flex align-center">
+      <div class="d-flex flex-column flex-sm-row align-center">
         <v-btn
             class="mb-4"
             color="primary"
@@ -50,7 +50,7 @@
         >
           Anforderung hinzufügen
         </v-btn>
-        <ProductSelection v-if="userOwnsCatalog" class="mt-2 mb-2"></ProductSelection>
+        <ProductSelection class="mt-2 mb-2 ml-2"></ProductSelection>
       </div>
     </template>
   </v-data-table-virtual>

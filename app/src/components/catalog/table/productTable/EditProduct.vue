@@ -18,7 +18,7 @@
               <v-text-field variant="outlined" label="Name" v-model="localProduct.product_name"
                             :rules="[requiredStringRule, productNameUniqueRule]"/>
               <v-text-field variant="outlined" label="URL" v-model="localProduct.product_url"
-                            :rules="[requiredHyperlinkRule, requiredStringRule]"/>
+                            :rules="[requiredProductUrlRule, requiredStringRule]"/>
             </v-col>
           </v-row>
         </v-card-text>
@@ -38,7 +38,7 @@
 import {onBeforeMount, ref} from "vue";
 import {Product} from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {requiredHyperlinkRule, requiredStringRule} from "@/utils/validationRules.ts";
+import {requiredProductUrlRule, requiredStringRule} from "@/utils/validationRules.ts";
 import {useProductStore} from "@/stores/product.ts";
 
 interface Props {
