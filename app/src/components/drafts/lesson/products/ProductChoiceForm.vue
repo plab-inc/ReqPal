@@ -2,7 +2,7 @@
 
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {requiredHyperlinkRule, requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
-import ProductQualification from "@/components/catalog/product/productDetails/ProductQualification.vue";
+import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import { computed, ref, watch } from "vue";
 
 const icons = [

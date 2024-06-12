@@ -3,7 +3,7 @@ import { useCatalogStore } from "@/stores/catalog.ts";
 import { Requirement } from "@/types/catalog.ts";
 import { onBeforeMount, ref, watch } from "vue";
 import { useLessonStore } from "@/stores/lesson.ts";
-import ProductQualification from "@/components/catalog/product/productDetails/ProductQualification.vue";
+import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import { useAuthStore } from "@/stores/auth.ts";

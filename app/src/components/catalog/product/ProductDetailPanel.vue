@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { Product, Requirement } from "@/types/catalog.ts";
-import ProductDetail from "@/components/catalog/product/productDetails/ProductDetail.vue";
+import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
 import { ref } from "vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
 

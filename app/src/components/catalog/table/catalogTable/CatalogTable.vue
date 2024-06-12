@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import {onBeforeMount, ref} from "vue";
 import {ProductDetail, Requirement} from "@/types/catalog.ts";
-import ProductDetailPanel from "@/components/catalog/product/productDetails/ProductDetailPanel.vue";
+import ProductDetailPanel from "@/components/catalog/product/ProductDetailPanel.vue";
 import EditRequirement from "@/components/catalog/table/catalogTable/EditRequirement.vue";
 import {useCatalogStore} from "@/stores/catalog.ts";
 import {useUtilStore} from "@/stores/util.ts";

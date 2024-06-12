@@ -49,9 +49,9 @@ const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
 const headers = [
-  {title: "Name", value: "product_name", sortable: true},
-  {title: "Url", value: "product_url", sortable: true},
-  {title: "Aktionen", value: "actions", sortable: false}
+  {title: "Name", value: "product_name", sortable: true, width: '47,5%'},
+  {title: "Url", value: "product_url", sortable: true, width: '47,5%'},
+  {title: "Aktionen", value: "actions", sortable: false, width: '5%'}
 ];
 
 function openEditDialog(item: Product | null) {
