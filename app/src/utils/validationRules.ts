@@ -4,6 +4,7 @@ import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {useCatalogStore} from "@/stores/catalog.ts";
 
 export const maxPointsPerQuestion = 1000;
+export const minPointsPerQuestion = 10;
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {
     if (typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
@@ -63,17 +64,17 @@ export const requiredPositiveNumberBelowMaximumRule = (value: null | number | st
 
     if (typeof value === 'number') {
         if (!Number.isNaN(value) && value > 0) {
-            return value <= maxPointsPerQuestion ? true : `Zahl muss kleiner als ${maxPointsPerQuestion} sein`;
+            return value <= maxPointsPerQuestion && value >= minPointsPerQuestion ? true : `Zahl muss zwischen ${minPointsPerQuestion} und ${maxPointsPerQuestion} sein`;
         }
-        return 'Zahl muss größer als 0 sein';
+        return 'Zahl muss größer als ' + minPointsPerQuestion + ' sein';
     } else {
         {
             const numericValue = parseFloat(value);
             {
                 if (!isNaN(numericValue) && numericValue > 0) {
-                    return numericValue <= maxPointsPerQuestion ? true : `Zahl muss kleiner als ${maxPointsPerQuestion} sein`;
+                    return numericValue <= maxPointsPerQuestion && numericValue >= minPointsPerQuestion ? true : `Zahl muss zwischen ${minPointsPerQuestion} und ${maxPointsPerQuestion} sein`;
                 }
-                return 'Zahl muss größer als 0 sein';
+                return 'Zahl muss größer als ' + minPointsPerQuestion + ' sein';
             }
         }
     }
