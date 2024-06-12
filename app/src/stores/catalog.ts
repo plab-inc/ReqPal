@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import catalogService from "@/services/database/catalog.ts";
 import CatalogService from "@/services/database/catalog.ts";
-import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
-import { DatabaseError } from "@/errors/custom.ts";
-import { useAuthStore } from "@/stores/auth.ts";
+import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
+import {DatabaseError} from "@/errors/custom.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -122,7 +122,8 @@ export const useCatalogStore = defineStore('catalog', {
             }
 
             await CatalogService.push.removeProductFromCatalogAndRequirements(productId, this.currentCatalog.catalog_id);
-            this.currentCatalog.products = this.currentCatalog.products.filter(product => product.product_id !== productId);
+            const index = this.currentCatalog.products.findIndex(pr => pr.product_id === productId);
+            if (index >= 0) this.currentCatalog.products.splice(index, 1);
         },
 
         async addProductFromUser(product: Product) {

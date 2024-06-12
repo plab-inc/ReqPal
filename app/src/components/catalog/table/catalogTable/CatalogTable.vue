@@ -1,5 +1,4 @@
 <template>
-  <ProductSelection v-if="userOwnsCatalog" class="mt-2 mb-2"></ProductSelection>
   <v-data-table-virtual
       v-model:expanded="expanded"
       :headers="headers"
@@ -42,14 +41,17 @@
       </tr>
     </template>
     <template v-slot:top v-if="userOwnsCatalog">
-      <v-btn
-          class="mb-4"
-          color="primary"
-          max-width="20rem"
-          @click="openNewRequirementDialog"
-      >
-        Anforderung hinzufügen
-      </v-btn>
+      <div class="d-flex align-center">
+        <v-btn
+            class="mb-4"
+            color="primary"
+            max-width="20rem"
+            @click="openNewRequirementDialog"
+        >
+          Anforderung hinzufügen
+        </v-btn>
+        <ProductSelection v-if="userOwnsCatalog" class="mt-2 mb-2"></ProductSelection>
+      </div>
     </template>
   </v-data-table-virtual>
   <EditRequirement :dialog="editDialog" :editedItem="editedItem" :isNew="isNew" @update:dialog="updateDialog"/>
