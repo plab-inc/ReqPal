@@ -153,14 +153,13 @@ function areProductsEquals() {
 }
 
 const requirementIdUniqueRule = (value: string) => {
+  const normalizedValue = value.trimStart().trimEnd().toUpperCase();
 
-  const trimmedValue = value.trimStart().trimEnd();
-
-  if(trimmedValue === props.editedItem?.label) {
+  if (normalizedValue === props.editedItem?.label.toUpperCase()) {
     return true;
   }
 
-  if(catalogStore.getCurrentCatalog?.requirements.find(requirement => requirement.label === trimmedValue)){
+  if (catalogStore.getCurrentCatalog?.requirements.find(requirement => requirement.label.toUpperCase() === normalizedValue)) {
     return 'Diese Requirement Id wird bereits verwendet';
   }
 

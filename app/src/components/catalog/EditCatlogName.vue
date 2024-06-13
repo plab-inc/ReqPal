@@ -2,7 +2,6 @@
   <v-form ref="form" v-model="formValid">
     <v-text-field
       label="Katalogname"
-      hide-details
       density="comfortable"
       v-model="editedCatalogName"
       :rules="[catalogNameUniqueRule, requiredStringRule]"
@@ -64,13 +63,13 @@ const hasChanged = () => {
 
 const catalogNameUniqueRule = (value: string) => {
 
-  const trimmedValue = value.trimStart().trimEnd();
+  const normalizedValue = value.trimStart().trimEnd().toUpperCase();
 
-  if (trimmedValue === originalCatalogName.value) {
+  if (normalizedValue === originalCatalogName.value.toUpperCase()) {
     return true;
   }
 
-  if (catalogStore.getCustomCatalogs.find(catalog => catalog.catalog_name === trimmedValue)) {
+  if (catalogStore.getCustomCatalogs.find(catalog => catalog.catalog_name.toUpperCase() === normalizedValue)) {
     return "Dieser Katalog Name wird bereits verwendet";
   }
 

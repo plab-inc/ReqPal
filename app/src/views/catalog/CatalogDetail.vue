@@ -15,13 +15,14 @@
         <v-btn
           variant="outlined"
           size="large"
+          class="mb-5"
           @click="dialogStore.openEditDialog()"
         >
           Anforderung hinzufügen
         </v-btn>
       </v-col>
     </v-row>
-    <v-divider class="my-3" />
+    <v-divider />
     <v-container>
       <v-row>
           <CatalogTable />
