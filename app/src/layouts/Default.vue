@@ -89,27 +89,21 @@
             to="/lessons"/>
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
           <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
-          <v-divider class="my-1"/>
-        </div>
-        <div v-if="authStore.user">
-          <v-list-item rounded prepend-icon="mdi-cog" title="Account Einstellungen" to="/account"/>
-          <v-list-item rounded prepend-icon="mdi-email-fast" title="Feedback" to="/feedback"/>
         </div>
       </v-list>
       <template v-slot:append>
         <v-divider class="my-1"/>
         <v-list>
-          <v-list-item
-              v-if="authStore.user"
-              prepend-icon="mdi-logout"
-              title="Logout" @click="logout"
-          />
+          <div v-if="authStore.user">
+            <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
+            <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
+            <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
+          </div>
           <v-list-item
               :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
               :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
               @click="themeStore.toggleUserTheme"
           />
-          <v-list-item rounded prepend-icon="mdi-email-fast" title="Feedback" to="feedback"/>
           <v-list-item
               prepend-icon="mdi-scale-balance"
               title="Rechtliche Hinweise"
