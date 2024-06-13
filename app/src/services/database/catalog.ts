@@ -256,11 +256,14 @@ class CatalogServiceClass {
       product_id: productId
     }));
 
-    const { error: reqError } = await supabase
+    const { data: reqProducts, error: reqError } = await supabase
       .from("product_requirements")
-      .insert(productRequirements);
+      .insert(productRequirements)
+      .select();
 
     if (reqError) throw reqError;
+
+    if(reqProducts) return reqProducts;
   }
 
   private async insertProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {

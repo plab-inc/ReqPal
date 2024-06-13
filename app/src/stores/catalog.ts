@@ -124,6 +124,11 @@ export const useCatalogStore = defineStore('catalog', {
             await CatalogService.push.removeProductFromCatalogAndRequirements(productId, this.currentCatalog.catalog_id);
             const index = this.currentCatalog.products.findIndex(pr => pr.product_id === productId);
             if (index >= 0) this.currentCatalog.products.splice(index, 1);
+            this.currentCatalog.requirements.forEach(req => {
+                if (req.products.hasOwnProperty(productId)) {
+                    delete req.products[productId];
+                }
+            })
         },
 
         async addProductFromUser(product: Product) {
@@ -138,8 +143,17 @@ export const useCatalogStore = defineStore('catalog', {
                 throw Error("No current catalog found.")
             }
             if (product.product_id) {
-                await CatalogService.push.addProductToCatalogAndRequirements(product.product_id, this.currentCatalog);
+                const data = await CatalogService.push.addProductToCatalogAndRequirements(product.product_id, this.currentCatalog);
                 this.currentCatalog.products.push(product);
+                if(data && data[0]) {
+                    this.currentCatalog.requirements.forEach(req => {
+                        req.products[product.product_id] = {
+                            comment: data[0].comment ? data[0].comment : "Kommentar",
+                            product_name: product.product_name,
+                            qualification: data[0].qualification
+                        }
+                    })
+                }
             }
         }
     }
