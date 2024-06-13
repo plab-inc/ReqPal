@@ -3,7 +3,6 @@ import catalogService from "@/services/database/catalog.ts";
 import CatalogService from "@/services/database/catalog.ts";
 import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
 import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
@@ -100,16 +99,12 @@ export const useCatalogStore = defineStore('catalog', {
             }
         },
 
-        async fetchProductDetailsByRequirementWithQualification(requiremendId: string) {
-            return await catalogService.pull.fetchProductDetailsByRequirement(requiremendId);
+        async fetchProductDetailsByRequirementWithQualificationByProductId(requirementId: string, productId: string) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithQualificationByProductId(requirementId, productId);
         },
 
-        async fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId: string, productId: string) {
-            return await catalogService.pull.fetchProductDetailsByRequirementWithQualificationByProductId(requiremendId, productId);
-        },
-
-        async fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId: string, productId: string) {
-            return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requiremendId, productId);
+        async fetchProductDetailsByRequirementWithoutQualificationByProductId(requirementId: string, productId: string) {
+            return await catalogService.pull.fetchProductDetailsByRequirementWithoutQualificationByProductId(requirementId, productId);
         },
 
         async checkIfCatalogNameExists(catalogName: string) {
@@ -131,24 +126,17 @@ export const useCatalogStore = defineStore('catalog', {
             })
         },
 
-        async addProductFromUser(product: Product) {
-            const authStore = useAuthStore();
-            if (authStore.user) {
-                return await CatalogService.push.addProduct(product, authStore.user.id);
-            }
-        },
-
         async addProductToCatalogAndRequirements(product: Product) {
             if (!this.currentCatalog) {
                 throw Error("No current catalog found.")
             }
             if (product.product_id) {
-                const data = await CatalogService.push.addProductToCatalogAndRequirements(product.product_id, this.currentCatalog);
+                const data = await CatalogService.push.addProductToCatalogAndRequirements(product, this.currentCatalog);
                 this.currentCatalog.products.push(product);
                 if(data && data[0]) {
                     this.currentCatalog.requirements.forEach(req => {
                         req.products[product.product_id] = {
-                            comment: data[0].comment ? data[0].comment : "Kommentar",
+                            comment: data[0].comment ? data[0].comment : product.product_name+"-Kommentar",
                             product_name: product.product_name,
                             qualification: data[0].qualification
                         }

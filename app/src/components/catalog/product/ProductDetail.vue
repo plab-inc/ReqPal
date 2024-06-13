@@ -9,7 +9,7 @@ interface Props {
   loading: boolean
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 function openProductPage(url: string) {
   window.open(url, "_blank");
