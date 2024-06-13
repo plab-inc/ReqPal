@@ -1,5 +1,4 @@
 <template>
-  <v-container class="d-flex align-center">
     <v-select
         chips
         v-model="selectedProducts"
@@ -11,43 +10,39 @@
         item-value="product_id"
         multiple
         variant="outlined"
+        no-data-text="Es stehen noch keine Produkte zur Verfügung."
         :disabled="products.length <= 0 || isProcessing"
-    ></v-select>
-    <div v-if="products.length <= 0">
-      Es stehen noch keine Produkte zur Verfügung.
-    </div>
-    <div v-if="hasChanged" class="ml-3">
-      <v-tooltip location="top" text="Produktauswahl speichern">
-        <template v-slot:activator="{ props }">
-          <v-btn
-              v-bind="props"
-              density="compact"
-              color="success"
-              variant="plain"
-              size="medium"
-              icon="mdi-content-save"
-              @click="save"
-              :disabled="isProcessing"
-          />
-        </template>
-      </v-tooltip>
-      <v-tooltip location="top" text="Produktauswahl zurücksetzen">
-        <template v-slot:activator="{ props }">
-          <v-btn
-              v-bind="props"
-              class="ml-2"
-              density="compact"
-              color="error"
-              variant="plain"
-              size="medium"
-              icon="mdi-undo"
-              @click="rollback"
-              :disabled="isProcessing"
-          />
-        </template>
-      </v-tooltip>
-    </div>
-  </v-container>
+    >
+      <template v-slot:chip="{ item }">
+        <v-chip
+          density="comfortable"
+          color="warning"
+        >
+          {{ item.title }}
+        </v-chip>
+      </template>
+      <template v-if="hasChanged" v-slot:append>
+        <v-btn
+          density="compact"
+          color="success"
+          variant="plain"
+          size="medium"
+          icon="mdi-content-save"
+          @click="save"
+          :disabled="isProcessing"
+        />
+        <v-btn
+          class="ml-2"
+          density="compact"
+          color="error"
+          variant="plain"
+          size="medium"
+          icon="mdi-undo"
+          @click="rollback"
+          :disabled="isProcessing"
+        />
+      </template>
+    </v-select>
 </template>
 
 <script setup lang="ts">
@@ -126,7 +121,6 @@ async function save() {
 async function rollback() {
   isProcessing.value = true;
   refreshProducts();
-  AlertService.addSuccessAlert("Änderungen zurückgesetzt.")
   isProcessing.value = false;
 }
 

@@ -35,11 +35,11 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref} from "vue";
-import {Product} from "@/types/catalog.ts";
+import { onBeforeMount, ref } from "vue";
+import { Product } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {requiredProductUrlRule, requiredStringRule} from "@/utils/validationRules.ts";
-import {useProductStore} from "@/stores/product.ts";
+import { requiredProductUrlRule, requiredStringRule } from "@/utils/validationRules.ts";
+import { useProductStore } from "@/stores/product.ts";
 
 interface Props {
   dialog: boolean;

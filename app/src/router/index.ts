@@ -20,7 +20,7 @@ import {
     requiresUnfinishedLesson
 } from "@/middlewares/lesson.ts";
 import { useUtilStore } from "@/stores/util.ts";
-import {fetchProduct, fetchProductsByUser} from "@/middlewares/product.ts";
+import { fetchProductsByUser } from "@/middlewares/product.ts";
 
 const routes = [
     {
@@ -136,17 +136,6 @@ const routes = [
                     middleware: [
                         requiresTeacher,
                         fetchProductsByUser
-                    ]
-                }
-            },
-            {
-                path: "/products/:productId",
-                name: "ProductDetails",
-                component: () => import("@/views/product/ProductDetails.vue"),
-                meta: {
-                    middleware: [
-                        requiresTeacher,
-                        fetchProduct
                     ]
                 }
             },

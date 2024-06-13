@@ -10,7 +10,7 @@
       no-data-text="Sie haben noch keine Produkte erstellt."
   >
     <template v-slot:item.actions="{ item }">
-      <div style="display: flex; align-items: center;">
+      <div>
         <v-btn
             class="ml-1"
             density="compact"
@@ -36,23 +36,23 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
-import {Product} from "@/types/catalog.ts";
-import {useProductStore} from "@/stores/product.ts";
-import {DeleteProduct} from "@/utils/dialogs.ts";
-import {useUtilStore} from "@/stores/util.ts";
-import EditProduct from "@/components/catalog/table/productTable/EditProduct.vue";
+import { ref } from "vue";
+import { Product } from "@/types/catalog.ts";
+import { useProductStore } from "@/stores/product.ts";
+import { DeleteProduct } from "@/utils/dialogs.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import EditProduct from "@/components/catalog/product/EditProduct.vue";
 
 const productStore = useProductStore();
 const expanded = ref<any>([]);
 const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
-const headers = [
-  {title: "Name", value: "product_name", sortable: true, width: '47,5%'},
-  {title: "Url", value: "product_url", sortable: true, width: '47,5%'},
-  {title: "Aktionen", value: "actions", sortable: false, width: '5%'}
-];
+const headers = ref([
+  { title: "Name", value: "product_name", sortable: true, width: "25%", align: "start" },
+  { title: "Url", value: "product_url", sortable: true, width: "auto", align: "center" },
+  { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
+] as const);
 
 function openEditDialog(item: Product | null) {
   if (item) {
