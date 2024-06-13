@@ -11,7 +11,7 @@
       multiple
       variant="outlined"
       no-data-text="Es stehen noch keine Produkte zur Verfügung."
-      :disabled="!userOwnsCatalog || products.length <= 0 || isProcessing"
+      :disabled="!userCanEdit || products.length <= 0 || isProcessing"
   >
     <template v-slot:chip="{ item }">
       <v-chip
@@ -63,7 +63,8 @@ const selectedProducts = ref<string[]>([]);
 const originalSelectedProducts = ref<string[]>([]);
 const hasChanged = ref<boolean>(false);
 const isProcessing = ref<boolean>(false);
-const userOwnsCatalog = ref(false);
+const userOwnsCatalog = ref<boolean>(false);
+const userCanEdit = ref<boolean>(false);
 const authStore = useAuthStore();
 
 function checkIfSelectionHasChanged() {
@@ -143,8 +144,13 @@ function refreshProducts() {
 }
 
 onBeforeMount(async () => {
-  if (catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
+  if (catalogStore.currentCatalog?.user_id === authStore.user?.id) {
     userOwnsCatalog.value = true;
+    userCanEdit.value = true;
+  }
+
+  if (authStore.isModerator) {
+    userCanEdit.value = true;
   }
   refreshProducts();
 })
