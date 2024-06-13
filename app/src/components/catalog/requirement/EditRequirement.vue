@@ -30,7 +30,7 @@
           <v-divider class="mb-1" />
           <v-row>
             <v-col
-              :cols="(Object.keys(localEditedRequirement.products).indexOf(key.toString()) % 3 === 2 ? 12 : 6)"
+              :cols="(Object.keys(localEditedRequirement.products).indexOf(key.toString()) % 3 === 0 ? 12 : 6)"
               v-for="(productDetail, key) in localEditedRequirement.products"
               :key="key"
             >
