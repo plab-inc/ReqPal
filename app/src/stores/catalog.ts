@@ -1,19 +1,21 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import catalogService from "@/services/database/catalog.ts";
 import CatalogService from "@/services/database/catalog.ts";
-import {Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement} from "@/types/catalog.ts";
-import {DatabaseError} from "@/errors/custom.ts";
+import { Catalog, CatalogDTO, Product, ProductDetail, ProductRequirementDTO, Requirement } from "@/types/catalog.ts";
+import { DatabaseError } from "@/errors/custom.ts";
 
 interface CatalogState {
     catalogs: CatalogDTO[]
     examples: CatalogDTO[]
     currentCatalog: Catalog | null
+    currentCatalogSelectedIds: String[];
 }
 
 export const useCatalogStore = defineStore('catalog', {
     state: (): CatalogState => ({
         catalogs: [],
         examples: [],
+        currentCatalogSelectedIds: [],
         currentCatalog: null,
     }),
 
@@ -27,6 +29,9 @@ export const useCatalogStore = defineStore('catalog', {
         getExampleCatalogs(): CatalogDTO[] {
             return this.examples;
         },
+        getCurrentCatalogSelectedIds(): String[] {
+            return this.currentCatalogSelectedIds;
+        }
     },
 
     actions: {
@@ -62,6 +67,18 @@ export const useCatalogStore = defineStore('catalog', {
                     throw new DatabaseError("Requirement could not be deleted", 500);
                 }
             );
+        },
+
+        async deleteSelectedRequirements() {
+            if (this.currentCatalog) {
+                await catalogService.deleteRequirements(this.getCurrentCatalogSelectedIds).then(() => {
+                      this.currentCatalog.requirements = this.currentCatalog.requirements.filter((requirement) => {
+                          return !this.currentCatalogSelectedIds.includes(requirement.requirement_id);
+                      });
+                  }
+                );
+            }
+            this.currentCatalogSelectedIds = [];
         },
 
         async getFullCatalogById(catalogId: string) {

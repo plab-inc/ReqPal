@@ -3,7 +3,6 @@
       chips
       v-model="selectedProducts"
       :items="products"
-      hide-details
       density="comfortable"
       label="Produkte"
       item-title="product_name"
@@ -46,12 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref, watch} from "vue";
-import {Product} from "@/types/catalog.ts";
+import { onBeforeMount, ref, watch } from "vue";
+import { Product } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import {useProductStore} from "@/stores/product.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { useProductStore } from "@/stores/product.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 const catalogStore = useCatalogStore();
 const products = ref<Product[]>([]);

@@ -1,9 +1,12 @@
 <template>
   <v-data-table-virtual
+    v-model="catalogStore.currentCatalogSelectedIds"
     v-model:expanded="expanded"
     :headers="headers"
     :items="catalogStore.getCurrentCatalog?.requirements"
     item-value="requirement_id"
+    select-strategy="all"
+    :show-select="userOwnsCatalog"
     show-expand
     expand-on-click
     hover

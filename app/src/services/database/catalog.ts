@@ -22,6 +22,7 @@ class CatalogServiceClass {
     updateCatalogName: this.updateCatalogName.bind(this),
     addRequirement: this.addRequirement.bind(this),
     deleteRequirement: this.deleteRequirement.bind(this),
+    deleteRequirements: this.deleteRequirements.bind(this),
     updateRequirement: this.updateRequirement.bind(this),
     addProduct: this.addProduct.bind(this),
     removeProductFromCatalogAndRequirements: this.removeProductFromCatalogAndRequirements.bind(this),
@@ -356,6 +357,18 @@ class CatalogServiceClass {
       .from("requirements")
       .delete()
       .eq("requirement_id", requirementId)
+      .select();
+
+    if (error) throw error;
+
+    return data;
+  }
+
+  async deleteRequirements(requirementIds: string[]): Promise<RequirementDTO[]> {
+    const { data, error } = await supabase
+      .from("requirements")
+      .delete()
+      .in("requirement_id", requirementIds)
       .select();
 
     if (error) throw error;
