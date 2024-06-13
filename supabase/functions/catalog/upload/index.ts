@@ -187,13 +187,13 @@ export function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: n
 
   for (let i = 0; i < products.length; i += 2) {
     mappedProducts.push({
-      product_name: products[i].trimEnd().trimEnd(),
-      product_url: products[i + 1].trimEnd().trimEnd()
+      product_name: products[i].trimEnd().trimStart(),
+      product_url: products[i + 1].trimEnd().trimStart()
     });
   }
 
   const requirementsJson: RequirementsJSON = {
-    catalog_name: fileName.trimEnd().trimEnd(),
+    catalog_name: fileName.trimEnd().trimStart(),
     products: mappedProducts,
     requirements: []
   };
@@ -205,9 +205,9 @@ export function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: n
     }
 
     const item: Requirement = {
-      label: currentLine[0].trimEnd().trimEnd(),
-      title: currentLine[1].trimEnd().trimEnd(),
-      description: currentLine[2].trimEnd().trimEnd(),
+      label: currentLine[0].trimEnd().trimStart(),
+      title: currentLine[1].trimEnd().trimStart(),
+      description: currentLine[2].trimEnd().trimStart(),
       productDetails: {}
     };
 
@@ -218,7 +218,7 @@ export function convertCSVtoJSONString(csvLines: string[], indexOfProductsRow: n
       item.productDetails[product.product_name] = {
         product_name: product.product_name,
         qualification: qualification,
-        comment: comment.trimEnd().trimEnd()
+        comment: comment.trimEnd().trimStart()
       };
     }
 
