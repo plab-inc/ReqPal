@@ -1,13 +1,12 @@
 <script setup lang="ts">
 
-import {Requirement} from "@/types/catalog.ts";
+import { Requirement } from "@/types/catalog.ts";
 
 interface Props {
   requirement: Requirement | undefined,
 }
 
 const props = defineProps<Props>();
-
 
 </script>
 

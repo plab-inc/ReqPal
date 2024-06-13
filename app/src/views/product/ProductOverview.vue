@@ -5,42 +5,36 @@
     </v-col>
     <v-col cols="auto">
       <v-btn-group
-          elevation="3"
-          variant="outlined"
-          rounded
-          divided
+        elevation="3"
+        variant="outlined"
+        rounded
+        divided
       >
-        <v-tooltip text="Neues Produkt" location="bottom">
-          <template v-slot:activator="{ props }">
-            <v-btn
-                v-bind="props"
-                @click="createProduct"
-                :disabled="productStore.products.length >= MAX_PRODUCTS"
-            >
-              Neues Produkt Erstellen
-            </v-btn>
-          </template>
-        </v-tooltip>
+        <v-btn
+          @click="createProduct"
+          :disabled="productStore.products.length >= MAX_PRODUCTS"
+        >
+          Neues Produkt Erstellen
+        </v-btn>
       </v-btn-group>
     </v-col>
   </v-row>
   <v-divider />
-
-  <v-row>
-    <v-col>
-     <ProductTable></ProductTable>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row>
+      <ProductTable />
+    </v-row>
+  </v-container>
   <EditProduct v-if="editDialog" :dialog="editDialog" @update:dialog="updateEditDialog"></EditProduct>
 </template>
 
 <script setup lang="ts">
 
-import ProductTable from "@/components/catalog/table/productTable/ProductTable.vue";
-import {useProductStore} from "@/stores/product.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {ref} from "vue";
-import EditProduct from "@/components/catalog/table/productTable/EditProduct.vue";
+import ProductTable from "@/components/catalog/tables/ProductTable.vue";
+import { useProductStore } from "@/stores/product.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { ref } from "vue";
+import EditProduct from "@/components/catalog/product/EditProduct.vue";
 
 const MAX_PRODUCTS = 10;
 const productStore = useProductStore();
@@ -52,7 +46,7 @@ function updateEditDialog(value: boolean) {
 }
 
 async function createProduct() {
-  if(authStore.user?.id){
+  if (authStore.user?.id) {
     productStore.currentProduct = null;
     editDialog.value = true;
   }

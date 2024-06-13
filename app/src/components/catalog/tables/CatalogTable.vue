@@ -7,11 +7,11 @@
     show-expand
     expand-on-click
     hover
-    height="70vh"
+    height="75vh"
     no-data-text="Dieser Katalog enthält noch keine Anforderungen"
   >
     <template v-slot:item.actions="{ item }">
-      <div style="display: flex; align-items: center;">
+      <div>
         <v-btn
           class="ml-1"
           density="compact"
@@ -44,7 +44,6 @@
   <EditRequirement :dialog="dialogStore.editDialog" :editedItem="dialogStore.editedItem" :isNew="dialogStore.isNew"
                    @update:dialog="dialogStore.closeDialog" />
 </template>
-
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
@@ -52,7 +51,7 @@ import { useAuthStore } from "@/stores/auth.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { useDialogStore } from "@/stores/dialog.ts";
 import ProductDetailPanel from "@/components/catalog/product/ProductDetailPanel.vue";
-import EditRequirement from "@/components/catalog/table/catalogTable/EditRequirement.vue";
+import EditRequirement from "@/components/catalog/requirement/EditRequirement.vue";
 import { Requirement } from "@/types/catalog.ts";
 import { DeleteRequirement } from "@/utils/dialogs.ts";
 
