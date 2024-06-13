@@ -62,18 +62,19 @@ const dialogStore = useDialogStore();
 const expanded = ref<any>([]);
 const userOwnsCatalog = ref(false);
 
-const headers = [
-  { title: "Anforderung", value: "label", sortable: true },
-  { title: "Titel", value: "title", sortable: true },
-  { title: "Beschreibung", value: "description", sortable: true }
-];
+const headers = ref<any>([
+  { title: "Anforderung", value: "label", sortable: true, align: "start" },
+  { title: "Titel", value: "title", sortable: true, align: "start" },
+  { title: "Beschreibung", value: "description", sortable: true, align: "center" }
+]);
 
 onBeforeMount(() => {
   if (catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
     userOwnsCatalog.value = true;
-    headers.push(
-      { title: "Aktionen", value: "actions", sortable: false }
-    );
+    headers.value = [
+      ...headers.value,
+      { title: "Aktionen", value: "actions", sortable: false, align: "end" }
+    ];
   }
 });
 

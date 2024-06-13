@@ -48,11 +48,11 @@ const expanded = ref<any>([]);
 const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
-const headers = [
-  {title: "Name", value: "product_name", sortable: true, width: '47,5%'},
-  {title: "Url", value: "product_url", sortable: true, width: '47,5%'},
-  {title: "Aktionen", value: "actions", sortable: false, width: '5%'}
-];
+const headers = ref([
+  { title: "Name", value: "product_name", sortable: true, width: "25%", align: "start" },
+  { title: "Url", value: "product_url", sortable: true, width: "auto", align: "center" },
+  { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
+] as const);
 
 function openEditDialog(item: Product | null) {
   if (item) {
