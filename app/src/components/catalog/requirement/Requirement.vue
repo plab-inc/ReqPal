@@ -6,7 +6,7 @@ interface Props {
   requirement: Requirement | undefined,
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 </script>
 

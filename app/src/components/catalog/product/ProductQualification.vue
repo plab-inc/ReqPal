@@ -4,7 +4,7 @@ interface Props {
   size: number
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const getProgressColor = (qualification: string) => {
   switch (parseInt(qualification)) {

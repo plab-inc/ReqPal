@@ -11,7 +11,7 @@
         multiple
         variant="outlined"
         no-data-text="Es stehen noch keine Produkte zur Verfügung."
-        :disabled="products.length <= 0 || isProcessing"
+        :disabled="!userOwnsCatalog || products.length <= 0 || isProcessing"
     >
       <template v-slot:chip="{ item }">
         <v-chip
@@ -51,6 +51,7 @@ import { Product } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
 import { useProductStore } from "@/stores/product.ts";
 import { useCatalogStore } from "@/stores/catalog.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 
 const catalogStore = useCatalogStore();
 const products = ref<Product[]>([]);
@@ -62,6 +63,7 @@ const selectedProducts = ref<string[]>([]);
 const originalSelectedProducts = ref<string[]>([]);
 const hasChanged = ref<boolean>(false);
 const isProcessing = ref<boolean>(false);
+const userOwnsCatalog = ref(false);
 
 function checkIfSelectionHasChanged() {
 
@@ -140,10 +142,14 @@ function refreshProducts() {
 }
 
 onBeforeMount(async () => {
+  const authStore = useAuthStore();
   refreshProducts();
+  if (catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
+    userOwnsCatalog.value = true;
+  }
 })
 
-watch(selectedProducts, (newSelection) => {
+watch(selectedProducts, () => {
   hasChanged.value = checkIfSelectionHasChanged();
 }, {deep: true});
 </script>

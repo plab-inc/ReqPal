@@ -237,13 +237,13 @@ class CatalogServiceClass {
     return data as ProductDTO;
   }
 
-  private async addProductToCatalogAndRequirements(productId: string, catalog: Catalog) {
+  private async addProductToCatalogAndRequirements(product: Product, catalog: Catalog) {
     const { error: catalogError } = await supabase
       .from("product_catalogs")
       .insert([
         {
           catalog_id: catalog.catalog_id,
-          product_id: productId
+          product_id: product.product_id
         }
       ]);
 
@@ -253,14 +253,19 @@ class CatalogServiceClass {
     //using a bulk create operation which is handled in a single transaction
     const productRequirements = catalog.requirements.map((requirement) => ({
       requirement_id: requirement.requirement_id,
-      product_id: productId
+      product_id: product.product_id,
+      comment: product.product_name.trim() + "-Kommentar",
+      qualification: 1
     }));
 
-    const { error: reqError } = await supabase
+    const { data: reqProducts, error: reqError } = await supabase
       .from("product_requirements")
-      .insert(productRequirements);
+      .insert(productRequirements)
+      .select();
 
     if (reqError) throw reqError;
+
+    if(reqProducts) return reqProducts;
   }
 
   private async insertProductDetailsForRequirement(productId: string, productDetails: ProductDetail, requirementId: string) {

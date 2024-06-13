@@ -43,7 +43,7 @@
                 color="warning"
                 v-model="productDetail.qualification"
                 :max="5"
-                :min="0"
+                :min="1"
                 :step="1"
                 hide-details
                 show-ticks
@@ -113,7 +113,6 @@ async function save() {
     const updatedRequirements = await catalogService.push.updateRequirement(localEditedRequirement.value);
 
     if(updatedRequirements.length > 0) {
-      console.log("Update Requirements");
       Object.assign(props.editedItem as Requirement, localEditedRequirement.value);
     }
 
@@ -128,7 +127,6 @@ async function save() {
     }
 
     if(updatedProductsRequirements.length > 0){
-      console.log("Update Product Requirements");
       Object.assign(props.editedItem as Requirement, localEditedRequirement?.value);
     }
 

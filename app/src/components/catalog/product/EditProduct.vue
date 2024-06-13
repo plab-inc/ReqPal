@@ -45,7 +45,7 @@ interface Props {
   dialog: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const emit = defineEmits(["update:dialog"]);
 const productStore = useProductStore();
 const isFormValid = ref<boolean>(false);

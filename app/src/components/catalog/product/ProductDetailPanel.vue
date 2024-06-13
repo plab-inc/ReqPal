@@ -3,7 +3,6 @@
 import { Product, Requirement } from "@/types/catalog.ts";
 import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
 import { ref } from "vue";
-import { useCatalogStore } from "@/stores/catalog.ts";
 
 interface Props {
   requirement: Requirement | undefined,
@@ -11,10 +10,7 @@ interface Props {
 }
 
 const loading = ref<boolean>(false);
-const props = defineProps<Props>();
-
-const catalogStore = useCatalogStore();
-
+defineProps<Props>();
 </script>
 
 <template>
