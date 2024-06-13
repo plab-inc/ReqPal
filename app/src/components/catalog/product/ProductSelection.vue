@@ -1,28 +1,28 @@
 <template>
-    <v-select
-        chips
-        v-model="selectedProducts"
-        :items="products"
-        hide-details
-        density="comfortable"
-        label="Produkte"
-        item-title="product_name"
-        item-value="product_id"
-        multiple
-        variant="outlined"
-        no-data-text="Es stehen noch keine Produkte zur Verfügung."
-        :disabled="!userOwnsCatalog || products.length <= 0 || isProcessing"
-    >
-      <template v-slot:chip="{ item }">
-        <v-chip
+  <v-select
+      chips
+      v-model="selectedProducts"
+      :items="products"
+      hide-details
+      density="comfortable"
+      label="Produkte"
+      item-title="product_name"
+      item-value="product_id"
+      multiple
+      variant="outlined"
+      no-data-text="Es stehen noch keine Produkte zur Verfügung."
+      :disabled="!userOwnsCatalog || products.length <= 0 || isProcessing"
+  >
+    <template v-slot:chip="{ item }">
+      <v-chip
           density="comfortable"
           color="warning"
-        >
-          {{ item.title }}
-        </v-chip>
-      </template>
-      <template v-if="hasChanged" v-slot:append>
-        <v-btn
+      >
+        {{ item.title }}
+      </v-chip>
+    </template>
+    <template v-if="hasChanged" v-slot:append>
+      <v-btn
           density="compact"
           color="success"
           variant="plain"
@@ -30,8 +30,8 @@
           icon="mdi-content-save"
           @click="save"
           :disabled="isProcessing"
-        />
-        <v-btn
+      />
+      <v-btn
           class="ml-2"
           density="compact"
           color="error"
@@ -40,17 +40,17 @@
           icon="mdi-undo"
           @click="rollback"
           :disabled="isProcessing"
-        />
-      </template>
-    </v-select>
+      />
+    </template>
+  </v-select>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from "vue";
-import { Product } from "@/types/catalog.ts";
+import {onBeforeMount, ref, watch} from "vue";
+import {Product} from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
-import { useProductStore } from "@/stores/product.ts";
-import { useCatalogStore } from "@/stores/catalog.ts";
+import {useProductStore} from "@/stores/product.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 
 const catalogStore = useCatalogStore();
@@ -64,6 +64,7 @@ const originalSelectedProducts = ref<string[]>([]);
 const hasChanged = ref<boolean>(false);
 const isProcessing = ref<boolean>(false);
 const userOwnsCatalog = ref(false);
+const authStore = useAuthStore();
 
 function checkIfSelectionHasChanged() {
 
@@ -127,26 +128,25 @@ async function rollback() {
 }
 
 function refreshProducts() {
-  if (catalogStore.getCurrentCatalog) {
-    productsForCatalog.value = [];
-    productsForCatalog.value = catalogStore.getCurrentCatalog?.products;
-    products.value = productStore.getCurrentProducts;
-    selectedProducts.value = [];
-    originalSelectedProducts.value = [];
-    productsForCatalog.value.forEach(pr => {
-      selectedProducts.value.push(pr.product_id);
-      originalSelectedProducts.value.push(pr.product_id);
-    })
+  const catalog = catalogStore.getCurrentCatalog;
+  if (catalog) {
+    if (userOwnsCatalog.value) {
+      products.value = productStore.getCurrentProducts;
+    } else {
+      products.value = catalogStore.getCurrentCatalog.products;
+    }
+
+    productsForCatalog.value = catalog.products || [];
+    selectedProducts.value = originalSelectedProducts.value = productsForCatalog.value.map(pr => pr.product_id);
   }
   hasChanged.value = false;
 }
 
 onBeforeMount(async () => {
-  const authStore = useAuthStore();
-  refreshProducts();
   if (catalogStore.currentCatalog?.user_id === authStore.user?.id || authStore.isModerator) {
     userOwnsCatalog.value = true;
   }
+  refreshProducts();
 })
 
 watch(selectedProducts, () => {
