@@ -8,7 +8,7 @@ interface CatalogState {
     catalogs: CatalogDTO[]
     examples: CatalogDTO[]
     currentCatalog: Catalog | null
-    currentCatalogSelectedIds: String[];
+    currentCatalogSelectedIds: string[];
 }
 
 export const useCatalogStore = defineStore('catalog', {
@@ -29,7 +29,7 @@ export const useCatalogStore = defineStore('catalog', {
         getExampleCatalogs(): CatalogDTO[] {
             return this.examples;
         },
-        getCurrentCatalogSelectedIds(): String[] {
+        getCurrentCatalogSelectedIds(): string[] {
             return this.currentCatalogSelectedIds;
         }
     },
@@ -70,14 +70,15 @@ export const useCatalogStore = defineStore('catalog', {
         },
 
         async deleteSelectedRequirements() {
-            if (this.currentCatalog) {
-                await catalogService.deleteRequirements(this.getCurrentCatalogSelectedIds).then(() => {
+            await catalogService.deleteRequirements(this.getCurrentCatalogSelectedIds).then(() => {
+                if (this.currentCatalog) {
                       this.currentCatalog.requirements = this.currentCatalog.requirements.filter((requirement) => {
                           return !this.currentCatalogSelectedIds.includes(requirement.requirement_id);
                       });
+
                   }
-                );
-            }
+            });
+
             this.currentCatalogSelectedIds = [];
         },
 

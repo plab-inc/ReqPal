@@ -16,18 +16,18 @@
           divided
         >
           <v-btn
-            color="error"
-            :disabled="!userCanEdit"
-            @click="deleteRequirements()"
-          >
-            Gewählte Anforderungen löschen
-          </v-btn>
-          <v-btn
             color="success"
             :disabled="!userCanEdit"
             @click="dialogStore.openEditDialog()"
           >
             Anforderung hinzufügen
+          </v-btn>
+          <v-btn
+            color="error"
+            :disabled="!userCanEdit || catalogStore.getCurrentCatalogSelectedIds.length <= 0"
+            @click="deleteRequirements()"
+          >
+            Gewählte Anforderungen löschen
           </v-btn>
         </v-btn-group>
       </v-col>
