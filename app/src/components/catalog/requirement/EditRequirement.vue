@@ -43,7 +43,7 @@
                 color="warning"
                 v-model="productDetail.qualification"
                 :max="5"
-                :min="0"
+                :min="1"
                 :step="1"
                 hide-details
                 show-ticks
