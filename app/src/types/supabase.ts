@@ -171,22 +171,25 @@ export type Database = {
       }
       products: {
         Row: {
+          normalized_product_name: string | null
           product_id: string
           product_name: string
           product_url: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
+          normalized_product_name?: string | null
           product_id?: string
           product_name: string
           product_url: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
+          normalized_product_name?: string | null
           product_id?: string
           product_name?: string
           product_url?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
