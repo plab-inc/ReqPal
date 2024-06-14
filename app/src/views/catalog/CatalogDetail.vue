@@ -30,12 +30,23 @@
             Gewählte Anforderungen löschen
           </v-btn>
         </v-btn-group>
+        <v-spacer class="mb-5" />
+        <v-text-field
+          density="comfortable"
+          v-model="searchString"
+          label="Suche"
+          hide-details
+          clearable
+          prepend-inner-icon="mdi-magnify"
+          variant="underlined"
+          single-line
+        />
       </v-col>
     </v-row>
     <v-divider />
     <v-container>
       <v-row>
-        <CatalogTable />
+        <CatalogTable :searchString="searchString" />
       </v-row>
     </v-container>
   </div>
@@ -61,6 +72,7 @@ const dialogStore = useDialogStore();
 const authStore = useAuthStore();
 
 const userCanEdit = ref<boolean>(false);
+const searchString = ref<string>("");
 
 function deleteRequirements() {
   utilStore.openDialog(DeleteRequirement, () => {

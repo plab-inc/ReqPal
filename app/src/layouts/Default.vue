@@ -6,12 +6,12 @@
                        :active="utilStore.showLoadingBar"
     />
     <v-navigation-drawer
-        location="left"
-        width="250"
-        expand-on-hover
-        v-model:rail="rail"
-        v-model="drawer"
-        permanent
+      location="left"
+      width="250"
+      expand-on-hover
+      v-model:rail="rail"
+      v-model="drawer"
+      permanent
     >
       <v-list nav>
         <v-list-item v-if="authStore.user"
@@ -30,43 +30,43 @@
                      rounded
         />
       </v-list>
-      <v-divider class="my-1"/>
+      <v-divider class="my-1" />
       <v-list nav>
         <v-list-item
-            rounded prepend-icon="mdi-home"
-            title="Home" to="/"
-            exact/>
-        <v-divider class="my-1"/>
+          rounded prepend-icon="mdi-home"
+          title="Home" to="/"
+          exact />
+        <v-divider class="my-1" />
         <div v-if="authStore.user">
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
               <v-list-item
-                  v-bind="props"
-                  prepend-icon="mdi-school"
-                  title="Lernen"
-                  rounded
+                v-bind="props"
+                prepend-icon="mdi-school"
+                title="Lernen"
+                rounded
               />
             </template>
             <v-list-item
-                rounded
-                to="/lessons"
-                title="Lektionen"
-                :active="router.currentRoute.value.path.startsWith('/lessons')"
-                :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
+              rounded
+              to="/lessons"
+              title="Lektionen"
+              :active="router.currentRoute.value.path.startsWith('/lessons')"
+              :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
             >
               <template v-slot:prepend>
                 <v-progress-circular
-                    class="mr-4"
-                    size="27"
-                    :model-value="openLessonsPercentage"
-                    :color="openLessonsColor"
+                  class="mr-4"
+                  size="27"
+                  :model-value="openLessonsPercentage"
+                  :color="openLessonsColor"
                 />
               </template>
             </v-list-item>
             <v-list-item
-                title="Meine Punkte"
-                :subtitle="profileStore.points"
-                rounded
+              title="Meine Punkte"
+              :subtitle="profileStore.points"
+              rounded
             >
               <template v-slot:prepend>
                 <v-icon class="mr-n5 ml-n1" size="34" color="warning">
@@ -79,20 +79,17 @@
         <div v-if="authStore.user && authStore.isTeacher">
           <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs" />
           <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
-          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen"  to="/catalogs/upload"/>
-          <v-divider class="my-1"/>
-          <v-list-item
-            rounded v-if="authStore.isTeacher"
-            prepend-icon="mdi-school"
-            title="Erstellte Lektionen"
-            :active="router.currentRoute.value.path.startsWith('/lessons')"
-            to="/lessons"/>
-          <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
-          <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler"/>
+          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen" to="/catalogs/upload" />
+          <v-divider class="my-1" />
+          <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"
+                       :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons" />
+          <v-list-item rounded prepend-icon="mdi-graph-outline" title="Erstellte Szenarien" to="/modeler" />
+          <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder" />
+          <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler" />
         </div>
       </v-list>
       <template v-slot:append>
-        <v-divider class="my-1"/>
+        <v-divider class="my-1" />
         <v-list>
           <div v-if="authStore.user">
             <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
@@ -100,14 +97,14 @@
             <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
           </div>
           <v-list-item
-              :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
-              :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
-              @click="themeStore.toggleUserTheme"
+            :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+            :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
+            @click="themeStore.toggleUserTheme"
           />
           <v-list-item
-              prepend-icon="mdi-scale-balance"
-              title="Rechtliche Hinweise"
-              to="/legal"
+            prepend-icon="mdi-scale-balance"
+            title="Rechtliche Hinweise"
+            to="/legal"
           />
         </v-list>
       </template>
@@ -118,13 +115,13 @@
           <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
               <v-alert
-                  closable
-                  class="mb-2"
-                  variant="outlined"
-                  border="top"
-                  density="compact"
-                  :type="alert.type"
-                  @click:close="utilStore.removeAlert(alert.id)"
+                closable
+                class="mb-2"
+                variant="outlined"
+                border="top"
+                density="compact"
+                :type="alert.type"
+                @click:close="utilStore.removeAlert(alert.id)"
               >
                 {{ alert.message }}
               </v-alert>
@@ -139,12 +136,12 @@
         </v-row>
         <div v-for="dialog in utilStore.dialogs">
           <Dialog @confirm="dialog.onConfirm(); utilStore.closeDialog(dialog.id)"
-                        @cancel="utilStore.closeDialog(dialog.id)"
-                        :title="dialog.content.title"
-                        :message="dialog.content.message"
-                        :confirm-label="dialog.content.confirmLabel"
-                        :cancel-label="dialog.content.cancelLabel"
-                        :onlyConfirmButton="dialog.onlyConfirmButton"
+                  @cancel="utilStore.closeDialog(dialog.id)"
+                  :title="dialog.content.title"
+                  :message="dialog.content.message"
+                  :confirm-label="dialog.content.confirmLabel"
+                  :cancel-label="dialog.content.cancelLabel"
+                  :onlyConfirmButton="dialog.onlyConfirmButton"
           />
         </div>
       </v-container>
@@ -170,7 +167,7 @@ const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
-const openLessonsColor = ref<string>('error');
+const openLessonsColor = ref<string>("error");
 const openLessonsPercentage = ref<number>(100);
 
 onBeforeMount(async () => {
@@ -178,7 +175,7 @@ onBeforeMount(async () => {
     await profileStore.fetchProfile(authStore.user.id);
     await profileStore.fetchPoints(authStore.user.id);
   }
-})
+});
 
 const removeAlertWithDelay = (alertId: string, delay = 10000) => {
   setTimeout(() => {
@@ -188,26 +185,26 @@ const removeAlertWithDelay = (alertId: string, delay = 10000) => {
 
 const logout = () => {
   authStore.signOut();
-  router.push('/')
-}
+  router.push("/");
+};
 
 function routeRelatedToCatalog() {
   return router.currentRoute.value.path.startsWith("/catalogs") || router.currentRoute.value.path.startsWith("/products");
 }
 
 watch(() => lessonStore.openLessons, () => {
-  if(lessonStore.openLessons === 0 || lessonStore.lessons.length === 0){
-    openLessonsColor.value = 'success';
+  if (lessonStore.openLessons === 0 || lessonStore.lessons.length === 0) {
+    openLessonsColor.value = "success";
     openLessonsPercentage.value = 100;
     return;
   }
-  if(lessonStore.openLessons === lessonStore.lessons.length){
-    openLessonsColor.value = 'error';
+  if (lessonStore.openLessons === lessonStore.lessons.length) {
+    openLessonsColor.value = "error";
     openLessonsPercentage.value = 100;
     return;
   }
-  openLessonsColor.value = 'warning';
+  openLessonsColor.value = "warning";
   openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
-}, {immediate: true})
+}, { immediate: true });
 
 </script>

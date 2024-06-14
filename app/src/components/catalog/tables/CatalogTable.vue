@@ -11,7 +11,8 @@
     expand-on-click
     hover
     height="75vh"
-    no-data-text="Dieser Katalog enthält noch keine Anforderungen"
+    :no-data-text="!props.searchString ? 'Dieser Katalog enthält noch keine Anforderungen' : 'Keine passenden Anforderungen zur Suche gefunden'"
+    :search="props.searchString"
   >
     <template v-slot:item.actions="{ item }">
       <div>
@@ -47,8 +48,9 @@
   <EditRequirement :dialog="dialogStore.editDialog" :editedItem="dialogStore.editedItem" :isNew="dialogStore.isNew"
                    @update:dialog="dialogStore.closeDialog" />
 </template>
+
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { defineProps, onBeforeMount, ref } from "vue";
 import { useCatalogStore } from "@/stores/catalog.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import { useUtilStore } from "@/stores/util.ts";
@@ -65,10 +67,16 @@ const dialogStore = useDialogStore();
 const expanded = ref<any>([]);
 const userOwnsCatalog = ref(false);
 
+interface Props {
+  searchString: string;
+}
+
+const props = defineProps<{ searchString: string }>();
+
 const headers = ref<any>([
-  { title: "Anforderung", value: "label", sortable: true, align: "start" },
+  { title: "Anforderung", value: "label", sortable: true, align: "start", sortRaw: sortByLabel },
   { title: "Titel", value: "title", sortable: true, align: "start" },
-  { title: "Beschreibung", value: "description", sortable: true, align: "center" }
+  { title: "Beschreibung", value: "description", sortable: false, align: "center" }
 ]);
 
 onBeforeMount(() => {
@@ -86,4 +94,26 @@ function deleteRequirement(item: Requirement) {
     catalogStore.deleteRequirement(item.requirement_id);
   });
 }
+
+function sortByLabel(a: Requirement, b: Requirement) {
+  const regex = /^([a-zA-Z]+)(-\d+)?$/;
+
+  const matchA = a.label.match(regex);
+  const matchB = b.label.match(regex);
+
+  if (!matchA || !matchB) return 0;
+
+  const strA = matchA[1];
+  const strB = matchB[1];
+
+  if (strA !== strB) {
+    return strA.localeCompare(strB);
+  }
+
+  const numA = matchA[2] ? parseInt(matchA[2].slice(1)) : 0;
+  const numB = matchB[2] ? parseInt(matchB[2].slice(1)) : 0;
+
+  return numA - numB;
+}
+
 </script>
