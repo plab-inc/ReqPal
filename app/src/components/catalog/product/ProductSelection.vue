@@ -15,7 +15,8 @@
     <template v-slot:chip="{ item }">
       <v-chip
           density="comfortable"
-          color="warning"
+          color="primary"
+          variant="outlined"
       >
         {{ item.title }}
       </v-chip>

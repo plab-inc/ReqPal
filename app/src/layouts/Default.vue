@@ -83,7 +83,7 @@
           <v-divider class="my-1" />
           <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"
                        :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons" />
-          <v-list-item rounded prepend-icon="mdi-graph-outline" title="Erstellte Szenarien" to="/modeler" />
+          <!-- v-list-item rounded prepend-icon="mdi-graph-outline" title="Erstellte Szenarien" to="/modeler" /-->
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder" />
           <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler" />
         </div>
@@ -93,7 +93,6 @@
         <v-list>
           <div v-if="authStore.user">
             <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
-            <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
             <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
           </div>
           <v-list-item
@@ -101,6 +100,8 @@
             :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
             @click="themeStore.toggleUserTheme"
           />
+          <v-divider class="my-1" />
+          <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
           <v-list-item
             prepend-icon="mdi-scale-balance"
             title="Rechtliche Hinweise"
