@@ -177,7 +177,6 @@ export const useLessonStore = defineStore('lesson', {
             if (this.currentLesson) {
                 return {
                     uuid: this.currentLesson?.lessonDTO.uuid,
-                    usedHints: 0,
                     answers: questions.map(component => {
                         return {
                             uuid: component.uuid,
