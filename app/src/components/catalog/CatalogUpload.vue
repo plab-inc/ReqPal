@@ -4,13 +4,13 @@
       <v-form @submit.prevent v-model="formIsValid">
         <v-row align="center">
           <v-col
-            cols="13"
-            class="dashed-border"
-            @drop.prevent="handleDrop"
-            @dragover.prevent="handleDragOver"
-            @dragleave.prevent="handleDragLeave"
-            :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
-            :class="{ 'loading': loading }"
+              cols="13"
+              class="dashed-border"
+              @drop.prevent="handleDrop"
+              @dragover.prevent="handleDragOver"
+              @dragleave.prevent="handleDragLeave"
+              :style="{ borderColor: state.borderColor, backgroundColor: state.backgroundColor }"
+              :class="{ 'loading': loading }"
           >
             <v-card-text class="text-center">
               <div v-if="loading">
@@ -26,23 +26,23 @@
         <v-row align="center">
           <v-col>
             <v-file-input
-              label="Datei auswählen"
-              color="secondary"
-              variant="outlined"
-              v-model="state.files"
-              show-icon="false"
-              clearable
-              :disabled="loading"
-              :rules="[requiredUniqueCatalogNameRule(state.files)]"
+                label="Datei auswählen"
+                color="secondary"
+                variant="outlined"
+                v-model="state.files"
+                show-icon="false"
+                clearable
+                :disabled="loading"
+                :rules="[requiredUniqueCatalogNameRule(state.files)]"
             ></v-file-input>
           </v-col>
         </v-row>
         <v-row align="center">
           <v-col>
             <v-btn
-              color="primary"
-              @click="handleFileUpload(state.files[0])" block
-              :disabled="!formIsValid || loading || state.files.length === 0"
+                color="primary"
+                @click="handleFileUpload(state.files[0])" block
+                :disabled="!formIsValid || loading || state.files.length === 0"
             >
               Katalog Hochladen
             </v-btn>
@@ -54,14 +54,14 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from "vuetify";
-import { DatabaseError, PrivilegeError } from "@/errors/custom.ts";
+import {useTheme} from "vuetify";
+import {DatabaseError, PrivilegeError} from "@/errors/custom.ts";
 import AlertService from "@/services/util/alert.ts";
 import CatalogService from "@/services/database/catalog.ts";
 import router from "@/router";
 import ExcelJS from "exceljs";
-import { requiredUniqueCatalogNameRule } from "@/utils/validationRules.ts";
-import { reactive, ref } from "vue";
+import {requiredUniqueCatalogNameRule} from "@/utils/validationRules.ts";
+import {reactive, ref} from "vue";
 
 interface Props {
   maxFileSize?: number;
@@ -97,9 +97,9 @@ async function xlsxToCsv(xlsxFile: File): Promise<File> {
 
     workbook.worksheets[0].spliceRows(0, 1);
 
-    const buffer = await workbook.csv.writeBuffer({ formatterOptions: { delimiter: ";" } });
-    const blob = new Blob([buffer], { type: "text/csv" });
-    return new File([blob], xlsxFile.name.split(".")[0] + ".csv", { type: "text/csv" });
+    const buffer = await workbook.csv.writeBuffer({formatterOptions: {delimiter: ";"}});
+    const blob = new Blob([buffer], {type: "text/csv"});
+    return new File([blob], xlsxFile.name.split(".")[0] + ".csv", {type: "text/csv"});
 
   } catch (error) {
     throw error;
@@ -123,7 +123,7 @@ function persistCatalog(File: File) {
 
   CatalogService.uploadCatalog(File).then(() => {
     AlertService.addSuccessAlert("Katalog erfolgreich hochgeladen.");
-    router.push({ name: "Catalogs" });
+    router.push({name: "Catalogs"});
   }).catch((error: any) => {
     if (error.code == 42501) {
       throw new PrivilegeError("Rechte zum Hochladen fehlen.", error.code);
@@ -162,7 +162,9 @@ const handleDrop = (e: DragEvent) => {
   if (e.dataTransfer) {
     const droppedFiles = Array.from(e.dataTransfer.files).filter(validateFile);
 
-    state.files = [droppedFiles[0]];
+    if (droppedFiles.length > 0) {
+      state.files = [droppedFiles[0]];
+    }
 
     /* allow multiple files
     for (let i = 0; i < droppedFiles.length; i++) {
