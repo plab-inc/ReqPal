@@ -133,11 +133,14 @@ export const requiredUniqueLessonTitleRule = async (): Promise<boolean | string>
 export const requiredUniqueCatalogNameRule = async (value: File[]): Promise<boolean | string> => {
     const catalogStore = useCatalogStore();
     for (const file of value) {
-        const name = file.name;
-        const catalogName = name.substring(0, name.lastIndexOf('.')) || name;
-        const exists = await catalogStore.checkIfCatalogNameExists(catalogName);
-        if (exists) return "Der Name existiert bereits.";
+        if (file) {
+            const name = file.name;
+            const catalogName = name.substring(0, name.lastIndexOf('.')) || name;
+            const exists = await catalogStore.checkIfCatalogNameExists(catalogName);
+            if (exists) return "Der Name existiert bereits.";
+        } else {
+            return "Datei nicht gefunden.";
+        }
     }
-
     return true;
 };
