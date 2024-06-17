@@ -36,7 +36,6 @@ export type LessonForm = {
 
 export type LessonAnswer = {
     uuid: string,
-    usedHints: number,
     answers: any[]
 }
 
@@ -46,7 +45,7 @@ export type UserAnswer = {
 }
 
 export type UserResult = {
-    result: {score: number, results: any, isCorrect: boolean}
+    result: { score: number, results: any, isCorrect: boolean }
 }
 
 export type LessonStatistic = {
