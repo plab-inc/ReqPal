@@ -82,17 +82,17 @@ export type Database = {
       permissions: {
         Row: {
           description: string | null
-          id: number
+          id: string
           name: string
         }
         Insert: {
           description?: string | null
-          id?: number
+          id?: string
           name: string
         }
         Update: {
           description?: string | null
-          id?: number
+          id?: string
           name?: string
         }
         Relationships: []
@@ -318,16 +318,16 @@ export type Database = {
       }
       role_permissions: {
         Row: {
-          permission_id: number
-          role_id: number
+          permission_id: string
+          role_id: string
         }
         Insert: {
-          permission_id: number
-          role_id: number
+          permission_id: string
+          role_id: string
         }
         Update: {
-          permission_id?: number
-          role_id?: number
+          permission_id?: string
+          role_id?: string
         }
         Relationships: [
           {
@@ -349,17 +349,17 @@ export type Database = {
       roles: {
         Row: {
           description: string | null
-          id: number
+          id: string
           name: string
         }
         Insert: {
           description?: string | null
-          id?: number
+          id?: string
           name: string
         }
         Update: {
           description?: string | null
-          id?: number
+          id?: string
           name?: string
         }
         Relationships: []
@@ -368,7 +368,6 @@ export type Database = {
         Row: {
           answer: Json | null
           lesson_id: string
-          max_points: number | null
           question_id: string
           result: Json | null
           user_id: string
@@ -377,7 +376,6 @@ export type Database = {
         Insert: {
           answer?: Json | null
           lesson_id: string
-          max_points?: number | null
           question_id: string
           result?: Json | null
           user_id: string
@@ -386,7 +384,6 @@ export type Database = {
         Update: {
           answer?: Json | null
           lesson_id?: string
-          max_points?: number | null
           question_id?: string
           result?: Json | null
           user_id?: string
@@ -420,19 +417,19 @@ export type Database = {
         Row: {
           created_at: string
           feedback: string
-          id: number
+          id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           feedback: string
-          id?: number
+          id?: string
           user_id?: string
         }
         Update: {
           created_at?: string
           feedback?: string
-          id?: number
+          id?: string
           user_id?: string
         }
         Relationships: [
@@ -577,17 +574,17 @@ export type Database = {
       }
       user_points: {
         Row: {
-          id: number
+          id: string
           points: number
           user_id: string
         }
         Insert: {
-          id?: number
+          id?: string
           points?: number
           user_id: string
         }
         Update: {
-          id?: number
+          id?: string
           points?: number
           user_id?: string
         }
