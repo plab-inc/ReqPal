@@ -20,6 +20,14 @@ export const requiredAtLeast6CharsRule = (value: string | null | any): boolean |
     return true;
 }
 
+export const maxLengthRule = (value: string | null | any): boolean | string => {
+    const maxLength = 200;
+    if (typeof value === 'string') {
+        return (value && value.length <= maxLength) || `Die Zeichenanzahl darf maximal ${maxLength} betragen.`;
+    }
+    return `Die Zeichenanzahl darf maximal ${maxLength} betragen.`;
+};
+
 export const minMaxWords = (value: string | null | any): boolean | string => {
 
     if (typeof value === 'string') {
@@ -52,6 +60,21 @@ export const requiredNumberRule = (value: null | number | string): boolean | str
         {
             const numericValue = parseFloat(value);
             return !isNaN(numericValue) ? true : 'Benötigt';
+        }
+    }
+};
+
+export const requiredPositiveNumberRule = (value: null | number | string): boolean | string => {
+    if (value === null || value === undefined || value === '') {
+        return 'Zahl muss größer als 0 sein';
+    }
+
+    if (typeof value === 'number') {
+        return !Number.isNaN(value) && value > 0 ? true : 'Zahl muss größer als 0 sein';
+    } else {
+        {
+            const numericValue = parseFloat(value);
+            return !isNaN(numericValue) && numericValue > 0 ? true : 'Zahl muss größer als 0 sein';
         }
     }
 };

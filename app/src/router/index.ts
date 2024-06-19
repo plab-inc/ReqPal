@@ -7,8 +7,8 @@ import {
     Router
 } from "vue-router";
 
-import { requiresAuth, requiresStudent, requiresTeacher } from "@/middlewares/auth.ts";
-import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
+import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
+import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
@@ -19,8 +19,9 @@ import {
     requiresFinishedLesson,
     requiresUnfinishedLesson
 } from "@/middlewares/lesson.ts";
-import { useUtilStore } from "@/stores/util.ts";
-import { fetchProductsByUser } from "@/middlewares/product.ts";
+import {useUtilStore} from "@/stores/util.ts";
+import {fetchProductsByUser} from "@/middlewares/product.ts";
+import {fetchLearningGoalsByUser} from "@/middlewares/learningGoals.ts";
 
 const routes = [
     {
@@ -136,6 +137,17 @@ const routes = [
                     middleware: [
                         requiresTeacher,
                         fetchProductsByUser
+                    ]
+                }
+            },
+            {
+                path: "/learningGoals",
+                name: "LearningGoals",
+                component: () => import("@/views/learningGoals/LearningGoalsOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchLearningGoalsByUser
                     ]
                 }
             },
