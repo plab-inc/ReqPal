@@ -38,17 +38,12 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { Product } from "@/types/catalog.ts";
 import AlertService from "@/services/util/alert.ts";
 import {
   maxLengthRule,
-  minMaxWords,
-  requiredNumberRule,
   requiredPositiveNumberRule,
-  requiredProductUrlRule,
   requiredStringRule
 } from "@/utils/validationRules.ts";
-import { useProductStore } from "@/stores/product.ts";
 import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
 import {LearningGoal} from "@/types/learningGoals.ts";
 
@@ -60,7 +55,7 @@ defineProps<Props>();
 const emit = defineEmits(["update:dialog"]);
 const learningGoalStore = useLearningGoalsStore();
 const isFormValid = ref<boolean>(false);
-const localGoal = ref<LearningGoal>({id: "", name: "", description: ""});
+const localGoal = ref<LearningGoal>({id: "", name: "", description: "", max_level: 5});
 const originalGoal = ref<LearningGoal>();
 
 function close() {
