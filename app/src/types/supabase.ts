@@ -38,6 +38,38 @@ export type Database = {
           },
         ]
       }
+      learning_goals: {
+        Row: {
+          description: string | null
+          id: string
+          max_level: number | null
+          name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          max_level?: number | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          max_level?: number | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_goals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lessons: {
         Row: {
           created_at: string
