@@ -55,6 +55,7 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresTeacher,
+                        fetchLearningGoalsByUser,
                         fetchLessons
                     ]
                 }

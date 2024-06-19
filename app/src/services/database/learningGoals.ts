@@ -11,6 +11,8 @@ class LearningGoalsServiceClass {
 
     public pull = {
         fetchLearningGoalsByUser: this.fetchLearningGoalsByUser.bind(this),
+        fetchLearningGoalsByIds: this.fetchLearningGoalsByIds.bind(this),
+        fetchLearningGoals: this.fetchLearningGoals.bind(this)
     };
 
     private async fetchLearningGoalsByUser(userUUID: string): Promise<LearningGoal[] | undefined> {
@@ -25,6 +27,30 @@ class LearningGoalsServiceClass {
             return data as LearningGoal[];
         }
     }
+
+    private async fetchLearningGoals(): Promise<LearningGoal[] | undefined> {
+        const {data, error} = await supabase
+            .from("learning_goals")
+            .select("*")
+
+        if (error) throw error;
+
+        if (data) {
+            return data as LearningGoal[];
+        }
+    }
+
+    private async fetchLearningGoalsByIds(goalIds: string[]): Promise<LearningGoal[]> {
+        const {data, error} = await supabase
+            .from("learning_goals")
+            .select("*")
+            .in("id", goalIds);
+
+        if (error) throw error;
+
+        return data as LearningGoal[];
+    }
+
 
     private async uploadLearningGoal(learningGoal: LearningGoal, userUUID: string): Promise<LearningGoal | undefined> {
         const {data, error} = await supabase

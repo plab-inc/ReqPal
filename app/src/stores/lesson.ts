@@ -6,6 +6,7 @@ import {DatabaseError} from "@/errors/custom.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
 import { toRaw } from "vue";
+import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -90,6 +91,7 @@ export const useLessonStore = defineStore('lesson', {
                         isStarted: false,
                         hasSavedProgress: false,
                         userScore: 0,
+                        learningGoal: null,
                         creatorUsername: creatorUsername.username,
                         creatorAvatar: creatorAvatar.avatar
                     });
@@ -107,7 +109,8 @@ export const useLessonStore = defineStore('lesson', {
                     isFinished: false,
                     isStarted: false,
                     hasSavedProgress: false,
-                    userScore: 0
+                    userScore: 0,
+                    learningGoal: null
                 }));
             }
             await this.initLessons(this.lessons);
@@ -117,6 +120,8 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async initLessons(lessons: Lesson[]) {
+            const goalIds : string[] = [];
+
             for (const l of lessons) {
                 const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
                 l.isFinished = status && (status.finished !== null) ? status.finished : false;
@@ -125,7 +130,15 @@ export const useLessonStore = defineStore('lesson', {
                 if (l.isStarted) {
                     l.hasSavedProgress = await this.checkIfLessonHasProgress(l.lessonDTO.uuid);
                 }
+                if(l.lessonDTO.learning_goal) goalIds.push(l.lessonDTO.learning_goal);
             }
+
+            const learningGoalsStore = useLearningGoalsStore();
+            const goals = await learningGoalsStore.fetchLearningGoalsByIds(goalIds);
+            lessons.forEach(l => {
+                const toAdd = goals.find(g => g.id === l.lessonDTO.learning_goal);
+                if(toAdd) l.learningGoal = toAdd;
+            })
         },
 
         async deleteLesson(lessonUUID: string) {
