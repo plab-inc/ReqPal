@@ -75,6 +75,7 @@ export type Database = {
           created_at: string
           description: string
           example: boolean
+          learning_goal: string | null
           points: number | null
           published: boolean
           title: string
@@ -85,6 +86,7 @@ export type Database = {
           created_at?: string
           description: string
           example?: boolean
+          learning_goal?: string | null
           points?: number | null
           published?: boolean
           title: string
@@ -95,6 +97,7 @@ export type Database = {
           created_at?: string
           description?: string
           example?: boolean
+          learning_goal?: string | null
           points?: number | null
           published?: boolean
           title?: string
@@ -102,6 +105,13 @@ export type Database = {
           uuid?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "lessons_learning_goal_fkey"
+            columns: ["learning_goal"]
+            isOneToOne: false
+            referencedRelation: "learning_goals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "lessons_user_id_fkey"
             columns: ["user_id"]
