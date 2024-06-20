@@ -4,7 +4,7 @@ name: Deploy Project to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ['main']
+    branches: ['release']
     paths-ignore:
       - 'bpmn-server/**'
       - 'supabase/**'
