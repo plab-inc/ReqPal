@@ -83,9 +83,7 @@
           <v-divider class="my-1" />
           <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"
                        :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons" />
-          <!-- v-list-item rounded prepend-icon="mdi-graph-outline" title="Erstellte Szenarien" to="/modeler" /-->
           <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder" />
-          <v-list-item rounded prepend-icon="mdi-application-array-outline" title="BPMN Modeler" to="/modeler" />
         </div>
       </v-list>
       <template v-slot:append>

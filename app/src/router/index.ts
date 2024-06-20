@@ -140,16 +140,6 @@ const routes = [
                 }
             },
             {
-                path: "/modeler",
-                name: "BPMN Modeler",
-                component: () => import("@/views/bpmn/Modeler.vue"),
-                meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
-                }
-            },
-            {
                 path: "/feedback",
                 name: "Feedback",
                 component: () => import("@/views/user/Feedback.vue"),
