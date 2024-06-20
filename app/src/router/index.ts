@@ -21,7 +21,7 @@ import {
 } from "@/middlewares/lesson.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
-import {fetchLearningGoalsByUser} from "@/middlewares/learningGoals.ts";
+import {fetchLearningGoalsByLessonOwner, fetchLearningGoalsByUser} from "@/middlewares/learningGoals.ts";
 
 const routes = [
     {
@@ -55,8 +55,8 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresTeacher,
-                        fetchLearningGoalsByUser,
-                        fetchLessons
+                        fetchLessons,
+                        fetchLearningGoalsByLessonOwner
                     ]
                 }
             },

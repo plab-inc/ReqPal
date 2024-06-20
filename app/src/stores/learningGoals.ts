@@ -31,10 +31,16 @@ export const useLearningGoalsStore = defineStore('learningGoals', {
         async fetchLearningGoalsByUser() {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
-                const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(authStore.user.id)
+                const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(authStore.user.id);
                 if (data) this.learningGoals = data;
                 return data;
             }
+        },
+
+        async fetchLearningGoalsByUserId(userId: string) {
+            const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(userId);
+            if (data) this.learningGoals = data;
+            return data;
         },
 
         async fetchLearningGoalsByIds(goalIds: string[]) {
