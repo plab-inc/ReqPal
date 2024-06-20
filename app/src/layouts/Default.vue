@@ -87,7 +87,7 @@
         </div>
       </v-list>
       <template v-slot:append>
-        <v-divider class="my-1" />
+        <v-divider class="my-2" />
         <v-list>
           <div v-if="authStore.user">
             <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
