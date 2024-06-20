@@ -7,18 +7,20 @@ $$
 DECLARE
     v_lesson_uuid uuid;
     question      jsonb;
-     total_points  int4 := 0;
+    total_points  int4 := 0;
 BEGIN
-    INSERT INTO lessons (uuid, title, description, user_id, published)
+    INSERT INTO lessons (uuid, title, description, user_id, published, learning_goal)
     VALUES ((data ->> 'uuid')::uuid,
             data ->> 'title',
             data ->> 'description',
             auth.uid(),
-            false)
+            false,
+            (data ->> 'learningGoalId')::uuid)
     ON CONFLICT (uuid) DO UPDATE
         SET title       = EXCLUDED.title,
             description = EXCLUDED.description,
-            user_id     = EXCLUDED.user_id
+            user_id     = EXCLUDED.user_id,
+            learning_goal = EXCLUDED.learning_goal
     RETURNING uuid INTO v_lesson_uuid;
 
 --Löscht alle Fragen, aus der Lesson. On conflict ist nun nutzlos, aber wurde mir zu umständlich, zu überprüfen, ob Fragen gelöscht wurden. FT
@@ -74,6 +76,7 @@ BEGIN
                    'uuid', l.uuid,
                    'title', l.title,
                    'description', l.description,
+                   'learningGoalId', l.learning_goal,
                    'questions', COALESCE(
                            jsonb_agg(
                                    jsonb_build_object(

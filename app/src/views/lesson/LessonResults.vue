@@ -7,10 +7,10 @@ import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import AlertService from "@/services/util/alert.ts";
 import Feedback from "@/components/lesson/results/Feedback.vue";
 import Score from "@/components/lesson/results/Score.vue";
-import { onBeforeMount, ref } from "vue";
+import {onBeforeMount, ref} from "vue";
 
 const lessonStore = useLessonStore();
-const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
+const currentLesson = lessonStore.getCurrentLesson;
 const isFinished = lessonStore.getCurrentLesson?.isFinished;
 const profileStore = useProfileStore();
 
@@ -20,13 +20,13 @@ const newScore = ref<number>();
 
 onBeforeMount(async () => {
   const authStore = useAuthStore();
-  if (authStore.user && currentLesson) {
+  if (authStore.user && currentLesson?.lessonDTO) {
     try {
       await profileStore.fetchPoints(authStore.user.id);
-      const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.uuid);
+      const data = await lessonStore.checkLessonFinishedForFirstTime(currentLesson.lessonDTO.uuid);
       if (data !== null && data !== undefined) finishedForFirstTime.value = data;
-      if(!finishedForFirstTime.value) {
-        newScore.value = await lessonStore.loadNewUserScoreForLesson(currentLesson.uuid);
+      if (!finishedForFirstTime.value) {
+        newScore.value = await lessonStore.loadNewUserScoreForLesson(currentLesson.lessonDTO.uuid);
       } else {
         newScore.value = userScore;
       }
@@ -41,16 +41,28 @@ onBeforeMount(async () => {
 
   <v-row justify="space-between" align="center">
     <v-col cols="10" class="text-h4">
-      {{ currentLesson?.title }}
+      {{ currentLesson?.lessonDTO.title }}
+      <v-tooltip v-if="currentLesson?.learningGoal" location="left" :text="currentLesson?.learningGoal.description">
+        <template v-slot:activator="{ props }">
+          <v-chip v-bind="props"
+                  v-if="currentLesson.learningGoal"
+                  class="ma-5"
+                  prepend-icon="mdi-trophy"
+                  elevation="8"
+          >
+            {{ currentLesson.learningGoal.name }}
+          </v-chip>
+        </template>
+      </v-tooltip>
     </v-col>
     <v-col cols="auto" class="text-h4" align-self="center">
-      {{ newScore }}/{{ currentLesson?.points }}
+      {{ newScore }}/{{ currentLesson?.lessonDTO.points }}
       <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
     </v-col>
   </v-row>
   <v-row align="center" no-gutters>
     <v-col cols="11" class="text-h5">
-      {{ currentLesson?.description }}
+      {{ currentLesson?.lessonDTO.description }}
     </v-col>
   </v-row>
   <v-divider/>
@@ -71,12 +83,14 @@ onBeforeMount(async () => {
               <v-container>
                 <v-row class="mt-1" v-if="!finishedForFirstTime">
                   <v-col md="6" order="2" order-md="1" class="d-flex justify-center">
-                    <Score v-if="currentLesson && newScore !== undefined" :score="newScore" :show-icon="false"
-                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
+                    <Score v-if="currentLesson?.lessonDTO && newScore !== undefined" :score="newScore"
+                           :show-icon="false"
+                           :max-score="currentLesson?.lessonDTO.points ? currentLesson?.lessonDTO.points : 0"></Score>
                   </v-col>
                   <v-col md="6" order="3" order-md="2" class="d-flex align-center justify-center">
-                    <Score v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
-                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
+                    <Score v-if="currentLesson?.lessonDTO && userScore !== undefined" :score="userScore"
+                           :show-icon="true"
+                           :max-score="currentLesson?.lessonDTO.points ? currentLesson?.lessonDTO.points : 0"></Score>
                   </v-col>
                   <v-col md="6" order="1" order-md="3" class="text-h5 text-center">
                     Neue Punktzahl
@@ -88,8 +102,9 @@ onBeforeMount(async () => {
 
                 <v-row v-if="finishedForFirstTime">
                   <v-col class="d-flex align-center justify-center">
-                    <Score v-if="currentLesson && userScore !== undefined" :score="userScore" :show-icon="true"
-                           :max-score="currentLesson?.points ? currentLesson?.points : 0"></Score>
+                    <Score v-if="currentLesson?.lessonDTO && userScore !== undefined" :score="userScore"
+                           :show-icon="true"
+                           :max-score="currentLesson?.lessonDTO.points ? currentLesson?.lessonDTO.points : 0"></Score>
                   </v-col>
                   <v-col class="text-h5 text-center">
                     Erreichte Punkte

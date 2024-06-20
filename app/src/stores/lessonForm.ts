@@ -12,6 +12,7 @@ interface LessonModuleEntry {
 interface LessonFormState {
     uuid: string;
     lessonTitle: string;
+    learningGoalId: string | null;
     lessonDescription: string;
     lessonModules: LessonModuleEntry[];
     insertModuleIndex: number;
@@ -22,6 +23,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
         uuid: uuidv4(),
         lessonModules: [],
         lessonTitle: '',
+        learningGoalId: null,
         lessonDescription: '',
         insertModuleIndex: 0,
     }),
@@ -98,6 +100,8 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.uuid = uuidv4();
             this.lessonTitle = '';
             this.lessonDescription = '';
+            this.learningGoalId = null;
+
             this.clearLessonModules();
         },
         generateLesson(): LessonForm {
@@ -105,6 +109,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
                 uuid: this.uuid,
                 title: this.lessonTitle,
                 description: this.lessonDescription,
+                learningGoalId: this.learningGoalId,
                 questions: this.lessonModules.map(component => {
                     return {
                         uuid: component.uuid,
@@ -124,6 +129,7 @@ export const useLessonFormStore = defineStore('lessonForm', {
             this.uuid = lesson.uuid;
             this.lessonTitle = lesson.title;
             this.lessonDescription = lesson.description;
+            this.learningGoalId = lesson.learningGoalId;
             lesson.questions.forEach((question: Question) => {
                 this.lessonModules.push({
                     type: question.type || null,

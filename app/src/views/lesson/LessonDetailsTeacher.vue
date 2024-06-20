@@ -1,9 +1,21 @@
 <template>
   <v-row justify="space-between" align="center">
     <v-col cols="auto" class="text-h4">
-      {{ currentLesson?.title }} -
-      {{ currentLesson?.points }}
+      {{ currentLesson?.lessonDTO.title }} -
+      {{ currentLesson?.lessonDTO.points }}
       <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+      <v-tooltip v-if="currentLesson?.learningGoal" location="right" :text="currentLesson.learningGoal.description">
+        <template v-slot:activator="{ props }">
+          <v-chip v-bind="props"
+                  v-if="currentLesson.learningGoal"
+                  class="ma-5"
+                  prepend-icon="mdi-trophy"
+                  elevation="8"
+          >
+            {{ currentLesson.learningGoal.name }}
+          </v-chip>
+        </template>
+      </v-tooltip>
     </v-col>
     <v-col cols="auto">
       <v-btn-toggle
@@ -26,7 +38,7 @@
   </v-row>
   <v-row align="center" no-gutters>
     <v-col cols="11" class="text-h5">
-      {{ currentLesson?.description }}
+      {{ currentLesson?.lessonDTO.description }}
     </v-col>
   </v-row>
   <v-divider/>
@@ -77,12 +89,12 @@
 
 import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
-import {LessonStatistic} from "@/types/lesson.ts";
+import {Lesson, LessonStatistic} from "@/types/lesson.ts";
 import Score from "@/components/lesson/results/Score.vue";
 import { ref, watch } from "vue";
 
 const lessonStore = useLessonStore();
-const currentLesson = lessonStore.getCurrentLesson?.lessonDTO;
+const currentLesson : Lesson | null = lessonStore.getCurrentLesson;
 
 const avgScore = ref<number>(0);
 const stats = ref<any>();
@@ -97,17 +109,17 @@ const notEnoughData = ref<boolean>(false);
 init();
 
 async function init() {
-  if (currentLesson) {
+  if (currentLesson?.lessonDTO) {
     const data = await lessonStore.getCountOfStudentsForTeacher();
     if (data) studentCount.value = data;
 
     if (studentCount.value < 1) {
       notEnoughData.value = true;
     } else {
-      stats.value = await lessonStore.getLessonStatistics(currentLesson.uuid);
+      stats.value = await lessonStore.getLessonStatistics(currentLesson.lessonDTO.uuid);
 
       if (stats.value) {
-        maxScore.value = currentLesson.points ? currentLesson.points : 0;
+        maxScore.value = currentLesson.lessonDTO.points ? currentLesson.lessonDTO.points : 0;
 
         let allPoints = 0;
 
@@ -132,12 +144,12 @@ components.value = lessonStore.getLessonModules;
 
 watch(filters, async (newShowSolutions) => {
   components.value = []
-  if (filters.value.includes('showSolutions') && currentLesson) {
-    await lessonStore.loadQuestionsWithSolutionsForLesson(currentLesson.uuid);
+  if (filters.value.includes('showSolutions') && currentLesson?.lessonDTO) {
+    await lessonStore.loadQuestionsWithSolutionsForLesson(currentLesson.lessonDTO.uuid);
     components.value = lessonStore.getLessonModules;
   }
-  if (!filters.value.includes('showSolutions') && currentLesson) {
-    await lessonStore.fetchQuestionsForLesson(currentLesson.uuid);
+  if (!filters.value.includes('showSolutions') && currentLesson?.lessonDTO) {
+    await lessonStore.fetchQuestionsForLesson(currentLesson.lessonDTO.uuid);
     components.value = lessonStore.getLessonModules;
   }
 }, {deep: true});

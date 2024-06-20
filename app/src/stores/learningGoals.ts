@@ -20,18 +20,31 @@ export const useLearningGoalsStore = defineStore('learningGoals', {
         },
         getCurrentLearningGoal: (state) => {
             return state.currentLearningGoal;
+        },
+        getLearningGoalById: (state) => (id: string) => {
+            return state.learningGoals.find(g => g.id === id);
         }
     },
 
     actions: {
 
-        async fetchLearningGoals() {
+        async fetchLearningGoalsByUser() {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
-                const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(authStore.user.id)
+                const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(authStore.user.id);
                 if (data) this.learningGoals = data;
                 return data;
             }
+        },
+
+        async fetchLearningGoalsByUserId(userId: string) {
+            const data = await LearningGoalsService.pull.fetchLearningGoalsByUser(userId);
+            if (data) this.learningGoals = data;
+            return data;
+        },
+
+        async fetchLearningGoalsByIds(goalIds: string[]) {
+            return await LearningGoalsService.pull.fetchLearningGoalsByIds(goalIds);
         },
 
         async updateCurrentLearningGoal(learningGoal: LearningGoal) {
