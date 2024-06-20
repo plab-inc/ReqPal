@@ -110,6 +110,18 @@
             </v-icon>
           </template>
           <template v-slot:append>
+            <v-tooltip v-if="lesson.learningGoal" location="left" :text="lesson.learningGoal.description">
+              <template v-slot:activator="{ props }">
+                <v-chip v-bind="props"
+                    v-if="lesson.learningGoal"
+                    class="mr-5 ma-5"
+                    prepend-icon="mdi-trophy"
+                    elevation="8"
+                >
+                  {{ lesson.learningGoal.name }}
+                </v-chip>
+              </template>
+            </v-tooltip>
             <v-chip
                 v-if="authStore.isModerator"
                 class="mr-10 ma-5"
@@ -183,7 +195,7 @@ import alertService from "@/services/util/alert.ts";
 import {Lesson, LessonDTO} from "@/types/lesson.ts";
 import LessonStatusStudent from "@/components/lesson/toolbar/LessonStatusStudent.vue";
 import {v4 as uuidv4} from "uuid";
-import { computed, ref } from "vue";
+import {computed, ref} from "vue";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
