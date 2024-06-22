@@ -1,5 +1,8 @@
 import Palette from "diagram-js/lib/features/palette/Palette";
-import PaletteProvider, { PaletteEntries, PaletteEntriesCallback } from "diagram-js/lib/features/palette/PaletteProvider";
+import PaletteProvider, {
+  PaletteEntries,
+  PaletteEntriesCallback
+} from "diagram-js/lib/features/palette/PaletteProvider";
 import Create from "diagram-js/lib/features/create/Create";
 import BpmnFactory from "bpmn-js/lib/features/modeling/BpmnFactory";
 import ElementFactory from "bpmn-js/lib/features/modeling/ElementFactory";
@@ -36,7 +39,6 @@ class CustomPalette implements PaletteProvider {
 
   private removeUnusedEntries(entries: PaletteEntries) {
     const keysToRemove = [
-      'create.group',
       'create.service-task',
       'create.intermediate-event',
       'create.data-store',

@@ -43,6 +43,11 @@ class CustomContextPad implements ContextPadProvider {
         return entries;
       }
 
+      if (element.type === "bpmn:Group") {
+        delete entries["set-color"];
+        return entries;
+      }
+
       return {
         ...entries,
         ...userTaskEntries
