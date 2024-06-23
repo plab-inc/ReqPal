@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { BPMNAPI, BPMNServer, EXECUTION_STATUS, IExecution, Logger, Query, SecureUser, SystemUser } from "bpmn-server";
+import { BPMNAPI, BPMNServer, IExecution, Logger, SecureUser } from "bpmn-server";
 import { configuration } from "./configuration";
 import { CustomSecureUser } from "./customSecureUser";
-import { CustomLogger } from "./logger";
+import { BPMNLoggerService } from "./logger.service";
 
 @Injectable()
 export class BPMNService {
@@ -11,8 +11,13 @@ export class BPMNService {
   private eventEmitter: EventEmitter2;
   public api: BPMNAPI;
 
-  constructor() {
-    this.server = new BPMNServer(configuration, new CustomLogger(BPMNServer.name), {
+  constructor(private readonly loggerService: BPMNLoggerService) {
+    this.server =
+      new BPMNServer(configuration,
+        new Logger({
+          toConsole: false,
+          callback: loggerService.callback.bind(loggerService)
+        }), {
       cron: false,
     });
     this.api = new BPMNAPI(this.server);
@@ -22,7 +27,6 @@ export class BPMNService {
     this.eventEmitter = new EventEmitter2();
 
     this.server.listener.on("all", async function ({ context, event }) {
-      console.log("emitting ", event);
       self.eventEmitter.emit(event, context);
     });
   }
@@ -46,16 +50,24 @@ export class BPMNService {
   }
 
   async invokeItem(itemId: string, user: SecureUser, points?: number) {
-    const query: Object = { "items.id": itemId }
+    const query: Object = { "items.id": itemId };
+    const data = points ? { points: points } : {};
 
-    const data = points ? { points: points} : {}
+    try {
+      const result: IExecution = await this.api.engine.invoke(query, data, user);
 
-    const result: IExecution = await this.api.engine.invoke(query, data, user);
-    return {
-      processName: result.name,
-      id: result.id,
-      status: result.status,
-    };
+      return {
+        processName: result.name,
+        id: result.id,
+        status: result.status
+      };
+
+    } catch (e: any) {
+      this.loggerService.error(e.message);
+      throw new NotFoundException(
+        `No items to invoke found for the provided itemId: ${itemId} and userId ${user.tenantId}`);
+    }
+
   }
 
   async getPendingUserTaskInWorkflowFromUser(workflowId: string, user: CustomSecureUser){

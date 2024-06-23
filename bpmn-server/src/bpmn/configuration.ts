@@ -1,12 +1,4 @@
-import {
-	Configuration,
-	DataStore,
-	DefaultAppDelegate,
-	ModelsDatastoreDB,
-	NoCacheManager
-} from "bpmn-server";
-
-import { CustomLogger } from "./logger";
+import { Configuration, DataStore, DefaultAppDelegate, Logger, ModelsDatastoreDB, NoCacheManager } from "bpmn-server";
 
 const dotenv = require('dotenv');
 const res = dotenv.config();
@@ -28,7 +20,7 @@ var configuration = new Configuration(
 		apiKey: process.env.API_KEY,
 
 		logger: function (server) {
-			new CustomLogger()
+			new Logger(server);
 		},
 		definitions: function (server) {
 			return new ModelsDatastoreDB(server);
