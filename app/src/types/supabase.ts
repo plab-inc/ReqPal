@@ -614,6 +614,48 @@ export type Database = {
           },
         ]
       }
+      user_levels: {
+        Row: {
+          learning_goal_id: string
+          level: number | null
+          max_level_reached: boolean | null
+          user_id: string
+          xp: number | null
+          xp_threshold: number | null
+        }
+        Insert: {
+          learning_goal_id: string
+          level?: number | null
+          max_level_reached?: boolean | null
+          user_id: string
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Update: {
+          learning_goal_id?: string
+          level?: number | null
+          max_level_reached?: boolean | null
+          user_id?: string
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_levels_learning_goal_id_fkey"
+            columns: ["learning_goal_id"]
+            isOneToOne: false
+            referencedRelation: "learning_goals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_levels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_points: {
         Row: {
           id: string
