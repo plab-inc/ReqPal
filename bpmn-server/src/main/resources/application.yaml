@@ -1,0 +1,38 @@
+camunda:
+  bpm:
+    database:
+      type: postgres
+      table-prefix: camunda.
+      schema-name: camunda
+      schema-update: true
+    admin-user:
+      id: camunda
+      password: camunda
+    history-level: full
+    generic-properties:
+      properties:
+        historyTimeToLive: P1D
+
+spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/camunda
+    username: camunda_user
+    password: camunda
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      idle-timeout: 300000
+      max-lifetime: 600000
+
+server:
+  port: 3000
