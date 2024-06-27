@@ -62,7 +62,7 @@ public class ProcessController {
     public ResponseEntity<String> invokeItem(
             @PathVariable("taskId") String taskId,
             @RequestHeader("studentId") String studentId,
-            @RequestBody String lessonSolution) {
+            @RequestBody String lessonResults) {
 
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
@@ -75,16 +75,26 @@ public class ProcessController {
 
         try {
             String lessonId = (String) taskService.getVariable(task.getId(), "lessonId");
-            SpinJsonNode lessonSolutionsJson = (SpinJsonNode) runtimeService.getVariable(task.getProcessInstanceId(), "lessonSolutions");
-            SpinJsonNode lessonSolutionJson = JSON(lessonSolution);
 
-            if (lessonSolutionsJson == null) {
-                lessonSolutionsJson = JSON("{}");
+            if (lessonId == null) {
+                return ResponseEntity.status(404).body("No lessonId in task found: " + taskId);
             }
 
-            lessonSolutionsJson.prop(lessonId, lessonSolutionJson);
+            SpinJsonNode lessonResultsJson = (SpinJsonNode) runtimeService.getVariable(task.getProcessInstanceId(), "lessonResults");
+            SpinJsonNode lessonResultJson = JSON(lessonResults);
 
-            runtimeService.setVariable(task.getProcessInstanceId(), "lessonSolutions", lessonSolutionsJson);
+            if (lessonResultsJson == null) {
+                lessonResultsJson = JSON("{}");
+                lessonResultsJson.prop("lessons", JSON("[]"));
+            }
+
+            SpinJsonNode newLesson = JSON("{}");
+            newLesson.prop("lessonId", lessonId);
+            newLesson.prop("lessonResult", lessonResultJson);
+
+            lessonResultsJson.prop("lessons").append(newLesson);
+
+            runtimeService.setVariable(task.getProcessInstanceId(), "lessonResults", JSON(lessonResultsJson));
             taskService.complete(task.getId());
 
             return ResponseEntity.ok("Task completed: " + taskId);
