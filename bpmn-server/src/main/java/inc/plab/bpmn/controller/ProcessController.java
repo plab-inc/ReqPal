@@ -1,6 +1,5 @@
 package inc.plab.bpmn.controller;
 
-import inc.plab.bpmn.model.BpmnDiagramRepository;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -26,7 +25,7 @@ public class ProcessController {
     private final TaskService taskService;
     private final RepositoryService repositoryService;
 
-    public ProcessController(RuntimeService runtimeService, TaskService taskService, RepositoryService repositoryService, BpmnDiagramRepository bpmnDiagramRepository) {
+    public ProcessController(RuntimeService runtimeService, TaskService taskService, RepositoryService repositoryService) {
         this.runtimeService = runtimeService;
         this.taskService = taskService;
         this.repositoryService = repositoryService;
