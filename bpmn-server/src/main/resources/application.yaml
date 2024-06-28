@@ -13,7 +13,6 @@ camunda:
       properties:
         historyTimeToLive: P1D
     default-serialization-format: application/json
-
 spring:
   devtools:
     restart:
@@ -22,7 +21,7 @@ spring:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
   datasource:
     url: jdbc:postgresql://localhost:5432/camunda
     username: camunda_user

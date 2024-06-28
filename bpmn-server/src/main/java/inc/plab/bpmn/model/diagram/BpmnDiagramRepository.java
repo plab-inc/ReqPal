@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model;
+package inc.plab.bpmn.model.diagram;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

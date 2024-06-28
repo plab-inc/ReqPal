@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model;
+package inc.plab.bpmn.model.diagram;
 
 import jakarta.persistence.*;
 import lombok.Data;

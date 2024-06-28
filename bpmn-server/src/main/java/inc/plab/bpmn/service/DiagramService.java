@@ -1,7 +1,7 @@
 package inc.plab.bpmn.service;
 
-import inc.plab.bpmn.model.BpmnDiagram;
-import inc.plab.bpmn.model.BpmnDiagramRepository;
+import inc.plab.bpmn.model.diagram.BpmnDiagram;
+import inc.plab.bpmn.model.diagram.BpmnDiagramRepository;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;

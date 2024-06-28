@@ -1,6 +1,6 @@
 package inc.plab.bpmn.controller;
 
-import inc.plab.bpmn.model.BpmnDiagram;
+import inc.plab.bpmn.model.diagram.BpmnDiagram;
 import inc.plab.bpmn.service.DiagramService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
