@@ -7,6 +7,7 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Table(name = "bpmn_diagrams", schema = "public")
 public class BpmnDiagram {
 
     @Id

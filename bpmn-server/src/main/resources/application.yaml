@@ -4,11 +4,11 @@ camunda:
       type: postgres
       table-prefix: camunda.
       schema-name: camunda
-      schema-update: true
+      schema-update: false
     admin-user:
       id: camunda
       password: camunda
-    history-level: full
+    history-level: NONE
     generic-properties:
       properties:
         historyTimeToLive: P1D
