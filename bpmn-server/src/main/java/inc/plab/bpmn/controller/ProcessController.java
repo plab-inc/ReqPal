@@ -94,6 +94,7 @@ public class ProcessController {
 
             lessonResultsJson.prop("lessons").append(newLesson);
 
+            runtimeService.setVariable(task.getProcessInstanceId(), "lastLessonResult", lessonResultJson);
             runtimeService.setVariable(task.getProcessInstanceId(), "lessonResults", JSON(lessonResultsJson));
             taskService.complete(task.getId());
 

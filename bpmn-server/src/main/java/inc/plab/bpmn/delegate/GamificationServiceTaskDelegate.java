@@ -6,16 +6,16 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GamificationTaskDelegate implements JavaDelegate {
+public class GamificationServiceTaskDelegate implements JavaDelegate {
 
     final GamificationService gamificationService;
 
-    public GamificationTaskDelegate(GamificationService gamificationService) {
+    public GamificationServiceTaskDelegate(GamificationService gamificationService) {
         this.gamificationService = gamificationService;
     }
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws Exception {
+    public void execute(DelegateExecution delegateExecution) {
         gamificationService.hello();
     }
 }
