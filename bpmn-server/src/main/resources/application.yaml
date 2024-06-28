@@ -12,6 +12,7 @@ camunda:
     generic-properties:
       properties:
         historyTimeToLive: P1D
+    default-serialization-format: application/json
 
 spring:
   devtools:

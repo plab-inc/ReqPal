@@ -31,11 +31,11 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
     private void lessonTaskTimer(DelegateExecution delegateExecution) {
         if (delegateExecution.getEventName().equals("start")) {
-            delegateExecution.setVariable("taskStartTime", new Date());
+            delegateExecution.setVariable("lastLessonStartTime", new Date());
         }
 
         if (delegateExecution.getEventName().equals("end")) {
-            Date taskStartTime = (Date) delegateExecution.getVariable("taskStartTime");
+            Date taskStartTime = (Date) delegateExecution.getVariable("lastLessonStartTime");
             Date taskEndTime = new Date();
             delegateExecution.setVariable("taskEndTime", taskEndTime);
 
@@ -55,7 +55,7 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
         int achievedPoints = lessonService.evaluateLesson(lessonId, lastLessonResult);
 
-        for (SpinJsonNode lesson : allLessonResults.prop("lessons").elements()) {
+        for (SpinJsonNode lesson : allLessonResults.elements()) {
             if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
                 lesson.prop("achievedPoints", achievedPoints);
                 break;
