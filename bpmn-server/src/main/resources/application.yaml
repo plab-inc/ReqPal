@@ -33,6 +33,12 @@ spring:
       maximum-pool-size: 10
       idle-timeout: 300000
       max-lifetime: 600000
-
 server:
   port: 3000
+resilience4j:
+  ratelimiter:
+    instances:
+      rateLimiterBpmn:
+        limit-for-period: 5
+        limit-refresh-period: 60s
+        timeout-duration: 0s

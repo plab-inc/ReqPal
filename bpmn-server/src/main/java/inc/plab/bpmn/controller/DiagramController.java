@@ -2,6 +2,9 @@ package inc.plab.bpmn.controller;
 
 import inc.plab.bpmn.model.diagram.BpmnDiagram;
 import inc.plab.bpmn.service.DiagramService;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,7 @@ public class DiagramController {
         this.diagramService = diagramService;
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/persist")
     public ResponseEntity<String> persistBpmn(
             @RequestParam("file") MultipartFile file) {
@@ -34,6 +38,7 @@ public class DiagramController {
         }
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @PutMapping("/update/{diagramId}")
     public ResponseEntity<String> updateBpmn(
             @PathVariable("diagramId") UUID diagramId,
@@ -49,11 +54,17 @@ public class DiagramController {
         }
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/deploy/{diagramId}")
     public ResponseEntity<String> deployBpmn(
             @PathVariable("diagramId") UUID diagramId) {
         Optional<UUID> deploymentId = diagramService.deployBpmn(diagramId);
         return deploymentId.map(uuid -> ResponseEntity.ok("Deployment successful: " + uuid))
                 .orElseGet(() -> ResponseEntity.status(400).body("BPMN Diagram not found and/or Deployment failed"));
+    }
+
+    @ExceptionHandler({RequestNotPermitted.class})
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public void handleRequestNotPermitted() {
     }
 }

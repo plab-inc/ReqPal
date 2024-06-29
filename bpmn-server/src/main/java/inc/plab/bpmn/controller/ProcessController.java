@@ -1,7 +1,10 @@
 package inc.plab.bpmn.controller;
 
 import inc.plab.bpmn.service.ProcessService;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,7 @@ public class ProcessController {
         this.processService = processService;
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/start/{processDefinitionKey}")
     public ResponseEntity<String> startWorkflow(
             @PathVariable("processDefinitionKey") String processDefinitionKey,
@@ -27,6 +31,7 @@ public class ProcessController {
         }
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/invoke/{taskId}")
     public ResponseEntity<String> invokeItem(
             @PathVariable("taskId") String taskId,
@@ -40,6 +45,7 @@ public class ProcessController {
         }
     }
 
+    @RateLimiter(name = "rateLimiterBpmn")
     @GetMapping(value = "/status/{processInstanceId}", produces = "application/json")
     public ResponseEntity<String> getProcessInstanceStatus(
             @PathVariable("processInstanceId") String processInstanceId,
@@ -48,5 +54,10 @@ public class ProcessController {
         String responseJson = processService.getProcessInstanceStatus(processInstanceId, studentId);
         return ResponseEntity.ok(responseJson);
 
+    }
+
+    @ExceptionHandler({RequestNotPermitted.class})
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public void handleRequestNotPermitted() {
     }
 }
