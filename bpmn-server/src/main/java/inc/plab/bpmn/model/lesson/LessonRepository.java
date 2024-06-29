@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface LessonRepository extends JpaRepository<Lesson, UUID> {
 
-    @Query("SELECT l FROM Lesson l WHERE l.uuid = :uuid")
+    @Query("SELECT l FROM Lesson l WHERE l.id = :uuid")
     Optional<Lesson> findByUuid(@Param("uuid") UUID uuid);
 
     default Optional<Lesson> findByUuidString(String uuidString) {
