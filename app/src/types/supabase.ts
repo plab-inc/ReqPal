@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bpmn_diagrams: {
+        Row: {
+          id: string
+          name: string | null
+          version: number
+          xml_content: string | null
+        }
+        Insert: {
+          id: string
+          name?: string | null
+          version: number
+          xml_content?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          version?: number
+          xml_content?: string | null
+        }
+        Relationships: []
+      }
       catalogs: {
         Row: {
           catalog_id: string
@@ -266,13 +287,6 @@ export type Database = {
           username?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "profiles_teacher_fkey"
             columns: ["teacher"]
