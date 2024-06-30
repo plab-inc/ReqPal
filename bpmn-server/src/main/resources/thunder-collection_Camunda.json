@@ -1,0 +1,199 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Camunda",
+  "collectionId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+  "dateExported": "2024-06-30T19:08:25.453Z",
+  "version": "1.2",
+  "folders": [],
+  "requests": [
+    {
+      "_id": "b1825b5f-9ec7-4da4-a288-bfe26f8ce870",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Invoke Task",
+      "url": "localhost:3000/bpmn/process/invoke/246d2886-38ef-fe-1ed737557087",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2024-06-30T19:07:16.172Z",
+      "modified": "2024-06-30T19:07:16.172Z",
+      "headers": [
+        {
+          "name": "studentId",
+          "value": "123"
+        },
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"question_1\": \"false\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "307dd190-aa5e-47f5-8cbb-e4b74447a753",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Process Status",
+      "url": "localhost:3000/bpmn/process/status/2460cc6e-3658-11ef-98fe-1ed737557087",
+      "method": "GET",
+      "sortNum": 20000,
+      "created": "2024-06-30T19:07:31.597Z",
+      "modified": "2024-06-30T19:07:31.597Z",
+      "headers": [
+        {
+          "name": "studentId",
+          "value": "123"
+        },
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ]
+    },
+    {
+      "_id": "dd539846-f71f-4942-a2cf-4e537772c623",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Update Diagram",
+      "url": "localhost:3000/bpmn/diagram/update/e055ca92-9dcb-45fc-9064-7379b3dffdae",
+      "method": "PUT",
+      "sortNum": 30000,
+      "created": "2024-06-30T19:07:39.216Z",
+      "modified": "2024-06-30T19:07:39.216Z",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "raw": "",
+        "form": [],
+        "files": [
+          {
+            "name": "file",
+            "value": "/Users/fabianteufel/Downloads/diagram.bpmn"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "a366b928-3e49-409e-88ea-016f308500b5",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Deploy Diagram",
+      "url": "localhost:3000/bpmn/diagram/deploy/4ac0eab0-edeb-49af-a129-d7477e8134ad",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2024-06-30T19:07:45.382Z",
+      "modified": "2024-06-30T19:07:45.382Z",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "raw": "",
+        "form": [
+          {
+            "name": "id",
+            "value": "1",
+            "isDisabled": true
+          }
+        ]
+      }
+    },
+    {
+      "_id": "57a042cd-9e06-4df9-a707-119d5a112a73",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Start Process",
+      "url": "localhost:3000/bpmn/process/start/Process_1",
+      "method": "POST",
+      "sortNum": 50000,
+      "created": "2024-06-30T19:07:51.400Z",
+      "modified": "2024-06-30T19:07:51.400Z",
+      "headers": [
+        {
+          "name": "studentId",
+          "value": "123"
+        },
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ]
+    },
+    {
+      "_id": "dad6eb10-802d-436d-83f4-4aadd4b8ad4c",
+      "colId": "c1f22b4e-74a8-4c2b-9733-dee036a367e8",
+      "containerId": "",
+      "name": "Persist Diagram",
+      "url": "localhost:3000/bpmn/diagram/persist",
+      "method": "POST",
+      "sortNum": 60000,
+      "created": "2024-06-30T19:08:14.018Z",
+      "modified": "2024-06-30T19:08:14.018Z",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "*/*",
+          "isDisabled": true
+        },
+        {
+          "name": "User-Agent",
+          "value": "Thunder Client (https://www.thunderclient.com)",
+          "isDisabled": true
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "raw": "",
+        "form": [],
+        "files": [
+          {
+            "name": "file",
+            "value": "/Users/fabianteufel/Downloads/diagram.bpmn"
+          }
+        ]
+      }
+    }
+  ],
+  "ref": "3MpMJ5iykUFfqqOFaxvE7MLuyZtn0XaIDWDOVitruqc_C3QG63AHmh5qY7PuimfnNnxbGj8c5dtRKLPCVBWqGA"
+}
