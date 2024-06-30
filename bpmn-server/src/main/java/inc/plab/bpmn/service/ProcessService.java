@@ -9,6 +9,8 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.spin.Spin;
 import org.camunda.spin.json.SpinJsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class ProcessService {
     private final RuntimeService runtimeService;
     private final TaskService taskService;
     private final RepositoryService repositoryService;
+    private static final Logger logger = LoggerFactory.getLogger(ProcessService.class);
 
     public ProcessService(RuntimeService runtimeService, TaskService taskService, RepositoryService repositoryService) {
         this.runtimeService = runtimeService;
@@ -37,6 +40,7 @@ public class ProcessService {
                 .list();
 
         if (processDefinitions.isEmpty()) {
+            logger.error("No process definition found with key {}", processDefinitionKey);
             throw new Exception("No process definition found with key: " + processDefinitionKey);
         }
 
@@ -51,15 +55,18 @@ public class ProcessService {
     public void invokeItem(String taskId, String studentId, String lessonResults) throws Exception {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (task == null) {
+            logger.error("Task {} for Student {} not found", taskId, studentId);
             throw new Exception("Task not found: " + taskId);
         }
 
         if (!studentId.equals(task.getAssignee())) {
+            logger.error("Task {} not assigned to Student {}", taskId, studentId);
             throw new Exception("Forbidden: Task is not assigned to this studentId: " + studentId);
         }
 
         String lessonId = (String) taskService.getVariable(task.getId(), "lessonId");
         if (lessonId == null) {
+            logger.error("UserTask {} without lessonId", taskId);
             throw new Exception("No lessonId in task found: " + taskId);
         }
 
@@ -88,6 +95,7 @@ public class ProcessService {
                 .singleResult();
 
         if (processInstance == null) {
+            logger.error("Process instance {} for student {} no found", processInstanceId, studentId);
             throw new Exception("Process instance not found: " + processInstanceId);
         }
 
@@ -98,6 +106,7 @@ public class ProcessService {
                 .list();
 
         if (tasks.isEmpty()) {
+            logger.error("Process instance {} contains no open tasks for student {}", processInstanceId, studentId);
             throw new Exception("No tasks found for process instance: " + processInstanceId + " and studentId: " + studentId);
         }
 

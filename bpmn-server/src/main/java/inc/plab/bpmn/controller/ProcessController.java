@@ -27,7 +27,7 @@ public class ProcessController {
             ProcessInstance processInstance = processService.startWorkflow(processDefinitionKey, studentId);
             return ResponseEntity.ok("ProcessInstance started with processInstanceId: " + processInstance.getId());
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to start workflow: " + e.getMessage());
+            return ResponseEntity.status(400).body("Failed to start workflow: " + e.getMessage());
         }
     }
 
@@ -41,7 +41,7 @@ public class ProcessController {
             processService.invokeItem(taskId, studentId, lessonResults);
             return ResponseEntity.ok("Task completed: " + taskId);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error completing task: " + e.getMessage());
+            return ResponseEntity.status(400).body("Error completing task: " + e.getMessage());
         }
     }
 
@@ -49,10 +49,14 @@ public class ProcessController {
     @GetMapping(value = "/status/{processInstanceId}", produces = "application/json")
     public ResponseEntity<String> getProcessInstanceStatus(
             @PathVariable("processInstanceId") String processInstanceId,
-            @RequestHeader("studentId") String studentId) throws Exception {
+            @RequestHeader("studentId") String studentId) {
 
-        String responseJson = processService.getProcessInstanceStatus(processInstanceId, studentId);
-        return ResponseEntity.ok(responseJson);
+        try {
+            String responseJson = processService.getProcessInstanceStatus(processInstanceId, studentId);
+            return ResponseEntity.ok(responseJson);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Error completing task: " + e.getMessage());
+        }
 
     }
 

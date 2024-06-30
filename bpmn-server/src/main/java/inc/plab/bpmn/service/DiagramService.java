@@ -5,6 +5,8 @@ import inc.plab.bpmn.model.diagram.BpmnDiagramRepository;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +26,7 @@ public class DiagramService {
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
     private final BpmnDiagramRepository bpmnDiagramRepository;
+    private static final Logger logger = LoggerFactory.getLogger(DiagramService.class);
 
     public DiagramService(RuntimeService runtimeService, RepositoryService repositoryService, BpmnDiagramRepository bpmnDiagramRepository) {
         this.runtimeService = runtimeService;
@@ -85,6 +88,7 @@ public class DiagramService {
                     .name(bpmnDiagram.getName())
                     .deploy();
         } catch (Exception e) {
+            logger.error("Deployment for diagram {} failed", diagramId);
             return Optional.empty();
         }
 
