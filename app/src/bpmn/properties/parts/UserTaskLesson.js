@@ -7,7 +7,7 @@ import { toRaw } from "vue";
 
 export function UserTaskGroup(element, translate) {
   const group = {
-    label: translate('Lesson'),
+    label: translate('Student Task'),
     id: 'Lesson',
     component: Group,
     entries: [...UserTaskProps({ element, translate })]
@@ -19,29 +19,53 @@ export function UserTaskGroup(element, translate) {
 }
 
 function UserTaskProps(props) {
-  const { element, translate } = props;
-  if (!(is(element, 'bpmn:UserTask'))) {
-    return [];
-  }
+  const { element } = props;
+  if (!(is(element, 'bpmn:UserTask'))) {return [];}
   const entries = [];
 
   entries.push({
-    id: 'lesson',
-    component: LessonType,
+    id: 'taskType',
+    component: TaskType,
     isEdited: isSelectEntryEdited,
-    get(element, node) {
-      const lessonId = getLesson(element);
-      return { lesson: lessonId || '' };
-    },
-    set(element, values) {
-      const lessonId = values.lesson;
-      const businessObject = element.businessObject;
-      businessObject.set('lesson', lessonId);
-      return [element];
-    }
   });
 
+  const taskType = getTaskType(element);
+
+  if (taskType === 'solveLesson') {
+    entries.push({
+      id: 'lessonToSolve',
+      component: LessonType,
+      isEdited: isSelectEntryEdited,
+    });
+  }
+
   return entries;
+}
+
+function TaskType(props) {
+  const { element } = props;
+  const translate = useService('translate');
+  const modeling = useService('modeling');
+
+  const getValue = () => getTaskType(element);
+
+  const setValue = (value) => {
+    modeling.updateProperties(element, { taskType: value })
+  };
+
+  const getOptions = () => [
+    { value: 'solveLesson', label: translate('Solve Lesson') },
+    //{ value: 'chooseLearningObjective', label: translate('Choose Learning Objective') }
+  ];
+
+  return jsx(SelectEntry, {
+    element,
+    id: "taskType",
+    label: translate('Student Task Type'),
+    getValue,
+    setValue,
+    getOptions
+  });
 }
 
 function LessonType(props) {
@@ -51,7 +75,7 @@ function LessonType(props) {
   const modeling = useService('modeling');
 
   const getValue = () => {
-    return getLesson(element);
+    return getLessonToSolve(element);
   };
 
   const setValue = (value) => {
@@ -60,7 +84,7 @@ function LessonType(props) {
     const selectedLesson = lessons.find(lesson => lesson.value === value);
     const label = selectedLesson ? selectedLesson.label : '';
 
-    businessObject.set('lesson', value);
+    businessObject.set('lessonToSolve', value);
     businessObject.set('name', label);
     businessObject.set('camunda:assignee', '${studentId}');
 
@@ -80,7 +104,7 @@ function LessonType(props) {
 
   return jsx(SelectEntry, {
     element: element,
-    id: "lesson",
+    id: "lessonToSolve",
     label: translate('Lesson to solve'),
     getValue: getValue,
     setValue: setValue,
@@ -93,9 +117,14 @@ function LessonType(props) {
   });
 }
 
-function getLesson(element) {
+function getLessonToSolve(element) {
   const businessObject = element.businessObject;
-  return businessObject.get('lesson');
+  return businessObject.get('lessonToSolve');
+}
+
+function getTaskType(element) {
+  const businessObject = element.businessObject;
+  return businessObject.get('taskType');
 }
 
 function addExecutionListener(element, modeling, bpmnFactory) {

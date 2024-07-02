@@ -14,7 +14,26 @@
       ],
       "properties": [
         {
-          "name": "lesson",
+          "name": "lessonToSolve",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "taskType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "FormalExpression",
+      "extends": [
+        "bpmn:FormalExpression"
+      ],
+      "properties": [
+        {
+          "name": "conditionType",
           "isAttr": true,
           "type": "String"
         }
