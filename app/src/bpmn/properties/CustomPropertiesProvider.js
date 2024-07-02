@@ -32,16 +32,3 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
 }
 
 CustomPropertiesProvider.$inject = [ 'propertiesPanel', 'translate' ];
-
-function createMagicGroup(element, translate) {
-
-  // create a group called "Magic properties".
-  const magicGroup = {
-    id: 'magic',
-    label: translate('Magic properties'),
-    entries: spellProps(element),
-    tooltip: translate('Make sure you know what you are doing!')
-  };
-
-  return magicGroup;
-}

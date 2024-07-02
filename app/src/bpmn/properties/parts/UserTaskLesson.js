@@ -8,7 +8,7 @@ import { toRaw } from "vue";
 export function UserTaskGroup(element, translate) {
   const group = {
     label: translate('Lesson'),
-    id: 'ReqPal__Lesson',
+    id: 'Lesson',
     component: Group,
     entries: [...UserTaskProps({ element, translate })]
   };
@@ -30,7 +30,7 @@ function UserTaskProps(props) {
     component: LessonType,
     isEdited: isSelectEntryEdited,
     get(element, node) {
-      const lessonId = getLesson(element)
+      const lessonId = getLesson(element);
       return { lesson: lessonId || '' };
     },
     set(element, values) {
@@ -62,8 +62,10 @@ function LessonType(props) {
 
     businessObject.set('lesson', value);
     businessObject.set('name', label);
+    businessObject.set('camunda:assignee', '${studentId}');
 
-    addExecutionListener(element, modeling, bpmnFactory, value);
+    setInputParameters(element, modeling, bpmnFactory, value);
+    addExecutionListener(element, modeling, bpmnFactory);
   };
 
   const getOptions = () => {
@@ -96,7 +98,7 @@ function getLesson(element) {
   return businessObject.get('lesson');
 }
 
-function addExecutionListener(element, modeling, bpmnFactory, lessonId) {
+function addExecutionListener(element, modeling, bpmnFactory) {
   const businessObject = getBusinessObject(element);
 
   if (!businessObject.extensionElements) {
@@ -107,17 +109,51 @@ function addExecutionListener(element, modeling, bpmnFactory, lessonId) {
 
   const extensionElements = businessObject.extensionElements;
 
-  const script = bpmnFactory.create('camunda:Script', {
-    scriptFormat: 'JavaScript',
-    value: `item.data.currentLessonId = "${lessonId}";`
-  });
-
-  const executionListener = bpmnFactory.create('camunda:ExecutionListener', {
+  const executionListenerStart = bpmnFactory.create('camunda:ExecutionListener', {
     event: 'start',
-    script: script
+    delegateExpression: '${lessonUserTaskDelegate}'
   });
 
-  extensionElements.get('values').push(executionListener);
+  const executionListenerEnd = bpmnFactory.create('camunda:ExecutionListener', {
+    event: 'end',
+    delegateExpression: '${lessonUserTaskDelegate}'
+  });
+
+  extensionElements.get('values').push(executionListenerStart);
+  extensionElements.get('values').push(executionListenerEnd);
+
+  modeling.updateProperties(element, {
+    extensionElements: extensionElements
+  });
+}
+
+function setInputParameters(element, modeling, bpmnFactory, lessonId) {
+  const businessObject = getBusinessObject(element);
+
+  if (!businessObject.extensionElements) {
+    businessObject.extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
+      values: []
+    });
+  }
+
+  const extensionElements = businessObject.extensionElements;
+
+  const inputParameter = bpmnFactory.create('camunda:InputParameter', {
+    name: 'lessonId',
+    value: lessonId
+  });
+
+  let inputOutput = extensionElements.values.find(value => is(value, 'camunda:InputOutput'));
+
+  if (!inputOutput) {
+    inputOutput = bpmnFactory.create('camunda:InputOutput', {
+      inputParameters: [],
+      outputParameters: []
+    });
+    extensionElements.values.push(inputOutput);
+  }
+
+  inputOutput.inputParameters.push(inputParameter);
 
   modeling.updateProperties(element, {
     extensionElements: extensionElements

@@ -53,7 +53,7 @@ class CustomPalette implements PaletteProvider {
 
   private createUserTaskEntries(): PaletteEntries {
     const createUserTask = (event: any) => {
-      const businessObject = this.bpmnFactory.create('bpmn:UserTask', { 'camunda:assignee': '$(data.starterUserId)' });
+      const businessObject = this.bpmnFactory.create('bpmn:UserTask');
 
       const shape = this.elementFactory.createShape({
         type: 'bpmn:UserTask',
