@@ -33,25 +33,27 @@
 </template>
 
 <script setup>
-import BpmnModeler from "bpmn-js/lib/Modeler";
-import BpmnColorPickerModule from "bpmn-js-color-picker";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import "bpmn-js-color-picker/colors/color-picker.css";
 import "bpmn-js/dist/assets/bpmn-js.css";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+import "bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css"
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
-import honkifyModule from 'bpmn-js-honkify';
+import BpmnModeler from "bpmn-js/lib/Modeler";
+import BpmnColorPickerModule from "bpmn-js-color-picker";
+import HonkifyModule from 'bpmn-js-honkify';
+import TokenSimulationModule from 'bpmn-js-token-simulation';
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
   CamundaPlatformPropertiesProviderModule
 } from "bpmn-js-properties-panel";
-import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
 import CustomProperties from "@/bpmn/properties/CustomProperties.js";
-import UserTaskLesson from "@/bpmn/properties/descriptors/UserTaskLesson.json";
-import { onBeforeUnmount, onMounted, ref } from "vue";
 import CustomElements from "@/bpmn/modeler/customElements.ts";
+import UserTaskLesson from "@/bpmn/properties/descriptors/UserTaskLesson.json";
+import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
 
 const bpmnContainer = ref(null);
 const bpmnModeler = ref(null);
@@ -69,9 +71,10 @@ onMounted(() => {
       BpmnPropertiesPanelModule,
       BpmnPropertiesProviderModule,
       CamundaPlatformPropertiesProviderModule,
+      TokenSimulationModule,
       CustomProperties,
       CustomElements,
-      honkifyModule
+      HonkifyModule
     ],
     moddleExtensions: {
       camunda: CamundaBpmnModdle,

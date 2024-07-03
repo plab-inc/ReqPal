@@ -23,6 +23,7 @@
     "bpmn-js-color-picker": "^0.7.1",
     "bpmn-js-honkify": "^0.3.0",
     "bpmn-js-properties-panel": "^5.16.0",
+    "bpmn-js-token-simulation": "^0.34.2",
     "camunda-bpmn-moddle": "^7.0.1",
     "diagram-js": "^14.0.0",
     "exceljs": "^4.4.0",
