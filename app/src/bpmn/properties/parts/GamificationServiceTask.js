@@ -87,7 +87,7 @@ function AssignAchievementTaskType(props) {
     businessObject.set('achievementToAssign', value);
     businessObject.set('name', label);
 
-    addExecutionListener(element, modeling, bpmnFactory);
+    addImplementation(element, modeling, bpmnFactory);
   };
 
   const getOptions = () => {
@@ -123,28 +123,10 @@ function getServiceTaskType(element) {
   return businessObject.get('serviceTaskType');
 }
 
-function addExecutionListener(element, modeling, bpmnFactory) {
-  const businessObject = getBusinessObject(element);
-
-  if (!businessObject.extensionElements) {
-    businessObject.extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
-      values: []
-    });
-  }
-
-  const extensionElements = businessObject.extensionElements;
-
-  const executionListenerStart = bpmnFactory.create('camunda:ExecutionListener', {
-    event: 'start',
-    //TODO add correct delegate
-    delegateExpression: '${TODO}'
-  });
-
-
-  extensionElements.get('values').push(executionListenerStart);
-
+function addImplementation(element, modeling) {
   modeling.updateProperties(element, {
-    extensionElements: extensionElements
+    //TODO assign correct delegate
+    'camunda:delegateExpression': '${TODO}'
   });
 }
 
