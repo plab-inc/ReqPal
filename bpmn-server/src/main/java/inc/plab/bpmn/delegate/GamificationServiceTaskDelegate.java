@@ -18,28 +18,31 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) {
 
         gamificationService.hello();
-
-        if (delegateExecution.getEventName().equals("addXp")) {
-            addXpToLearningObjectiveForUser(delegateExecution);
-        }
+        addXpToLearningObjectiveForUser(delegateExecution);
 
     }
 
     private void addXpToLearningObjectiveForUser(DelegateExecution delegateExecution) {
 
-        String userId = (String) delegateExecution.getVariable("userId");
+        String userId = (String) delegateExecution.getVariable("studentId");
         String learningObjectiveId = (String) delegateExecution.getVariable("learningObjectiveId");
-        int xp = (int) delegateExecution.getVariable("xp");
+        int xp;
+        try {
+            String xpString = (String) delegateExecution.getVariable("xp");
+            xp = Integer.parseInt(xpString);
+        } catch (NumberFormatException e) {
+            throw new Error("XP could not be parsed. XP needs to be a number: " + e.getMessage());
+        }
 
-        gamificationService.addXpToLearningObjectiveForUser(xp, learningObjectiveId, userId);
+        if(xp > 0) {
+            try {
+                gamificationService.addXpToLearningObjectiveForUser(xp, learningObjectiveId, userId);
+            }   catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
-    }
-
-    private void addAchievementForUser(DelegateExecution delegateExecution) {
-
-        String userId = (String) delegateExecution.getVariable("userId");
-        String learningObjectiveId = (String) delegateExecution.getVariable("achievementId");
-
-        // call service to add achievement
+        } else {
+            throw new Error("XP needs to be a positive number greater than 0.");
+        }
     }
 }

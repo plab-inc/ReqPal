@@ -38,7 +38,7 @@ public class GamificationService {
         Optional<Profile> profileOptional = profileRepository.findById(userUUID);
         Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
-        Optional<UserLevel> userLevelOptional = userLevelRepository.findByUserIdAndLearningGoalId(userUUID, learningObjectiveUUID);
+        Optional<UserLevel> userLevelOptional = userLevelRepository.findByUserIdAndLearningObjectiveId(userUUID, learningObjectiveUUID);
         UserLevel userLevel;
 
         userLevel = userLevelOptional.orElseGet(() -> initiateUserLevelForLearningObjective(learningGoal, profile));
@@ -51,13 +51,13 @@ public class GamificationService {
             } else {
                 System.out.println("save xp without updating level");
                 userLevel.setXp(newXp);
-                userLevelRepository.save(userLevel);
+                userLevel = userLevelRepository.save(userLevel);
             }
         }
 
         //TODO save xp for total xp
         System.out.println("save xp for total xp stats");
-        System.out.println("new level: " + userLevel);
+        System.out.println("new level: " + userLevel.getLevel());
     }
 
     private UserLevel updateLearningObjectiveLevel(LearningGoal learningObjective, UserLevel userLevel, int newXp) {
@@ -109,9 +109,10 @@ public class GamificationService {
         userLevel.setXpThreshold(threshold);
         userLevel.setUser(user);
         userLevel.setMax(false);
-        userLevel.setLearningGoal(learningObjective);
+        userLevel.setLearningObjective(learningObjective);
 
-        userLevelRepository.save(userLevel);
-        return userLevel;
+        System.out.println(userLevel.toString());
+
+        return userLevelRepository.save(userLevel);
     }
 }

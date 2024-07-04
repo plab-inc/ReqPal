@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface UserLevelRepository extends JpaRepository<UserLevel, UUID> {
 
-    Optional<UserLevel> findByUserIdAndLearningGoalId(UUID userId, UUID learningGoalId);
+    Optional<UserLevel> findByUserIdAndLearningObjectiveId(UUID userId, UUID learningObjectiveId);
 }
