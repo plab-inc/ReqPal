@@ -1,5 +1,6 @@
 import { ConditionGroup } from "./parts/ConditionGroup.js";
 import { UserTaskGroup } from "./parts/UserTaskLesson.js";
+import { ServiceTaskGroup } from "@/bpmn/properties/parts/GamificationServiceTask.js";
 
 export default function CustomPropertiesProvider(propertiesPanel, translate) {
 
@@ -11,7 +12,8 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
       };
 
       const conditionGroup= ConditionGroup(element, translate);
-      const userTaskLessonGroup = UserTaskGroup(element, translate)
+      const userTaskLessonGroup = UserTaskGroup(element, translate);
+      const gamificationServiceTaskGroup = ServiceTaskGroup(element, translate);
 
       let filteredGroups = deleteCamundaPlatformGroups(groups);
 
@@ -21,6 +23,10 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
 
       if(userTaskLessonGroup !== null){
         filteredGroups.push(userTaskLessonGroup);
+      }
+
+      if(gamificationServiceTaskGroup !== null){
+        filteredGroups.push(gamificationServiceTaskGroup);
       }
 
       return filteredGroups;

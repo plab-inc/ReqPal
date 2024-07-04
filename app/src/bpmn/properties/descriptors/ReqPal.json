@@ -1,7 +1,7 @@
 {
   "name": "UserTaskLesson",
   "prefix": "reqPal",
-  "uri": "http://foo",
+  "uri": "http://lethalgoose.com",
   "xml": {
     "tagAlias": "lowerCase"
   },
@@ -34,6 +34,25 @@
       "properties": [
         {
           "name": "conditionType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ServiceTask",
+      "extends": [
+        "bpmn:ServiceTask"
+      ],
+      "properties": [
+        {
+          "name": "achievementToAssign",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "serviceTaskType",
           "isAttr": true,
           "type": "String"
         }
