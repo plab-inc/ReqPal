@@ -2,7 +2,6 @@ package inc.plab.bpmn.model.user;
 
 import inc.plab.bpmn.model.goal.LearningGoal;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -47,9 +46,8 @@ public class UserLevel {
     @Column(name = "max")
     private Boolean max;
 
-    @NotNull
     @ColumnDefault("now()")
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
 }

@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class GamificationService {
 
@@ -25,12 +26,9 @@ public class GamificationService {
         System.out.println("Hello from GamificationService");
     }
 
-    @Transactional
     public void addXpToLearningObjectiveForUser(int xp, String objectiveId, String userId) {
         UUID userUUID = UUID.fromString(userId);
         UUID learningObjectiveUUID = UUID.fromString(objectiveId);
-
-        System.out.println("Adding XP from GamificationService");
 
         Optional<LearningGoal> learningGoalOptional = learningGoalRepository.findById(learningObjectiveUUID);
         LearningGoal learningGoal = learningGoalOptional.orElseThrow(() -> new IllegalArgumentException("Learning Objective not found"));
@@ -49,20 +47,14 @@ public class GamificationService {
             if (newXp >= userLevel.getXpThreshold()) {
                 userLevel = updateLearningObjectiveLevel(learningGoal, userLevel, newXp);
             } else {
-                System.out.println("save xp without updating level");
                 userLevel.setXp(newXp);
-                userLevel = userLevelRepository.save(userLevel);
             }
         }
 
-        //TODO save xp for total xp
-        System.out.println("save xp for total xp stats");
-        System.out.println("new level: " + userLevel.getLevel());
+        userLevelRepository.save(userLevel);
     }
 
     private UserLevel updateLearningObjectiveLevel(LearningGoal learningObjective, UserLevel userLevel, int newXp) {
-        System.out.println("update level");
-
         int newLevel = userLevel.getLevel();
         int maxLevel = learningObjective.getMaxLevel();
         int currentThreshold = userLevel.getXpThreshold();
@@ -70,35 +62,30 @@ public class GamificationService {
         while (newXp >= currentThreshold && newLevel < maxLevel) {
             newLevel++;
             newXp -= currentThreshold;
-            if(newXp < 0) newXp = 0;
+            if (newXp < 0) newXp = 0;
             currentThreshold = calculateThreshold(newLevel);
         }
 
         if (newLevel >= maxLevel) {
-            System.out.println("Max level reached");
             newLevel = maxLevel;
             userLevel.setMax(true);
-            userLevel.setXp(userLevel.getXpThreshold());
+            userLevel.setXp(currentThreshold);
         } else {
-            System.out.println("New level reached");
             userLevel.setXp(newXp);
-            userLevel.setXpThreshold(currentThreshold);
             userLevel.setMax(false);
         }
 
+        userLevel.setXpThreshold(currentThreshold);
         userLevel.setLevel(newLevel);
-        return userLevelRepository.save(userLevel);
+        return userLevel;
     }
 
     private int calculateThreshold(int currentLevel) {
-        System.out.println("calculate threshold");
         int baseXp = 25;
         return baseXp + (baseXp * (currentLevel + 1));
     }
 
     private UserLevel initiateUserLevelForLearningObjective(LearningGoal learningObjective, Profile user) {
-        System.out.println("Initiate user level");
-
         int defaultLevel = 0;
         int defaultXp = 0;
         int threshold = calculateThreshold(defaultLevel);
@@ -111,8 +98,6 @@ public class GamificationService {
         userLevel.setMax(false);
         userLevel.setLearningObjective(learningObjective);
 
-        System.out.println(userLevel.toString());
-
-        return userLevelRepository.save(userLevel);
+        return userLevel;
     }
 }
