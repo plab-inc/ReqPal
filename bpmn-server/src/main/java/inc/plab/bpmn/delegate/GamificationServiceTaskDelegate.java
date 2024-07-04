@@ -16,6 +16,33 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
+
         gamificationService.hello();
+        addXpToLearningObjectiveForUser(delegateExecution);
+
+    }
+
+    private void addXpToLearningObjectiveForUser(DelegateExecution delegateExecution) {
+
+        String userId = (String) delegateExecution.getVariable("studentId");
+        String learningObjectiveId = (String) delegateExecution.getVariable("learningObjectiveId");
+        int xp;
+        try {
+            String xpString = (String) delegateExecution.getVariable("xp");
+            xp = Integer.parseInt(xpString);
+        } catch (NumberFormatException e) {
+            throw new Error("XP could not be parsed. XP needs to be a number: " + e.getMessage());
+        }
+
+        if(xp > 0) {
+            try {
+                gamificationService.addXpToLearningObjectiveForUser(xp, learningObjectiveId, userId);
+            }   catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        } else {
+            throw new Error("XP needs to be a positive number greater than 0.");
+        }
     }
 }
