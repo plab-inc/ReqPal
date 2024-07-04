@@ -6,6 +6,7 @@ import inc.plab.bpmn.model.user.Profile;
 import inc.plab.bpmn.model.user.ProfileRepository;
 import inc.plab.bpmn.model.user.UserLevel;
 import inc.plab.bpmn.model.user.UserLevelRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +21,11 @@ public class GamificationService {
     private final UserLevelRepository userLevelRepository;
     private final ProfileRepository profileRepository;
 
-    private final int baseXp = 25;
-    private final int defaultLevel = 0;
-    private final int defaultXp = 0;
-
     public void hello() {
         System.out.println("Hello from GamificationService");
     }
 
+    @Transactional
     public void addXpToLearningObjectiveForUser(int xp, String objectiveId, String userId) {
         UUID userUUID = UUID.fromString(userId);
         UUID learningObjectiveUUID = UUID.fromString(objectiveId);
@@ -35,21 +33,10 @@ public class GamificationService {
         System.out.println("Adding XP from GamificationService");
 
         Optional<LearningGoal> learningGoalOptional = learningGoalRepository.findById(learningObjectiveUUID);
-        LearningGoal learningGoal;
-
-        if (learningGoalOptional.isPresent()) {
-            learningGoal = learningGoalOptional.get();
-        } else {
-            throw new Error("Learning Objective not found");
-        }
+        LearningGoal learningGoal = learningGoalOptional.orElseThrow(() -> new IllegalArgumentException("Learning Objective not found"));
 
         Optional<Profile> profileOptional = profileRepository.findById(userUUID);
-        Profile profile;
-        if (profileOptional.isPresent()) {
-            profile = profileOptional.get();
-        } else {
-            throw new Error("Profile not found");
-        }
+        Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
         Optional<UserLevel> userLevelOptional = userLevelRepository.findByUserIdAndLearningGoalId(userUUID, learningObjectiveUUID);
         UserLevel userLevel;
@@ -76,22 +63,26 @@ public class GamificationService {
     private UserLevel updateLearningObjectiveLevel(LearningGoal learningObjective, UserLevel userLevel, int newXp) {
         System.out.println("update level");
 
-        int newLevel = userLevel.getLevel() + 1;
+        int newLevel = userLevel.getLevel();
         int maxLevel = learningObjective.getMaxLevel();
         int currentThreshold = userLevel.getXpThreshold();
 
+        while (newXp >= currentThreshold && newLevel < maxLevel) {
+            newLevel++;
+            newXp -= currentThreshold;
+            if(newXp < 0) newXp = 0;
+            currentThreshold = calculateThreshold(newLevel);
+        }
+
         if (newLevel >= maxLevel) {
-            System.out.println("max reached");
+            System.out.println("Max level reached");
             newLevel = maxLevel;
             userLevel.setMax(true);
             userLevel.setXp(userLevel.getXpThreshold());
         } else {
-            System.out.println("new level reached");
-            int newThreshold = calculateThreshold(newLevel);
-            int leftOverXp = newXp - currentThreshold;
-
-            userLevel.setXp(leftOverXp);
-            userLevel.setXpThreshold(newThreshold);
+            System.out.println("New level reached");
+            userLevel.setXp(newXp);
+            userLevel.setXpThreshold(currentThreshold);
             userLevel.setMax(false);
         }
 
@@ -101,11 +92,15 @@ public class GamificationService {
 
     private int calculateThreshold(int currentLevel) {
         System.out.println("calculate threshold");
+        int baseXp = 25;
         return baseXp + (baseXp * (currentLevel + 1));
     }
 
     private UserLevel initiateUserLevelForLearningObjective(LearningGoal learningObjective, Profile user) {
         System.out.println("Initiate user level");
+
+        int defaultLevel = 0;
+        int defaultXp = 0;
         int threshold = calculateThreshold(defaultLevel);
 
         UserLevel userLevel = new UserLevel();
