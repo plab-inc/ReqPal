@@ -16,6 +16,30 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
+
         gamificationService.hello();
+
+        if (delegateExecution.getEventName().equals("addXp")) {
+            addXpToLearningObjectiveForUser(delegateExecution);
+        }
+
+    }
+
+    private void addXpToLearningObjectiveForUser(DelegateExecution delegateExecution) {
+
+        String userId = (String) delegateExecution.getVariable("userId");
+        String learningObjectiveId = (String) delegateExecution.getVariable("learningObjectiveId");
+        int xp = (int) delegateExecution.getVariable("xp");
+
+        gamificationService.addXpToLearningObjectiveForUser(xp, learningObjectiveId, userId);
+
+    }
+
+    private void addAchievementForUser(DelegateExecution delegateExecution) {
+
+        String userId = (String) delegateExecution.getVariable("userId");
+        String learningObjectiveId = (String) delegateExecution.getVariable("achievementId");
+
+        // call service to add achievement
     }
 }
