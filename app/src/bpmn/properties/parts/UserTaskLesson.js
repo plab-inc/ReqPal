@@ -4,6 +4,7 @@ import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
 import { useLessonStore } from "@/stores/lesson.ts";
 import { toRaw } from "vue";
+import { setInputParameters } from "@/bpmn/properties/util/Helper.js";
 
 export function UserTaskGroup(element, translate) {
   const group = {
@@ -192,39 +193,6 @@ function addExecutionListener(element, modeling, bpmnFactory) {
 
   extensionElements.get('values').push(executionListenerStart);
   extensionElements.get('values').push(executionListenerEnd);
-
-  modeling.updateProperties(element, {
-    extensionElements: extensionElements
-  });
-}
-
-function setInputParameters(element, modeling, bpmnFactory, variableName, value) {
-  const businessObject = getBusinessObject(element);
-
-  if (!businessObject.extensionElements) {
-    businessObject.extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
-      values: []
-    });
-  }
-
-  const extensionElements = businessObject.extensionElements;
-
-  const inputParameter = bpmnFactory.create('camunda:InputParameter', {
-    name: variableName,
-    value: value
-  });
-
-  let inputOutput = extensionElements.values.find(value => is(value, 'camunda:InputOutput'));
-
-  if (!inputOutput) {
-    inputOutput = bpmnFactory.create('camunda:InputOutput', {
-      inputParameters: [],
-      outputParameters: []
-    });
-    extensionElements.values.push(inputOutput);
-  }
-
-  inputOutput.inputParameters.push(inputParameter);
 
   modeling.updateProperties(element, {
     extensionElements: extensionElements
