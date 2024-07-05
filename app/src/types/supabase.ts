@@ -630,33 +630,39 @@ export type Database = {
       }
       user_levels: {
         Row: {
-          learning_goal_id: string
+          created_at: string | null
+          id: string
+          learning_objective_id: string | null
           level: number | null
-          max_level_reached: boolean | null
-          user_id: string
+          max: boolean | null
+          user_id: string | null
           xp: number | null
           xp_threshold: number | null
         }
         Insert: {
-          learning_goal_id: string
+          created_at?: string | null
+          id?: string
+          learning_objective_id?: string | null
           level?: number | null
-          max_level_reached?: boolean | null
-          user_id: string
+          max?: boolean | null
+          user_id?: string | null
           xp?: number | null
           xp_threshold?: number | null
         }
         Update: {
-          learning_goal_id?: string
+          created_at?: string | null
+          id?: string
+          learning_objective_id?: string | null
           level?: number | null
-          max_level_reached?: boolean | null
-          user_id?: string
+          max?: boolean | null
+          user_id?: string | null
           xp?: number | null
           xp_threshold?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_levels_learning_goal_id_fkey"
-            columns: ["learning_goal_id"]
+            foreignKeyName: "user_levels_learning_objective_id_fkey"
+            columns: ["learning_objective_id"]
             isOneToOne: false
             referencedRelation: "learning_goals"
             referencedColumns: ["id"]
@@ -696,11 +702,87 @@ export type Database = {
           },
         ]
       }
+      user_reqpal_levels: {
+        Row: {
+          created_at: string
+          id: string
+          level: number | null
+          user_id: string | null
+          xp: number | null
+          xp_threshold: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reqpal_levels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_statistics: {
+        Row: {
+          created_at: string
+          id: string
+          total_points: number | null
+          total_scenarios: number | null
+          total_xp: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          total_points?: number | null
+          total_scenarios?: number | null
+          total_xp?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          total_points?: number | null
+          total_scenarios?: number | null
+          total_xp?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      calculate_threshold: {
+        Args: {
+          current_level: number
+        }
+        Returns: number
+      }
       check_user_role: {
         Args: {
           uid: string
@@ -755,6 +837,12 @@ export type Database = {
           user_uuid: string
         }
         Returns: string
+      }
+      initiate_reqpal_level: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: undefined
       }
       is_claims_admin: {
         Args: Record<PropertyKey, never>
