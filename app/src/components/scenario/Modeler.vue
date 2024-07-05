@@ -43,7 +43,6 @@ import "bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css"
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
-import HonkifyModule from 'bpmn-js-honkify';
 import TokenSimulationModule from 'bpmn-js-token-simulation';
 import {
   BpmnPropertiesPanelModule,
@@ -73,7 +72,7 @@ onMounted(() => {
       CamundaPlatformPropertiesProviderModule,
       TokenSimulationModule,
       CustomProperties,
-      CustomElements
+      CustomElements,
     ],
     moddleExtensions: {
       camunda: CamundaBpmnModdle,
