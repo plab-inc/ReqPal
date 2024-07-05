@@ -1,4 +1,4 @@
-import { Group, isSelectEntryEdited, SelectEntry } from "@bpmn-io/properties-panel";
+import { CheckboxEntry, Group, isSelectEntryEdited, SelectEntry } from "@bpmn-io/properties-panel";
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
@@ -31,12 +31,18 @@ function UserTaskProps(props) {
 
   const taskType = getTaskType(element);
 
-  if (taskType === 'solveLesson') {
+  if (taskType === "solveLesson") {
     entries.push({
-      id: 'lessonToSolve',
-      component: LessonType,
-      isEdited: isSelectEntryEdited,
-    });
+        id: "lessonToSolve",
+        component: LessonType,
+        isEdited: isSelectEntryEdited
+      },
+      {
+        id: "grantPointsAsXP",
+        component: GrantAchievedPointsAsXP,
+        isEdited: isSelectEntryEdited
+      }
+    );
   }
 
   return entries;
@@ -88,7 +94,11 @@ function LessonType(props) {
     businessObject.set('name', label);
     businessObject.set('camunda:assignee', '${studentId}');
 
-    setInputParameters(element, modeling, bpmnFactory, value);
+    setInputParameters(element, modeling, bpmnFactory,'lessonId', value);
+    setInputParameters(element, modeling, bpmnFactory,'grantPointsAsXP', "false");
+
+    //TODO Set objectives of lesson as input too
+
     addExecutionListener(element, modeling, bpmnFactory);
   };
 
@@ -114,6 +124,38 @@ function LessonType(props) {
         return translate('Lesson is required.');
       }
     }
+  });
+}
+
+function GrantAchievedPointsAsXP(props) {
+  const { element } = props;
+  const debounce = useService('debounceInput');
+  const translate = useService('translate');
+  const modeling = useService('modeling');
+  const bpmnFactory = useService('bpmnFactory');
+
+  const getValue = () => {
+    const businessObject = getBusinessObject(element);
+    return businessObject ? !!businessObject.grantPointsAsXP : false;
+  };
+
+  const setValue = (value) => {
+    const businessObject = getBusinessObject(element);
+    if (businessObject) {
+      modeling.updateProperties(element, { grantPointsAsXP: value });
+      setInputParameters(element, modeling, bpmnFactory,'grantPointsAsXP', value.toString());
+    }
+  };
+
+  //TODO description could be a list of objectives the lesson is assigned too
+
+  return jsx(CheckboxEntry, {
+    element,
+    id: "grantPointsAsXP",
+    label: translate('Grant achieved points as XP to lesson objective(s)'),
+    getValue,
+    debounce: debounce,
+    setValue,
   });
 }
 
@@ -156,7 +198,7 @@ function addExecutionListener(element, modeling, bpmnFactory) {
   });
 }
 
-function setInputParameters(element, modeling, bpmnFactory, lessonId) {
+function setInputParameters(element, modeling, bpmnFactory, variableName, value) {
   const businessObject = getBusinessObject(element);
 
   if (!businessObject.extensionElements) {
@@ -168,8 +210,8 @@ function setInputParameters(element, modeling, bpmnFactory, lessonId) {
   const extensionElements = businessObject.extensionElements;
 
   const inputParameter = bpmnFactory.create('camunda:InputParameter', {
-    name: 'lessonId',
-    value: lessonId
+    name: variableName,
+    value: value
   });
 
   let inputOutput = extensionElements.values.find(value => is(value, 'camunda:InputOutput'));
