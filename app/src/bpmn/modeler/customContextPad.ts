@@ -33,7 +33,7 @@ class CustomContextPad implements ContextPadProvider {
   getContextPadEntries(element: Element) {
     return (entries: ContextPadEntries): ContextPadEntries => {
       this.removeUnusedEntries(entries);
-      const userTaskEntries = this.createUserTaskEntries();
+      const taskEntries = this.createTaskEntries();
 
       if (element.type !== 'bpmn:SequenceFlow') {
         delete entries['replace'];
@@ -50,7 +50,7 @@ class CustomContextPad implements ContextPadProvider {
 
       return {
         ...entries,
-        ...userTaskEntries
+        ...taskEntries,
       };
     };
   }
@@ -64,7 +64,21 @@ class CustomContextPad implements ContextPadProvider {
     keysToRemove.forEach(key => delete entries[key]);
   }
 
-  private createUserTaskEntries(): ContextPadEntries {
+  private createTaskEntries(): ContextPadEntries {
+    const appendServiceTaskStart = (event: any, element: ContextPadTarget) => {
+      const shape = this.createServiceTaskShape();
+      this.create.start(event, shape, element);
+    };
+
+    const appendServiceTask = (event: any, element: ContextPadTarget) => {
+      if (this.autoPlace) {
+        const shape = this.createServiceTaskShape();
+        this.autoPlace.append(element, shape);
+      } else {
+        appendServiceTaskStart(event, element);
+      }
+    };
+
     const appendUserTaskStart = (event: any, element: ContextPadTarget) => {
       const shape = this.createUserTaskShape();
       this.create.start(event, shape, element);
@@ -82,23 +96,41 @@ class CustomContextPad implements ContextPadProvider {
     return {
       'append.user-task': {
         className: 'bpmn-icon-user-task',
-        title: this.translate('Append User Lesson Task'),
+        title: this.translate('Append Lesson Task'),
         action: {
           dragstart: appendUserTaskStart,
           click: appendUserTask
+        }
+      },
+      'append.service-task': {
+        className: 'bpmn-icon-service-task',
+        title: this.translate('Append Gamification Service'),
+        action: {
+          dragstart: appendServiceTaskStart,
+          click: appendServiceTask
         }
       }
     };
   }
 
   private createUserTaskShape() {
-    const businessObject = this.bpmnFactory.create('bpmn:UserTask', { 'camunda:assignee': '$(data.starterUserId)' });
+    const businessObject = this.bpmnFactory.create('bpmn:UserTask');
 
     return this.elementFactory.createShape({
       type: 'bpmn:UserTask',
       businessObject: businessObject
     });
   }
+
+  private createServiceTaskShape() {
+    const businessObject = this.bpmnFactory.create('bpmn:ServiceTask');
+
+    return this.elementFactory.createShape({
+      type: 'bpmn:ServiceTask',
+      businessObject: businessObject
+    });
+  }
+
 }
 
 CustomContextPad.$inject = ['config','contextPad', 'create', 'bpmnFactory', 'elementFactory', 'translate', 'injector'];

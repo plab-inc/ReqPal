@@ -52,7 +52,7 @@ import {
 } from "bpmn-js-properties-panel";
 import CustomProperties from "@/bpmn/properties/CustomProperties.js";
 import CustomElements from "@/bpmn/modeler/customElements.ts";
-import UserTaskLesson from "@/bpmn/properties/descriptors/UserTaskLesson.json";
+import ReqPalModdle from "@/bpmn/properties/descriptors/ReqPal.json";
 import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
 
 const bpmnContainer = ref(null);
@@ -73,12 +73,11 @@ onMounted(() => {
       CamundaPlatformPropertiesProviderModule,
       TokenSimulationModule,
       CustomProperties,
-      CustomElements,
-      HonkifyModule
+      CustomElements
     ],
     moddleExtensions: {
       camunda: CamundaBpmnModdle,
-      lesson: UserTaskLesson
+      reqPal: ReqPalModdle,
     },
     keyboard: {
       bindTo: window
