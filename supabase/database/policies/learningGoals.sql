@@ -45,10 +45,4 @@ CREATE POLICY "policy_learning_goals_insert"
     WITH CHECK (
     (SELECT check_user_role(auth.uid(), 'moderator')) = true
         OR
-    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true AND (
-        EXISTS (SELECT COUNT(*)
-                FROM public.learning_goals
-                WHERE user_id = auth.uid()
-                HAVING COUNT(*) < 5)
-        )
-    );
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true);

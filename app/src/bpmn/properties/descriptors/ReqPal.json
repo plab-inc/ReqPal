@@ -23,6 +23,11 @@
           "name": "taskType",
           "isAttr": true,
           "type": "String"
+        },
+        {
+          "name": "grantPointsAsXP",
+          "isAttr": true,
+          "type": "Boolean"
         }
       ]
     },
