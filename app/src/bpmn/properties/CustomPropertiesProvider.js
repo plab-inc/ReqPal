@@ -1,5 +1,6 @@
 import { ConditionGroup } from "./parts/ConditionGroup.js";
 import { UserTaskGroup } from "./parts/UserTaskLesson.js";
+import { GeneralGroup } from "@/bpmn/properties/parts/GeneralGroup.js";
 import { ServiceTaskGroup } from "@/bpmn/properties/parts/GamificationServiceTask.js";
 
 export default function CustomPropertiesProvider(propertiesPanel, translate) {
@@ -7,34 +8,27 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
   this.getGroups = function(element) {
     return function(groups) {
 
-      const deleteCamundaPlatformGroups = (groups) => {
-        return groups.filter(group => !(group.id.startsWith("CamundaPlatform__")));
+      const deleteGroupsToReplace = (groups) => {
+        return groups.filter(group => !(group.id.startsWith("CamundaPlatform__") || group.id === "general"));
       };
 
       const conditionGroup= ConditionGroup(element, translate);
       const userTaskLessonGroup = UserTaskGroup(element, translate);
       const gamificationServiceTaskGroup = ServiceTaskGroup(element, translate);
+      const generalGroup = GeneralGroup(element, translate);
 
-      let filteredGroups = deleteCamundaPlatformGroups(groups);
+      let filteredGroups = deleteGroupsToReplace(groups);
 
-      if(conditionGroup !== null){
-        filteredGroups.push(conditionGroup);
-      }
-
-      if(userTaskLessonGroup !== null){
-        filteredGroups.push(userTaskLessonGroup);
-      }
-
-      if(gamificationServiceTaskGroup !== null){
-        filteredGroups.push(gamificationServiceTaskGroup);
-      }
+      if (conditionGroup) filteredGroups.push(conditionGroup);
+      if (gamificationServiceTaskGroup) filteredGroups.push(gamificationServiceTaskGroup);
+      if (userTaskLessonGroup) filteredGroups.push(userTaskLessonGroup);
+      if (generalGroup) filteredGroups.unshift(generalGroup);
 
       return filteredGroups;
-
     };
   };
 
   propertiesPanel.registerProvider(500, this);
 }
 
-CustomPropertiesProvider.$inject = [ 'propertiesPanel', 'translate' ];
+CustomPropertiesProvider.$inject = ['propertiesPanel', 'translate'];
