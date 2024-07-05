@@ -91,7 +91,7 @@ function XPValueType(props) {
   const bpmnFactory = useService('bpmnFactory');
   const debounce = useService("debounceInput");
   const getValue = () => {
-    return element.businessObject.XP || '';
+    return element.businessObject.xp || '';
   }
 
   const setValue = (value) => {

@@ -58,7 +58,7 @@
           "isOptional": true
         },
         {
-          "name": "XP",
+          "name": "xp",
           "isAttr": true,
           "type": "Integer",
           "isOptional": true
