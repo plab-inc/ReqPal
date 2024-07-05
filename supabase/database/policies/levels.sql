@@ -1,3 +1,9 @@
+-- Author: Laura
+
+--------------------------------------------
+-- User_Levels related policies
+--------------------------------------------
+
 DROP POLICY IF EXISTS "policy_user_levels_select" ON public.user_levels;
 CREATE POLICY "policy_user_levels_select"
     ON public.user_levels
