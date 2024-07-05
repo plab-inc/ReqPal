@@ -13,15 +13,16 @@ CREATE OR REPLACE FUNCTION update_objective_statistics()
 AS
 $$
 DECLARE
+    received_xp      INTEGER;
     new_xp      INTEGER;
     xp          INTEGER := 0;
     user_exists BOOLEAN;
 BEGIN
     IF TG_OP = 'INSERT' OR NEW.xp IS DISTINCT FROM OLD.xp THEN
 
-        new_xp := NEW.xp - COALESCE(OLD.xp, 0);
+        received_xp := NEW.xp - COALESCE(OLD.xp, 0);
 
-        IF (new_xp > 0) THEN
+        IF (received_xp > 0) THEN
             PERFORM 1
             FROM user_statistics
             WHERE user_id = NEW.user_id;
@@ -30,19 +31,23 @@ BEGIN
 
             IF NOT user_exists THEN
                 INSERT INTO user_statistics (user_id, total_xp)
-                VALUES (NEW.user_id, new_xp);
+                VALUES (NEW.user_id, received_xp);
             ELSE
                 SELECT total_xp
                 INTO xp
                 FROM user_statistics
                 WHERE user_id = NEW.user_id;
 
-                new_xp := new_xp + xp;
+                new_xp := received_xp + xp;
 
                 UPDATE user_statistics
                 SET total_xp = new_xp
                 WHERE user_id = NEW.user_id;
             END IF;
+
+            INSERT INTO xp_activity_logs (user_id, action, received_xp)
+            VALUES (NEW.user_id, 'Lernziel', new_xp);
+
         ELSE
             RAISE LOG 'Negative XP-Änderung wird nicht behandelt: %', new_xp;
         END IF;
