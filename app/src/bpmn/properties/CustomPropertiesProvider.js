@@ -19,9 +19,9 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
 
       let filteredGroups = deleteGroupsToReplace(groups);
 
-      if (conditionGroup) filteredGroups.push(conditionGroup);
-      if (gamificationServiceTaskGroup) filteredGroups.push(gamificationServiceTaskGroup);
-      if (userTaskLessonGroup) filteredGroups.push(userTaskLessonGroup);
+      if (conditionGroup) filteredGroups.unshift(conditionGroup);
+      if (gamificationServiceTaskGroup) filteredGroups.unshift(gamificationServiceTaskGroup);
+      if (userTaskLessonGroup) filteredGroups.unshift(userTaskLessonGroup);
       if (generalGroup) filteredGroups.unshift(generalGroup);
 
       return filteredGroups;
