@@ -75,7 +75,12 @@ function ServiceTaskType(props) {
     label: translate('Service Task Type'),
     getValue,
     setValue,
-    getOptions
+    getOptions,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    }
   });
 }
 
