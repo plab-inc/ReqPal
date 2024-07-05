@@ -52,6 +52,18 @@
           "isOptional": true
         },
         {
+          "name": "objectiveToGrantXPTo",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "XP",
+          "isAttr": true,
+          "type": "Integer",
+          "isOptional": true
+        },
+        {
           "name": "serviceTaskType",
           "isAttr": true,
           "type": "String"

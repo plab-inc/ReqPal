@@ -1,13 +1,11 @@
-import { Group, isSelectEntryEdited, SelectEntry } from "@bpmn-io/properties-panel";
+import { Group, isSelectEntryEdited, SelectEntry, TextFieldEntry } from "@bpmn-io/properties-panel";
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
-import { useLessonStore } from "@/stores/lesson.ts";
-import { toRaw } from "vue";
 
 export function ServiceTaskGroup(element, translate) {
   const group = {
-    label: translate('Gamification Service To Call'),
+    label: translate('Gamification Services'),
     id: 'GamificationService',
     component: Group,
     entries: [...ServiceTaskProps({ element, translate })]
@@ -39,6 +37,19 @@ function ServiceTaskProps(props) {
     });
   }
 
+  if (taskType === 'grantXPToObjective') {
+    entries.push({
+      id: 'selectObjective',
+      component: SelectObjectiveType,
+      isEdited: isSelectEntryEdited,
+    });
+    entries.push({
+      id: 'xpToGrant',
+      component: XPValueType,
+      isEdited: isSelectEntryEdited,
+    });
+  }
+
   return entries;
 }
 
@@ -55,16 +66,99 @@ function ServiceTaskType(props) {
 
   const getOptions = () => [
     { value: 'assignAchievement', label: translate('Assign Achievement') },
-    //{ value: 'grantXPToObjective', label: translate('Grant XP To Learning Objective') }
+    { value: 'grantXPToObjective', label: translate('Grant XP To Learning Objective') }
   ];
 
   return jsx(SelectEntry, {
     element,
     id: "serviceTaskType",
-    label: translate('Gamification Service Task Type'),
+    label: translate('Service Task Type'),
     getValue,
     setValue,
     getOptions
+  });
+}
+
+function XPValueType(props) {
+  const { element } = props;
+  const modeling = useService('modeling');
+  const translate = useService("translate");
+  const bpmnFactory = useService('bpmnFactory');
+  const debounce = useService("debounceInput");
+  const getValue = () => {
+    return element.businessObject.XP || '';
+  }
+
+  const setValue = (value) => {
+    const businessObject = element.businessObject;
+    const name = businessObject.get('name') || '';
+    const baseName = name.split('\nXP:')[0];
+    const label = (value && baseName) ? (baseName + "\nXP: " + value) : baseName;
+
+    businessObject.set('xp', value)
+    businessObject.set('name', label)
+    setInputParameters(element, modeling, bpmnFactory, "xp", value);
+  }
+
+  return jsx(TextFieldEntry, {
+    element: element,
+    id: "XPToGrantValue",
+    label: translate('XP granted to the selected objective'),
+    getValue: getValue,
+    setValue: setValue,
+    debounce: debounce,
+    monospace: true,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    }
+  });
+}
+
+function SelectObjectiveType(props) {
+  const { element } = props;
+  const bpmnFactory = useService('bpmnFactory');
+  const translate = useService('translate');
+  const modeling = useService('modeling');
+
+  const getValue = () => {
+    return getObjectiveToGrantXP(element);
+  };
+
+  const setValue = (value) => {
+    const businessObject = element.businessObject;
+    const objectives = getOptions();
+    const selectedObjective = objectives.find(objective => objective.value === value);
+    const label = selectedObjective ? 'Grant XP to Objective:\n' + selectedObjective.label : '';
+
+    businessObject.set('objectiveToGrantXPTo', value);
+    businessObject.set('name', label);
+
+    setInputParameters(element, modeling, bpmnFactory, "objectiveId", value);
+    addImplementation(element, modeling, "${xpDelegate}");
+  };
+
+  const getOptions = () => {
+    return [
+      { value: 'a', label: 'ObA' },
+      { value: 'b', label: 'ObB' },
+      { value: 'c', label: 'ObC' }
+    ]
+  };
+
+  return jsx(SelectEntry, {
+    element: element,
+    id: "objectiveToGrantXP",
+    label: translate('Objective to grant XP to'),
+    getValue: getValue,
+    setValue: setValue,
+    getOptions: getOptions,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    }
   });
 }
 
@@ -82,12 +176,13 @@ function AssignAchievementTaskType(props) {
     const businessObject = element.businessObject;
     const achievements = getOptions();
     const selectedAchievement = achievements.find(achievement => achievement.value === value);
-    const label = selectedAchievement ? 'Assign Achievement: ' + selectedAchievement.label : '';
+    const label = selectedAchievement ? 'Assign Achievement:\n' + selectedAchievement.label : '';
 
     businessObject.set('achievementToAssign', value);
     businessObject.set('name', label);
 
-    addImplementation(element, modeling, bpmnFactory);
+    setInputParameters(element, modeling, bpmnFactory, 'achievementId', value)
+    addImplementation(element, modeling, "${achievementDelegate}");
   };
 
   const getOptions = () => {
@@ -101,21 +196,28 @@ function AssignAchievementTaskType(props) {
   return jsx(SelectEntry, {
     element: element,
     id: "achievementToAssign",
-    label: translate('Achievement To Assign'),
+    label: translate('Achievement to assign to the user'),
     getValue: getValue,
     setValue: setValue,
     getOptions: getOptions,
     validate: (element) => {
       if (!element) {
-        return translate('Achievement Is Required.');
+        return translate('Required.');
       }
     }
   });
 }
 
+// ----------------Helper----------------
+
 function getAchievementToAssign(element) {
   const businessObject = element.businessObject;
   return businessObject.get('achievementToAssign');
+}
+
+function getObjectiveToGrantXP(element) {
+  const businessObject = element.businessObject;
+  return businessObject.get('objectiveToGrantXPTo');
 }
 
 function getServiceTaskType(element) {
@@ -123,14 +225,13 @@ function getServiceTaskType(element) {
   return businessObject.get('serviceTaskType');
 }
 
-function addImplementation(element, modeling) {
+function addImplementation(element, modeling, delegate) {
   modeling.updateProperties(element, {
-    //TODO assign correct delegate
-    'camunda:delegateExpression': '${TODO}'
+    'camunda:delegateExpression': delegate.toString()
   });
 }
 
-function setInputParameters(element, modeling, bpmnFactory, achievementId) {
+function setInputParameters(element, modeling, bpmnFactory, variableName, value) {
   const businessObject = getBusinessObject(element);
 
   if (!businessObject.extensionElements) {
@@ -142,8 +243,8 @@ function setInputParameters(element, modeling, bpmnFactory, achievementId) {
   const extensionElements = businessObject.extensionElements;
 
   const inputParameter = bpmnFactory.create('camunda:InputParameter', {
-    name: 'achievementId',
-    value: achievementId
+    name: variableName,
+    value: value
   });
 
   let inputOutput = extensionElements.values.find(value => is(value, 'camunda:InputOutput'));
