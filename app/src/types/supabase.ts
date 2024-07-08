@@ -772,6 +772,38 @@ export type Database = {
           },
         ]
       }
+      xp_activity_logs: {
+        Row: {
+          action: string | null
+          created_at: string
+          id: string
+          received_xp: number | null
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string
+          id?: string
+          received_xp?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string
+          id?: string
+          received_xp?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "xp_activity_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -837,12 +869,6 @@ export type Database = {
           user_uuid: string
         }
         Returns: string
-      }
-      initiate_reqpal_level: {
-        Args: {
-          user_uuid: string
-        }
-        Returns: undefined
       }
       is_claims_admin: {
         Args: Record<PropertyKey, never>
