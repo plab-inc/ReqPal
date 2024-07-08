@@ -38,6 +38,9 @@ spring:
       maximum-pool-size: 5
       idle-timeout: 300000
       max-lifetime: 600000
+  security:
+    filter:
+      order: 10
 server:
   port: 3000
 resilience4j:
