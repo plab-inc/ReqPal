@@ -27,21 +27,21 @@
             variant="plain"
             size="medium"
             icon="mdi-delete"
-            @click.stop="deleteobjective(item)"
+            @click.stop="deleteObjective(item)"
         />
       </div>
     </template>
   </v-data-table-virtual>
-  <Editobjective v-if="editDialog" :dialog="editDialog" @update:dialog="updateEditDialog"></Editobjective>
+  <EditObjective v-if="editDialog" :dialog="editDialog" @update:dialog="updateEditDialog"></EditObjective>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import {ref} from "vue";
 import {DeleteObjective} from "@/utils/dialogs.ts";
-import { useUtilStore } from "@/stores/util.ts";
+import {useUtilStore} from "@/stores/util.ts";
 import {useObjectiveStore} from "@/stores/objective.ts";
 import {Objective} from "@/types/objective.ts";
-import Editobjective from "@/components/objectives/EditObjective.vue";
+import EditObjective from "@/components/objectives/EditObjective.vue";
 
 const expanded = ref<any>([]);
 const utilStore = useUtilStore();
@@ -50,10 +50,10 @@ const editDialog = ref<boolean>(false);
 const objectiveStore = useObjectiveStore();
 
 const headers = ref([
-  { title: "Name", value: "name", sortable: true, width: "25%", align: "start" },
-  { title: "Beschreibung", value: "description", sortable: true, width: "auto", align: "center" },
-  { title: "Maximales Level", value: "max_level", sortable: true, width: "auto", align: "center" },
-  { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
+  {title: "Name", value: "name", sortable: true, width: "25%", align: "start"},
+  {title: "Beschreibung", value: "description", sortable: true, width: "auto", align: "center"},
+  {title: "Maximales Level", value: "max_level", sortable: true, width: "auto", align: "center"},
+  {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
 function openEditDialog(item: Objective | null) {
@@ -67,7 +67,7 @@ function updateEditDialog(value: boolean) {
   editDialog.value = value;
 }
 
-function deleteobjective(item: Objective) {
+function deleteObjective(item: Objective) {
   utilStore.openDialog(DeleteObjective, () => {
     objectiveStore.deleteObjectiveById(item.id);
   });
