@@ -9,7 +9,7 @@ import {useLessonStore} from "@/stores/lesson.ts";
 import SortableModule from "@/components/lesson/builder/dragAndDrop/SortableModuleContainer.vue";
 import ModuleTarget from "@/components/lesson/builder/dragAndDrop/ModuleTarget.vue"
 import { ref } from "vue";
-import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
+import {useObjectiveStore} from "@/stores/objective.ts";
 
 const props = defineProps<{
   showToolTip: boolean
@@ -20,7 +20,7 @@ const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 
 const lessonFormStore = useLessonFormStore();
 const lessonStore = useLessonStore();
 const utilStore = useUtilStore();
-const learningGoalStore = useLearningGoalsStore();
+const objectiveStore = useObjectiveStore();
 
 const MAX_LESSONS: number = 20;
 const MAX_QUESTIONS: number = 20;
@@ -84,17 +84,17 @@ async function uploadLesson() {
         </v-col>
         <v-col>
           <v-select
-              v-model="lessonFormStore.learningGoalId"
+              v-model="lessonFormStore.objectiveId"
               clearable
               chips
-              :items="learningGoalStore.getCurrentLearningGoals"
+              :items="objectiveStore.getCurrentObjectives"
               density="comfortable"
               label="Lernziel"
               item-title="name"
               item-value="id"
               variant="outlined"
               no-data-text="Es stehen noch keine Lernziele zur Verfügung."
-              :disabled="learningGoalStore.getCurrentLearningGoals.length < 0"
+              :disabled="objectiveStore.getCurrentObjectives.length < 0"
           >
           </v-select>
         </v-col>

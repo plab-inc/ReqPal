@@ -25,7 +25,7 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
     private void addXpToLearningObjectiveForUser(DelegateExecution delegateExecution) {
 
         String userId = (String) delegateExecution.getVariable("studentId");
-        String learningObjectiveId = (String) delegateExecution.getVariable("learningObjectiveId");
+        String objectiveId = (String) delegateExecution.getVariable("objectiveId");
         int xp;
         try {
             String xpString = (String) delegateExecution.getVariable("xp");
@@ -36,7 +36,7 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
 
         if(xp > 0) {
             try {
-                gamificationService.addXpToLearningObjectiveForUser(xp, learningObjectiveId, userId);
+                gamificationService.addXpToObjectiveForUser(xp, objectiveId, userId);
             }   catch (Exception e) {
                 System.out.println(e.getMessage());
             }

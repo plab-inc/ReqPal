@@ -110,15 +110,15 @@
             </v-icon>
           </template>
           <template v-slot:append>
-            <v-tooltip v-if="lesson.learningGoal" location="left" :text="lesson.learningGoal.description">
+            <v-tooltip v-if="lesson.objective" location="left" :text="lesson.objective.description">
               <template v-slot:activator="{ props }">
                 <v-chip v-bind="props"
-                    v-if="lesson.learningGoal"
+                    v-if="lesson.objective"
                     class="mr-5 ma-5"
                     prepend-icon="mdi-trophy"
                     elevation="8"
                 >
-                  {{ lesson.learningGoal.name }}
+                  {{ lesson.objective.name }}
                 </v-chip>
               </template>
             </v-tooltip>

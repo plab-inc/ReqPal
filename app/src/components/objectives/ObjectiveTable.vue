@@ -3,7 +3,7 @@
       class="mt-5"
       v-model:expanded="expanded"
       :headers="headers"
-      :items="learningGoalsStore.getCurrentLearningGoals ? learningGoalsStore.getCurrentLearningGoals : []"
+      :items="objectiveStore.getCurrentObjectives ? objectiveStore.getCurrentObjectives : []"
       item-value="id"
       hover
       height="70vh"
@@ -27,27 +27,27 @@
             variant="plain"
             size="medium"
             icon="mdi-delete"
-            @click.stop="deleteLearningGoal(item)"
+            @click.stop="deleteobjective(item)"
         />
       </div>
     </template>
   </v-data-table-virtual>
-  <EditLearningGoal v-if="editDialog" :dialog="editDialog" @update:dialog="updateEditDialog"></EditLearningGoal>
+  <Editobjective v-if="editDialog" :dialog="editDialog" @update:dialog="updateEditDialog"></Editobjective>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import {DeleteLearningGoal} from "@/utils/dialogs.ts";
+import {DeleteObjective} from "@/utils/dialogs.ts";
 import { useUtilStore } from "@/stores/util.ts";
-import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
-import {LearningGoal} from "@/types/learningGoals.ts";
-import EditLearningGoal from "@/components/learningGoals/EditLearningGoal.vue";
+import {useObjectiveStore} from "@/stores/objective.ts";
+import {Objective} from "@/types/objective.ts";
+import Editobjective from "@/components/objectives/EditObjective.vue";
 
 const expanded = ref<any>([]);
 const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
-const learningGoalsStore = useLearningGoalsStore();
+const objectiveStore = useObjectiveStore();
 
 const headers = ref([
   { title: "Name", value: "name", sortable: true, width: "25%", align: "start" },
@@ -56,9 +56,9 @@ const headers = ref([
   { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
 ] as const);
 
-function openEditDialog(item: LearningGoal | null) {
+function openEditDialog(item: Objective | null) {
   if (item) {
-    learningGoalsStore.currentLearningGoal = item;
+    objectiveStore.currentObjective = item;
     editDialog.value = true;
   }
 }
@@ -67,9 +67,9 @@ function updateEditDialog(value: boolean) {
   editDialog.value = value;
 }
 
-function deleteLearningGoal(item: LearningGoal) {
-  utilStore.openDialog(DeleteLearningGoal, () => {
-    learningGoalsStore.deleteLearningGoalById(item.id);
+function deleteobjective(item: Objective) {
+  utilStore.openDialog(DeleteObjective, () => {
+    objectiveStore.deleteObjectiveById(item.id);
   });
 }
 </script>

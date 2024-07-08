@@ -7,19 +7,19 @@
   >
     <v-form v-model="isFormValid" @submit.prevent="save" ref="form">
       <v-card variant="elevated" class="pa-1">
-        <v-card-title v-if="localGoal.id.length > 0">Produkt bearbeiten</v-card-title>
-        <v-card-title v-if="localGoal.id.length <= 0">Produkt erstellen</v-card-title>
+        <v-card-title v-if="localObjective.id.length > 0">Produkt bearbeiten</v-card-title>
+        <v-card-title v-if="localObjective.id.length <= 0">Produkt erstellen</v-card-title>
         <v-card-text>
           <v-row>
             <v-col>
               <div class="text-caption mb-2">
                 Lernziel
               </div>
-              <v-text-field variant="outlined" label="Name" v-model="localGoal.name"
+              <v-text-field variant="outlined" label="Name" v-model="localObjective.name"
                             :rules="[requiredStringRule]"/>
-              <v-text-field variant="outlined" label="Beschreibung" v-model="localGoal.description"
+              <v-text-field variant="outlined" label="Beschreibung" v-model="localObjective.description"
                             :rules="[requiredStringRule, maxLengthRule]"/>
-              <v-text-field variant="outlined" label="Maximales Level" type="number" v-model="localGoal.max_level"
+              <v-text-field variant="outlined" label="Maximales Level" type="number" v-model="localObjective.max_level"
                             :rules="[requiredPositiveNumberRule]"/>
             </v-col>
           </v-row>
@@ -44,8 +44,8 @@ import {
   requiredPositiveNumberRule,
   requiredStringRule
 } from "@/utils/validationRules.ts";
-import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
-import {LearningGoal} from "@/types/learningGoals.ts";
+import {useObjectiveStore} from "@/stores/objective.ts";
+import {Objective} from "@/types/objective.ts";
 
 interface Props {
   dialog: boolean;
@@ -53,56 +53,56 @@ interface Props {
 
 defineProps<Props>();
 const emit = defineEmits(["update:dialog"]);
-const learningGoalStore = useLearningGoalsStore();
+const objectiveStore = useObjectiveStore();
 const isFormValid = ref<boolean>(false);
-const localGoal = ref<LearningGoal>({id: "", name: "", description: "", max_level: 5});
-const originalGoal = ref<LearningGoal>();
+const localObjective = ref<Objective>({id: "", name: "", description: "", max_level: 5});
+const originalObjective = ref<Objective>();
 
 function close() {
   emit("update:dialog", false);
 }
 
 async function save() {
-  if (originalGoal.value && localGoal.value) {
-    if (!areGoalsEqual(originalGoal.value, localGoal.value)) {
-      await updateLearningGoal();
+  if (originalObjective.value && localObjective.value) {
+    if (!areObjectivesEqual(originalObjective.value, localObjective.value)) {
+      await updateObjective();
     } else {
       AlertService.addInfoAlert("Es wurden keine Änderungen vorgenommen.")
       return;
     }
-  } else if (!originalGoal.value && localGoal.value) {
-    await createLearningGoal();
+  } else if (!originalObjective.value && localObjective.value) {
+    await createObjective();
   }
 
   emit("update:dialog", false);
 }
 
-async function updateLearningGoal() {
+async function updateObjective() {
   try {
-    await learningGoalStore.updateCurrentLearningGoal(localGoal.value);
+    await objectiveStore.updateCurrentObjective(localObjective.value);
     AlertService.addSuccessAlert("Lernziel wurde aktualisiert.")
   } catch (error: any) {
     throw error;
   }
 }
 
-async function createLearningGoal() {
+async function createObjective() {
   try {
-    await learningGoalStore.uploadLearningGoal(localGoal.value);
+    await objectiveStore.uploadObjective(localObjective.value);
     AlertService.addSuccessAlert("Lernziel wurde erstellt.")
   } catch (error: any) {
     throw error;
   }
 }
 
-function areGoalsEqual(original: LearningGoal, edited: LearningGoal) {
+function areObjectivesEqual(original: Objective, edited: Objective) {
   return JSON.stringify(original) === JSON.stringify(edited);
 }
 
 onBeforeMount(async () => {
-  if (learningGoalStore.getCurrentLearningGoal) {
-    originalGoal.value = learningGoalStore.getCurrentLearningGoal;
-    localGoal.value = JSON.parse(JSON.stringify(originalGoal.value));
+  if (objectiveStore.getCurrentObjective) {
+    originalObjective.value = objectiveStore.getCurrentObjective;
+    localObjective.value = JSON.parse(JSON.stringify(originalObjective.value));
   }
 });
 </script>

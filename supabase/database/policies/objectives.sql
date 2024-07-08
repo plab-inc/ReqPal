@@ -1,12 +1,12 @@
 -- Author: Laura
 
 --------------------------------------------
--- Learning goals related policies
+-- Objective related policies
 --------------------------------------------
 
-DROP POLICY IF EXISTS "policy_learning_goals_select" ON public.learning_goals;
-CREATE POLICY "policy_learning_goals_select"
-    ON public.learning_goals
+DROP POLICY IF EXISTS "policy_objectives_select" ON public.objectives;
+CREATE POLICY "policy_objectives_select"
+    ON public.objectives
     FOR SELECT
     TO authenticated
     USING (
@@ -15,9 +15,9 @@ CREATE POLICY "policy_learning_goals_select"
     (get_teacher_uuid(auth.uid()) = user_id)
     );
 
-DROP POLICY IF EXISTS "policy_learning_goals_delete" ON public.learning_goals;
-CREATE POLICY "policy_learning_goals_delete"
-    ON public.learning_goals
+DROP POLICY IF EXISTS "policy_objectives_delete" ON public.objectives;
+CREATE POLICY "policy_objectives_delete"
+    ON public.objectives
     FOR DELETE
     TO authenticated
     USING (
@@ -26,9 +26,9 @@ CREATE POLICY "policy_learning_goals_delete"
     (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
     );
 
-DROP POLICY IF EXISTS "policy_learning_goals_update" ON public.learning_goals;
-CREATE POLICY "policy_learning_goals_update"
-    ON public.learning_goals
+DROP POLICY IF EXISTS "policy_objectives_update" ON public.objectives;
+CREATE POLICY "policy_objectives_update"
+    ON public.objectives
     FOR UPDATE
     TO authenticated
     USING (
@@ -37,12 +37,13 @@ CREATE POLICY "policy_learning_goals_update"
     (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
     );
 
-DROP POLICY IF EXISTS "policy_learning_goals_insert" ON public.learning_goals;
-CREATE POLICY "policy_learning_goals_insert"
-    ON public.learning_goals
+DROP POLICY IF EXISTS "policy_objectives_insert" ON public.objectives;
+CREATE POLICY "policy_objectives_insert"
+    ON public.objectives
     FOR INSERT
     TO authenticated
     WITH CHECK (
     (SELECT check_user_role(auth.uid(), 'moderator')) = true
         OR
-    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true);
+    (auth.uid() = user_id AND (SELECT check_user_role(auth.uid(), 'teacher'))) = true
+    );

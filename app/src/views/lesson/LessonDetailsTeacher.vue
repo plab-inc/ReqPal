@@ -4,15 +4,15 @@
       {{ currentLesson?.lessonDTO.title }} -
       {{ currentLesson?.lessonDTO.points }}
       <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
-      <v-tooltip v-if="currentLesson?.learningGoal" location="right" :text="currentLesson.learningGoal.description">
+      <v-tooltip v-if="currentLesson?.objective" location="right" :text="currentLesson.objective.description">
         <template v-slot:activator="{ props }">
           <v-chip v-bind="props"
-                  v-if="currentLesson.learningGoal"
+                  v-if="currentLesson.objective"
                   class="ma-5"
                   prepend-icon="mdi-trophy"
                   elevation="8"
           >
-            {{ currentLesson.learningGoal.name }}
+            {{ currentLesson.objective.name }}
           </v-chip>
         </template>
       </v-tooltip>

@@ -1,8 +1,8 @@
 import {Database} from "@/types/supabase.ts";
 
-export type LearningGoalDTO = Database["public"]["Tables"]["learning_goals"]["Row"];
+export type ObjectiveDTO = Database["public"]["Tables"]["objectives"]["Row"];
 
-export type LearningGoal = {
+export type Objective = {
     id: string;
     name: string;
     description: string;
