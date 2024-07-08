@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.goal;
+package inc.plab.bpmn.model.objective;
 
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.user.Profile;
@@ -15,8 +15,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "learning_goals")
-public class LearningGoal {
+@Table(name = "objectives")
+public class Objective {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
@@ -36,7 +36,7 @@ public class LearningGoal {
     @Column(name = "max_level")
     private Integer maxLevel;
 
-    @OneToMany(mappedBy = "learningGoal")
+    @OneToMany(mappedBy = "objective")
     private Set<Lesson> lessons = new LinkedHashSet<>();
 
 }

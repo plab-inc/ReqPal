@@ -135,7 +135,7 @@ export const DeleteProduct: DialogText = {
     cancelLabel: "Zurück"
 };
 
-export const DeleteLearningGoal: DialogText = {
+export const DeleteObjective: DialogText = {
     title: "Lernziel löschen",
     message: "Möchten Sie wirklich das ausgewählte Lernziel löschen? " +
         "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen und Level der Lernenden.",

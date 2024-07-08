@@ -21,7 +21,7 @@ import {
 } from "@/middlewares/lesson.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
-import {fetchLearningGoalsByLessonOwner, fetchLearningGoalsByUser} from "@/middlewares/learningGoals.ts";
+import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
 
 const routes = [
     {
@@ -56,7 +56,7 @@ const routes = [
                     middleware: [
                         requiresTeacher,
                         fetchLessons,
-                        fetchLearningGoalsByLessonOwner
+                        fetchObjectivesByLessonOwner
                     ]
                 }
             },
@@ -142,13 +142,13 @@ const routes = [
                 }
             },
             {
-                path: "/learningGoals",
-                name: "LearningGoals",
-                component: () => import("@/views/learningGoals/LearningGoalsOverview.vue"),
+                path: "/objectives",
+                name: "Objectives",
+                component: () => import("@/views/objective/ObjectiveOverview.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
-                        fetchLearningGoalsByUser
+                        fetchObjectivesByUser
                     ]
                 }
             },

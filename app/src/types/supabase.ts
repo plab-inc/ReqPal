@@ -59,7 +59,58 @@ export type Database = {
           },
         ]
       }
-      learning_goals: {
+      lessons: {
+        Row: {
+          created_at: string
+          description: string
+          example: boolean
+          objective: string | null
+          points: number | null
+          published: boolean
+          title: string
+          user_id: string
+          uuid: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          example?: boolean
+          objective?: string | null
+          points?: number | null
+          published?: boolean
+          title: string
+          user_id: string
+          uuid?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          example?: boolean
+          objective?: string | null
+          points?: number | null
+          published?: boolean
+          title?: string
+          user_id?: string
+          uuid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_objective_fkey"
+            columns: ["objective"]
+            isOneToOne: false
+            referencedRelation: "objectives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lessons_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      objectives: {
         Row: {
           description: string | null
           id: string
@@ -83,58 +134,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "learning_goals_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      lessons: {
-        Row: {
-          created_at: string
-          description: string
-          example: boolean
-          learning_goal: string | null
-          points: number | null
-          published: boolean
-          title: string
-          user_id: string
-          uuid: string
-        }
-        Insert: {
-          created_at?: string
-          description: string
-          example?: boolean
-          learning_goal?: string | null
-          points?: number | null
-          published?: boolean
-          title: string
-          user_id: string
-          uuid?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          example?: boolean
-          learning_goal?: string | null
-          points?: number | null
-          published?: boolean
-          title?: string
-          user_id?: string
-          uuid?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lessons_learning_goal_fkey"
-            columns: ["learning_goal"]
-            isOneToOne: false
-            referencedRelation: "learning_goals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lessons_user_id_fkey"
+            foreignKeyName: "objectives_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -632,9 +632,9 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          learning_objective_id: string | null
           level: number | null
           max: boolean | null
+          objective_id: string | null
           user_id: string | null
           xp: number | null
           xp_threshold: number | null
@@ -642,9 +642,9 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
-          learning_objective_id?: string | null
           level?: number | null
           max?: boolean | null
+          objective_id?: string | null
           user_id?: string | null
           xp?: number | null
           xp_threshold?: number | null
@@ -652,19 +652,19 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
-          learning_objective_id?: string | null
           level?: number | null
           max?: boolean | null
+          objective_id?: string | null
           user_id?: string | null
           xp?: number | null
           xp_threshold?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_levels_learning_objective_id_fkey"
-            columns: ["learning_objective_id"]
+            foreignKeyName: "user_levels_objective_id_fkey"
+            columns: ["objective_id"]
             isOneToOne: false
-            referencedRelation: "learning_goals"
+            referencedRelation: "objectives"
             referencedColumns: ["id"]
           },
           {

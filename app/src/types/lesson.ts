@@ -1,5 +1,5 @@
 import {Database} from "@/types/supabase.ts";
-import {LearningGoal} from "@/types/learningGoals.ts";
+import {Objective} from "@/types/objective.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
@@ -23,7 +23,7 @@ export type Lesson = {
     isStarted: boolean,
     hasSavedProgress: boolean,
     userScore: number,
-    learningGoal: LearningGoal | null
+    objective: Objective | null
 
     creatorAvatar?: string,
     creatorUsername?: string,
@@ -34,7 +34,7 @@ export type LessonForm = {
     title: string;
     description: string;
     questions: Question[];
-    learningGoalId: string | null;
+    objectiveId: string | null;
 }
 
 export type LessonAnswer = {

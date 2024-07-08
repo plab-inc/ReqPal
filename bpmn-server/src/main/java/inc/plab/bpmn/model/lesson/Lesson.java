@@ -1,6 +1,6 @@
 package inc.plab.bpmn.model.lesson;
 
-import inc.plab.bpmn.model.goal.LearningGoal;
+import inc.plab.bpmn.model.objective.Objective;
 import inc.plab.bpmn.model.question.Question;
 import inc.plab.bpmn.model.user.*;
 import jakarta.persistence.*;
@@ -60,8 +60,8 @@ public class Lesson {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "learning_goal")
-    private LearningGoal learningGoal;
+    @JoinColumn(name = "objective")
+    private Objective objective;
 
     @OneToMany(mappedBy = "lessonUuid")
     private Set<Question> questions = new LinkedHashSet<>();

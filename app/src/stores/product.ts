@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {Product} from "@/types/catalog.ts";
 import {useAuthStore} from "@/stores/auth.ts";
-import ProductService from "@/services/database/products.ts";
+import ProductService from "@/services/database/product.ts";
 
 interface ProductState {
     products: Product[]

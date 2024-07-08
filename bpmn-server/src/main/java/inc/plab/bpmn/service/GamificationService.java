@@ -1,7 +1,7 @@
 package inc.plab.bpmn.service;
 
-import inc.plab.bpmn.model.goal.LearningGoal;
-import inc.plab.bpmn.model.goal.LearningGoalRepository;
+import inc.plab.bpmn.model.objective.Objective;
+import inc.plab.bpmn.model.objective.ObjectiveRepository;
 import inc.plab.bpmn.model.user.Profile;
 import inc.plab.bpmn.model.user.ProfileRepository;
 import inc.plab.bpmn.model.user.UserLevel;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class GamificationService {
 
-    private final LearningGoalRepository learningGoalRepository;
+    private final ObjectiveRepository objectiveRepository;
     private final UserLevelRepository userLevelRepository;
     private final ProfileRepository profileRepository;
 
@@ -26,26 +26,26 @@ public class GamificationService {
         System.out.println("Hello from GamificationService");
     }
 
-    public void addXpToLearningObjectiveForUser(int xp, String objectiveId, String userId) {
+    public void addXpToObjectiveForUser(int xp, String objectiveId, String userId) {
         UUID userUUID = UUID.fromString(userId);
-        UUID learningObjectiveUUID = UUID.fromString(objectiveId);
+        UUID objectiveUUID = UUID.fromString(objectiveId);
 
-        Optional<LearningGoal> learningGoalOptional = learningGoalRepository.findById(learningObjectiveUUID);
-        LearningGoal learningGoal = learningGoalOptional.orElseThrow(() -> new IllegalArgumentException("Learning Objective not found"));
+        Optional<Objective> objectiveOptional = objectiveRepository.findById(objectiveUUID);
+        Objective objective = objectiveOptional.orElseThrow(() -> new IllegalArgumentException("Objective not found"));
 
         Optional<Profile> profileOptional = profileRepository.findById(userUUID);
         Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
-        Optional<UserLevel> userLevelOptional = userLevelRepository.findByUserIdAndLearningObjectiveId(userUUID, learningObjectiveUUID);
+        Optional<UserLevel> userLevelOptional = userLevelRepository.findByUserIdAndObjectiveId(userUUID, objectiveUUID);
         UserLevel userLevel;
 
-        userLevel = userLevelOptional.orElseGet(() -> initiateUserLevelForLearningObjective(learningGoal, profile));
+        userLevel = userLevelOptional.orElseGet(() -> initiateUserLevelForObjective(objective, profile));
 
         if (!userLevel.getMax()) {
             int newXp = xp + userLevel.getXp();
 
             if (newXp >= userLevel.getXpThreshold()) {
-                userLevel = updateLearningObjectiveLevel(learningGoal, userLevel, newXp);
+                userLevel = updateObjectiveLevel(objective, userLevel, newXp);
             } else {
                 userLevel.setXp(newXp);
             }
@@ -54,9 +54,9 @@ public class GamificationService {
         userLevelRepository.save(userLevel);
     }
 
-    private UserLevel updateLearningObjectiveLevel(LearningGoal learningObjective, UserLevel userLevel, int newXp) {
+    private UserLevel updateObjectiveLevel(Objective objective, UserLevel userLevel, int newXp) {
         int newLevel = userLevel.getLevel();
-        int maxLevel = learningObjective.getMaxLevel();
+        int maxLevel = objective.getMaxLevel();
         int currentThreshold = userLevel.getXpThreshold();
 
         while (newXp >= currentThreshold && newLevel < maxLevel) {
@@ -85,7 +85,7 @@ public class GamificationService {
         return baseXp + (baseXp * (currentLevel + 1));
     }
 
-    private UserLevel initiateUserLevelForLearningObjective(LearningGoal learningObjective, Profile user) {
+    private UserLevel initiateUserLevelForObjective(Objective objective, Profile user) {
         int defaultLevel = 0;
         int defaultXp = 0;
         int threshold = calculateThreshold(defaultLevel);
@@ -96,7 +96,7 @@ public class GamificationService {
         userLevel.setXpThreshold(threshold);
         userLevel.setUser(user);
         userLevel.setMax(false);
-        userLevel.setLearningObjective(learningObjective);
+        userLevel.setObjective(objective);
 
         return userLevel;
     }

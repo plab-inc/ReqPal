@@ -42,15 +42,15 @@ onBeforeMount(async () => {
   <v-row justify="space-between" align="center">
     <v-col cols="10" class="text-h4">
       {{ currentLesson?.lessonDTO.title }}
-      <v-tooltip v-if="currentLesson?.learningGoal" location="left" :text="currentLesson?.learningGoal.description">
+      <v-tooltip v-if="currentLesson?.objective" location="left" :text="currentLesson?.objective.description">
         <template v-slot:activator="{ props }">
           <v-chip v-bind="props"
-                  v-if="currentLesson.learningGoal"
+                  v-if="currentLesson.objective"
                   class="ma-5"
                   prepend-icon="mdi-trophy"
                   elevation="8"
           >
-            {{ currentLesson.learningGoal.name }}
+            {{ currentLesson.objective.name }}
           </v-chip>
         </template>
       </v-tooltip>

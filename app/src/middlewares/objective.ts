@@ -1,20 +1,20 @@
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
-import {useLearningGoalsStore} from "@/stores/learningGoals.ts";
+import {useObjectiveStore} from "@/stores/objective.ts";
 import {useLessonStore} from "@/stores/lesson.ts";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 
-export async function fetchLearningGoalsByUser(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function fetchObjectivesByUser(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
-        const learningGoalsStore = useLearningGoalsStore();
-        await learningGoalsStore.fetchLearningGoalsByUser();
+        const objectiveStore = useObjectiveStore();
+        await objectiveStore.fetchObjectivesByUser();
         return next();
     } catch (error) {
         return next({name: 'Error'});
     }
 }
 
-export async function fetchLearningGoalsByLessonOwner(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+export async function fetchObjectivesByLessonOwner(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
         const lessonFormStore = useLessonFormStore();
@@ -32,8 +32,8 @@ export async function fetchLearningGoalsByLessonOwner(to: RouteLocationNormalize
                     ownerId = foundLesson.lessonDTO.user_id;
                 }
             }
-            const learningGoalsStore = useLearningGoalsStore();
-            await learningGoalsStore.fetchLearningGoalsByUserId(ownerId);
+            const objectiveStore = useObjectiveStore();
+            await objectiveStore.fetchObjectivesByUserId(ownerId);
         }
 
         return next();
