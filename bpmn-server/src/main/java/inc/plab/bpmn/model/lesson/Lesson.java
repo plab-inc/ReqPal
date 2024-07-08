@@ -60,7 +60,7 @@ public class Lesson {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "objectives")
+    @JoinColumn(name = "objective")
     private Objective objective;
 
     @OneToMany(mappedBy = "lessonUuid")
