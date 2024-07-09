@@ -30,7 +30,7 @@ public class DiagramController {
     public ResponseEntity<String> persistBpmn(
             @RequestParam("file") MultipartFile file, @AuthenticationPrincipal SupabaseUser user) {
         try {
-            Optional<BpmnDiagram> bpmnDiagram = diagramService.persistBpmn(file, user);
+            Optional<BpmnDiagram> bpmnDiagram = diagramService.persistBpmn(file, user.getProfile());
 
             return bpmnDiagram.map(diagram -> ResponseEntity.ok("BPMN Diagram saved successfully with id: " + diagram.getId()))
                     .orElseGet(() -> ResponseEntity.status(400).body("No valid BPMN Diagram provided"));
@@ -46,7 +46,7 @@ public class DiagramController {
             @PathVariable("diagramId") UUID diagramId,
             @RequestParam("file") MultipartFile file, @AuthenticationPrincipal SupabaseUser user) {
         try {
-            Optional<BpmnDiagram> bpmnDiagram = diagramService.updateBpmn(diagramId, file);
+            Optional<BpmnDiagram> bpmnDiagram = diagramService.updateBpmn(diagramId, user.getProfile(), file);
 
             return bpmnDiagram.map(diagram -> ResponseEntity.ok("BPMN Diagram updated successfully with id: " + diagram.getId()))
                     .orElseGet(() -> ResponseEntity.status(400).body("No valid BPMN Diagram provided or diagram does not exist"));

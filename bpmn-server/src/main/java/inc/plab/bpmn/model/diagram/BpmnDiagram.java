@@ -32,12 +32,12 @@ public class BpmnDiagram {
     @Column(name = "xml_content")
     private String xmlContent;
 
+    @Column(name = "process_definition_key", length = Integer.MAX_VALUE)
+    private String processDefinitionKey;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private Profile user;
-
-    @Column(name = "process_definition_key", length = Integer.MAX_VALUE)
-    private String processDefinitionKey;
+    private Profile profile;
 }

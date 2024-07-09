@@ -47,6 +47,14 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponseDto<String>> illegalArgumentExceptionHandler(final IllegalArgumentException exception) {
+        final var exceptionResponse = new ExceptionResponseDto<String>();
+        exceptionResponse.setStatus(HttpStatus.BAD_REQUEST.toString());
+        exceptionResponse.setDescription(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
+    }
+
     @ExceptionHandler(TokenVerificationException.class)
     public ResponseEntity<ExceptionResponseDto<String>> tokenVerificationExceptionHandler(final TokenVerificationException exception) {
         final var exceptionResponse = new ExceptionResponseDto<String>();
