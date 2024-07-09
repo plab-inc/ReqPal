@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Value("${app.jwt.secret}")
     private final String jwtSecret;
     @Value("${app.technical-user.teacher.id}")
-    private final UUID technicalUserId;
+    private final String technicalUserId;
 
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -52,10 +52,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 String role = claims.get("role", String.class);
                 SupabaseUser userDetails = null;
 
-
                 if ("service_role".equals(role)) {
-                    userDetails = new SupabaseUser();
-                    userDetails.setId(technicalUserId);
+                    userDetails = supabaseAuthService.loadUserByUsername(technicalUserId);
                     userDetails.setRole("TECHNICAL_USER");
                 }
 

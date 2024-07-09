@@ -1,15 +1,18 @@
 package inc.plab.bpmn.model.supabase;
 
+import inc.plab.bpmn.model.user.Profile;
+import inc.plab.bpmn.model.user.ProfileRepository;
 import inc.plab.bpmn.websecurity.SupabaseGrantedAuthority;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -59,6 +62,9 @@ public class SupabaseUser implements UserDetails {
 
     @Column(name = "email_confirmed_at")
     private OffsetDateTime emailConfirmedAt;
+
+    @Transient
+    private Profile profile;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

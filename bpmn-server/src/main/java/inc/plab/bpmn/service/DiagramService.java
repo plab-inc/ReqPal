@@ -2,6 +2,9 @@ package inc.plab.bpmn.service;
 
 import inc.plab.bpmn.model.diagram.BpmnDiagram;
 import inc.plab.bpmn.model.diagram.BpmnDiagramRepository;
+import inc.plab.bpmn.model.supabase.SupabaseUser;
+import inc.plab.bpmn.model.user.Profile;
+import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -20,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class DiagramService {
 
@@ -28,13 +32,7 @@ public class DiagramService {
     private final BpmnDiagramRepository bpmnDiagramRepository;
     private static final Logger logger = LoggerFactory.getLogger(DiagramService.class);
 
-    public DiagramService(RuntimeService runtimeService, RepositoryService repositoryService, BpmnDiagramRepository bpmnDiagramRepository) {
-        this.runtimeService = runtimeService;
-        this.repositoryService = repositoryService;
-        this.bpmnDiagramRepository = bpmnDiagramRepository;
-    }
-
-    public Optional<BpmnDiagram> persistBpmn(MultipartFile file) throws IOException {
+    public Optional<BpmnDiagram> persistBpmn(MultipartFile file, SupabaseUser user) throws IOException {
         if (file == null || file.isEmpty()) {
             return Optional.empty();
         }
@@ -46,6 +44,7 @@ public class DiagramService {
             bpmnDiagram.setName(file.getOriginalFilename());
             bpmnDiagram.setXmlContent(xmlContent);
             bpmnDiagram.setVersion(1);
+            bpmnDiagram.setUser(user.getProfile());
             bpmnDiagramRepository.save(bpmnDiagram);
 
             return Optional.of(bpmnDiagram);
@@ -72,7 +71,7 @@ public class DiagramService {
         }
     }
 
-    public Optional<UUID> deployBpmn(UUID diagramId) {
+    public Optional<UUID> deployBpmn(UUID diagramId, Profile profile) {
         Optional<BpmnDiagram> bpmnDiagramOptional = bpmnDiagramRepository.findById(diagramId);
 
         if (bpmnDiagramOptional.isEmpty()) {
@@ -85,14 +84,16 @@ public class DiagramService {
         try {
             deployment = repositoryService.createDeployment()
                     .addString(bpmnDiagram.getName(), bpmnDiagram.getXmlContent())
-                    .name(bpmnDiagram.getName())
+                    .name(profile.getUsername() + "_" + bpmnDiagram.getId())
+                    .tenantId(String.valueOf(profile.getId()))
+                    .source("ReqPal BPMN-Sever")
+                    .enableDuplicateFiltering(true)
                     .deploy();
         } catch (Exception e) {
             logger.error("Deployment for diagram {} failed", diagramId);
             return Optional.empty();
         }
 
-        bpmnDiagramRepository.save(bpmnDiagram);
         cleanUpOldDeployments(deployment.getName(), deployment.getId());
 
         return Optional.of(UUID.fromString(deployment.getId()));

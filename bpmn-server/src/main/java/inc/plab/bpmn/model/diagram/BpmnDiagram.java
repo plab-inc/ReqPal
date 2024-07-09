@@ -1,10 +1,13 @@
 package inc.plab.bpmn.model.diagram;
 
+import inc.plab.bpmn.model.user.Profile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.UUID;
 
@@ -28,5 +31,11 @@ public class BpmnDiagram {
 
     @Column(name = "xml_content")
     private String xmlContent;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Profile user;
 
 }
