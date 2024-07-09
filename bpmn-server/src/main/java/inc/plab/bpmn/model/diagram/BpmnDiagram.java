@@ -38,4 +38,6 @@ public class BpmnDiagram {
     @JoinColumn(name = "user_id", nullable = false)
     private Profile user;
 
+    @Column(name = "process_definition_key", length = Integer.MAX_VALUE)
+    private String processDefinitionKey;
 }
