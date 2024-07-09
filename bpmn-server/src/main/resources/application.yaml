@@ -15,6 +15,8 @@ camunda:
       properties:
         historyTimeToLive: P1D
     default-serialization-format: application/json
+    webapp:
+      application-path: /camunda
 spring:
   devtools:
     restart:

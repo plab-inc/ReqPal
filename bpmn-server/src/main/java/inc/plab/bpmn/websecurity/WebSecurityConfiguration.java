@@ -34,6 +34,7 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/bpmn/diagram/**").hasAnyRole("TEACHER","TECHNICAL_USER")
                         .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER","STUDENT","TECHNICAL_USER")
+                        .requestMatchers("/camunda/**").permitAll()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
