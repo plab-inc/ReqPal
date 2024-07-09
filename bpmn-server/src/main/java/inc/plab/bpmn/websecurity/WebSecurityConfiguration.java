@@ -32,8 +32,8 @@ public class WebSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionConfigurer -> exceptionConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/bpmn/diagram/**").hasRole("TEACHER")
-                        .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER","STUDENT")
+                        .requestMatchers("/bpmn/diagram/**").hasAnyRole("TEACHER","TECHNICAL_USER")
+                        .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER","STUDENT","TECHNICAL_USER")
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 

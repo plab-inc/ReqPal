@@ -39,14 +39,6 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(exception.getStatusCode()).body(exceptionResponse);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ExceptionResponseDto<String>> accessDeniedExceptionHandler(final AccessDeniedException exception) {
-        final var exceptionResponse = new ExceptionResponseDto<String>();
-        exceptionResponse.setStatus(HttpStatus.FORBIDDEN.toString());
-        exceptionResponse.setDescription(FORBIDDEN_ERROR_MESSAGE);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
-    }
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ExceptionResponseDto<String>> authenticationExceptionHandler(final AuthenticationException exception) {
         final var exceptionResponse = new ExceptionResponseDto<String>();
@@ -62,7 +54,6 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
         exceptionResponse.setDescription(exception.getReason());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
-
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> serverExceptionHandler(final Exception exception) {

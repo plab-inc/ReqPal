@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -29,6 +30,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final SupabaseAuthService supabaseAuthService;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+
+    @Value("${app.jwt.secret}")
+    private final String jwtSecret;
+    @Value("${app.technical-user.teacher.id}")
+    private final UUID technicalUserId;
 
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -49,9 +55,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                 if ("service_role".equals(role)) {
                     userDetails = new SupabaseUser();
-                    userDetails.setId(UUID.randomUUID());
-                    userDetails.setRole("SERVICE_ROLE");
-                }else{
+                    userDetails.setId(technicalUserId);
+                    userDetails.setRole("TECHNICAL_USER");
+                }
+
+                if("authenticated".equals(role)){
                     userDetails = supabaseAuthService.loadUserByUsername(userId);
                 }
 
@@ -74,7 +82,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private SecretKey getPublicSigningKey() {
-        String publicKey = "";
-        return Keys.hmacShaKeyFor(publicKey.getBytes());
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 }

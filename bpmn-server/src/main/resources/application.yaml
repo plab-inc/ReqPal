@@ -42,7 +42,7 @@ spring:
     filter:
       order: 10
 server:
-  port: 3000
+  port: 8081
 resilience4j:
   ratelimiter:
     instances:
@@ -50,3 +50,11 @@ resilience4j:
         limit-for-period: 5
         limit-refresh-period: 60s
         timeout-duration: 0s
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+  technical-user:
+    teacher:
+      id: ${TECHNICAL_TEACHER}
+    student:
+      id: ${TECHNICAL_STUDENT}

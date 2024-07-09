@@ -60,6 +60,7 @@ public class SupabaseUser implements UserDetails {
     @Column(name = "email_confirmed_at")
     private OffsetDateTime emailConfirmedAt;
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (rawUserMetaData != null) {
@@ -69,6 +70,10 @@ public class SupabaseUser implements UserDetails {
                 authorities.add(new SupabaseGrantedAuthority("ROLE_" + role.toUpperCase()));
             }
 
+        }
+
+        if(role != null){
+            authorities.add(new SupabaseGrantedAuthority("ROLE_" + role.toUpperCase()));
         }
 
         if(emailConfirmedAt != null){
