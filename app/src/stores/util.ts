@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {DialogText} from "@/utils/dialogs.ts";
+import {XpActivityLogDTO} from "@/types/gamification.ts";
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
 export type DialogType =
@@ -56,12 +57,28 @@ export const useUtilStore = defineStore({
         openDialog(content: DialogText, onConfirm?: () => void) {
             const id = Date.now().toString();
             const onlyConfirm: boolean = !content.cancelLabel;
-            const confirmation: () => void = onConfirm ? onConfirm : () => {};
+            const confirmation: () => void = onConfirm ? onConfirm : () => {
+            };
 
             this.dialogs.push({id: id, onConfirm: confirmation, content: content, onlyConfirmButton: onlyConfirm});
         },
         closeDialog(id: string) {
             this.dialogs = this.dialogs.filter(dialog => dialog.id !== id);
+        },
+        addGamificationAlert(activity: XpActivityLogDTO) {
+            const xp = activity.received_xp;
+            const action = activity.action;
+            let text = "";
+
+            switch (action) {
+                case('Lernziel'):
+                    text = xp + " XP für ein Lernziel erhalten!"
+                    break;
+                default:
+                    text = xp + " erhalten!"
+            }
+
+            this.addAlert(text, 'success');
         }
     }
 });

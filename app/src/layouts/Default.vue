@@ -163,6 +163,8 @@ import Dialog from "@/components/util/Dialog.vue";
 import {useProfileStore} from "@/stores/profile.ts";
 import {useLessonStore} from "@/stores/lesson.ts";
 import {onBeforeMount, ref, watch} from "vue";
+import {supabase} from "@/plugins/supabase.ts";
+import {XpActivityLogDTO} from "@/types/gamification.ts";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
@@ -212,4 +214,20 @@ watch(() => lessonStore.openLessons, () => {
   openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
 }, {immediate: true});
 
+supabase
+    .channel('schema-db-changes')
+    .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          table: 'xp_activity_logs',
+          schema: 'public',
+          filter: `user_id=eq.${authStore.user?.id}`
+        },
+        (payload) => {
+          let activity: XpActivityLogDTO = payload.new as XpActivityLogDTO;
+          utilStore.addGamificationAlert(activity);
+        }
+    )
+    .subscribe()
 </script>
