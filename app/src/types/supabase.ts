@@ -13,22 +13,36 @@ export type Database = {
         Row: {
           id: string
           name: string | null
+          process_definition_key: string | null
+          user_id: string
           version: number
           xml_content: string | null
         }
         Insert: {
           id: string
           name?: string | null
+          process_definition_key?: string | null
+          user_id: string
           version: number
           xml_content?: string | null
         }
         Update: {
           id?: string
           name?: string | null
+          process_definition_key?: string | null
+          user_id?: string
           version?: number
           xml_content?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bpmn_diagrams_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       catalogs: {
         Row: {
