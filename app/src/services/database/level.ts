@@ -30,7 +30,7 @@ class LevelServiceClass {
             .from('user_levels')
             .select(`
             *, 
-            objectives ( name, description, max_level )`)
+            objectives ( name, description, max_level )`).eq("user_id", userUUID);
 
         if (error) throw error;
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="my-container">
     <v-row>
       <v-col class="d-flex flex-column align-center justify-center">
         <v-avatar
@@ -41,27 +41,39 @@
 
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="0">
-        <v-row>
-          <v-col class="mt-6 d-flex align-center justify-center">
-            <ReqPalLevel></ReqPalLevel>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-divider></v-divider>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <div v-for="objectiveLevel in objectiveLevels">
-              <v-row>
-                <v-col class="mt-2 d-flex align-center justify-center">
-                  <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
-                </v-col>
-              </v-row>
-            </div>
-          </v-col>
-        </v-row>
+        <v-container>
+          <v-row class="mt-2">
+            <v-col>
+              <div class="text-h6">
+                Lernplattform Fortschritte
+              </div>
+            </v-col>
+            <v-col class="d-flex align-center justify-center">
+              <ReqPalLevel></ReqPalLevel>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-divider></v-divider>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="text-h6">
+              <div>
+                Lernziel Fortschritte
+              </div>
+            </v-col>
+            <v-col>
+              <div v-for="objectiveLevel in objectiveLevels">
+                <v-row>
+                  <v-col class="mt-2 d-flex align-center justify-center">
+                    <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-tabs-window-item>
 
       <v-tabs-window-item :value="1">
@@ -103,8 +115,15 @@ if (isoDateString) {
 </script>
 
 <style scoped>
+.my-container {
+  padding-left: 20px;
+  padding-right: 20px;
+  max-width: 1000px
+}
+
 .profileData {
   margin-top: 10px;
   text-align: center;
 }
+
 </style>
