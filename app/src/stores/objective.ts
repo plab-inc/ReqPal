@@ -28,7 +28,7 @@ export const useObjectiveStore = defineStore('objective', {
 
     actions: {
 
-        async fetchObjectivesByUser() {
+        async fetchObjectivesByUser() : Promise<Objective[] | undefined> {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
                 const data = await objectiveService.pull.fetchObjectivesByUser(authStore.user.id);
@@ -37,38 +37,38 @@ export const useObjectiveStore = defineStore('objective', {
             }
         },
 
-        async fetchObjectivesByUserId(userId: string) {
+        async fetchObjectivesByUserId(userId: string) : Promise<Objective[] | undefined> {
             const data = await objectiveService.pull.fetchObjectivesByUser(userId);
             if (data) this.objectives = data;
             return data;
         },
 
-        async fetchObjectivesByIds(goalIds: string[]) {
-            return await objectiveService.pull.fetchObjectivesByIds(goalIds);
+        async fetchObjectivesByIds(objectiveIds: string[]) : Promise<Objective[] | undefined> {
+            return await objectiveService.pull.fetchObjectivesByIds(objectiveIds);
         },
 
         async updateCurrentObjective(objective: Objective) {
             await objectiveService.push.updateObjective(objective);
             this.currentObjective = objective;
-            const index = this.objectives.findIndex(goal => goal.id === objective.id);
+            const index = this.objectives.findIndex(o => o.id === objective.id);
             if (index >= 0) {
                 this.objectives[index] = this.currentObjective;
             }
         },
 
-        async uploadObjective(goal: Objective) {
+        async uploadObjective(objective: Objective) : Promise<void> {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
-                const newGoal = await objectiveService.push.uploadObjective(goal, authStore.user.id);
-                if (newGoal) {
-                    this.objectives.push(newGoal);
+                const newObjective = await objectiveService.push.uploadObjective(objective, authStore.user.id);
+                if (newObjective) {
+                    this.objectives.push(newObjective);
                 }
             }
         },
 
-        async deleteObjectiveById(id: string) {
+        async deleteObjectiveById(id: string) : Promise<void> {
             await objectiveService.push.deleteObjective(id);
-            const index = this.objectives.findIndex(goal => goal.id === id);
+            const index = this.objectives.findIndex(o => o.id === id);
             if (index >= 0) {
                 this.objectives.splice(index, 1);
             }

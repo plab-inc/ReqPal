@@ -43,7 +43,23 @@
       <v-tabs-window-item :value="0">
         <v-row>
           <v-col class="mt-6 d-flex align-center justify-center">
-            <Levels></Levels>
+            <ReqPalLevel></ReqPalLevel>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-divider></v-divider>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <div v-for="objectiveLevel in objectiveLevels">
+              <v-row>
+                <v-col class="mt-2 d-flex align-center justify-center">
+                  <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
+                </v-col>
+              </v-row>
+            </div>
           </v-col>
         </v-row>
       </v-tabs-window-item>
@@ -64,7 +80,13 @@ import {useAuthStore} from "@/stores/auth.ts";
 import {User} from "@supabase/supabase-js";
 import {useProfileStore} from "@/stores/profile.ts";
 import {ref} from "vue";
-import Levels from "@/components/gamification/Levels.vue"
+import ReqPalLevel from "@/components/gamification/ReqPalLevel.vue"
+import ObjectiveLevelComponent from "@/components/gamification/ObjectiveLevel.vue";
+import {useLevelStore} from "@/stores/level.js";
+import {ObjectiveLevel} from "@/types/level.js";
+
+const levelStore = useLevelStore();
+const objectiveLevels = ref<ObjectiveLevel[] | null>(levelStore.getObjectiveLevels);
 
 const tab = ref<number>(0);
 const authStore = useAuthStore();

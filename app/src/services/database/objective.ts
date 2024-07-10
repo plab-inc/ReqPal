@@ -40,11 +40,11 @@ class ObjectiveServiceClass {
         }
     }
 
-    private async fetchObjectivesByIds(goalIds: string[]): Promise<Objective[]> {
+    private async fetchObjectivesByIds(objectiveIds: string[]): Promise<Objective[]> {
         const {data, error} = await supabase
             .from("objectives")
             .select("*")
-            .in("id", goalIds);
+            .in("id", objectiveIds);
 
         if (error) throw error;
 
@@ -72,7 +72,7 @@ class ObjectiveServiceClass {
 
     private async updateObjective(objective: Objective) {
         if (!objective.id) {
-            throw new Error("Learning goal Id not found.")
+            throw new Error("Objective Id not found.")
         }
         const {error} = await supabase
             .from("objectives")

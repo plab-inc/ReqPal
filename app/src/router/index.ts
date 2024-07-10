@@ -22,7 +22,7 @@ import {
 import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
 import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
-import {fetchReqPalLevelByUser} from "@/middlewares/level.ts";
+import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
 
 const routes = [
     {
@@ -205,7 +205,8 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresAuth,
-                        fetchReqPalLevelByUser
+                        fetchReqPalLevelByUser,
+                        fetchObjectiveLevelsByUser
                     ]
                 },
             },
