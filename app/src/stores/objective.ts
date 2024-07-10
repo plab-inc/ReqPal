@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth.ts";
 import {Objective} from "@/types/objective.ts";
-import objectiveServiceClass from "@/services/database/objective.ts";
+import objectiveService from "@/services/database/objective.ts";
 
 interface ObjectiveState {
     objectives: Objective[]
@@ -31,24 +31,24 @@ export const useObjectiveStore = defineStore('objective', {
         async fetchObjectivesByUser() {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
-                const data = await objectiveServiceClass.pull.fetchObjectivesByUser(authStore.user.id);
+                const data = await objectiveService.pull.fetchObjectivesByUser(authStore.user.id);
                 if (data) this.objectives = data;
                 return data;
             }
         },
 
         async fetchObjectivesByUserId(userId: string) {
-            const data = await objectiveServiceClass.pull.fetchObjectivesByUser(userId);
+            const data = await objectiveService.pull.fetchObjectivesByUser(userId);
             if (data) this.objectives = data;
             return data;
         },
 
         async fetchObjectivesByIds(goalIds: string[]) {
-            return await objectiveServiceClass.pull.fetchObjectivesByIds(goalIds);
+            return await objectiveService.pull.fetchObjectivesByIds(goalIds);
         },
 
         async updateCurrentObjective(objective: Objective) {
-            await objectiveServiceClass.push.updateObjective(objective);
+            await objectiveService.push.updateObjective(objective);
             this.currentObjective = objective;
             const index = this.objectives.findIndex(goal => goal.id === objective.id);
             if (index >= 0) {
@@ -59,7 +59,7 @@ export const useObjectiveStore = defineStore('objective', {
         async uploadObjective(goal: Objective) {
             const authStore = useAuthStore();
             if (authStore.user && authStore.user.id) {
-                const newGoal = await objectiveServiceClass.push.uploadObjective(goal, authStore.user.id);
+                const newGoal = await objectiveService.push.uploadObjective(goal, authStore.user.id);
                 if (newGoal) {
                     this.objectives.push(newGoal);
                 }
@@ -67,7 +67,7 @@ export const useObjectiveStore = defineStore('objective', {
         },
 
         async deleteObjectiveById(id: string) {
-            await objectiveServiceClass.push.deleteObjective(id);
+            await objectiveService.push.deleteObjective(id);
             const index = this.objectives.findIndex(goal => goal.id === id);
             if (index >= 0) {
                 this.objectives.splice(index, 1);

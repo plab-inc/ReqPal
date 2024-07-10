@@ -101,6 +101,6 @@ class ObjectiveServiceClass {
     }
 }
 
-const objectiveServiceClass = new ObjectiveServiceClass();
+const objectiveService = new ObjectiveServiceClass();
 
-export default objectiveServiceClass;
+export default objectiveService;

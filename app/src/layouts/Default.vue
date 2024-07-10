@@ -20,7 +20,7 @@
                      :active="false"
                      :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
                      :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
-                     to="/account"
+                     to="/profile"
                      elevation="3"
                      rounded
         />
@@ -36,6 +36,9 @@
             rounded prepend-icon="mdi-home"
             title="Home" to="/"
             exact/>
+        <div v-if="!authStore.isTeacher">
+          <v-list-item rounded prepend-icon="mdi-progress-star-four-points" title="Meine Fortschritte" to="/profile"/>
+        </div>
         <v-divider class="my-1"/>
         <div v-if="authStore.user">
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
