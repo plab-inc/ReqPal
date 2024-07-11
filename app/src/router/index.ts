@@ -102,7 +102,7 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs",
+                path: "/catalog",
                 name: "Catalogs",
                 component: () => import("@/views/catalog/CatalogOverview.vue"),
                 meta: {
@@ -113,13 +113,13 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs/upload",
+                path: "/catalog/upload",
                 name: "UploadCatalog",
                 component: () => import("@/views/catalog/CatalogUpload.vue"),
                 meta: {}
             },
             {
-                path: "/catalogs/:catalogId",
+                path: "/catalog/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.vue"),
                 meta: {
@@ -154,9 +154,19 @@ const routes = [
                 }
             },
             {
-                path: "/modeler",
-                name: "BPMN Modeler",
-                component: () => import("@/views/bpmn/Modeler.vue"),
+                path: "/scenario",
+                name: "Scenario Overview",
+                component: () => import("@/views/scenario/ScenarioOverview.vue"),
+                meta: {
+                    middleware: [
+
+                    ]
+                }
+            },
+            {
+                path: "/scenario/builder",
+                name: "Scenario Builder",
+                component: () => import("@/views/scenario/ScenarioBuilder.vue"),
                 meta: {
                     middleware: [
                         fetchLessons

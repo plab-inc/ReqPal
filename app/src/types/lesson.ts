@@ -3,6 +3,7 @@ import {Objective} from "@/types/objective.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
+export type ScenarioDTO = Database["public"]["Tables"]["scenarios"]["Row"];
 
 export type Question = {
     [key: string]: any;
