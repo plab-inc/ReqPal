@@ -20,7 +20,7 @@
                      :active="false"
                      :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
                      :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
-                     to="/account"
+                     to="/profile"
                      elevation="3"
                      rounded
         />
@@ -36,6 +36,9 @@
             rounded prepend-icon="mdi-home"
             title="Home" to="/"
             exact/>
+        <div v-if="!authStore.isTeacher">
+          <v-list-item rounded prepend-icon="mdi-progress-star-four-points" title="Meine Fortschritte" to="/profile"/>
+        </div>
         <v-divider class="my-1"/>
         <div v-if="authStore.user">
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
@@ -115,6 +118,14 @@
       <v-container fluid>
         <v-row>
           <v-col>
+            <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
+              <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
+              {{ removeAlertWithDelay(alert.id) }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
               <v-alert
                   closable
@@ -160,6 +171,9 @@ import Dialog from "@/components/util/Dialog.vue";
 import {useProfileStore} from "@/stores/profile.ts";
 import {useLessonStore} from "@/stores/lesson.ts";
 import {onBeforeMount, ref, watch} from "vue";
+import {supabase} from "@/plugins/supabase.ts";
+import {XpActivityLogDTO} from "@/types/gamification.ts";
+import Snackbar from "@/components/util/Snackbar.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
@@ -209,4 +223,20 @@ watch(() => lessonStore.openLessons, () => {
   openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
 }, {immediate: true});
 
+supabase
+    .channel('schema-db-changes')
+    .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          table: 'xp_activity_logs',
+          schema: 'public',
+          filter: `user_id=eq.${authStore.user?.id}`
+        },
+        (payload) => {
+          let activity: XpActivityLogDTO = payload.new as XpActivityLogDTO;
+          utilStore.addGamificationAlert(activity);
+        }
+    )
+    .subscribe()
 </script>

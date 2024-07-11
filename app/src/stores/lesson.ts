@@ -120,7 +120,7 @@ export const useLessonStore = defineStore('lesson', {
         },
 
         async initLessons(lessons: Lesson[]) {
-            const goalIds : string[] = [];
+            const objectiveIds : string[] = [];
 
             for (const l of lessons) {
                 const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
@@ -130,15 +130,17 @@ export const useLessonStore = defineStore('lesson', {
                 if (l.isStarted) {
                     l.hasSavedProgress = await this.checkIfLessonHasProgress(l.lessonDTO.uuid);
                 }
-                if(l.lessonDTO.objective) goalIds.push(l.lessonDTO.objective);
+                if(l.lessonDTO.objective) objectiveIds.push(l.lessonDTO.objective);
             }
 
             const objectiveStore = useObjectiveStore();
-            const goals = await objectiveStore.fetchObjectivesByIds(goalIds);
-            lessons.forEach(l => {
-                const toAdd = goals.find(g => g.id === l.lessonDTO.objective);
-                if(toAdd) l.objective = toAdd;
-            })
+            const objectives = await objectiveStore.fetchObjectivesByIds(objectiveIds);
+            if(objectives) {
+                lessons.forEach(l => {
+                    const toAdd = objectives.find(g => g.id === l.lessonDTO.objective);
+                    if(toAdd) l.objective = toAdd;
+                })
+            }
         },
 
         async deleteLesson(lessonUUID: string) {

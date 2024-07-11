@@ -1,7 +1,7 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h4">
-      Meine Lernziele ({{ objectivesStore.objectives.length }}/{{ MAX_LEARNING_GOALS }})
+      Meine Lernziele ({{ objectivesStore.objectives.length }}/{{ MAX_OBJECTIVES }})
     </v-col>
     <v-col cols="auto">
       <v-btn-group
@@ -12,7 +12,7 @@
       >
         <v-btn
             @click="createObjective"
-            :disabled="objectivesStore.objectives.length >= MAX_LEARNING_GOALS"
+            :disabled="objectivesStore.objectives.length >= MAX_OBJECTIVES"
         >
           Neues Lernziel erstellen
         </v-btn>
@@ -35,7 +35,7 @@ import ObjectiveTable from "@/components/objectives/ObjectiveTable.vue";
 import EditObjective from "@/components/objectives/EditObjective.vue";
 import {useObjectiveStore} from "@/stores/objective.ts";
 
-const MAX_LEARNING_GOALS = 5;
+const MAX_OBJECTIVES = 5;
 const objectivesStore = useObjectiveStore();
 const authStore = useAuthStore();
 const editDialog = ref<boolean>(false);
