@@ -118,6 +118,14 @@
       <v-container fluid>
         <v-row>
           <v-col>
+            <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
+              <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
+              {{ removeAlertWithDelay(alert.id) }}
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
               <v-alert
                   closable
@@ -165,6 +173,7 @@ import {useLessonStore} from "@/stores/lesson.ts";
 import {onBeforeMount, ref, watch} from "vue";
 import {supabase} from "@/plugins/supabase.ts";
 import {XpActivityLogDTO} from "@/types/gamification.ts";
+import Snackbar from "@/components/util/Snackbar.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();

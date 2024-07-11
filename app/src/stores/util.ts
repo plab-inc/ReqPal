@@ -34,6 +34,7 @@ export const useUtilStore = defineStore({
     id: 'util',
     state: () => ({
         alerts: [] as IAlert[],
+        gamificationAlerts: [] as IAlert[],
         showLoadingBar: false,
         dialogs: [] as IDialog[],
     }),
@@ -44,9 +45,6 @@ export const useUtilStore = defineStore({
         },
         removeAlert(id: string) {
             this.alerts = this.alerts.filter(alert => alert.id !== id);
-        },
-        toggleLoadingBar() {
-            this.showLoadingBar = !this.showLoadingBar;
         },
         startLoadingBar() {
             this.showLoadingBar = true;
@@ -78,7 +76,8 @@ export const useUtilStore = defineStore({
                     text = xp + " erhalten!"
             }
 
-            this.addAlert(text, 'success');
+            const id = Date.now().toString();
+            this.gamificationAlerts.push({id: id, message: text, type: "success"});
         }
     }
 });
