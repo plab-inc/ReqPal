@@ -23,6 +23,7 @@ import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
 import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
 import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
+import {fetchAchievementsByUser} from "@/middlewares/achievement.ts";
 
 const routes = [
     {
@@ -150,6 +151,17 @@ const routes = [
                     middleware: [
                         requiresTeacher,
                         fetchObjectivesByUser
+                    ]
+                }
+            },
+            {
+                path: "/achievements",
+                name: "Achievements",
+                component: () => import("@/views/achievement/AchievementOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchAchievementsByUser
                     ]
                 }
             },

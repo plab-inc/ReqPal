@@ -143,5 +143,13 @@ export const DeleteObjective: DialogText = {
     cancelLabel: "Zurück"
 };
 
+export const DeleteAchievement: DialogText = {
+    title: "Achievement löschen",
+    message: "Möchten Sie wirklich das ausgewählte Achievement löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Szenarien und Achievements der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 
 

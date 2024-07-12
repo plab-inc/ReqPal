@@ -9,34 +9,34 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      bpmn_diagrams: {
+      achievements: {
         Row: {
+          created_at: string
+          description: string | null
           id: string
-          name: string | null
-          process_definition_key: string | null
-          user_id: string
-          version: number
-          xml_content: string | null
+          image: string | null
+          title: string | null
+          user_id: string | null
         }
         Insert: {
-          id: string
-          name?: string | null
-          process_definition_key?: string | null
-          user_id: string
-          version: number
-          xml_content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Update: {
+          created_at?: string
+          description?: string | null
           id?: string
-          name?: string | null
-          process_definition_key?: string | null
-          user_id?: string
-          version?: number
-          xml_content?: string | null
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "bpmn_diagrams_user_id_fkey"
+            foreignKeyName: "achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -66,6 +66,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "catalogs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diagrams: {
+        Row: {
+          id: string
+          name: string | null
+          process_definition_key: string | null
+          user_id: string
+          version: number
+        }
+        Insert: {
+          id: string
+          name?: string | null
+          process_definition_key?: string | null
+          user_id: string
+          version: number
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          process_definition_key?: string | null
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bpmn_diagrams_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -440,7 +472,7 @@ export type Database = {
           deployed: boolean
           description: string | null
           diagram: string
-          id: number
+          id: string
           locked: boolean
           title: string
           user_id: string
@@ -450,7 +482,7 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           diagram: string
-          id?: number
+          id?: string
           locked?: boolean
           title: string
           user_id: string
@@ -460,7 +492,7 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           diagram?: string
-          id?: number
+          id?: string
           locked?: boolean
           title?: string
           user_id?: string
@@ -470,7 +502,7 @@ export type Database = {
             foreignKeyName: "scenarios_diagram_fkey"
             columns: ["diagram"]
             isOneToOne: false
-            referencedRelation: "bpmn_diagrams"
+            referencedRelation: "diagrams"
             referencedColumns: ["id"]
           },
           {
