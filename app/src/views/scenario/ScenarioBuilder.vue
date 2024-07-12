@@ -10,7 +10,8 @@
         rounded
         divided
       >
-        <v-btn text="Szenario Speichern"/>
+        <v-btn color="warning" text="Hinweise"/>
+        <v-btn color="success" text="Szenario Speichern"/>
       </v-btn-group>
     </v-col>
   </v-row>
@@ -21,12 +22,14 @@
           <v-col cols="12">
             <v-text-field
               clearable
+              v-model="scenarioFromStore.title"
               :rules="[requiredStringRule, requiredUniqueLessonTitleRule]"
               label="Titel des Szenarios"
               variant="outlined"
             ></v-text-field>
             <v-text-field
               clearable
+              v-model="scenarioFromStore.description"
               label="Beschreibung des Szenarios"
               :rules="[requiredStringRule]"
               variant="outlined"
@@ -46,4 +49,7 @@
 <script setup lang="ts">
 import Modeler from "@/components/scenario/BpmnModeler.vue";
 import { requiredStringRule, requiredUniqueLessonTitleRule } from "@/utils/validationRules.ts";
+import { useScenarioFormStore } from "@/stores/scenarioForm.ts";
+
+const scenarioFromStore = useScenarioFormStore();
 </script>

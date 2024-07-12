@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {Session, User} from '@supabase/supabase-js'
-import authService from "@/services/database/auth.ts";
+import authService from "@/services/authentication/auth.ts";
 
 interface AuthState {
     user: User | null;
