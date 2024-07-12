@@ -434,6 +434,54 @@ export type Database = {
         }
         Relationships: []
       }
+      scenarios: {
+        Row: {
+          created_at: string
+          deployed: boolean
+          description: string | null
+          diagram: string
+          id: number
+          locked: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          diagram: string
+          id?: number
+          locked?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          diagram?: string
+          id?: number
+          locked?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenarios_diagram_fkey"
+            columns: ["diagram"]
+            isOneToOne: false
+            referencedRelation: "bpmn_diagrams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_answers: {
         Row: {
           answer: Json | null
