@@ -1,33 +1,44 @@
 import { supabase } from "@/plugins/supabase";
+import { Scenario } from "@/types/scenario.ts";
 
 class BpmnStorageServiceClass {
 
   public push = {
-    uploadDiagram: this.uploadDiagram.bind(this),
+    uploadScenarioAssets: this.uploadScenarioAssets.bind(this),
     updateDiagram: this.updateDiagram.bind(this),
     deleteDiagram: this.deleteDiagram.bind(this)
   };
 
-  private async uploadDiagram(userUUID: string, scenarioId: string, diagramId: string, bpmnContent: Blob, svgContent: Blob): Promise<{
-    bpmnPath: string,
-    svgPath: string
-  }> {
-    const bpmnPath = `${userUUID}/${scenarioId}/${diagramId}.bpmn`;
-    const svgPath = `${userUUID}/${scenarioId}/${diagramId}.svg`;
+  public pull = {
+    getDiagramSvg: this.getDiagramSvg.bind(this)
+  };
 
-    let { error: bpmnError } = await supabase.storage
-      .from("bpmn")
-      .upload(bpmnPath, bpmnContent);
+  private async uploadScenarioAssets(scenario: Scenario): Promise<{ bpmnPath: string, svgPath: string } | undefined> {
+    const bpmnPath = `${scenario.user}/${scenario.id}/${scenario.title}.bpmn`;
+    const svgPath = `${scenario.user}/${scenario.id}/${scenario.title}.svg`;
 
-    if (bpmnError) throw bpmnError;
+    if (scenario.bpmnXml && scenario.svg) {
+      const xmlBlob = new Blob([scenario.bpmnXml], { type: 'text/xml' });
+      const svgBlob = new Blob([scenario.svg], { type: 'image/svg+xml' });
 
-    let { error: svgError } = await supabase.storage
-      .from("bpmn")
-      .upload(svgPath, svgContent);
+      let { data: bpmnData, error: bpmnError } = await supabase.storage
+        .from("bpmn")
+        .upload(bpmnPath, xmlBlob);
 
-    if (svgError) throw svgError;
+      if (bpmnError) throw bpmnError;
 
-    return { bpmnPath, svgPath };
+      let { data: svgData, error: svgError } = await supabase.storage
+        .from("bpmn")
+        .upload(svgPath, svgBlob);
+
+      if (svgError) throw svgError;
+
+      if(bpmnData && svgData) {
+        return { bpmnPath: bpmnData.path, svgPath: svgData.path };
+      }
+    }
+
+    return undefined;
   }
 
   private async updateDiagram(userUUID: string, scenarioId: string, diagramId: string, bpmnContent: Blob, svgContent: Blob): Promise<{
@@ -73,6 +84,21 @@ class BpmnStorageServiceClass {
       .remove([svgPath]);
 
     if (svgError) throw svgError;
+  }
+
+  private async getDiagramSvg(scenario: Scenario): Promise<string | undefined>{
+
+    if (scenario.svgPath != null) {
+      const { data, error } = await supabase.storage.from("bpmn").download(scenario.svgPath);
+
+      if(error) throw error;
+
+      return await data.text() || "";
+
+    }
+
+    return undefined;
+
   }
 }
 

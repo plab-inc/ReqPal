@@ -62,11 +62,11 @@ import "bpmn-js/dist/assets/bpmn-js.css";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import "bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css"
+import "bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css";
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
 import BpmnModeler from "bpmn-js/lib/Modeler";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
-import TokenSimulationModule from 'bpmn-js-token-simulation';
+import TokenSimulationModule from "bpmn-js-token-simulation";
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
@@ -79,6 +79,9 @@ import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
 
 import { useAuthStore } from "@/stores/auth.ts";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
+import { useScenarioFormStore } from "@/stores/scenarioForm.ts";
+import { Scenario } from "@/types/scenario.ts";
+import ScenarioService from "@/services/database/scenario.ts";
 
 const bpmnContainer = ref<HTMLElement | undefined>(undefined);
 const bpmnModeler = ref<BpmnModeler | null>(null);
@@ -86,6 +89,7 @@ const propertiesPanel = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const authStore = useAuthStore();
+const scenarioFromStore = useScenarioFormStore();
 
 onMounted(() => {
   bpmnModeler.value = new BpmnModeler({
@@ -111,7 +115,7 @@ onMounted(() => {
     }
   });
 
-  bpmnModeler.value.createDiagram();
+  bpmnModeler.value.importXML(scenarioFromStore.diagram);
 });
 
 onBeforeUnmount(() => {
@@ -174,7 +178,7 @@ const handleFileUpload = async (event: Event) => {
     reader.onload = async (e) => {
       const xml = e.target?.result as string;
       try {
-        await bpmnModeler.value?.importXML(xml);
+        await bpmnModeler.value?.open(xml);
       } catch (err) {
         console.error("Error importing BPMN diagram:", err);
       }
@@ -190,10 +194,18 @@ const saveScenario = async () => {
 
   if(xml && svg && authStore.user) {
 
-    const xmlBlob = new Blob([xml],{type: 'text/xml'});
-    const svgBlob = new Blob([svg],{type: 'image/svg+xml'});
+    const processId = (bpmnModeler.value as any).get('canvas').getRootElement().id
 
-    await BpmnStorageService.push.uploadDiagram(authStore.user.id,"TestScenario","1234",xmlBlob, svgBlob);
+    const scenario: Scenario = scenarioFromStore.generateScenario(authStore.user.id, xml, svg, processId)
+
+    await BpmnStorageService.push.uploadScenarioAssets(scenario).then((paths) => {
+        if(paths){
+          scenario.bpmnPath = paths.bpmnPath;
+          scenario.svgPath = paths.svgPath;
+          ScenarioService.push.uploadScenario(scenario);
+        }
+      }
+    );
   }
 
 }

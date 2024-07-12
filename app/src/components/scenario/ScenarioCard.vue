@@ -6,30 +6,21 @@
     rounded
     elevation="10"
   >
-    <v-img
-      class="align-end text-white"
-      height="200"
-      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-      cover
-    >
-      <v-card-title>
-        Scenario Title
-      </v-card-title>
-    </v-img>
-
+    <div class=svg-container v-html="scenario.svg"/>
+    <v-card-title class="text-h4">
+      {{ scenario.title }}
+    </v-card-title>
     <v-card-text>
-      <div>Whitehaven Beach</div>
-
-      <div>Whitsunday Island, Whitsunday Islands</div>
+      {{ scenario.description }}
     </v-card-text>
 
     <v-card-actions>
       <v-container class="pa-0">
         <v-row no-gutters justify="center">
-            <v-btn color="info" text="Bearbeiten" to="/scenario/builder"/>
-            <v-btn color="success" text="Veröffentlichen"/>
-            <v-btn color="warning" text="Sperren"/>
-            <v-btn color="error" text="Löschen"/>
+          <v-btn color="info" text="Bearbeiten" to="/scenario/builder"/>
+          <v-btn disabled :color="scenario.deployed ? 'success' : 'grey'" text="Veröffentlichen"/>
+          <v-btn disabled :color="scenario.locked ? 'warning' : 'grey'" text="Sperren"/>
+          <v-btn disabled color="error" text="Löschen"/>
         </v-row>
         <v-row no-gutters>
           <v-btn block :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" text="Statistiken"  @click="show = !show" />
@@ -41,7 +32,7 @@
       <div v-show="show">
         <v-divider class="mt-1"/>
         <v-card-text>
-          <v-chip-group variant="outlined"  selected-class="bg-deep-purple-lighten-2" column>
+          <v-chip-group variant="outlined" selected-class="bg-deep-purple-lighten-2" column>
             <v-chip>All Versions</v-chip>
             <v-chip>Version 1</v-chip>
           </v-chip-group>
@@ -63,10 +54,26 @@
     </v-expand-transition>
   </v-card>
 </template>
+
 <script setup lang="ts">
+import { ref, defineProps } from 'vue';
+import { Scenario } from "@/types/scenario.ts";
 
-import { ref } from "vue";
+const props = defineProps<{
+  scenario: Scenario
+}>();
 
-const show = ref<boolean>(false)
-
+const show = ref<boolean>(false);
 </script>
+
+<style scoped>
+.svg-container {
+  display: flex;
+  height: 200px;
+  background: white;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+</style>

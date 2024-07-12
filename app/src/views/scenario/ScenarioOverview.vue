@@ -7,11 +7,18 @@
   <v-divider></v-divider>
   <v-container fluid>
     <v-row no-gutters justify="start">
-      <ScenarioCard/>
+      <ScenarioCard
+        v-for="scenario in scenarioStore.getScenarios"
+        :key="scenario.id"
+        :scenario="scenario"
+      />
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import ScenarioCard from "@/components/scenario/ScenarioCard.vue";
+import { useScenarioStore } from "@/stores/scenario.ts";
+
+const scenarioStore = useScenarioStore();
 </script>
