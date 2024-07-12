@@ -1,5 +1,6 @@
 import {supabase} from "@/plugins/supabase.ts";
 import {Achievement} from "@/types/achievement.ts";
+import {createPathToImage} from "@/utils/achievementImage.ts";
 
 class AchievementServiceClass {
 
@@ -10,7 +11,9 @@ class AchievementServiceClass {
     };
 
     public pull = {
-        fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this)
+        fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this),
+        fetchAchievementImagesBadges: this.fetchAchievementImagesBadges.bind(this),
+        fetchAchievementImagesBanners: this.fetchAchievementImagesBanners.bind(this)
     }
 
     private async fetchAchievementsByUser(userUUID: string): Promise<Achievement[] | undefined> {
@@ -42,7 +45,7 @@ class AchievementServiceClass {
 
         if (error) throw error;
 
-        if(data && data.length > 0) {
+        if (data && data.length > 0) {
             return data[0] as Achievement;
         }
     }
@@ -73,6 +76,45 @@ class AchievementServiceClass {
             .select();
 
         if (error) throw error;
+    }
+
+    async fetchAchievementImagesBadges(): Promise<any> {
+        const {data, error} = await supabase
+            .storage
+            .from('achievement-images')
+            .list('badges', {
+                limit: 100,
+                offset: 0,
+                sortBy: {column: 'name', order: 'asc'},
+            })
+        if (error) throw error;
+        if (data) {
+            let images: string[] = [];
+            data.forEach(d => {
+                images.push(createPathToImage("badges", d.name));
+            })
+            return images;
+        }
+    }
+
+    async fetchAchievementImagesBanners(): Promise<any> {
+        const {data, error} = await supabase
+            .storage
+            .from('achievement-images')
+            .list('banners', {
+                limit: 100,
+                offset: 0,
+                sortBy: {column: 'name', order: 'asc'},
+            })
+        if (error) throw error;
+        if (data) {
+            let images: string[] = [];
+            data.forEach(d => {
+                if(d.name !== ".emptyFolderPlaceholder")
+                images.push(createPathToImage("banners", d.name));
+            })
+            return images;
+        }
     }
 }
 

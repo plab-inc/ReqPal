@@ -9,6 +9,11 @@
       height="70vh"
       no-data-text="Sie haben noch keine Achievements erstellt."
   >
+    <template v-slot:item.image="{item}">
+      <div class="d-flex align-center justify-center">
+        <v-img max-width="50" :src="getAchievementImageUrl(item.image)" :alt="'Achievement Image: '+item.image"></v-img>
+      </div>
+    </template>
     <template v-slot:item.actions="{ item }">
       <div>
         <v-btn
@@ -42,6 +47,7 @@ import {useUtilStore} from "@/stores/util.ts";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import {Achievement} from "@/types/achievement.ts";
 import EditAchievement from "@/components/achievement/EditAchievement.vue";
+import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
 
 const expanded = ref<any>([]);
 const utilStore = useUtilStore();

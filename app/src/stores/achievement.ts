@@ -6,13 +6,15 @@ import AchievementService from "@/services/database/achievement.ts";
 
 interface AchievementState {
     achievement: Achievement | null,
-    achievements: Achievement[]
+    achievements: Achievement[],
+    images: string[]
 }
 
 export const useAchievementStore = defineStore('achievement', {
     state: (): AchievementState => ({
         achievement: null,
-        achievements: []
+        achievements: [],
+        images: []
     }),
 
     getters: {
@@ -38,6 +40,20 @@ export const useAchievementStore = defineStore('achievement', {
                 throw new AuthenticationError("No authorized user found.", 401)
             }
         },
+
+        async fetchAchievementImages(): Promise<void> {
+            const authStore = useAuthStore();
+
+            if (authStore.user) {
+                this.images = [];
+                const badges = await AchievementService.pull.fetchAchievementImagesBadges();
+                const banners = await AchievementService.pull.fetchAchievementImagesBanners();
+                this.images = [...badges, ...banners];
+            } else {
+                throw new AuthenticationError("No authorized user found.", 401)
+            }
+        },
+
         async uploadAchievement(achievement: Achievement) {
             const authStore = useAuthStore();
             if (authStore.user) {
