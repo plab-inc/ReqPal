@@ -21,6 +21,7 @@ export const useScenarioStore = defineStore('scenario', {
 
     actions: {
         async fetchScenarios() {
+            this.scenarios = []
             const fetchedScenarios = await ScenarioService.pull.fetchScenarios();
 
             if(fetchedScenarios){

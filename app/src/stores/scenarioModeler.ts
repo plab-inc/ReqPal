@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { Scenario } from "@/types/scenario.ts";
 import { v4 as uuidv4 } from 'uuid';
-import diagramXML from '@/assets/bpmn/diagram.bpmn?raw';
+import baseDiagramXml from '@/assets/bpmn/diagram.bpmn?raw';
+import baseDiagramSvg from '@/assets/bpmn/diagram.svg?raw'
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useAuthStore } from "@/stores/auth.ts";
@@ -12,15 +13,17 @@ interface ModelerState {
   title: string;
   description: string;
   diagram: string;
+  baseDiagramSvg: string;
   bpmnModeler: BpmnModeler | null;
 }
 
-export const scenarioModelerStore = defineStore('scenarioModeler', {
+export const useScenarioModelerStore = defineStore('scenarioModeler', {
   state: (): ModelerState => ({
     uuid: uuidv4(),
     title: '',
     description: '',
-    diagram: diagramXML,
+    diagram: baseDiagramXml,
+    baseDiagramSvg: baseDiagramSvg,
     bpmnModeler: null
   }),
   getters: {
@@ -29,16 +32,12 @@ export const scenarioModelerStore = defineStore('scenarioModeler', {
     }
   },
   actions: {
-    setModeler(modeler: BpmnModeler) {
-      this.bpmnModeler = modeler;
-    },
-    flushScenario() {
-      this.uuid = uuidv4();
+    async flushScenario() {
       this.title = '';
       this.description = '';
-      this.bpmnModeler?.importXML(diagramXML)
+      this.diagram = baseDiagramXml;
     },
-    generateScenario(userId: string, xml: string, svg: string, processDefinitionKey: string): Scenario {
+    async generateScenario(userId: string, xml: string, svg: string, processDefinitionKey: string): Promise<Scenario> {
       return {
         id: this.uuid,
         title: this.title,
@@ -51,6 +50,12 @@ export const scenarioModelerStore = defineStore('scenarioModeler', {
         processDefinitionKey: processDefinitionKey
       };
     },
+    async hydrate(scenario: Scenario){
+      this.uuid = scenario.id;
+      this.title = scenario.title;
+      this.description = scenario.description;
+      this.diagram = await BpmnStorageService.pull.getDiagramXml(scenario) || baseDiagramXml;
+    },
     async saveScenario() {
       const authStore = useAuthStore();
       if (authStore.user && this.bpmnModeler) {
@@ -59,9 +64,8 @@ export const scenarioModelerStore = defineStore('scenarioModeler', {
         const processDefinitionKey = await this.getDiagramProcessId();
 
         if (xml && svg && processDefinitionKey) {
-          const scenario: Scenario = this.generateScenario(authStore.user.id, xml, svg, processDefinitionKey);
-
-          const paths = await BpmnStorageService.push.uploadScenarioAssets(scenario);
+          const scenario: Scenario = await this.generateScenario(authStore.user.id, xml, svg, processDefinitionKey);
+          const paths = await BpmnStorageService.push.manageScenarioAssets(scenario, 'upload');
 
           if (paths) {
             scenario.bpmnPath = paths.bpmnPath;
@@ -71,8 +75,8 @@ export const scenarioModelerStore = defineStore('scenarioModeler', {
         }
       }
     },
-    async loadInBaseDiagram(){
-      this.bpmnModeler?.importXML(diagramXML);
+    async loadInDiagram(){
+      this.bpmnModeler?.importXML(this.diagram);
     },
     async getDiagramXML(): Promise<string | undefined> {
       try {
@@ -125,7 +129,7 @@ export const scenarioModelerStore = defineStore('scenarioModeler', {
         }
       });
     },
-    async loadInDiagram(file: File) {
+    async loadInDiagramFromFile(file: File) {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const xml = e.target?.result as string;

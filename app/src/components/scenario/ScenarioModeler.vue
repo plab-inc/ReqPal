@@ -27,11 +27,11 @@
                 density="comfortable"
                 variant="outlined"
                 style="position: absolute; bottom: 5px; left: 55px; z-index: 5"
-                @click="scenarioFromStore.downloadDiagramAsXML"
+                @click="scenarioModelerStore.downloadDiagramAsXML"
               />
             </template>
           </v-tooltip>
-          <v-tooltip text="BPMN Datei Herunterladen als SVG" location="top left">
+          <v-tooltip text="BPMN Datei Herunterladen als SVG" location="right">
             <template v-slot:activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -41,7 +41,7 @@
                 density="comfortable"
                 variant="outlined"
                 style="position: absolute; bottom: 5px; left: 100px; z-index: 5"
-                @click="scenarioFromStore.downloadDiagramAsSVG"
+                @click="scenarioModelerStore.downloadDiagramAsSVG"
               />
             </template>
           </v-tooltip>
@@ -76,15 +76,15 @@ import CustomProperties from "@/bpmn/properties/CustomProperties.js";
 import CustomElements from "@/bpmn/modeler/customElements.ts";
 import ReqPalModdle from "@/bpmn/properties/descriptors/ReqPal.json";
 import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
-import { scenarioModelerStore } from "@/stores/scenarioModeler.ts";
+import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
-const scenarioFromStore = scenarioModelerStore();
+const scenarioModelerStore = useScenarioModelerStore();
 const bpmnContainer = ref<HTMLElement | undefined>(undefined);
 const propertiesPanel = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
-  scenarioFromStore.bpmnModeler = new BpmnModeler({
+  scenarioModelerStore.bpmnModeler = new BpmnModeler({
     container: bpmnContainer.value,
     propertiesPanel: {
       parent: propertiesPanel.value
@@ -106,11 +106,11 @@ onMounted(() => {
       bindTo: window
     }
   });
-  scenarioFromStore.loadInBaseDiagram();
+  scenarioModelerStore.loadInDiagram();
 });
 
 onBeforeUnmount(() => {
-  scenarioFromStore.bpmnModeler?.destroy();
+  scenarioModelerStore.bpmnModeler?.destroy();
 });
 
 const uploadDiagram = () => {
@@ -121,7 +121,7 @@ const handleFileUpload = async (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (file) {
-   await scenarioFromStore.loadInDiagram(file);
+   await scenarioModelerStore.loadInDiagramFromFile(file);
   }
 };
 </script>
