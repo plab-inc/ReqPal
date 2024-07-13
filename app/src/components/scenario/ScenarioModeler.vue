@@ -13,7 +13,7 @@
                 density="comfortable"
                 variant="outlined"
                 style="position: absolute; bottom: 5px; left: 10px; z-index: 5"
-                @click="saveScenario"
+                @click="uploadDiagram"
               />
             </template>
           </v-tooltip>
@@ -27,7 +27,7 @@
                 density="comfortable"
                 variant="outlined"
                 style="position: absolute; bottom: 5px; left: 55px; z-index: 5"
-                @click="downloadDiagramAsXML"
+                @click="scenarioFromStore.downloadDiagramAsXML"
               />
             </template>
           </v-tooltip>
@@ -41,7 +41,7 @@
                 density="comfortable"
                 variant="outlined"
                 style="position: absolute; bottom: 5px; left: 100px; z-index: 5"
-                @click="downloadDiagramAsSVG"
+                @click="scenarioFromStore.downloadDiagramAsSVG"
               />
             </template>
           </v-tooltip>
@@ -76,23 +76,15 @@ import CustomProperties from "@/bpmn/properties/CustomProperties.js";
 import CustomElements from "@/bpmn/modeler/customElements.ts";
 import ReqPalModdle from "@/bpmn/properties/descriptors/ReqPal.json";
 import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
+import { scenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
-import { useAuthStore } from "@/stores/auth.ts";
-import { BpmnStorageService } from "@/services/storage/bpmn.ts";
-import { useScenarioFormStore } from "@/stores/scenarioForm.ts";
-import { Scenario } from "@/types/scenario.ts";
-import ScenarioService from "@/services/database/scenario.ts";
-
+const scenarioFromStore = scenarioModelerStore();
 const bpmnContainer = ref<HTMLElement | undefined>(undefined);
-const bpmnModeler = ref<BpmnModeler | null>(null);
 const propertiesPanel = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const authStore = useAuthStore();
-const scenarioFromStore = useScenarioFormStore();
-
 onMounted(() => {
-  bpmnModeler.value = new BpmnModeler({
+  scenarioFromStore.bpmnModeler = new BpmnModeler({
     container: bpmnContainer.value,
     propertiesPanel: {
       parent: propertiesPanel.value
@@ -114,57 +106,12 @@ onMounted(() => {
       bindTo: window
     }
   });
-
-  bpmnModeler.value.importXML(scenarioFromStore.diagram);
+  scenarioFromStore.loadInBaseDiagram();
 });
 
 onBeforeUnmount(() => {
-  bpmnModeler.value?.destroy();
+  scenarioFromStore.bpmnModeler?.destroy();
 });
-
-const getDiagramXML = async (): Promise<string | undefined> => {
-  try {
-    const result = await bpmnModeler.value?.saveXML({ format: true });
-    return result?.xml;
-  } catch (err) {
-    console.error("Error saving BPMN diagram as XML:", err);
-  }
-};
-
-const getDiagramSvg = async (): Promise<string | undefined> => {
-  try {
-    const result = await bpmnModeler.value?.saveSVG();
-    return result?.svg;
-  } catch (err) {
-    console.error("Error saving BPMN diagram as SVG:", err);
-  }
-};
-
-const downloadDiagramAsXML = async () => {
-  const xml = await getDiagramXML();
-  if (xml) {
-    const blob = new Blob([xml], { type: "text/xml" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "diagram.bpmn";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-};
-
-const downloadDiagramAsSVG = async () => {
-  const svg = await getDiagramSvg();
-  if (svg) {
-    const blob = new Blob([svg], { type: "image/svg+xml" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "diagram.svg";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-};
 
 const uploadDiagram = () => {
   fileInput.value?.click();
@@ -174,40 +121,7 @@ const handleFileUpload = async (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const xml = e.target?.result as string;
-      try {
-        await bpmnModeler.value?.open(xml);
-      } catch (err) {
-        console.error("Error importing BPMN diagram:", err);
-      }
-    };
-    reader.readAsText(file);
+   await scenarioFromStore.loadInDiagram(file);
   }
 };
-
-const saveScenario = async () => {
-
-  const xml = await getDiagramXML();
-  const svg = await getDiagramSvg();
-
-  if(xml && svg && authStore.user) {
-
-    const processId = (bpmnModeler.value as any).get('canvas').getRootElement().id
-
-    const scenario: Scenario = scenarioFromStore.generateScenario(authStore.user.id, xml, svg, processId)
-
-    await BpmnStorageService.push.uploadScenarioAssets(scenario).then((paths) => {
-        if(paths){
-          scenario.bpmnPath = paths.bpmnPath;
-          scenario.svgPath = paths.svgPath;
-          ScenarioService.push.uploadScenario(scenario);
-        }
-      }
-    );
-  }
-
-}
-
 </script>
