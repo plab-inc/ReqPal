@@ -36,11 +36,11 @@
             rounded prepend-icon="mdi-home"
             title="Home" to="/"
             exact/>
-        <div v-if="!authStore.isTeacher">
-          <v-list-item rounded prepend-icon="mdi-progress-star-four-points" title="Meine Fortschritte" to="/profile"/>
-        </div>
         <v-divider class="my-1"/>
         <div v-if="authStore.user">
+          <div v-if="!authStore.isTeacher">
+            <v-list-item rounded prepend-icon="mdi-progress-star-four-points" title="Meine Fortschritte" to="/profile"/>
+          </div>
           <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
             <template v-slot:activator="{ props }">
               <v-list-item
@@ -115,14 +115,10 @@
     </v-navigation-drawer>
     <v-main>
       <v-container fluid>
-        <v-row>
-          <v-col>
-            <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
-              <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
-              {{ removeAlertWithDelay(alert.id) }}
-            </div>
-          </v-col>
-        </v-row>
+        <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
+          <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
+          {{ removeAlertWithDelay(alert.id) }}
+        </div>
         <v-row>
           <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">

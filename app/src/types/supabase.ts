@@ -9,34 +9,34 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      bpmn_diagrams: {
+      achievements: {
         Row: {
+          created_at: string
+          description: string | null
           id: string
-          name: string | null
-          process_definition_key: string | null
-          user_id: string
-          version: number
-          xml_content: string | null
+          image: string | null
+          title: string | null
+          user_id: string | null
         }
         Insert: {
-          id: string
-          name?: string | null
-          process_definition_key?: string | null
-          user_id: string
-          version: number
-          xml_content?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Update: {
+          created_at?: string
+          description?: string | null
           id?: string
-          name?: string | null
-          process_definition_key?: string | null
-          user_id?: string
-          version?: number
-          xml_content?: string | null
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "bpmn_diagrams_user_id_fkey"
+            foreignKeyName: "achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -433,6 +433,56 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      scenarios: {
+        Row: {
+          bpmn_path: string | null
+          created_at: string
+          deployed: boolean
+          description: string | null
+          id: string
+          locked: boolean
+          processDefinitionKey: string
+          svg_path: string | null
+          title: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          bpmn_path?: string | null
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          id?: string
+          locked?: boolean
+          processDefinitionKey: string
+          svg_path?: string | null
+          title: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          bpmn_path?: string | null
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          id?: string
+          locked?: boolean
+          processDefinitionKey?: string
+          svg_path?: string | null
+          title?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_answers: {
         Row: {
