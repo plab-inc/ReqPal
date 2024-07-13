@@ -6,31 +6,32 @@
     rounded
     elevation="10"
   >
-    <div class=svg-container v-html="scenario.svg"/>
-    <v-card-title class="text-h4">
-      {{ scenario.title }}
-    </v-card-title>
-    <v-card-text>
-      {{ scenario.description }}
-    </v-card-text>
+    <div v-html="scenario.svg" class="svg-container elevation-5"/>
+    <div class="elevation-8">
+      <v-card-title class="text-h4">
+        {{ scenario.title }}
+      </v-card-title>
+      <v-card-text style="height: 100px; overflow: hidden" >
+        {{ scenario.description }}
+      </v-card-text>
 
-    <v-card-actions>
-      <v-container class="pa-0">
-        <v-row no-gutters justify="center">
-          <v-btn color="info" text="Bearbeiten" to="/scenario/builder"/>
-          <v-btn disabled :color="scenario.deployed ? 'success' : 'grey'" text="Veröffentlichen"/>
-          <v-btn disabled :color="scenario.locked ? 'warning' : 'grey'" text="Sperren"/>
-          <v-btn disabled color="error" text="Löschen"/>
-        </v-row>
-        <v-row no-gutters>
-          <v-btn block :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" text="Statistiken"  @click="show = !show" />
-        </v-row>
-      </v-container>
-    </v-card-actions>
+      <v-card-actions>
+        <v-container class="pa-0">
+          <v-row no-gutters justify="center">
+            <v-btn color="info" text="Bearbeiten" to="/scenario/builder"/>
+            <v-btn disabled :color="scenario.deployed ? 'success' : 'grey'" text="Veröffentlichen"/>
+            <v-btn disabled :color="scenario.locked ? 'warning' : 'grey'" text="Sperren"/>
+            <v-btn disabled color="error" text="Löschen"/>
+          </v-row>
+          <v-row no-gutters>
+            <v-btn block :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" text="Statistiken"  @click="show = !show" />
+          </v-row>
+        </v-container>
+      </v-card-actions>
+    </div>
 
     <v-expand-transition>
       <div v-show="show">
-        <v-divider class="mt-1"/>
         <v-card-text>
           <v-chip-group variant="outlined" selected-class="bg-deep-purple-lighten-2" column>
             <v-chip>All Versions</v-chip>
