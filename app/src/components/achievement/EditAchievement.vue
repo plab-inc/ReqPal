@@ -11,7 +11,7 @@
         <v-card-title v-if="localAchievement.id.length <= 0">Achievement erstellen</v-card-title>
         <v-card-text>
           <v-row>
-            <v-col>
+            <v-col sm="6">
               <div class="text-caption mb-2">
                 Achievement
               </div>
@@ -19,15 +19,46 @@
                             :rules="[requiredStringRule]"/>
               <v-text-field variant="outlined" label="Beschreibung" v-model="localAchievement.description"
                             :rules="[requiredStringRule, maxLengthRule]"/>
-              <v-text-field variant="outlined" label="Bild" v-model="localAchievement.image"
-                            :rules="[requiredStringRule]"/>
+            </v-col>
+            <v-col sm="6">
+              {{ localAchievement }}
+              <v-item-group label="Bild" v-model="localAchievement.image" :rules="requiredStringRule" mandatory>
+                <div class="text-caption mb-2">
+                  Wähle ein Bild
+                </div>
+                <v-container class="scroll-container">
+                  <v-row>
+                    <v-col
+                        v-for="image in achievementStore.images"
+                        :key="image"
+                        sm="6"
+                        md="4"
+                        class="d-flex justify-center"
+                    >
+                      <v-item :value="image" v-slot="{ toggle }">
+                        <v-card
+                            :color="localAchievement.image === image ? 'primary' : ''"
+                            variant="flat"
+                            class="d-flex align-center"
+                            width="100"
+                            @click="toggle"
+                        >
+                          <v-scroll-y-transition>
+                            <v-img :src="getAchievementImageUrl(image)" :alt="'Achievement Image: '+image"></v-img>
+                          </v-scroll-y-transition>
+                        </v-card>
+                      </v-item>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-item-group>
             </v-col>
           </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="success" type="submit"
-                 :disabled="!isFormValid">Speichern
+                 :disabled="!isFormValid && (!localAchievement.image && localAchievement.image.length <= 0)">Speichern
           </v-btn>
           <v-btn color="info" @click="close">Schließen</v-btn>
         </v-card-actions>
@@ -37,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import {onBeforeMount, ref} from "vue";
 import AlertService from "@/services/util/alert.ts";
 import {
   maxLengthRule,
@@ -45,6 +76,7 @@ import {
 } from "@/utils/validationRules.ts";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import {Achievement} from "@/types/achievement.ts";
+import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
 
 interface Props {
   dialog: boolean;
@@ -105,3 +137,10 @@ onBeforeMount(async () => {
   }
 });
 </script>
+
+<style scoped>
+.scroll-container {
+  max-height: 250px;
+  overflow-y: auto;
+}
+</style>
