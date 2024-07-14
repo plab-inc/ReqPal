@@ -1,5 +1,5 @@
 import {supabase} from "@/plugins/supabase";
-import {Objective, ObjectiveDTO} from "@/types/objective.ts";
+import {Objective} from "@/types/objective.ts";
 
 class ObjectiveServiceClass {
 
@@ -88,16 +88,13 @@ class ObjectiveServiceClass {
         }
     }
 
-    async deleteObjective(objectiveId: string): Promise<ObjectiveDTO[]> {
+    async deleteObjective(objectiveId: string): Promise<void> {
         const {data, error} = await supabase
             .from("objectives")
             .delete()
             .eq("id", objectiveId)
-            .select();
 
         if (error) throw error;
-
-        return data;
     }
 }
 
