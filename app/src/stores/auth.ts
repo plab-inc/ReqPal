@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {Session, User} from '@supabase/supabase-js'
-import authService from "@/services/database/auth.ts";
+import authService from "@/services/authentication/auth.ts";
 
 interface AuthState {
     user: User | null;
@@ -22,6 +22,7 @@ export const useAuthStore = defineStore('auth', {
         isAdmin: (state) => state.userMetadata?.userroles?.includes('admin'),
         isTeacher: (state) => state.appMetadata?.userroles?.includes('teacher'),
         isModerator: (state) => state.appMetadata?.userroles?.includes('moderator'),
+        sessionToken: (state) => state.session ? state.session.access_token : '',
     },
     actions: {
         setSession(session: Session | null) {

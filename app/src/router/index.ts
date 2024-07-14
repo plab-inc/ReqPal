@@ -24,6 +24,7 @@ import {fetchProductsByUser} from "@/middlewares/product.ts";
 import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
 import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
 import {fetchAchievementImages, fetchAchievementsByUser} from "@/middlewares/achievement.ts";
+import { fetchScenarios } from "@/middlewares/scenario.ts";
 
 const routes = [
     {
@@ -103,7 +104,7 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs",
+                path: "/catalog",
                 name: "Catalogs",
                 component: () => import("@/views/catalog/CatalogOverview.vue"),
                 meta: {
@@ -114,13 +115,13 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs/upload",
+                path: "/catalog/upload",
                 name: "UploadCatalog",
                 component: () => import("@/views/catalog/CatalogUpload.vue"),
                 meta: {}
             },
             {
-                path: "/catalogs/:catalogId",
+                path: "/catalog/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.vue"),
                 meta: {
@@ -155,21 +156,32 @@ const routes = [
                 }
             },
             {
-                path: "/achievements",
-                name: "Achievements",
-                component: () => import("@/views/achievement/AchievementOverview.vue"),
+              path: "/achievements",
+              name: "Achievements",
+              component: () => import("@/views/achievement/AchievementOverview.vue"),
+              meta: {
+                middleware: [
+                  requiresTeacher,
+                  fetchAchievementsByUser,
+                  fetchAchievementImages
+                ]
+              }
+            },
+            {
+                path: "/scenario",
+                name: "Scenario Overview",
+                component: () => import("@/views/scenario/ScenarioOverview.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
-                        fetchAchievementsByUser,
-                        fetchAchievementImages
+                        fetchScenarios
                     ]
                 }
             },
             {
-                path: "/modeler",
-                name: "BPMN Modeler",
-                component: () => import("@/views/bpmn/Modeler.vue"),
+                path: "/scenario/builder",
+                name: "Scenario Builder",
+                component: () => import("@/views/scenario/ScenarioBuilder.vue"),
                 meta: {
                     middleware: [
                         fetchLessons

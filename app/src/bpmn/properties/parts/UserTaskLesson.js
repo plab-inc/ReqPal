@@ -98,8 +98,6 @@ function LessonType(props) {
     setInputParameters(element, modeling, bpmnFactory,'lessonId', value);
     setInputParameters(element, modeling, bpmnFactory,'grantPointsAsXP', "false");
 
-    //TODO Set objectives of lesson as input too
-
     addExecutionListener(element, modeling, bpmnFactory);
   };
 

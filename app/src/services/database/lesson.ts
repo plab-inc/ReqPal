@@ -119,7 +119,10 @@ class LessonServiceClass {
     private async togglePublished(lessonUUID: string): Promise<void> {
         const {error} = await supabase
             .rpc('reverse_boolean_value', {
-                row_uuid: lessonUUID
+                table_name: 'lessons',
+                boolean_column_name: 'published',
+                id_column_name: 'uuid',
+                row_id: lessonUUID
             })
 
         if (error) console.error(error)
