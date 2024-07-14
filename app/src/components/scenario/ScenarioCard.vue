@@ -14,7 +14,7 @@
       <v-card-subtitle :class="scenario?.locked ? 'text-red': 'text-success'">
         {{ scenario ? scenario.locked ? 'Gesperrt': 'Zur Bearbeitung freigegeben' : '&nbsp;' }}
       </v-card-subtitle>
-      <v-card-text style="height: 60px; overflow: hidden" >
+      <v-card-text style="height: 80px; overflow: hidden" >
         {{ scenario ? scenario.description : 'Hier können Sie ein neues Szenario erstellen. Bitte lesen Sie die Hinweise im Modellierer sorgfältig durch, um sicherzustellen, dass Sie alle notwendigen Konventionen berücksichtigen.' }}
       </v-card-text>
 
