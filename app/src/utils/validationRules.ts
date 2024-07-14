@@ -11,6 +11,20 @@ export const requiredStringRule = (value: string | null | any): boolean | string
     return "Benötigt";
 }
 
+export const requiredSvgRule = (value: string | null | any): boolean | string => {
+    if (typeof value === 'string') {
+        const isNotEmpty = value && !!value.trim();
+        const startsWithSlash = value.startsWith('/');
+        const endsWithSvg = value.endsWith('.svg');
+
+        if (isNotEmpty && startsWithSlash && endsWithSvg) {
+            return true;
+        }
+        return "Muss mit '/' beginnen und mit '.svg' enden";
+    }
+    return "Benötigt";
+}
+
 export const requiredAtLeast6CharsRule = (value: string | null | any): boolean | string => {
     if (typeof value === 'string') {
         if (value.trim().length < 6) {

@@ -21,8 +21,7 @@
                             :rules="[requiredStringRule, maxLengthRule]"/>
             </v-col>
             <v-col sm="6">
-              {{ localAchievement }}
-              <v-item-group label="Bild" v-model="localAchievement.image" :rules="requiredStringRule" mandatory>
+              <v-item-group label="Bild" v-model="localAchievement.image" mandatory>
                 <div class="text-caption mb-2">
                   Wähle ein Bild
                 </div>
@@ -58,7 +57,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="success" type="submit"
-                 :disabled="!isFormValid && (!localAchievement.image && localAchievement.image.length <= 0)">Speichern
+                 :disabled="!isFormValid || !(requiredSvgRule(localAchievement.image) === true)">Speichern
           </v-btn>
           <v-btn color="info" @click="close">Schließen</v-btn>
         </v-card-actions>
@@ -72,7 +71,7 @@ import {onBeforeMount, ref} from "vue";
 import AlertService from "@/services/util/alert.ts";
 import {
   maxLengthRule,
-  requiredStringRule
+  requiredStringRule, requiredSvgRule
 } from "@/utils/validationRules.ts";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import {Achievement} from "@/types/achievement.ts";
@@ -88,12 +87,24 @@ const achievementStore = useAchievementStore();
 const isFormValid = ref<boolean>(false);
 const localAchievement = ref<Achievement>({id: "", title: "", description: "", image: ""});
 const originalAchievement = ref<Achievement>();
+const form = ref<any>(null);
 
 function close() {
   emit("update:dialog", false);
 }
 
+async function validateForm() {
+  await form.value.validate();
+  return isFormValid && (requiredSvgRule(localAchievement.value.image) === true);
+}
+
 async function save() {
+  const isValid = await validateForm()
+  if (!isValid) {
+    AlertService.addErrorAlert("Das Formular ist fehlerhaft.")
+    return;
+  }
+
   if (originalAchievement.value && localAchievement.value) {
     if (!areAchievementsEqual(originalAchievement.value, localAchievement.value)) {
       await updateAchievement();
