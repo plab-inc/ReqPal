@@ -80,17 +80,15 @@
           </v-list-group>
         </div>
         <div v-if="authStore.user && authStore.isTeacher">
-          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalog"/>
-          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products"/>
-          <v-list-item rounded prepend-icon="mdi-trophy" title="Meine Lernziele" to="/objectives"/>
-          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen" to="/catalog/upload"/>
-          <v-list-item rounded prepend-icon="mdi-trophy-award" title="Meine Achievements" to="/achievements"/>
-          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen" to="/catalogs/upload"/>
+          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalog"/>
+          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Produkte" to="/products"/>
           <v-divider class="my-1"/>
-          <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"
+          <v-list-item rounded prepend-icon="mdi-school" title="Lektionen"
                        :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons"/>
-          <v-list-item rounded prepend-icon="mdi-graph-outline" title="Erstellte Szenarien" to="/scenario" />
-          <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder"/>
+          <v-list-item rounded prepend-icon="mdi-graph-outline" title="Szenarien" to="/scenario" />
+          <v-divider class="my-1"/>
+          <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives"/>
+          <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements"/>
         </div>
       </v-list>
       <template v-slot:append>
