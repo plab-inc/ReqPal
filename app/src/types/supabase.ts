@@ -947,7 +947,10 @@ export type Database = {
       }
       reverse_boolean_value: {
         Args: {
-          row_uuid: string
+          table_name: string
+          boolean_column_name: string
+          id_column_name: string
+          row_id: string
         }
         Returns: undefined
       }
