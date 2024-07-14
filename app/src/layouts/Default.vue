@@ -83,6 +83,7 @@
           <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs"/>
           <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products"/>
           <v-list-item rounded prepend-icon="mdi-trophy" title="Meine Lernziele" to="/objectives"/>
+          <v-list-item rounded prepend-icon="mdi-trophy-award" title="Meine Achievements" to="/achievements"/>
           <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen" to="/catalogs/upload"/>
           <v-divider class="my-1"/>
           <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"

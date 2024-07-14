@@ -7,8 +7,8 @@
   >
     <v-form v-model="isFormValid" @submit.prevent="save" ref="form">
       <v-card variant="elevated" class="pa-1">
-        <v-card-title v-if="localObjective.id.length > 0">Produkt bearbeiten</v-card-title>
-        <v-card-title v-if="localObjective.id.length <= 0">Produkt erstellen</v-card-title>
+        <v-card-title v-if="localObjective.id.length > 0">Lernziel bearbeiten</v-card-title>
+        <v-card-title v-if="localObjective.id.length <= 0">Lernziel erstellen</v-card-title>
         <v-card-text>
           <v-row>
             <v-col>
