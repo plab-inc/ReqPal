@@ -10,7 +10,7 @@
       <div v-for="scenario in scenarioStore.getScenarios" :key="scenario.id">
         <ScenarioCard :scenario="scenario" />
       </div>
-     <div v-if="scenarioStore.getScenarios.length <= 6">
+     <div v-if="scenarioStore.getScenarios.length < 6">
        <ScenarioCard/>
      </div>
     </v-row>

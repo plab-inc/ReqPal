@@ -39,7 +39,7 @@ class BpmnStorageServiceClass {
       let { data: bpmnData, error: bpmnError } = await supabase.storage
         .from("bpmn")
         .upload(bpmnPath, xmlBlob, {
-          cacheControl: '3600',
+          cacheControl: '30',
           upsert: true
         });
 
@@ -48,7 +48,7 @@ class BpmnStorageServiceClass {
       let { data: svgData, error: svgError } = await supabase.storage
         .from("bpmn")
         .upload(svgPath, svgBlob, {
-          cacheControl: '3600',
+          cacheControl: '300',
           upsert: true
         });
 

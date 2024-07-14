@@ -50,9 +50,10 @@
 
 <script setup lang="ts">
 import Modeler from "@/components/scenario/ScenarioModeler.vue";
-import { requiredStringRule, requiredUniqueLessonTitleRule } from "@/utils/validationRules.ts";
+import { requiredStringRule } from "@/utils/validationRules.ts";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 import { ref } from "vue";
+import router from "@/router/index.ts";
 
 const scenarioModelerStore = useScenarioModelerStore();
 const form = ref<any>(null);
@@ -68,12 +69,16 @@ async function resetScenario() {
 }
 
 async function saveScenario(){
+  //TODO Better validation logic
+
   await validate();
 
   if (!formIsValid.value) {
     return;
   }
 
-  await scenarioModelerStore.saveScenario();
+  await scenarioModelerStore.saveScenario().then(() => {
+    router.push({path: '/scenario'});
+  });
 }
 </script>
