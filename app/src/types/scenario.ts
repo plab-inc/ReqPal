@@ -9,11 +9,8 @@ export type Scenario = {
   description: string,
   deployed: boolean,
   locked: boolean,
-  processDefinitionKey: string,
   version?: number,
   createdAt?: string,
-  bpmnPath?: string,
-  svgPath?: string,
   bpmnXml?: string | Blob,
   svg?: string | Blob,
 }
