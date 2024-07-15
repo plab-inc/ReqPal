@@ -29,6 +29,9 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
   getters: {
     isDirty: (state) => {
       return state.title.length > 0 && state.description.length > 0;
+    },
+    getProcessId: (state) => {
+      return 'Process_' + state.uuid;
     }
   },
   actions: {
@@ -61,7 +64,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       if (authStore.user && this.bpmnModeler) {
         const xml = await this.getDiagramXML();
         const svg = await this.getDiagramSvg();
-        const processDefinitionKey = await this.getDiagramProcessId();
+        const processDefinitionKey = this.getProcessId;
 
         if (xml && svg && processDefinitionKey) {
           const scenario: Scenario = await this.generateScenario(authStore.user.id, xml, svg, processDefinitionKey);
@@ -96,11 +99,6 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         }
       } catch (err) {
         console.error("Error saving BPMN diagram as SVG:", err);
-      }
-    },
-    async getDiagramProcessId(): Promise<string | undefined> {
-      if (this.bpmnModeler) {
-        return (this.bpmnModeler as any).get('canvas').getRootElement().id;
       }
     },
     async downloadDiagramAsXML() {

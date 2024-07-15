@@ -100,7 +100,12 @@ function ConditionType(props) {
     label: translate("Type"),
     getValue: getValue,
     setValue: setValue,
-    getOptions: getOptions
+    getOptions: getOptions,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    }
   });
 }
 
@@ -203,7 +208,8 @@ function updateCondition(element, commandStack, condition = undefined) {
     commandStack.execute("element.updateProperties", {
       element,
       properties: {
-        conditionExpression: condition
+        conditionExpression: condition,
+        //TODO Set condition name
       }
     });
   }

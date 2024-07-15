@@ -2,6 +2,7 @@ import { CheckboxEntry, Group, isTextFieldEntryEdited, TextFieldEntry } from "@b
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
+import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
 export function GeneralGroup(element, translate) {
   const group = {
@@ -22,50 +23,14 @@ function GeneralProps(props) {
   const { element } = props;
   const entries = [];
 
-  entries.push({
-    id: 'elementName',
-    component: ElementName,
-    isEdited: isTextFieldEntryEdited,
-  });
-
-  if (is(element, 'bpmn:Process')) {
+  if(!(is(element, 'bpmn:Process') || is(element, 'bpmn:UserTask') || is(element, 'bpmn:ServiceTask'))){
     entries.push({
-      id: 'elementIsExecutable',
-      component: ElementIsExecutable,
+      id: 'elementName',
+      component: ElementName,
       isEdited: isTextFieldEntryEdited,
     });
   }
-
   return entries;
-}
-
-function ElementIsExecutable(props) {
-  const { element } = props;
-  const debounce = useService('debounceInput');
-  const translate = useService('translate');
-  const modeling = useService('modeling');
-
-  const getValue = () => {
-    const businessObject = getBusinessObject(element);
-    return businessObject ? !!businessObject.isExecutable : false;
-  };
-
-  const setValue = (value) => {
-    const businessObject = getBusinessObject(element);
-    if (businessObject) {
-      modeling.updateProperties(element, { isExecutable: value });
-    }
-  };
-
-  return jsx(CheckboxEntry, {
-    element,
-    id: "elementIsExecutable",
-    label: translate('Is Executable'),
-    getValue,
-    debounce: debounce,
-    setValue,
-    disabled: false
-  });
 }
 
 function ElementName(props) {
@@ -73,50 +38,30 @@ function ElementName(props) {
   const debounce = useService("debounceInput");
   const translate = useService('translate');
   const modeling = useService('modeling');
-  const label = is(element, 'bpmn:Process') ? "Szenario Name" : "Name"
+  const disabled =  is(element, 'bpmn:Process') || is(element, 'bpmn:ServiceTask') || is(element, 'bpmn:UserTask');
+  const label = is(element, 'bpmn:Process') ? "Szenario Title" : "Name";
+  const scenarioModelerStore = useScenarioModelerStore();
 
   const getValue = () => {
     const businessObject = getBusinessObject(element);
 
     if(is(element, 'bpmn:Process')){
-      return (businessObject.id && businessObject.name) ? businessObject.name : '';
+      return scenarioModelerStore.title;
     }
 
     return businessObject.name || '';
   };
 
   const setValue = (value) => {
-
-    if(is(element, 'bpmn:Process')){
-      //TODO not sure if i want to keep this when Szenario Names are called via the client
-      modeling.updateProperties(element, { id: value ? value : "Process_1" });
-    }
-
     modeling.updateProperties(element, { name: value });
   };
-
-  const validate = (value) => {
-
-    if(is(element, 'bpmn:Process')){
-      //TODO Call gegen Store
-
-      if(!value){ return "Szenario name can not be empty"; }
-      if(value.length < 5){ return "Szenario name is too short"; }
-
-      if(is(element, 'bpmn:Process') && value === "Process_1"){
-        return "Szenario name already in use";
-      }
-    }
-
-    return false;
-  }
 
   return jsx(TextFieldEntry, {
     element,
     id: "elementName",
     label: translate(label),
     getValue,
-    validate,
+    disabled: disabled,
     debounce: debounce,
     setValue,
   });

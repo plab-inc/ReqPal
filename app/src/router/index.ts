@@ -184,7 +184,9 @@ const routes = [
                 component: () => import("@/views/scenario/ScenarioBuilder.vue"),
                 meta: {
                     middleware: [
-                        fetchLessons
+                        fetchLessons,
+                        fetchObjectivesByLessonOwner,
+                        fetchAchievementsByUser,
                     ]
                 }
             },
