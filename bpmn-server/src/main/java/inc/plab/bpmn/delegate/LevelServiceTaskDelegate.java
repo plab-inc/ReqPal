@@ -1,29 +1,21 @@
 package inc.plab.bpmn.delegate;
 
-import inc.plab.bpmn.service.GamificationService;
+import inc.plab.bpmn.service.LevelService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GamificationServiceTaskDelegate implements JavaDelegate {
+public class LevelServiceTaskDelegate implements JavaDelegate {
 
-    final GamificationService gamificationService;
+    final LevelService levelService;
 
-    public GamificationServiceTaskDelegate(GamificationService gamificationService) {
-        this.gamificationService = gamificationService;
+    public LevelServiceTaskDelegate(LevelService levelService) {
+        this.levelService = levelService;
     }
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
-
-        gamificationService.hello();
-        addXpToLearningObjectiveForUser(delegateExecution);
-
-    }
-
-    private void addXpToLearningObjectiveForUser(DelegateExecution delegateExecution) {
-
         String userId = (String) delegateExecution.getVariable("studentId");
         String objectiveId = (String) delegateExecution.getVariable("objectiveId");
         int xp;
@@ -34,13 +26,8 @@ public class GamificationServiceTaskDelegate implements JavaDelegate {
             throw new Error("XP could not be parsed. XP needs to be a number: " + e.getMessage());
         }
 
-        if(xp > 0) {
-            try {
-                gamificationService.addXpToObjectiveForUser(xp, objectiveId, userId);
-            }   catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
+        if (xp > 0) {
+            levelService.addXpToObjectiveForUser(xp, objectiveId, userId);
         } else {
             throw new Error("XP needs to be a positive number greater than 0.");
         }
