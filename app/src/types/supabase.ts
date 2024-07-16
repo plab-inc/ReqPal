@@ -436,40 +436,31 @@ export type Database = {
       }
       scenarios: {
         Row: {
-          bpmn_path: string | null
           created_at: string
           deployed: boolean
           description: string | null
           id: string
           locked: boolean
-          processDefinitionKey: string
-          svg_path: string | null
           title: string
           user_id: string
           version: number
         }
         Insert: {
-          bpmn_path?: string | null
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
           locked?: boolean
-          processDefinitionKey: string
-          svg_path?: string | null
           title: string
           user_id: string
           version?: number
         }
         Update: {
-          bpmn_path?: string | null
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
           locked?: boolean
-          processDefinitionKey?: string
-          svg_path?: string | null
           title?: string
           user_id?: string
           version?: number
@@ -477,6 +468,45 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          amount: number | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          achievement_id?: string | null
+          amount?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          achievement_id?: string | null
+          amount?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
