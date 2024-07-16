@@ -63,7 +63,7 @@ function ConditionType(props) {
 
   const setValue = (value) => {
     if (value === "defaultFlow") {
-      setDefaultFlow(element, modeling);
+      setDefaultFlow(element, modeling, commandStack);
       return;
     }
 
@@ -72,7 +72,7 @@ function ConditionType(props) {
       conditionType: value
     };
     const formalExpressionElement = createFormalExpression(element, attributes, bpmnFactory);
-    updateCondition(element, commandStack, formalExpressionElement);
+    updateCondition(element, commandStack, formalExpressionElement, value);
   };
 
   const getOptions = () => [
@@ -100,12 +100,7 @@ function ConditionType(props) {
     label: translate("Type"),
     getValue: getValue,
     setValue: setValue,
-    getOptions: getOptions,
-    validate: (element) => {
-      if (!element) {
-        return translate('Required.');
-      }
-    }
+    getOptions: getOptions
   });
 }
 
@@ -151,13 +146,22 @@ function ConditionExpression(props) {
     setValue: setValue,
     placeholder: conditionType + " >= 50",
     debounce: debounce,
-    monospace: true
+    monospace: true,
+    validate: (element) => {
+      if (!element) {
+        return translate("Required.");
+      }
+    }
   });
 }
 
 // ----------------Helper----------------
 
 const CONDITIONAL_SOURCES = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway", "bpmn:ComplexGateway"];
+
+function camelCaseToTitleCase(str) {
+  return str.replace(/([A-Z])/g, " $1").replace(/^./, (match) => match.toUpperCase());
+}
 
 function getConditionExpression(element) {
   const businessObject = getBusinessObject(element);
@@ -203,21 +207,27 @@ function createFormalExpression(parent, attributes, bpmnFactory) {
   return createElement("bpmn:FormalExpression", attributes, getBusinessObject(parent), bpmnFactory);
 }
 
-function updateCondition(element, commandStack, condition = undefined) {
+function updateCondition(element, commandStack, condition = undefined, type) {
   if (is(element, "bpmn:SequenceFlow")) {
     commandStack.execute("element.updateProperties", {
       element,
       properties: {
         conditionExpression: condition,
-        //TODO Set condition name
+        name: camelCaseToTitleCase(type)
       }
     });
   }
 }
 
-function setDefaultFlow(element, modeling) {
+function setDefaultFlow(element, modeling, commandStack) {
   const source = element.source;
   if (isAny(source, ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway", "bpmn:ComplexGateway"])) {
+    commandStack.execute("element.updateProperties", {
+      element,
+      properties: {
+        name: ""
+      }
+    });
     modeling.updateProperties(source, {
       default: element
     });
