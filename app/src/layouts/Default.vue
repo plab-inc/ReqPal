@@ -51,22 +51,6 @@
               />
             </template>
             <v-list-item
-                rounded
-                to="/lessons"
-                title="Lektionen"
-                :active="router.currentRoute.value.path.startsWith('/lessons')"
-                :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
-            >
-              <template v-slot:prepend>
-                <v-progress-circular
-                    class="mr-4"
-                    size="27"
-                    :model-value="openLessonsPercentage"
-                    :color="openLessonsColor"
-                />
-              </template>
-            </v-list-item>
-            <v-list-item
                 title="Meine Punkte"
                 :subtitle="profileStore.points"
                 rounded
@@ -164,8 +148,7 @@ import {useAuthStore} from "@/stores/auth.ts";
 import {useThemeStore} from "@/stores/theme.ts";
 import Dialog from "@/components/util/Dialog.vue";
 import {useProfileStore} from "@/stores/profile.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {onBeforeMount, ref, watch} from "vue";
+import {onBeforeMount, ref} from "vue";
 import {supabase} from "@/plugins/supabase.ts";
 import {XpActivityLogDTO} from "@/types/gamification.ts";
 import Snackbar from "@/components/util/Snackbar.vue";
@@ -174,12 +157,9 @@ const utilStore = useUtilStore();
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 const themeStore = useThemeStore();
-const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
-const openLessonsColor = ref<string>("error");
-const openLessonsPercentage = ref<number>(100);
 
 onBeforeMount(async () => {
   if (authStore.user) {
@@ -198,25 +178,6 @@ const logout = () => {
   authStore.signOut();
   router.push("/");
 };
-
-function routeRelatedToCatalog() {
-  return router.currentRoute.value.path.startsWith("/catalog") || router.currentRoute.value.path.startsWith("/products");
-}
-
-watch(() => lessonStore.openLessons, () => {
-  if (lessonStore.openLessons === 0 || lessonStore.lessons.length === 0) {
-    openLessonsColor.value = "success";
-    openLessonsPercentage.value = 100;
-    return;
-  }
-  if (lessonStore.openLessons === lessonStore.lessons.length) {
-    openLessonsColor.value = "error";
-    openLessonsPercentage.value = 100;
-    return;
-  }
-  openLessonsColor.value = "warning";
-  openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
-}, {immediate: true});
 
 supabase
     .channel('schema-db-changes')

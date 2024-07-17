@@ -19,10 +19,6 @@ export type Question = {
 
 export type Lesson = {
     lessonDTO: LessonDTO,
-    isFinished: boolean,
-    isStarted: boolean,
-    hasSavedProgress: boolean,
-    userScore: number,
     objective: Objective | null
 
     creatorAvatar?: string,
@@ -37,18 +33,9 @@ export type LessonForm = {
     objectiveId: string | null;
 }
 
-export type LessonAnswer = {
-    uuid: string,
-    answers: any[]
-}
-
 export type UserAnswer = {
     question_id: string,
     answer: string[]
-}
-
-export type UserResult = {
-    result: { score: number, results: any, isCorrect: boolean }
 }
 
 export type LessonStatistic = {

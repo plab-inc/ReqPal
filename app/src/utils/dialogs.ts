@@ -151,6 +151,14 @@ export const DeleteAchievement: DialogText = {
     cancelLabel: "Zurück"
 };
 
+export const DeleteLesson: DialogText = {
+    title: "Lektion löschen",
+    message: "Möchten Sie wirklich die ausgewählte Lektion löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Szenarien der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 
 export const DeployScenarioFirstTime: DialogText = {
     title: "Szenario Veröffentlichen",

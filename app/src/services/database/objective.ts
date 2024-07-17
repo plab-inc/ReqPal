@@ -47,7 +47,6 @@ class ObjectiveServiceClass {
             .in("id", objectiveIds);
 
         if (error) throw error;
-
         return data as Objective[];
     }
 
