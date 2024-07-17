@@ -18,7 +18,6 @@ export async function loadLessonByUUID(to: RouteLocationNormalized, from: RouteL
         lessonStore.loadLessonByUUID(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
-        console.log(error);
         return next({name: 'Error'});
     }
 }
@@ -29,7 +28,6 @@ export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from:
         await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
-        console.log(error);
         return next({name: 'Error'});
     }
 }

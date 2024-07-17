@@ -5,6 +5,7 @@ import LessonService from "@/services/database/lesson.ts";
 import {DatabaseError} from "@/errors/custom.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
+import {useObjectiveStore} from "@/stores/objective.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -111,9 +112,27 @@ export const useLessonStore = defineStore('lesson', {
                     objective: null
                 }));
             }
-
+            await this.initLessons(this.lessons);
+            await this.initLessons(this.examples);
             let finishedLessons = this.getAmountOfFinishedLessons;
             this.openLessons = this.lessons.length - finishedLessons;
+        },
+
+        async initLessons(lessons: Lesson[]) {
+            const objectiveIds = lessons
+                .map(lesson => lesson.lessonDTO.objective)
+                .filter(objective => objective !== undefined && objective !== null);
+
+            if (objectiveIds.length > 0) {
+                const objectiveStore = useObjectiveStore();
+                const objectives = await objectiveStore.fetchObjectivesByIds(objectiveIds);
+                if (objectives) {
+                    lessons.forEach(l => {
+                        const toAdd = objectives.find(g => g.id === l.lessonDTO.objective);
+                        if (toAdd) l.objective = toAdd;
+                    })
+                }
+            }
         },
 
         async deleteLesson(lessonUUID: string) {
