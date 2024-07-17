@@ -2,6 +2,7 @@ import { ConditionGroup } from "./parts/ConditionGroup.js";
 import { UserTaskGroup } from "./parts/UserTaskLesson.js";
 import { GeneralGroup } from "@/bpmn/properties/parts/GeneralGroup.js";
 import { ServiceTaskGroup } from "@/bpmn/properties/parts/GamificationServiceTask.js";
+import { DocumentationGroup } from "@/bpmn/properties/parts/DocumentationGroup.js";
 
 export default function CustomPropertiesProvider(propertiesPanel, translate) {
 
@@ -9,13 +10,14 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
     return function(groups) {
 
       const deleteGroupsToReplace = (groups) => {
-        return groups.filter(group => !(group.id.startsWith("CamundaPlatform__") || group.id === "general"));
+        return groups.filter(group => !(group.id.startsWith("CamundaPlatform__") || group.id === "general" || group.id === "documentation"));
       };
 
       const conditionGroup= ConditionGroup(element, translate);
       const userTaskLessonGroup = UserTaskGroup(element, translate);
       const gamificationServiceTaskGroup = ServiceTaskGroup(element, translate);
       const generalGroup = GeneralGroup(element, translate);
+      const documentationGroup = DocumentationGroup(element, translate);
 
       let filteredGroups = deleteGroupsToReplace(groups);
 
@@ -23,6 +25,7 @@ export default function CustomPropertiesProvider(propertiesPanel, translate) {
       if (gamificationServiceTaskGroup) filteredGroups.unshift(gamificationServiceTaskGroup);
       if (userTaskLessonGroup) filteredGroups.unshift(userTaskLessonGroup);
       if (generalGroup) filteredGroups.unshift(generalGroup);
+      if (documentationGroup) filteredGroups.push(documentationGroup);
 
       return filteredGroups;
     };

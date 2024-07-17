@@ -3,6 +3,9 @@ import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
 import { setInputParameters } from "@/bpmn/properties/util/Helper.js";
+import { toRaw } from "vue";
+import { useObjectiveStore } from "@/stores/objective.ts";
+import { useAchievementStore } from "@/stores/achievement.ts";
 
 export function ServiceTaskGroup(element, translate) {
   const group = {
@@ -19,6 +22,7 @@ export function ServiceTaskGroup(element, translate) {
 
 function ServiceTaskProps(props) {
   const { element } = props;
+
   if (!(is(element, 'bpmn:ServiceTask'))) {return [];}
   const entries = [];
 
@@ -58,6 +62,8 @@ function ServiceTaskType(props) {
   const { element } = props;
   const translate = useService('translate');
   const modeling = useService('modeling');
+  const achievementStore = useAchievementStore();
+  const objectiveStore = useObjectiveStore();
 
   const getValue = () => getServiceTaskType(element);
 
@@ -65,10 +71,16 @@ function ServiceTaskType(props) {
     modeling.updateProperties(element, { serviceTaskType: value })
   };
 
-  const getOptions = () => [
-    { value: 'assignAchievement', label: translate('Assign Achievement') },
-    { value: 'grantXPToObjective', label: translate('Grant XP To Learning Objective') }
-  ];
+  const getOptions = () => {
+    const options = [];
+    if (achievementStore.achievements.length > 0) {
+      options.push({ value: 'assignAchievement', label: translate('Assign Achievement') });
+    }
+    if (objectiveStore.objectives.length > 0) {
+      options.push({ value: 'grantXPToObjective', label: translate('Grant XP To Learning Objective') });
+    }
+    return options;
+  };
 
   return jsx(SelectEntry, {
     element,
@@ -146,11 +158,12 @@ function SelectObjectiveType(props) {
   };
 
   const getOptions = () => {
-    return [
-      { value: 'a', label: 'ObA' },
-      { value: 'b', label: 'ObB' },
-      { value: 'c', label: 'ObC' }
-    ]
+    const objectiveStore = useObjectiveStore();
+    const objectives = toRaw(objectiveStore.objectives);
+    return objectives.map(objective => ({
+      value: objective.id,
+      label: objective.name
+    }));
   };
 
   return jsx(SelectEntry, {
@@ -192,11 +205,12 @@ function AssignAchievementTaskType(props) {
   };
 
   const getOptions = () => {
-    return [
-      { value: 'a', label: 'A' },
-      { value: 'b', label: 'B' },
-      { value: 'c', label: 'C' }
-    ]
+    const achievementStore = useAchievementStore();
+    const achievements = toRaw(achievementStore.achievements);
+    return achievements.map(achievement => ({
+      value: achievement.id,
+      label: achievement.title
+    }));
   };
 
   return jsx(SelectEntry, {

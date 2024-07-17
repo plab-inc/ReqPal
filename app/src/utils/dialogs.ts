@@ -160,4 +160,12 @@ export const DeleteLesson: DialogText = {
 };
 
 
-
+export const DeployScenarioFirstTime: DialogText = {
+    title: "Szenario Veröffentlichen",
+    message: "Möchten Sie das ausgewählte Szenario wirklich veröffentlichen?" +
+      "Diese Aktion kann nicht rückgängig gemacht werden. Ab diesem Zeitpunkt ist das Szenario für Studierende sichtbar und kann, sofern freigegeben, gestartet werden." +
+      "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine neue Version veröffentlicht werden." +
+      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
+    confirmLabel: "Veröffentlichen",
+    cancelLabel: "Zurück"
+};

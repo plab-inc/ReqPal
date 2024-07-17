@@ -35,17 +35,13 @@ class CustomContextPad implements ContextPadProvider {
       this.removeUnusedEntries(entries);
       const taskEntries = this.createTaskEntries();
 
-      if (element.type !== 'bpmn:SequenceFlow') {
-        delete entries['replace'];
-      }
-
-      if (element.type === 'bpmn:SequenceFlow') {
-        return entries;
-      }
-
-      if (element.type === "bpmn:Group") {
+      if (element.type === "label" || element.type === "bpmn:SequenceFlow" || element.type === "bpmn:Group") {
         delete entries["set-color"];
         return entries;
+      }
+
+      if (element.type !== 'bpmn:SequenceFlow') {
+        delete entries['replace'];
       }
 
       return {
@@ -54,6 +50,7 @@ class CustomContextPad implements ContextPadProvider {
       };
     };
   }
+
 
   private removeUnusedEntries(entries: ContextPadEntries) {
     const keysToRemove = [

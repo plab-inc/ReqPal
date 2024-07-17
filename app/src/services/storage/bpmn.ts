@@ -13,8 +13,8 @@ class BpmnStorageServiceClass {
   };
 
   private async manageScenarioAssets(scenario: Scenario, action: 'upload' | 'delete'): Promise<{ bpmnPath?: string, svgPath?: string } | void> {
-    const bpmnPath = `${scenario.user}/${scenario.id}/${scenario.title}.bpmn`;
-    const svgPath = `${scenario.user}/${scenario.id}/${scenario.title}.svg`;
+    const bpmnPath = `${scenario.user}/${scenario.id}/${scenario.id}.bpmn`;
+    const svgPath = `${scenario.user}/${scenario.id}/${scenario.id}.svg`;
 
     if (action === 'delete') {
       let { error: bpmnError } = await supabase.storage
@@ -63,27 +63,23 @@ class BpmnStorageServiceClass {
   }
 
   private async getDiagramSvg(scenario: Scenario): Promise<string | undefined> {
-    if (scenario.svgPath != null) {
-      const { data, error } = await supabase.storage.from("bpmn").download(scenario.svgPath);
+    const svgPath = `${scenario.user}/${scenario.id}/${scenario.id}.svg`;
+
+    const { data, error } = await supabase.storage.from("bpmn").download(svgPath);
 
       if (error) throw error;
 
       return await data.text() || "";
-    }
-
-    return undefined;
   }
 
   private async getDiagramXml(scenario: Scenario): Promise<string | undefined> {
-    if (scenario.bpmnPath != null) {
-      const { data, error } = await supabase.storage.from("bpmn").download(scenario.bpmnPath);
+    const bpmnPath = `${scenario.user}/${scenario.id}/${scenario.id}.bpmn`;
 
-      if (error) throw error;
+    const { data, error } = await supabase.storage.from("bpmn").download(bpmnPath);
 
-      return await data.text() || "";
-    }
+    if (error) throw error;
 
-    return undefined;
+    return await data.text() || "";
   }
 }
 

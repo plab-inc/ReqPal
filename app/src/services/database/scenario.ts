@@ -1,7 +1,6 @@
-import {supabase} from "@/plugins/supabase";
+import { supabase } from "@/plugins/supabase";
 import { Scenario, ScenarioDTO } from "@/types/scenario.ts";
 import { mapToScenario } from "@/mapper/scenario.ts";
-import { LessonDTO } from "@/types/lesson.ts";
 
 class ScenarioServiceClass {
 
@@ -38,9 +37,6 @@ class ScenarioServiceClass {
         user_id: scenario.user,
         description: scenario.description,
         title: scenario.title,
-        processDefinitionKey: scenario.processDefinitionKey,
-        bpmn_path: scenario.bpmnPath,
-        svg_path: scenario.svgPath
       })
       .select().single()
 

@@ -6,13 +6,15 @@
     rounded
     elevation="10"
   >
-    <div :style="scenario?.locked ? 'opacity: 0.3': 'opacity: 1' " v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5"/>
+    <div :style="scenario?.locked ? 'background: #fa756b': 'background: white' "
+         v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5" />
     <div class="elevation-8">
       <v-card-title class="text-h4 pb-0">
         {{ scenario ? scenario.title : 'Leeres Szenario' }}
       </v-card-title>
       <v-card-subtitle :class="scenario?.locked ? 'text-red': 'text-success'">
-        {{ scenario ? scenario.locked ? 'Gesperrt': 'Zur Bearbeitung freigegeben' : '&nbsp;' }}
+        {{ scenario ? scenario.locked ? "Starten der Lektion gesperrt" : "Zum Starten der Lektion freigegeben" : "&nbsp;"
+        }}
       </v-card-subtitle>
       <v-card-text style="height: 80px; overflow: hidden" >
         {{ scenario ? scenario.description : 'Hier können Sie ein neues Szenario erstellen. Bitte lesen Sie die Hinweise im Modellierer sorgfältig durch, um sicherzustellen, dass Sie alle notwendigen Konventionen berücksichtigen.' }}
@@ -67,13 +69,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { defineProps, ref } from "vue";
 import { Scenario, ScenarioDTO } from "@/types/scenario.ts";
 import router from "@/router/index.ts";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useScenarioStore } from "@/stores/scenario.ts";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { DeployScenarioFirstTime } from "@/utils/dialogs.ts";
 
 const props = defineProps<{
   scenario?: Scenario
@@ -82,6 +86,7 @@ const props = defineProps<{
 const show = ref<boolean>(false);
 const scenarioModelerStore = useScenarioModelerStore();
 const scenarioStore = useScenarioStore();
+const utilStore = useUtilStore();
 
 const editScenario = (scenario: Scenario) => {
   scenarioModelerStore.hydrate(scenario).then(() => {
@@ -107,8 +112,10 @@ const lockScenario = (scenario: Scenario) => {
 
 const deployScenario = (scenario: Scenario) => {
   //TODO Logic to deploy Scenarios
-  ScenarioService.push.toggleField(scenario,'deployed');
-  scenario.deployed = !scenario.deployed
+  if (!scenario.deployed) utilStore.openDialog(DeployScenarioFirstTime, () => {
+    ScenarioService.push.toggleField(scenario, "deployed");
+    scenario.deployed = !scenario.deployed;
+  });
 }
 
 const newScenario = () => {
@@ -123,7 +130,6 @@ const newScenario = () => {
 .svg-container {
   display: flex;
   height: 200px;
-  background: white;
   overflow: hidden;
   justify-content: center;
   align-items: center;

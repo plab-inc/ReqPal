@@ -49,7 +49,7 @@
         </div>
       </v-col>
       <v-col cols="3">
-        <div id="properties-panel" ref="propertiesPanel" style="position: relative;" />
+        <div id="properties-panel" ref="propertiesPanel" />
       </v-col>
     </v-row>
   </v-theme-provider>
