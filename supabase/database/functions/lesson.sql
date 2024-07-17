@@ -1,5 +1,4 @@
 -- Author: Fabian, Laura
-
 create or replace function create_lesson_from_json(data jsonb) returns void
     language plpgsql
 as
@@ -7,20 +6,19 @@ $$
 DECLARE
     v_lesson_uuid uuid;
     question      jsonb;
+    objective_id  uuid;
     total_points  int4 := 0;
 BEGIN
-    INSERT INTO lessons (uuid, title, description, user_id, published, objective)
+    INSERT INTO lessons (uuid, title, description, user_id, published)
     VALUES ((data ->> 'uuid')::uuid,
             data ->> 'title',
             data ->> 'description',
             auth.uid(),
-            false,
-            (data ->> 'objectiveId')::uuid)
+            false)
     ON CONFLICT (uuid) DO UPDATE
         SET title       = EXCLUDED.title,
             description = EXCLUDED.description,
-            user_id     = EXCLUDED.user_id,
-            objective = EXCLUDED.objective
+            user_id     = EXCLUDED.user_id
     RETURNING uuid INTO v_lesson_uuid;
 
 --Löscht alle Fragen, aus der Lesson. On conflict ist nun nutzlos, aber wurde mir zu umständlich, zu überprüfen, ob Fragen gelöscht wurden. FT
@@ -62,6 +60,14 @@ BEGIN
     UPDATE lessons
     SET points = total_points
     WHERE uuid = v_lesson_uuid;
+
+    DELETE FROM lesson_objectives WHERE lesson_id = v_lesson_uuid;
+
+    FOR objective_id IN SELECT (jsonb_array_elements_text(data -> 'objectiveIds'))::uuid
+        LOOP
+            INSERT INTO lesson_objectives (lesson_id, objective_id)
+            VALUES (v_lesson_uuid, objective_id);
+        END LOOP;
 END;
 $$;
 
@@ -76,7 +82,10 @@ BEGIN
                    'uuid', l.uuid,
                    'title', l.title,
                    'description', l.description,
-                   'objectiveId', l.objective,
+                   'objectiveIds', COALESCE(
+                           (SELECT jsonb_agg(objective_id)
+                            FROM lesson_objectives
+                            WHERE lesson_id = l.uuid), '[]'::jsonb),
                    'questions', COALESCE(
                            jsonb_agg(
                                    jsonb_build_object(
