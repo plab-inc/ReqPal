@@ -4,6 +4,7 @@ import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
 import {DatabaseError} from "@/errors/custom.ts";
 import {useAuthStore} from "@/stores/auth.ts";
+import profileService from "@/services/database/profile.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -67,6 +68,17 @@ export const useLessonStore = defineStore('lesson', {
         async fetchLessons() {
             const lessons = await lessonService.pull.fetchLessons();
             const exampleLessons = await lessonService.pull.fetchLessons(true);
+
+            if (lessons) {
+                for (const lesson of lessons) {
+                    const creatorUsername = await profileService.pull.getUsername(lesson.lessonDTO.user_id) || {username: 'Unbekannt'};
+                    const creatorAvatar = await profileService.pull.getAvatar(lesson.lessonDTO.user_id) || {avatar: 'fhdo'};
+
+                    lesson.creatorAvatar = creatorAvatar.avatar;
+                    lesson.creatorUsername = creatorUsername.username;
+                }
+            }
+
             this.lessons = lessons ? lessons : [];
             this.examples = exampleLessons ? exampleLessons : [];
         },

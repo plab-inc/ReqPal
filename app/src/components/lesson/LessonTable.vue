@@ -2,7 +2,7 @@
   <v-data-table-virtual
       :v-model="lessonStore.getLessons"
       v-model:expanded="expanded"
-      :headers="headers"
+      :headers="authStore.isModerator ? headersModerator : headers"
       :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
       item-value="lessonDTO.uuid"
       select-strategy="all"
@@ -13,6 +13,15 @@
       height="75vh"
       no-data-text="Sie haben noch keine Lektionen erstellt."
   >
+    <template v-slot:item.creatorUsername="{ item }">
+      <v-chip
+          :prepend-avatar="'avatars/' + item.creatorAvatar + '.png'"
+          elevation="8"
+      >
+        {{ item.creatorUsername }}
+      </v-chip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <div>
         <v-btn
@@ -117,6 +126,14 @@ const headers = ref([
   {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
   {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
   {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
+  {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
+] as const);
+
+const headersModerator = ref([
+  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
+  {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
+  {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
+  {title: "Besitzer", value: "creatorUsername", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
