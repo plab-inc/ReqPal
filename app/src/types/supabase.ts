@@ -73,6 +73,39 @@ export type Database = {
           },
         ]
       }
+      lesson_objectives: {
+        Row: {
+          id: string
+          lesson_id: string | null
+          objective_id: string | null
+        }
+        Insert: {
+          id?: string
+          lesson_id?: string | null
+          objective_id?: string | null
+        }
+        Update: {
+          id?: string
+          lesson_id?: string | null
+          objective_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_objectives_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "lesson_objectives_objective_id_fkey"
+            columns: ["objective_id"]
+            isOneToOne: false
+            referencedRelation: "objectives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lessons: {
         Row: {
           created_at: string
