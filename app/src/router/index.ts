@@ -29,12 +29,7 @@ const routes = [
             {
                 path: "",
                 name: "Home",
-                component: () => import("@/views/home/Home.vue"),
-                meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
-                }
+                component: () => import("@/views/home/Home.vue")
             },
             {
                 path: "/lessons",

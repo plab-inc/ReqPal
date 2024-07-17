@@ -13,7 +13,6 @@ interface LessonState {
     currentLesson: Lesson | null;
     currentQuestions: any;
     lessonModules: LessonModuleEntry[];
-    openLessons: number;
 }
 
 export interface LessonModuleEntry {
@@ -28,8 +27,7 @@ export const useLessonStore = defineStore('lesson', {
         lessons: [],
         currentLesson: null,
         currentQuestions: [],
-        lessonModules: [],
-        openLessons: 0
+        lessonModules: []
     }),
 
     getters: {
@@ -57,10 +55,6 @@ export const useLessonStore = defineStore('lesson', {
         getLessonModules: (state) => {
             return state.lessonModules;
         },
-        getAmountOfFinishedLessons: (state) => {
-            const finishedLessons = state.lessons.filter(l => l.isFinished === true);
-            return finishedLessons.length;
-        },
     },
 
     actions: {
@@ -86,10 +80,6 @@ export const useLessonStore = defineStore('lesson', {
 
                     enrichedLessons.push({
                         lessonDTO: lesson,
-                        isFinished: false,
-                        isStarted: false,
-                        hasSavedProgress: false,
-                        userScore: 0,
                         objective: null,
                         creatorUsername: creatorUsername.username,
                         creatorAvatar: creatorAvatar.avatar
@@ -99,23 +89,16 @@ export const useLessonStore = defineStore('lesson', {
                 this.lessons = enrichedLessons;
             }
 
-
             const exampleLessons = await lessonService.pull.fetchLessons(true);
 
             if (exampleLessons) {
                 this.examples = exampleLessons.map((l) => ({
                     lessonDTO: l,
-                    isFinished: false,
-                    isStarted: false,
-                    hasSavedProgress: false,
-                    userScore: 0,
                     objective: null
                 }));
             }
             await this.initLessons(this.lessons);
             await this.initLessons(this.examples);
-            let finishedLessons = this.getAmountOfFinishedLessons;
-            this.openLessons = this.lessons.length - finishedLessons;
         },
 
         async initLessons(lessons: Lesson[]) {
@@ -181,8 +164,7 @@ export const useLessonStore = defineStore('lesson', {
 
         async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-            if (authStore.isTeacher || (lesson?.isFinished && !lesson.isStarted)) {
+            if (authStore.isTeacher) {
                 const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
 
                 if (data) {
@@ -256,7 +238,7 @@ export const useLessonStore = defineStore('lesson', {
 
         async uploadUsedHintForQuestion(questionUUID: string) {
             const authStore = useAuthStore();
-            if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
+            if (!authStore.isTeacher && authStore.user && this.currentLesson) {
                 await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
             }
         },
