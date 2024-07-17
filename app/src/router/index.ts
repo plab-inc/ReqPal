@@ -7,7 +7,7 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresTeacher} from "@/middlewares/auth.ts";
+import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
 import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
@@ -42,7 +42,8 @@ const routes = [
                 component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
-                        fetchLessons
+                        fetchLessons,
+                        requiresTeacher
                     ]
                 }
             },
@@ -199,6 +200,7 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresAuth,
+                        requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser
                     ]
