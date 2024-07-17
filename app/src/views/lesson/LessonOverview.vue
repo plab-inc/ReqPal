@@ -5,11 +5,6 @@
         lessons.length
       }}/20)
     </v-col>
-    <v-col v-else cols="auto" class="text-h4">
-      Abgeschlossene Lektionen ({{
-        lessons.filter(l => l.isFinished).length
-      }}/{{ lessons.length }})
-    </v-col>
     <v-col cols="auto">
       <v-btn-toggle
           v-if="authStore.isTeacher"
@@ -130,7 +125,6 @@
             >
               {{ lesson.creatorUsername }}
             </v-chip>
-            <LessonStatusStudent v-if="!authStore.isTeacher" :lesson="lesson"/>
             <v-btn-group
                 v-if="authStore.isTeacher"
                 variant="outlined"
@@ -193,7 +187,6 @@ import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import lessonService from "@/services/database/lesson.ts";
 import alertService from "@/services/util/alert.ts";
 import {Lesson, LessonDTO} from "@/types/lesson.ts";
-import LessonStatusStudent from "@/components/lesson/toolbar/LessonStatusStudent.vue";
 import {v4 as uuidv4} from "uuid";
 import {computed, ref} from "vue";
 

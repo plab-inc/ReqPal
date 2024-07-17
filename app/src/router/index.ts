@@ -7,17 +7,12 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
+import {requiresAuth, requiresTeacher} from "@/middlewares/auth.ts";
 import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
-    fetchUserAnswersForQuestions,
-    fetchUserProgressForLesson,
     loadLessonByUUID,
-    loadQuestionsWithSolutions,
-    requiresFinishedLesson,
-    requiresUnfinishedLesson
 } from "@/middlewares/lesson.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
@@ -60,34 +55,6 @@ const routes = [
                         requiresTeacher,
                         fetchLessons,
                         fetchObjectivesByLessonOwner
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID",
-                name: "LessonDetails",
-                component: () => import("@/views/lesson/LessonDetailsStudent.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        requiresUnfinishedLesson,
-                        loadLessonByUUID,
-                        fetchQuestionsForLesson,
-                        fetchUserProgressForLesson
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID/results",
-                name: "LessonResults",
-                component: () => import("@/views/lesson/LessonResults.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        loadLessonByUUID,
-                        requiresFinishedLesson,
-                        loadQuestionsWithSolutions,
-                        fetchUserAnswersForQuestions
                     ]
                 }
             },
