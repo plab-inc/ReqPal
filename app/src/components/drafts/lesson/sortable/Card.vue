@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useDrag, useDrop} from 'vue3-dnd'
-import {computed, unref} from 'vue'
+import {computed} from 'vue'
 import {toRefs} from '@vueuse/core'
 import {DragItem} from "@/types/dragItem.ts";
 
@@ -44,7 +44,6 @@ const [, drop] = useDrop(() => ({
 }))
 
 const {isDragging} = toRefs(collect)
-const opacity = computed(() => (unref(isDragging) ? 0 : 1))
 
 let dragAndDropRef = null
 

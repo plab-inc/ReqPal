@@ -63,7 +63,7 @@ function ConditionType(props) {
 
   const setValue = (value) => {
     if (value === "defaultFlow") {
-      setDefaultFlow(element, modeling);
+      setDefaultFlow(element, modeling, commandStack);
       return;
     }
 
@@ -72,7 +72,7 @@ function ConditionType(props) {
       conditionType: value
     };
     const formalExpressionElement = createFormalExpression(element, attributes, bpmnFactory);
-    updateCondition(element, commandStack, formalExpressionElement);
+    updateCondition(element, commandStack, formalExpressionElement, value);
   };
 
   const getOptions = () => [
@@ -90,7 +90,7 @@ function ConditionType(props) {
     },
     {
       value: "lastLessonCompletionTimeMinutes",
-      label: translate("Time To Complete Last Lesson")
+      label: translate("Time To Complete Last Lesson In Minutes")
     }
   ];
 
@@ -127,7 +127,7 @@ function ConditionExpression(props) {
     return transformScriptToDisplay(getConditionExpression(element).get("body"));
   };
   const setValue = value => {
-    const transformedValue = transformDisplayToScript(value);
+    const transformedValue = transformDisplayToScript(value, conditionType);
     commandStack.execute("element.updateModdleProperties", {
       element: element,
       moddleElement: getConditionExpression(element),
@@ -136,7 +136,7 @@ function ConditionExpression(props) {
       }
     });
   };
-  const description = translate("Enter the condition in the form of " + conditionType + " >= 50");
+  const description = translate("Enter the condition in the form of >=$");
   return jsx(TextFieldEntry, {
     element: element,
     id: "conditionScriptValue",
@@ -144,15 +144,42 @@ function ConditionExpression(props) {
     description: description,
     getValue: getValue,
     setValue: setValue,
-    placeholder: conditionType + " >= 50",
+    placeholder: '>=50',
     debounce: debounce,
-    monospace: true
+    monospace: true,
+    validate: (value) => {
+      if (!value) {
+        return translate("Required.");
+      }
+    }
   });
 }
 
 // ----------------Helper----------------
 
+// :( Buggy as f
+function transformScriptToDisplay(script) {
+  if (script.startsWith("${") && script.endsWith("}")) {
+    const expression = script.slice(2, -1).trim();
+    const match = expression.match(/[><=]+\s*\d+/);
+    return match ? match[0].replace(/\s+/g, '') : "";
+  }
+  return script;
+}
+
+function transformDisplayToScript(displayValue, conditionType) {
+  if (displayValue && conditionType) {
+    return `\${${conditionType.trim()}${displayValue.trim().replace(/\s+/g, '')}}`;
+  }
+  return conditionType ? `\${${conditionType.trim()}}` : "";
+}
+
+
 const CONDITIONAL_SOURCES = ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway", "bpmn:ComplexGateway"];
+
+function camelCaseToTitleCase(str) {
+  return str.replace(/([A-Z])/g, " $1").replace(/^./, (match) => match.toUpperCase());
+}
 
 function getConditionExpression(element) {
   const businessObject = getBusinessObject(element);
@@ -198,36 +225,29 @@ function createFormalExpression(parent, attributes, bpmnFactory) {
   return createElement("bpmn:FormalExpression", attributes, getBusinessObject(parent), bpmnFactory);
 }
 
-function updateCondition(element, commandStack, condition = undefined) {
+function updateCondition(element, commandStack, condition = undefined, type) {
   if (is(element, "bpmn:SequenceFlow")) {
     commandStack.execute("element.updateProperties", {
       element,
       properties: {
-        conditionExpression: condition
+        conditionExpression: condition,
+        name: camelCaseToTitleCase(type)
       }
     });
   }
 }
 
-function setDefaultFlow(element, modeling) {
+function setDefaultFlow(element, modeling, commandStack) {
   const source = element.source;
   if (isAny(source, ["bpmn:ExclusiveGateway", "bpmn:InclusiveGateway", "bpmn:ComplexGateway"])) {
+    commandStack.execute("element.updateProperties", {
+      element,
+      properties: {
+        name: ""
+      }
+    });
     modeling.updateProperties(source, {
       default: element
     });
   }
-}
-
-function transformScriptToDisplay(script) {
-  if (script.startsWith("${") && script.endsWith("}")) {
-    return script.slice(2, -1).trim();
-  }
-  return script;
-}
-
-function transformDisplayToScript(displayValue) {
-  if (displayValue) {
-    return `\${${displayValue.trim()}}`;
-  }
-  return displayValue;
 }

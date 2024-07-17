@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 import { Scenario } from "@/types/scenario.ts";
-import { v4 as uuidv4 } from 'uuid';
-import baseDiagramXml from '@/assets/bpmn/diagram.bpmn?raw';
-import baseDiagramSvg from '@/assets/bpmn/diagram.svg?raw'
+import { v4 as uuidv4 } from "uuid";
+import baseDiagramXml from "@/assets/bpmn/diagram.bpmn?raw";
+import baseDiagramSvg from "@/assets/bpmn/diagram.svg?raw";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useAuthStore } from "@/stores/auth.ts";
@@ -29,6 +29,9 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
   getters: {
     isDirty: (state) => {
       return state.title.length > 0 && state.description.length > 0;
+    },
+    getProcessId: (state) => {
+      return 'Process_' + state.uuid;
     }
   },
   actions: {
@@ -37,7 +40,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       this.description = '';
       this.diagram = baseDiagramXml;
     },
-    async generateScenario(userId: string, xml: string, svg: string, processDefinitionKey: string): Promise<Scenario> {
+    async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
       return {
         id: this.uuid,
         title: this.title,
@@ -46,8 +49,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         locked: true,
         deployed: false,
         svg: svg,
-        bpmnXml: xml,
-        processDefinitionKey: processDefinitionKey
+        bpmnXml: xml
       };
     },
     async hydrate(scenario: Scenario){
@@ -61,15 +63,12 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       if (authStore.user && this.bpmnModeler) {
         const xml = await this.getDiagramXML();
         const svg = await this.getDiagramSvg();
-        const processDefinitionKey = await this.getDiagramProcessId();
 
-        if (xml && svg && processDefinitionKey) {
-          const scenario: Scenario = await this.generateScenario(authStore.user.id, xml, svg, processDefinitionKey);
+        if (xml && svg) {
+          const scenario: Scenario = await this.generateScenario(authStore.user.id, xml, svg);
           const paths = await BpmnStorageService.push.manageScenarioAssets(scenario, 'upload');
 
           if (paths) {
-            scenario.bpmnPath = paths.bpmnPath;
-            scenario.svgPath = paths.svgPath;
             await ScenarioService.push.uploadScenario(scenario);
           }
         }
@@ -96,11 +95,6 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         }
       } catch (err) {
         console.error("Error saving BPMN diagram as SVG:", err);
-      }
-    },
-    async getDiagramProcessId(): Promise<string | undefined> {
-      if (this.bpmnModeler) {
-        return (this.bpmnModeler as any).get('canvas').getRootElement().id;
       }
     },
     async downloadDiagramAsXML() {

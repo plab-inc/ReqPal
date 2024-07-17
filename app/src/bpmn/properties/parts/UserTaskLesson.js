@@ -53,6 +53,7 @@ function TaskType(props) {
   const { element } = props;
   const translate = useService('translate');
   const modeling = useService('modeling');
+  const lessonStore = useLessonStore();
 
   const getValue = () => getTaskType(element);
 
@@ -60,10 +61,21 @@ function TaskType(props) {
     modeling.updateProperties(element, { taskType: value })
   };
 
-  const getOptions = () => [
-    { value: 'solveLesson', label: translate('Solve Lesson') },
-    //{ value: 'chooseLearningObjective', label: translate('Choose Learning Objective') }
-  ];
+  const getOptions = () => {
+    //TODO Show hint when there are no lessons
+
+    const options = [];
+
+    if (lessonStore.lessons.length > 0) {
+      options.push({ value: 'solveLesson', label: translate('Solve Lesson') });
+    }
+
+    // if (objectiveStore.objectives.length > 0) {
+    //   options.push({ value: 'chooseLearningObjective', label: translate('Choose Learning Objective') });
+    // }
+
+    return options;
+  };
 
   return jsx(SelectEntry, {
     element,
@@ -71,6 +83,11 @@ function TaskType(props) {
     label: translate('Student Task Type'),
     getValue,
     setValue,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    },
     getOptions
   });
 }
@@ -171,28 +188,16 @@ function getTaskType(element) {
 function addExecutionListener(element, modeling, bpmnFactory) {
   const businessObject = getBusinessObject(element);
 
-  if (!businessObject.extensionElements) {
-    businessObject.extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
-      values: []
-    });
-  }
+  businessObject.extensionElements = businessObject.extensionElements || bpmnFactory.create('bpmn:ExtensionElements', { values: [] });
+  businessObject.extensionElements.get('values').length = 0;
 
   const extensionElements = businessObject.extensionElements;
-
-  const executionListenerStart = bpmnFactory.create('camunda:ExecutionListener', {
-    event: 'start',
+  const listeners = ['start', 'end'].map(event => bpmnFactory.create('camunda:ExecutionListener', {
+    event: event,
     delegateExpression: '${lessonUserTaskDelegate}'
-  });
+  }));
 
-  const executionListenerEnd = bpmnFactory.create('camunda:ExecutionListener', {
-    event: 'end',
-    delegateExpression: '${lessonUserTaskDelegate}'
-  });
+  extensionElements.get('values').push(...listeners);
 
-  extensionElements.get('values').push(executionListenerStart);
-  extensionElements.get('values').push(executionListenerEnd);
-
-  modeling.updateProperties(element, {
-    extensionElements: extensionElements
-  });
+  modeling.updateProperties(element, { extensionElements });
 }

@@ -12,12 +12,7 @@ import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
     fetchQuestionsForLesson,
-    fetchUserAnswersForQuestions,
-    fetchUserProgressForLesson,
     loadLessonByUUID,
-    loadQuestionsWithSolutions,
-    requiresFinishedLesson,
-    requiresUnfinishedLesson
 } from "@/middlewares/lesson.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
@@ -34,12 +29,7 @@ const routes = [
             {
                 path: "",
                 name: "Home",
-                component: () => import("@/views/home/Home.vue"),
-                meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
-                }
+                component: () => import("@/views/home/Home.vue")
             },
             {
                 path: "/lessons",
@@ -47,7 +37,8 @@ const routes = [
                 component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
-                        fetchLessons
+                        fetchLessons,
+                        requiresTeacher
                     ]
                 }
             },
@@ -60,34 +51,6 @@ const routes = [
                         requiresTeacher,
                         fetchLessons,
                         fetchObjectivesByLessonOwner
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID",
-                name: "LessonDetails",
-                component: () => import("@/views/lesson/LessonDetailsStudent.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        requiresUnfinishedLesson,
-                        loadLessonByUUID,
-                        fetchQuestionsForLesson,
-                        fetchUserProgressForLesson
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID/results",
-                name: "LessonResults",
-                component: () => import("@/views/lesson/LessonResults.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        loadLessonByUUID,
-                        requiresFinishedLesson,
-                        loadQuestionsWithSolutions,
-                        fetchUserAnswersForQuestions
                     ]
                 }
             },
@@ -184,7 +147,9 @@ const routes = [
                 component: () => import("@/views/scenario/ScenarioBuilder.vue"),
                 meta: {
                     middleware: [
-                        fetchLessons
+                        fetchLessons,
+                        fetchObjectivesByLessonOwner,
+                        fetchAchievementsByUser,
                     ]
                 }
             },
@@ -230,6 +195,7 @@ const routes = [
                 meta: {
                     middleware: [
                         requiresAuth,
+                        requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser
                     ]

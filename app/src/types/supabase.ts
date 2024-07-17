@@ -436,40 +436,31 @@ export type Database = {
       }
       scenarios: {
         Row: {
-          bpmn_path: string | null
           created_at: string
           deployed: boolean
           description: string | null
           id: string
           locked: boolean
-          processDefinitionKey: string
-          svg_path: string | null
           title: string
           user_id: string
           version: number
         }
         Insert: {
-          bpmn_path?: string | null
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
           locked?: boolean
-          processDefinitionKey: string
-          svg_path?: string | null
           title: string
           user_id: string
           version?: number
         }
         Update: {
-          bpmn_path?: string | null
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
           locked?: boolean
-          processDefinitionKey?: string
-          svg_path?: string | null
           title?: string
           user_id?: string
           version?: number

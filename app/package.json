@@ -27,6 +27,7 @@
     "camunda-bpmn-moddle": "^7.0.1",
     "diagram-js": "^14.0.0",
     "exceljs": "^4.4.0",
+    "min-dash": "^4.2.1",
     "pinia": "^2.1.7",
     "react-dnd-html5-backend": "^16.0.1",
     "uuid": "^9.0.1",
