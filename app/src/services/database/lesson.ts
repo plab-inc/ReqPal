@@ -1,10 +1,12 @@
 import {supabase} from "@/plugins/supabase";
 import {
+    Lesson,
     LessonDTO,
     LessonForm,
     LessonStatistic,
     Question
 } from "@/types/lesson.ts";
+import {mapToLesson} from "@/mapper/lesson.ts";
 
 class LessonServiceClass {
 
@@ -25,17 +27,25 @@ class LessonServiceClass {
         checkIfLessonTitleExists: this.checkIfLessonTitleExists.bind(this)
     };
 
-    private async fetchLessons(examples: boolean = false): Promise<LessonDTO[] | undefined> {
+    private async fetchLessons(examples: boolean = false): Promise<Lesson[] | undefined> {
 
         const {data, error} = await supabase
             .from('lessons')
-            .select('*')
-            .eq('example', examples)
+            .select(`
+            *,
+            lesson_objectives:lesson_objectives(objectives(*))
+        `)
+            .eq('example', examples);
 
         if (error) throw error;
 
         if (data) {
-            return data;
+            let result: Lesson[] = [];
+            data.forEach(d => {
+                const mapped: Lesson = mapToLesson(d);
+                result.push(mapped);
+            });
+            return result;
         }
     }
 
@@ -70,7 +80,6 @@ class LessonServiceClass {
             })
 
         if (error) console.error(error)
-
         if (data) return data as LessonForm;
     }
 

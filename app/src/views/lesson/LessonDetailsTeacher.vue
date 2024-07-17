@@ -4,18 +4,6 @@
       {{ currentLesson?.lessonDTO.title }} -
       {{ currentLesson?.lessonDTO.points }}
       <v-icon class="mb-1" size="35" color="warning" :icon="'mdi-star-four-points-circle-outline'"></v-icon>
-      <v-tooltip v-if="currentLesson?.objective" location="right" :text="currentLesson.objective.description">
-        <template v-slot:activator="{ props }">
-          <v-chip v-bind="props"
-                  v-if="currentLesson.objective"
-                  class="ma-5"
-                  prepend-icon="mdi-trophy"
-                  elevation="8"
-          >
-            {{ currentLesson.objective.name }}
-          </v-chip>
-        </template>
-      </v-tooltip>
     </v-col>
     <v-col cols="auto">
       <v-btn-toggle
@@ -34,6 +22,24 @@
           {{ filters.includes('showSolutions') ? 'Vorschau anzeigen' : 'Lösungen anzeigen' }}
         </v-btn>
       </v-btn-toggle>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="auto" class="d-flex justify-start align-center flex-wrap">
+      <div v-for="objective in currentLesson?.objectives" v-if="currentLesson && currentLesson.objectives?.length > 0">
+        <v-tooltip location="top" v-if="objective.description" :text="objective.description">
+          <template v-slot:activator="{ props }">
+            <v-chip
+                v-bind="props"
+                class="ma-5"
+                prepend-icon="mdi-trophy"
+                elevation="8"
+            >
+              {{ objective.name }}
+            </v-chip>
+          </template>
+        </v-tooltip>
+      </div>
     </v-col>
   </v-row>
   <v-row align="center" no-gutters>
@@ -91,10 +97,10 @@ import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import {Lesson, LessonStatistic} from "@/types/lesson.ts";
 import Score from "@/components/lesson/results/Score.vue";
-import { ref, watch } from "vue";
+import {ref, watch} from "vue";
 
 const lessonStore = useLessonStore();
-const currentLesson : Lesson | null = lessonStore.getCurrentLesson;
+const currentLesson: Lesson | null = lessonStore.getCurrentLesson;
 
 const avgScore = ref<number>(0);
 const stats = ref<any>();
