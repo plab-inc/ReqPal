@@ -1,6 +1,5 @@
 package inc.plab.bpmn.model.lesson;
 
-import inc.plab.bpmn.model.objective.Objective;
 import inc.plab.bpmn.model.question.Question;
 import inc.plab.bpmn.model.user.*;
 import jakarta.persistence.*;
@@ -23,6 +22,7 @@ import java.util.UUID;
 public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
@@ -58,10 +58,8 @@ public class Lesson {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "objective")
-    private Objective objective;
+    @OneToMany(mappedBy = "lesson")
+    private Set<LessonObjective> lessonObjectives = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "lessonUuid")
     private Set<Question> questions = new LinkedHashSet<>();
