@@ -84,8 +84,9 @@ async function uploadLesson() {
         </v-col>
         <v-col>
           <v-select
-              v-model="lessonFormStore.objectiveId"
+              v-model="lessonFormStore.objectiveIds"
               clearable
+              multiple
               chips
               :items="objectiveStore.getCurrentObjectives"
               density="comfortable"

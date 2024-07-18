@@ -1,11 +1,10 @@
 import {defineStore} from 'pinia';
-import {Lesson, LessonDTO, Question, UserAnswer} from "@/types/lesson.ts";
+import {Lesson, LessonDTO, Question} from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
 import {DatabaseError} from "@/errors/custom.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
-import {useObjectiveStore} from "@/stores/objective.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -68,54 +67,20 @@ export const useLessonStore = defineStore('lesson', {
 
         async fetchLessons() {
             const lessons = await lessonService.pull.fetchLessons();
-            this.lessons = [];
-            this.examples = [];
-
-            if (lessons) {
-                const enrichedLessons = [];
-
-                for (const lesson of lessons) {
-                    const creatorUsername = await profileService.pull.getUsername(lesson.user_id) || {username: 'Unbekannt'};
-                    const creatorAvatar = await profileService.pull.getAvatar(lesson.user_id) || {avatar: 'fhdo'};
-
-                    enrichedLessons.push({
-                        lessonDTO: lesson,
-                        objective: null,
-                        creatorUsername: creatorUsername.username,
-                        creatorAvatar: creatorAvatar.avatar
-                    });
-                }
-
-                this.lessons = enrichedLessons;
-            }
-
             const exampleLessons = await lessonService.pull.fetchLessons(true);
 
-            if (exampleLessons) {
-                this.examples = exampleLessons.map((l) => ({
-                    lessonDTO: l,
-                    objective: null
-                }));
-            }
-            await this.initLessons(this.lessons);
-            await this.initLessons(this.examples);
-        },
+            if (lessons) {
+                for (const lesson of lessons) {
+                    const creatorUsername = await profileService.pull.getUsername(lesson.lessonDTO.user_id) || {username: 'Unbekannt'};
+                    const creatorAvatar = await profileService.pull.getAvatar(lesson.lessonDTO.user_id) || {avatar: 'fhdo'};
 
-        async initLessons(lessons: Lesson[]) {
-            const objectiveIds = lessons
-                .map(lesson => lesson.lessonDTO.objective)
-                .filter(objective => objective !== undefined && objective !== null);
-
-            if (objectiveIds.length > 0) {
-                const objectiveStore = useObjectiveStore();
-                const objectives = await objectiveStore.fetchObjectivesByIds(objectiveIds);
-                if (objectives) {
-                    lessons.forEach(l => {
-                        const toAdd = objectives.find(g => g.id === l.lessonDTO.objective);
-                        if (toAdd) l.objective = toAdd;
-                    })
+                    lesson.creatorAvatar = creatorAvatar.avatar;
+                    lesson.creatorUsername = creatorUsername.username;
                 }
             }
+
+            this.lessons = lessons ? lessons : [];
+            this.examples = exampleLessons ? exampleLessons : [];
         },
 
         async deleteLesson(lessonUUID: string) {
@@ -200,14 +165,6 @@ export const useLessonStore = defineStore('lesson', {
                     })
                 })
             }
-        },
-
-        hydrateUserAnswers(answers: UserAnswer[]) {
-            answers.forEach(answer => {
-                const comp =
-                    this.lessonModules.find(c => c.uuid === answer.question_id);
-                if (comp) comp.data.options = answer.answer;
-            });
         },
 
         findLesson(lessonUUID: string) {

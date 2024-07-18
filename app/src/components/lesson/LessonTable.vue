@@ -2,17 +2,25 @@
   <v-data-table-virtual
       :v-model="lessonStore.getLessons"
       v-model:expanded="expanded"
-      :headers="headers"
+      :headers="authStore.isModerator ? headersModerator : headers"
       :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
       item-value="lessonDTO.uuid"
       select-strategy="all"
-      show-select
       show-expand
       expand-on-click
       hover
       height="75vh"
       no-data-text="Sie haben noch keine Lektionen erstellt."
   >
+    <template v-slot:item.creatorUsername="{ item }">
+      <v-chip
+          :prepend-avatar="'avatars/' + item.creatorAvatar + '.png'"
+          elevation="8"
+      >
+        {{ item.creatorUsername }}
+      </v-chip>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <div>
         <v-btn
@@ -54,18 +62,38 @@
       </div>
     </template>
     <template v-slot:expanded-row="{ columns, item }">
-      <tr v-if="item.objective">
+      <tr v-if="item.objectives.length > 0">
         <td :colspan="columns.length">
-          <ol class="ml-5">
-            <li>{{ item.objective.name }}</li>
-          </ol>
+          <v-list>
+            <v-list-subheader>Lernziele</v-list-subheader>
+
+            <v-list-item
+                v-for="(objective, i) in item.objectives"
+                :key="i"
+                :value="objective"
+                color="primary"
+                variant="plain"
+            >
+              <template v-slot:prepend>
+                <v-icon icon="mdi-trophy"></v-icon>
+              </template>
+
+              <v-list-item-title v-text="objective.name"></v-list-item-title>
+            </v-list-item>
+          </v-list>
         </td>
       </tr>
       <tr v-else>
         <td :colspan="columns.length">
-          <ul class="ml-5">
-            <li>Noch keine Lernziele zur Lektion hinzugefügt.</li>
-          </ul>
+          <v-list>
+            <v-list-subheader>Lernziele</v-list-subheader>
+            <v-list-item
+                color="primary"
+                variant="plain"
+            >
+              <v-list-item-title v-text="'Noch keine Lernziele zur Lektion hinzugefügt'"></v-list-item-title>
+            </v-list-item>
+          </v-list>
         </td>
       </tr>
     </template>
@@ -97,6 +125,14 @@ const headers = ref([
   {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
   {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
   {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
+  {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
+] as const);
+
+const headersModerator = ref([
+  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
+  {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
+  {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
+  {title: "Besitzer", value: "creatorUsername", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
