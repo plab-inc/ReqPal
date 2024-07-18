@@ -1,15 +1,11 @@
 package inc.plab.bpmn.model.objective;
 
-import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.user.Profile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -35,8 +31,4 @@ public class Objective {
 
     @Column(name = "max_level")
     private Integer maxLevel;
-
-    @OneToMany(mappedBy = "objective")
-    private Set<Lesson> lessons = new LinkedHashSet<>();
-
 }
