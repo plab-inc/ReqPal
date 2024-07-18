@@ -6,7 +6,6 @@
       :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
       item-value="lessonDTO.uuid"
       select-strategy="all"
-      show-select
       show-expand
       expand-on-click
       hover
