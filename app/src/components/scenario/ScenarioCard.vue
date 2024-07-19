@@ -78,6 +78,7 @@ import { useScenarioStore } from "@/stores/scenario.ts";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { DeployScenarioFirstTime } from "@/utils/dialogs.ts";
+import http from '@/services/api/api.ts'
 
 const props = defineProps<{
   scenario?: Scenario
@@ -115,6 +116,7 @@ const deployScenario = (scenario: Scenario) => {
   if (!scenario.deployed) utilStore.openDialog(DeployScenarioFirstTime, () => {
     ScenarioService.push.toggleField(scenario, "deployed");
     scenario.deployed = !scenario.deployed;
+    //http.post(`diagram/deploy/${scenario.id}`);
   });
 }
 

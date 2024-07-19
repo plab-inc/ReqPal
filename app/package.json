@@ -19,6 +19,7 @@
     "@supabase/supabase-js": "2.43.3",
     "@vueuse/components": "^10.9.0",
     "@vueuse/core": "^10.9.0",
+    "axios": "^1.7.2",
     "bpmn-js": "^17.7.0",
     "bpmn-js-color-picker": "^0.7.1",
     "bpmn-js-honkify": "^0.3.0",
