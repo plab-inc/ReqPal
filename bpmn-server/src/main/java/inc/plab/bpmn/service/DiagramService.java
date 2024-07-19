@@ -1,5 +1,7 @@
 package inc.plab.bpmn.service;
 
+import inc.plab.bpmn.model.scenario.Scenario;
+import inc.plab.bpmn.model.scenario.ScenarioRepository;
 import inc.plab.bpmn.model.user.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,13 +29,16 @@ public class DiagramService {
 
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
+    private final ScenarioRepository scenarioRepository;
     private static final Logger logger = LoggerFactory.getLogger(DiagramService.class);
 
+    @SneakyThrows
     public Optional<UUID> deployBpmn(UUID diagramId, Profile profile) {
 
-        /*
+        Optional<Scenario> scenarioOptional = scenarioRepository.findById(diagramId);
+        
 
-        TODO Get Diagram from SupabaseStorage
+        /* TODO Get Diagram from SupabaseStorage
 
         Deployment deployment;
 
@@ -52,7 +57,7 @@ public class DiagramService {
 
         //cleanUpOldDeployments(deployment.getName(), deployment.getId()); */
 
-        return Optional.of(UUID.randomUUID());
+        return Optional.of(scenarioOptional.get().getId());
     }
 
     @SneakyThrows
