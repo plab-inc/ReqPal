@@ -53,6 +53,12 @@ resilience4j:
         limit-refresh-period: 60s
         timeout-duration: 0s
 app:
+  aws:
+    endpoint:  ${AWS_ENDPOINT}
+    access:
+      key:
+        id: ${AWS_ACCESS_KEY_ID}
+        secret: ${AWS_ACCESS_KEY_SECRET}
   jwt:
     secret: ${JWT_SECRET}
   technical-user:
