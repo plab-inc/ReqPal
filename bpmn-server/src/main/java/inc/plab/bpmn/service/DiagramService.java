@@ -1,5 +1,6 @@
 package inc.plab.bpmn.service;
 
+import  inc.plab.bpmn.aws.BucketService;
 import inc.plab.bpmn.model.scenario.Scenario;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
 import inc.plab.bpmn.model.user.Profile;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
@@ -30,22 +32,23 @@ public class DiagramService {
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
     private final ScenarioRepository scenarioRepository;
+    private final BucketService bucketService;
     private static final Logger logger = LoggerFactory.getLogger(DiagramService.class);
 
     @SneakyThrows
     public Optional<UUID> deployBpmn(UUID diagramId, Profile profile) {
 
         Optional<Scenario> scenarioOptional = scenarioRepository.findById(diagramId);
-        
+        InputStream bucketStream = bucketService.getObjectFromBucket("bpmn", scenarioOptional.get().getBpmnPath());
 
-        /* TODO Get Diagram from SupabaseStorage
+        // TODO Get Diagram from SupabaseStorage
 
         Deployment deployment;
 
         try {
+            // TODO entfernen sobald wieder es läuft
             deployment = repositoryService.createDeployment()
-                    .addString(bpmnDiagram.getName(), bpmnDiagram.getXmlContent())
-                    .name(String.valueOf(bpmnDiagram.getId()))
+                    .addInputStream("Test.bpmn", bucketStream)
                     .tenantId(String.valueOf(profile.getId()))
                     .source("ReqPal-BPMN-Sever")
                     .enableDuplicateFiltering(true)
@@ -55,7 +58,7 @@ public class DiagramService {
             return Optional.empty();
         }
 
-        //cleanUpOldDeployments(deployment.getName(), deployment.getId()); */
+        //cleanUpOldDeployments(deployment.getName(), deployment.getId());
 
         return Optional.of(scenarioOptional.get().getId());
     }
