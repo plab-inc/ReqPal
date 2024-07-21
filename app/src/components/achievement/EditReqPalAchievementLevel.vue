@@ -18,7 +18,7 @@
               <v-text-field variant="outlined" label="Titel" v-model="localAchievementLevel.title"
                             :rules="[requiredStringRule]"/>
               <v-text-field variant="outlined" label="Schwellenwert" v-model="localAchievementLevel.threshold"
-                            :rules="[requiredPositiveNumberRule]"/>
+                            :rules="[requiredNumberRule]"/>
               <v-text-field variant="outlined" label="Level" v-model="localAchievementLevel.level"
                             :rules="[requiredPositiveNumberRule]"/>
             </v-col>
@@ -73,6 +73,7 @@
 import {onBeforeMount, ref} from "vue";
 import AlertService from "@/services/util/alert.ts";
 import {
+  requiredNumberRule,
   requiredPositiveNumberRule,
   requiredStringRule, requiredSvgRule
 } from "@/utils/validationRules.ts";

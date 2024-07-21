@@ -137,7 +137,7 @@ const routes = [
             {
                 path: "/reqpal-achievements",
                 name: "ReqPalAchievements",
-                component: () => import("@/views/moderator/ReqPalAchievementOverview.vue"),
+                component: () => import("@/views/achievement/ReqPalAchievementOverview.vue"),
                 meta: {
                     middleware: [
                         requiresModerator,
