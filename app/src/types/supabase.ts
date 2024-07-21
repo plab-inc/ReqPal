@@ -377,6 +377,62 @@ export type Database = {
           },
         ]
       }
+      reqpal_achievement_levels: {
+        Row: {
+          id: string
+          image: string | null
+          level: number | null
+          reqpal_achievement_id: string | null
+          threshold: number | null
+          title: string | null
+        }
+        Insert: {
+          id?: string
+          image?: string | null
+          level?: number | null
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+        }
+        Update: {
+          id?: string
+          image?: string | null
+          level?: number | null
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievement_levels_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reqpal_achievements: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          target_field: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          target_field?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          target_field?: string | null
+        }
+        Relationships: []
+      }
       requirements: {
         Row: {
           catalog_id: string
@@ -812,6 +868,48 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_points_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_reqpal_achievements: {
+        Row: {
+          created_at: string
+          id: string
+          level: number | null
+          max: boolean | null
+          reqpal_achievement_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
