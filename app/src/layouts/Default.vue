@@ -74,6 +74,9 @@
           <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives"/>
           <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements"/>
         </div>
+        <div v-if="authStore.user && authStore.isModerator">
+          <v-list-item rounded prepend-icon="mdi-seal" title="ReqPal-Achievements" to="/reqpal-achievements"/>
+        </div>
       </v-list>
       <template v-slot:append>
         <v-divider class="my-1"/>
