@@ -224,7 +224,8 @@ class AchievementServiceClass {
                     title: achievementLevel.title,
                     level: achievementLevel.level,
                     threshold: achievementLevel.threshold,
-                    image: achievementLevel.image
+                    image: achievementLevel.image,
+                    xp: achievementLevel.xp
                 }
             )
             .select()
@@ -246,7 +247,8 @@ class AchievementServiceClass {
                 title: achievementLevel.title,
                 level: achievementLevel.level,
                 threshold: achievementLevel.threshold,
-                image: achievementLevel.image
+                image: achievementLevel.image,
+                xp: achievementLevel.xp
             })
             .eq("id", achievementLevel.id);
 

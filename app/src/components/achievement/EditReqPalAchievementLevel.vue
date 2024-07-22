@@ -21,6 +21,8 @@
                             :rules="[requiredNumberRule]"/>
               <v-text-field variant="outlined" label="Level" v-model="localAchievementLevel.level"
                             :rules="[requiredPositiveNumberRule]"/>
+              <v-text-field variant="outlined" label="XP-Belohnung" v-model="localAchievementLevel.xp"
+                            :rules="[requiredPositiveNumberRule]"/>
             </v-col>
             <v-col sm="6">
               <v-item-group label="Bild" v-model="localAchievementLevel.image" mandatory>
@@ -95,7 +97,8 @@ const localAchievementLevel = ref<ReqPalAchievementLevelDTO>({
   level: 0,
   reqpal_achievement_id: "",
   threshold: 0,
-  title: ""
+  title: "",
+  xp: 0
 });
 const originalAchievementLevel = ref<ReqPalAchievementLevelDTO>();
 const form = ref<any>(null);
@@ -133,7 +136,7 @@ async function save() {
 async function updateAchievementLevel() {
   try {
     await achievementStore.updateReqPalAchievementLevel(localAchievementLevel.value);
-    AlertService.addSuccessAlert("Achievement wurde aktualisiert.")
+    AlertService.addSuccessAlert("ReqPal-Achievement-Level wurde aktualisiert.")
   } catch (error: any) {
     throw error;
   }
@@ -146,7 +149,7 @@ async function createAchievementLevel() {
       console.log(achievement)
       localAchievementLevel.value.reqpal_achievement_id = achievement.id;
       await achievementStore.uploadReqPalAchievementLevel(localAchievementLevel.value);
-      AlertService.addSuccessAlert("Achievement wurde erstellt.")
+      AlertService.addSuccessAlert("ReqPal-Achievement-Level wurde erstellt.")
     } else {
       AlertService.addErrorAlert("Zuordnung zum Achievement fehlgeschlagen.")
     }

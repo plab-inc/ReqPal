@@ -20,7 +20,7 @@
             variant="plain"
             size="medium"
             icon="mdi-plus"
-            @click.stop="openLevelEditDialog(null, item)"
+            @click.stop="openReqPalAchievementLevelEditDialog(null, item)"
         />
         <v-btn
             class="ml-2"
@@ -29,7 +29,7 @@
             variant="plain"
             size="medium"
             icon="mdi-pencil"
-            @click.stop="openEditDialog(item)"
+            @click.stop="openReqPalAchievementEditDialog(item)"
         />
         <v-btn
             class="ml-2"
@@ -38,79 +38,48 @@
             variant="plain"
             size="medium"
             icon="mdi-delete"
-            @click.stop="deleteAchievement(item)"
+            @click.stop="deleteReqPalAchievement(item)"
         />
       </div>
     </template>
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length">
-          <v-table density="compact" v-if="item.levels.length > 0">
-            <thead>
-            <tr>
-              <th class="text-left">
-                Level
-              </th>
-              <th class="text-left">
-                Titel
-              </th>
-              <th class="text-left">
-                Schwellenwert
-              </th>
-              <th class="text-left">
-                Bild
-              </th>
-              <th class="text-end">
-                Level-Aktionen
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
-                v-for="(level, i) in item.levels"
-                :key="i"
-            >
-              <td>{{ level.level }}</td>
-              <td>{{ level.title }}</td>
-              <td>{{ level.threshold }}</td>
-              <td>
-                <v-img max-width="50" v-if="level.image" :src="getAchievementImageUrl(level.image)"
-                       :alt="'Achievement Image: '+level.image"></v-img>
-              </td>
-              <td>
-                <div class="d-flex justify-end align-center">
-                  <v-btn
-                      class="ml-1"
-                      density="compact"
-                      color="success"
-                      variant="plain"
-                      size="medium"
-                      icon="mdi-pencil"
-                      @click.stop="openLevelEditDialog(level, item)"
-                  />
-                  <v-btn
-                      class="ml-2"
-                      density="compact"
-                      color="error"
-                      variant="plain"
-                      size="medium"
-                      icon="mdi-delete"
-                      @click.stop="deleteAchievementLevel(level)"
-                  />
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </v-table>
-          <div v-else>
-            <p class="mb-2 mt-2">Noch keine Level hinzugefügt.</p>
-            <v-btn
-                block
-                @click.stop="openLevelEditDialog(null, item)"
-            >
-              Neues Level hinzufügen
-            </v-btn>
-          </div>
+          <v-data-table-virtual
+              :headers="levelHeaders"
+              :items="item.levels.length > 0 ? item.levels : []"
+              item-value="id"
+              hover
+              density="compact"
+              no-data-text="Sie haben noch keine ReqPal-Achievement-Level erstellt."
+          >
+            <template v-slot:item.actions="{ item: level }">
+              <div>
+                <v-btn
+                    class="ml-1"
+                    density="compact"
+                    color="success"
+                    variant="plain"
+                    size="medium"
+                    icon="mdi-pencil"
+                    @click.stop="openReqPalAchievementLevelEditDialog(level, item)"
+                />
+                <v-btn
+                    class="ml-2"
+                    density="compact"
+                    color="error"
+                    variant="plain"
+                    size="medium"
+                    icon="mdi-delete"
+                    @click.stop="deleteReqPalAchievementLevel(level)"
+                />
+              </div>
+            </template>
+            <template v-slot:item.image="{ item: level }">
+              <v-img max-width="50" v-if="level.image" :src="getAchievementImageUrl(level.image)"
+                     :alt="'Achievement Image: '+level.image"></v-img>
+            </template>
+          </v-data-table-virtual>
         </td>
       </tr>
     </template>
@@ -123,7 +92,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
-import {DeleteAchievement} from "@/utils/dialogs.ts";
+import {DeleteReqPalAchievement, DeleteReqPalAchievementLevel} from "@/utils/dialogs.ts";
 import {useUtilStore} from "@/stores/util.ts";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import {ReqPalAchievement, ReqPalAchievementLevelDTO} from "@/types/achievement.ts";
@@ -144,15 +113,24 @@ const headers = ref([
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
-function openEditDialog(item: ReqPalAchievement | null) {
+const levelHeaders = ref([
+  {title: "Level", value: "level", sortable: true, width: "auto", align: "start"},
+  {title: "Titel", value: "title", sortable: true, width: "auto", align: "center"},
+  {title: "Schwellenwert", value: "threshold", sortable: true, width: "auto", align: "center"},
+  {title: "XP-Belohnung", value: "xp", sortable: true, width: "auto", align: "center"},
+  {title: "Bild", value: "image", sortable: false, width: "auto", align: "center"},
+  {title: "Level-Aktionen", value: "actions", sortable: false, width: "auto", align: "end"},
+] as const);
+
+function openReqPalAchievementEditDialog(item: ReqPalAchievement | null) {
   achievementStore.reqPalAchievement = item;
   editLevelDialog.value = false;
   editDialog.value = true;
 }
 
-function openLevelEditDialog(item: (ReqPalAchievementLevelDTO | null), achievement: ReqPalAchievement) {
+function openReqPalAchievementLevelEditDialog(item: (ReqPalAchievementLevelDTO | null), reqPalAchievement: ReqPalAchievement) {
   achievementStore.reqPalAchievementLevel = item;
-  achievementStore.reqPalAchievement = achievement;
+  achievementStore.reqPalAchievement = reqPalAchievement;
   editDialog.value = false;
   editLevelDialog.value = true;
 }
@@ -165,14 +143,14 @@ function updateEditDialog(value: boolean) {
   editDialog.value = value;
 }
 
-function deleteAchievement(item: ReqPalAchievement) {
-  utilStore.openDialog(DeleteAchievement, () => {
+function deleteReqPalAchievement(item: ReqPalAchievement) {
+  utilStore.openDialog(DeleteReqPalAchievement, () => {
     achievementStore.deleteReqPalAchievement(item.id);
   });
 }
 
-function deleteAchievementLevel(item: ReqPalAchievementLevelDTO) {
-  utilStore.openDialog(DeleteAchievement, () => {
+function deleteReqPalAchievementLevel(item: ReqPalAchievementLevelDTO) {
+  utilStore.openDialog(DeleteReqPalAchievementLevel, () => {
     achievementStore.deleteReqPalAchievementLevel(item);
   });
 }

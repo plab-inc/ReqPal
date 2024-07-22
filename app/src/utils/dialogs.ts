@@ -151,6 +151,22 @@ export const DeleteAchievement: DialogText = {
     cancelLabel: "Zurück"
 };
 
+export const DeleteReqPalAchievement: DialogText = {
+    title: "Achievement löschen",
+    message: "Möchten Sie wirklich das ausgewählte ReqPal-Achievement löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte ReqPal-Achievements und Level der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteReqPalAchievementLevel: DialogText = {
+    title: "Achievement löschen",
+    message: "Möchten Sie wirklich das ausgewählte ReqPal-Achievement-Level löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte ReqPal-Achievements und Level der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 export const DeleteLesson: DialogText = {
     title: "Lektion löschen",
     message: "Möchten Sie wirklich die ausgewählte Lektion löschen? " +

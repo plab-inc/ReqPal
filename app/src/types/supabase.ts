@@ -385,6 +385,7 @@ export type Database = {
           reqpal_achievement_id: string | null
           threshold: number | null
           title: string | null
+          xp: number
         }
         Insert: {
           id?: string
@@ -393,6 +394,7 @@ export type Database = {
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
+          xp?: number
         }
         Update: {
           id?: string
@@ -401,6 +403,7 @@ export type Database = {
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
+          xp?: number
         }
         Relationships: [
           {
