@@ -28,7 +28,6 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
     }
 
-
     private void lessonTaskTimer(DelegateExecution delegateExecution) {
         if (delegateExecution.getEventName().equals("start")) {
             delegateExecution.setVariable("lastLessonStartTime", new Date());
