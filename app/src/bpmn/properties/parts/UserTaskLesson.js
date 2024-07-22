@@ -121,8 +121,7 @@ function LessonType(props) {
   const getOptions = () => {
     const lessonStore = useLessonStore();
     const lessons = toRaw(lessonStore.lessons);
-    const publishedLessons = lessons.filter(lesson => lesson.lessonDTO.published);
-    return publishedLessons.map(lesson => ({
+    return lessons.map(lesson => ({
       value: lesson.lessonDTO.uuid,
       label: lesson.lessonDTO.title
     }));
@@ -189,15 +188,21 @@ function addExecutionListener(element, modeling, bpmnFactory) {
   const businessObject = getBusinessObject(element);
 
   businessObject.extensionElements = businessObject.extensionElements || bpmnFactory.create('bpmn:ExtensionElements', { values: [] });
-  businessObject.extensionElements.get('values').length = 0;
 
   const extensionElements = businessObject.extensionElements;
-  const listeners = ['start', 'end'].map(event => bpmnFactory.create('camunda:ExecutionListener', {
-    event: event,
-    delegateExpression: '${lessonUserTaskDelegate}'
-  }));
 
-  extensionElements.get('values').push(...listeners);
+  const existingListeners = extensionElements.get('values').filter(value => value.$type === 'camunda:ExecutionListener');
+
+  ['start', 'end'].forEach(event => {
+    const alreadyExists = existingListeners.some(listener => listener.event === event && listener.delegateExpression === '${lessonUserTaskDelegate}');
+    if (!alreadyExists) {
+      const listener = bpmnFactory.create('camunda:ExecutionListener', {
+        event: event,
+        delegateExpression: '${lessonUserTaskDelegate}'
+      });
+      extensionElements.get('values').push(listener);
+    }
+  });
 
   modeling.updateProperties(element, { extensionElements });
 }

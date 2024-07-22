@@ -21,11 +21,12 @@ public class ProcessController {
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
-    @PostMapping("/start/{processDefinitionKey}")
+    @PostMapping("/start/{scenarioId}")
     public ResponseEntity<String> startWorkflow(
-            @PathVariable("processDefinitionKey") String processDefinitionKey,
+            @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user) {
         try {
+            String processDefinitionKey = "Process_" + scenarioId;
             ProcessInstance processInstance = processService.startWorkflow(processDefinitionKey, String.valueOf(user.getId()));
             return ResponseEntity.ok("ProcessInstance started with processInstanceId: " + processInstance.getId());
         } catch (Exception e) {
