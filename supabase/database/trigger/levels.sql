@@ -6,6 +6,7 @@
 --------------------------------------------
 
 DROP TRIGGER IF EXISTS handle_user_statistics_insert_trigger ON user_statistics;
+DROP TRIGGER IF EXISTS handle_user_statistics_update_trigger ON user_statistics;
 DROP FUNCTION IF EXISTS update_reqpal_level();
 DROP FUNCTION IF EXISTS initiate_reqpal_level(UUID);
 DROP FUNCTION IF EXISTS calculate_threshold(INTEGER);
@@ -84,7 +85,13 @@ END;
 $$;
 
 CREATE TRIGGER handle_user_statistics_insert_trigger
-    AFTER INSERT OR UPDATE
+    AFTER INSERT
+    ON user_statistics
+    FOR EACH ROW
+EXECUTE FUNCTION update_reqpal_level();
+
+CREATE TRIGGER handle_user_statistics_update_trigger
+    AFTER UPDATE OF total_xp
     ON user_statistics
     FOR EACH ROW
 EXECUTE FUNCTION update_reqpal_level();
