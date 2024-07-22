@@ -381,7 +381,7 @@ export type Database = {
         Row: {
           id: string
           image: string | null
-          level: number | null
+          level: number
           reqpal_achievement_id: string | null
           threshold: number | null
           title: string | null
@@ -389,7 +389,7 @@ export type Database = {
         Insert: {
           id?: string
           image?: string | null
-          level?: number | null
+          level: number
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
@@ -397,7 +397,7 @@ export type Database = {
         Update: {
           id?: string
           image?: string | null
-          level?: number | null
+          level?: number
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
@@ -418,20 +418,31 @@ export type Database = {
           description: string | null
           id: string
           target_field: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: string
           target_field?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: string
           target_field?: string | null
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       requirements: {
         Row: {
