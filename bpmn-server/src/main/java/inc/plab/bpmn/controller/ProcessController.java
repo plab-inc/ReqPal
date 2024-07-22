@@ -35,30 +35,37 @@ public class ProcessController {
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
-    @PostMapping("/invoke/{taskId}")
+    @PostMapping("/invoke/{scenarioId}")
     public ResponseEntity<String> invokeItem(
-            @PathVariable("taskId") String taskId,
+            @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user,
             @RequestBody String lessonResults) {
         try {
-            processService.invokeItem(taskId, String.valueOf(user.getId()), lessonResults);
-            return ResponseEntity.ok("Task completed: " + taskId);
+            String processDefinitionKey = "Process_" + scenarioId;
+            String taskId = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
+
+            if (taskId == null) {
+                return ResponseEntity.ok("Scenario completed.");
+            }
+
+            return ResponseEntity.ok("Task completed, nextLessonId is: " + taskId);
         } catch (Exception e) {
             return ResponseEntity.status(400).body("Error completing task: " + e.getMessage());
         }
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
-    @GetMapping(value = "/status/{processInstanceId}", produces = "application/json")
+    @GetMapping(value = "/status/{scenarioId}", produces = "application/json")
     public ResponseEntity<String> getProcessInstanceStatus(
-            @PathVariable("processInstanceId") String processInstanceId,
+            @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user) {
 
         try {
-            String responseJson = processService.getProcessInstanceStatus(processInstanceId, String.valueOf(user.getId()));
+            String processDefinitionKey = "Process_" + scenarioId;
+            String responseJson = processService.getProcessInstanceStatus(processDefinitionKey, String.valueOf(user.getId()));
             return ResponseEntity.ok(responseJson);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Error completing task: " + e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
 
     }
