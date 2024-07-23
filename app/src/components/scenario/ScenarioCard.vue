@@ -78,6 +78,7 @@ import { useScenarioStore } from "@/stores/scenario.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { DeployScenarioFirstTime } from "@/utils/dialogs.ts";
 import http from "@/services/api/api.ts";
+import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps<{
   scenario?: Scenario
@@ -114,6 +115,7 @@ const deployScenario = (scenario: Scenario) => {
 }
 
 const newScenario = () => {
+  scenarioModelerStore.generateNewUUID();
   scenarioModelerStore.flushScenario().then(() => {
     router.push({path: '/scenario/builder'});
   });

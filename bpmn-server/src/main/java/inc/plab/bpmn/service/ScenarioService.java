@@ -41,7 +41,7 @@ public class ScenarioService {
         Scenario scenario = scenarioOptional.get();
 
         Deployment deployment = repositoryService.createDeployment()
-                .addInputStream("Test.bpmn", bucketService.getObjectStreamFromBucket("bpmn", scenario.getBpmnPath()))
+                .addInputStream(scenario.getId() + ".bpmn", bucketService.getObjectStreamFromBucket("bpmn", scenario.getBpmnPath()))
                 .tenantId(String.valueOf(profile.getId()))
                 .name(String.valueOf(scenario.getId()))
                 .source("ReqPal-BPMN-Sever")

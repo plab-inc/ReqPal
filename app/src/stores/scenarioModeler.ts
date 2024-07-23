@@ -41,6 +41,9 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       this.description = '';
       this.diagram = baseDiagramXml;
     },
+    async generateNewUUID(){
+      this.uuid = uuidv4();
+    },
     async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
 
       const lessonsInDiagram = await getAllUserTaskIds(this.bpmnModeler?.getDefinitions());
