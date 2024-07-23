@@ -7,6 +7,7 @@ import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import BpmnModeler from "bpmn-js/lib/Modeler";
+import { findShortestPath, getAllUserTaskIds } from "@/utils/dijkstra.ts";
 
 interface ModelerState {
   uuid: string;
@@ -41,6 +42,15 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       this.diagram = baseDiagramXml;
     },
     async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
+
+      const lessonsInDiagram = await getAllUserTaskIds(this.bpmnModeler?.getDefinitions());
+      const shortestPath = await findShortestPath(this.bpmnModeler?.getDefinitions());
+
+      if (!lessonsInDiagram || !shortestPath) {
+        //TODO implement error proper handling
+        throw new Error();
+      }
+
       return {
         id: this.uuid,
         title: this.title,
@@ -49,7 +59,9 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         locked: true,
         deployed: false,
         svg: svg,
-        bpmnXml: xml
+        bpmnXml: xml,
+        lessonsCount: lessonsInDiagram.length,
+        minLessons: shortestPath.length
       };
     },
     async hydrate(scenario: Scenario){

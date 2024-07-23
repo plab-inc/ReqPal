@@ -9,6 +9,8 @@ export type Scenario = {
   description: string,
   deployed: boolean,
   locked: boolean,
+  lessonsCount: number,
+  minLessons: number,
   version?: number,
   createdAt?: string,
   bpmnXml?: string | Blob,
