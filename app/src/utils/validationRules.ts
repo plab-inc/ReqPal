@@ -1,7 +1,9 @@
-import {useProfileStore} from "@/stores/profile.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { useScenarioStore } from "@/stores/scenario.ts";
+import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
 export const maxPointsPerQuestion = 1000;
 export const minPointsPerQuestion = 10;
@@ -163,6 +165,14 @@ export const requiredUniqueLessonTitleRule = async (): Promise<boolean | string>
     const lessonStore = useLessonStore();
     const lessonFormStore = useLessonFormStore();
     const exists = await lessonStore.checkIfLessonTitleExists(lessonFormStore.lessonTitle, lessonFormStore.uuid);
+    if (exists) return "Der Titel existiert bereits.";
+    return true;
+};
+
+export const requiredUniqueScenarioTitleRule = async (): Promise<boolean | string> => {
+    const scenarioStore = useScenarioStore();
+    const scenarioModelerStore = useScenarioModelerStore();
+    const exists = await scenarioStore.checkIfScenarioTitleExists(scenarioModelerStore.title, scenarioModelerStore.uuid);
     if (exists) return "Der Titel existiert bereits.";
     return true;
 };

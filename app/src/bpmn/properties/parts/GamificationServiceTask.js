@@ -1,5 +1,5 @@
 import { Group, isSelectEntryEdited, SelectEntry, TextFieldEntry } from "@bpmn-io/properties-panel";
-import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
+import { is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
 import { setInputParameters } from "@/bpmn/properties/util/Helper.js";
@@ -68,7 +68,24 @@ function ServiceTaskType(props) {
   const getValue = () => getServiceTaskType(element);
 
   const setValue = (value) => {
-    modeling.updateProperties(element, { serviceTaskType: value })
+    const oldTaskType = getServiceTaskType(element);
+
+    if (oldTaskType === "assignAchievement") {
+      modeling.updateProperties(element, {
+        achievementToAssign: undefined,
+        "camunda:delegateExpression": undefined
+      });
+    }
+
+    if (oldTaskType === "grantXPToObjective") {
+      modeling.updateProperties(element, {
+        objectiveToGrantXPTo: undefined,
+        "camunda:delegateExpression": undefined,
+        "xp": undefined
+      });
+    }
+
+    modeling.updateProperties(element, { serviceTaskType: value });
   };
 
   const getOptions = () => {
