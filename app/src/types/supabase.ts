@@ -385,6 +385,7 @@ export type Database = {
           reqpal_achievement_id: string | null
           threshold: number | null
           title: string | null
+          xp: number
         }
         Insert: {
           id?: string
@@ -393,6 +394,7 @@ export type Database = {
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
+          xp?: number
         }
         Update: {
           id?: string
@@ -401,6 +403,7 @@ export type Database = {
           reqpal_achievement_id?: string | null
           threshold?: number | null
           title?: string | null
+          xp?: number
         }
         Relationships: [
           {
@@ -530,7 +533,9 @@ export type Database = {
           deployed: boolean
           description: string | null
           id: string
+          lessons: number
           locked: boolean
+          minLessons: number
           title: string
           user_id: string
           version: number
@@ -540,7 +545,9 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title: string
           user_id: string
           version?: number
@@ -550,7 +557,9 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title?: string
           user_id?: string
           version?: number
@@ -890,25 +899,25 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          level: number | null
           max: boolean | null
           reqpal_achievement_id: string | null
+          reqpal_achievement_level_id: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
-          level?: number | null
           max?: boolean | null
           reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
-          level?: number | null
           max?: boolean | null
           reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -917,6 +926,13 @@ export type Database = {
             columns: ["reqpal_achievement_id"]
             isOneToOne: false
             referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_level_id_fkey"
+            columns: ["reqpal_achievement_level_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievement_levels"
             referencedColumns: ["id"]
           },
           {
