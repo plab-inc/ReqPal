@@ -1,7 +1,7 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h4">
-      {{ 'Neues Szenario erstellen' }}
+      {{ scenarioModelerStore.isDirty ? "Szenario bearbeiten" : "Neues Szenario erstellen" }}
     </v-col>
     <v-col cols="auto">
       <v-btn-group
@@ -24,7 +24,7 @@
           <v-text-field
             clearable
             v-model="scenarioModelerStore.title"
-            :rules="[requiredStringRule]"
+            :rules="[requiredStringRule, requiredUniqueScenarioTitleRule]"
             label="Titel des Szenarios"
             variant="outlined"
           ></v-text-field>
@@ -39,7 +39,8 @@
       </v-row>
       <v-row no-gutters>
         <v-col cols="12">
-          <v-card>
+          <v-card :border="scenarioModelerStore.modelerWarning ? 'error lg' : 'white lg'" class="border-opacity-100"
+                  rounded>
             <Modeler ref="modelerRef"/>
           </v-card>
         </v-col>
@@ -50,7 +51,7 @@
 
 <script setup lang="ts">
 import Modeler from "@/components/scenario/ScenarioModeler.vue";
-import { requiredStringRule } from "@/utils/validationRules.ts";
+import { requiredStringRule, requiredUniqueScenarioTitleRule } from "@/utils/validationRules.ts";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 import { ref } from "vue";
 import router from "@/router/index.ts";
@@ -67,12 +68,11 @@ async function validate() {
 }
 
 async function resetScenario() {
-  await scenarioModelerStore.flushScenario();
+  await scenarioModelerStore.flushScenarioData();
   await scenarioModelerStore.loadInDiagram();
 }
 
 async function saveScenario(){
-  //TODO Better validation logic
   await validate();
 
   if (!formIsValid.value) {
@@ -82,6 +82,6 @@ async function saveScenario(){
   utilStore.startLoadingBar();
   await scenarioModelerStore.saveScenario().then(() => {
     router.push({path: '/scenario'});
-  });
+  }).finally(() => utilStore.stopLoadingBar());
 }
 </script>

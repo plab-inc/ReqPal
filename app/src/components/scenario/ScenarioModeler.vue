@@ -2,7 +2,7 @@
   <v-theme-provider theme="light" with-background>
     <v-row no-gutters>
       <v-col cols="9">
-        <div id="bpmn-container" ref="bpmnContainer" style="height: 72vh;">
+        <div id="bpmn-container" ref="bpmnContainer" style="height: 67vh;">
           <v-tooltip text="BPMN Datei Hochladen" location="top left">
             <template v-slot:activator="{ props }">
               <v-btn
@@ -12,7 +12,7 @@
                 color="black"
                 density="comfortable"
                 variant="outlined"
-                style="position: absolute; bottom: 5px; left: 10px; z-index: 5"
+                style="position: absolute; bottom: 10px; left: 10px; z-index: 5"
                 @click="uploadDiagram"
               />
             </template>
@@ -26,7 +26,7 @@
                 color="black"
                 density="comfortable"
                 variant="outlined"
-                style="position: absolute; bottom: 5px; left: 55px; z-index: 5"
+                style="position: absolute; bottom: 10px; left: 55px; z-index: 5"
                 @click="scenarioModelerStore.downloadDiagramAsXML"
               />
             </template>
@@ -40,7 +40,7 @@
                 color="black"
                 density="comfortable"
                 variant="outlined"
-                style="position: absolute; bottom: 5px; left: 100px; z-index: 5"
+                style="position: absolute; bottom: 10px; left: 100px; z-index: 5"
                 @click="scenarioModelerStore.downloadDiagramAsSVG"
               />
             </template>

@@ -6,7 +6,7 @@
     rounded
     elevation="10"
   >
-    <div :style="scenario?.locked ? 'background: #fa756b': 'background: white' "
+    <div :style="scenario?.locked ? 'background: #908ba3': 'background: white' "
          v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5" />
     <div class="elevation-8">
       <v-card-title class="text-h4 pb-0">
@@ -78,7 +78,6 @@ import { useScenarioStore } from "@/stores/scenario.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { DeployScenarioFirstTime } from "@/utils/dialogs.ts";
 import http from "@/services/api/api.ts";
-import { v4 as uuidv4 } from "uuid";
 
 const props = defineProps<{
   scenario?: Scenario
@@ -116,7 +115,7 @@ const deployScenario = (scenario: Scenario) => {
 
 const newScenario = () => {
   scenarioModelerStore.generateNewUUID();
-  scenarioModelerStore.flushScenario().then(() => {
+  scenarioModelerStore.flushScenarioData().then(() => {
     router.push({path: '/scenario/builder'});
   });
 }
