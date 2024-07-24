@@ -1,6 +1,9 @@
 import AlertService from "@/services/util/alert.ts";
 import {
     AuthenticationError,
+    BpmnImportError,
+    BpmnParsingError,
+    BpmnPersistError,
     ConversionError,
     DatabaseError,
     PrivilegeError,
@@ -34,6 +37,21 @@ const errorHandler = (error: unknown): void => {
             return;
         }
         AlertService.addErrorAlert("Fehler bei der Anmeldung/Registrierung/Zurücksetzen des Passworts.");
+        return;
+    }
+
+    if (error instanceof BpmnParsingError) {
+        AlertService.addErrorAlert(error.message);
+        return;
+    }
+
+    if (error instanceof BpmnPersistError) {
+        AlertService.addErrorAlert("Es gibt Probleme mit dem Speichern des Diagrams: " + error.message);
+        return;
+    }
+
+    if (error instanceof BpmnImportError) {
+        AlertService.addErrorAlert("Es gibt Probleme mit dem Importieren des Diagrams: " + error.message);
         return;
     }
 
