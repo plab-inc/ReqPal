@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia';
+import { defineStore } from "pinia";
 import { Scenario } from "@/types/scenario.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
@@ -32,5 +32,12 @@ export const useScenarioStore = defineStore('scenario', {
                 }
             }
         },
+        async checkIfScenarioTitleExists(scenarioTitle: string, scenarioId: string): Promise<boolean> {
+            if (this.scenarios.length === 0) {
+                await this.fetchScenarios();
+            }
+
+            return this.scenarios.some(scenario => scenario.title === scenarioTitle && scenario.id !== scenarioId);
+        }
     }
 });

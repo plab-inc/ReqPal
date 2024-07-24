@@ -2,6 +2,7 @@ package inc.plab.bpmn.websecurity;
 
 import inc.plab.bpmn.exception.TokenVerificationException;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
+import inc.plab.bpmn.service.SupabaseAuthService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.crypto.SecretKey;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     @SneakyThrows
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) {
         try {
 
             String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);

@@ -27,6 +27,7 @@
     "bpmn-js-token-simulation": "^0.34.2",
     "camunda-bpmn-moddle": "^7.0.1",
     "diagram-js": "^14.0.0",
+    "dijkstrajs": "^1.0.3",
     "exceljs": "^4.4.0",
     "min-dash": "^4.2.1",
     "pinia": "^2.1.7",

@@ -7,6 +7,8 @@ import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import BpmnModeler from "bpmn-js/lib/Modeler";
+import { findShortestPath, getAllUserTaskIds, validateProcessDefinition } from "@/bpmn/modeler/helpers.ts";
+import { BpmnImportError, BpmnPersistError } from "@/errors/custom.ts";
 
 interface ModelerState {
   uuid: string;
@@ -14,6 +16,7 @@ interface ModelerState {
   description: string;
   diagram: string;
   baseDiagramSvg: string;
+  modelerWarning: boolean;
   bpmnModeler: BpmnModeler | null;
 }
 
@@ -24,39 +27,25 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
     description: '',
     diagram: baseDiagramXml,
     baseDiagramSvg: baseDiagramSvg,
-    bpmnModeler: null
+    bpmnModeler: null,
+    modelerWarning: false
   }),
   getters: {
     isDirty: (state) => {
-      return state.title.length > 0 && state.description.length > 0;
+      return state.title.length > 0 && state.description.length > 0 && state.diagram !== baseDiagramXml;
     },
     getProcessId: (state) => {
       return 'Process_' + state.uuid;
     }
   },
   actions: {
-    async flushScenario() {
+    async flushScenarioData() {
       this.title = '';
       this.description = '';
       this.diagram = baseDiagramXml;
     },
-    async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
-      return {
-        id: this.uuid,
-        title: this.title,
-        description: this.description,
-        user: userId,
-        locked: true,
-        deployed: false,
-        svg: svg,
-        bpmnXml: xml
-      };
-    },
-    async hydrate(scenario: Scenario){
-      this.uuid = scenario.id;
-      this.title = scenario.title;
-      this.description = scenario.description;
-      this.diagram = await BpmnStorageService.pull.getDiagramXml(scenario) || baseDiagramXml;
+    async generateNewUUID(){
+      this.uuid = uuidv4();
     },
     async saveScenario() {
       const authStore = useAuthStore();
@@ -66,13 +55,51 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
 
         if (xml && svg) {
           const scenario: Scenario = await this.generateScenario(authStore.user.id, xml, svg);
-          const paths = await BpmnStorageService.push.manageScenarioAssets(scenario, 'upload');
+          const paths = await BpmnStorageService.push.manageScenarioAssets(scenario, "upload");
 
           if (paths) {
             await ScenarioService.push.uploadScenario(scenario);
           }
         }
       }
+    },
+    async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
+      const processDefinition = ((this.bpmnModeler?.getDefinitions() as unknown) as {
+        rootElements: any[]
+      }).rootElements[0];
+      if (!processDefinition) throw new Error("Es gibt ein Problem mit dem Modeller.");
+
+      await validateProcessDefinition(processDefinition).catch((error) => {
+        this.modelerWarning = true;
+
+        setTimeout(() => {
+          this.modelerWarning = false;
+        }, 10000);
+
+        throw error;
+      });
+
+      const shortestPath = await findShortestPath(processDefinition);
+      const lessonsInDiagram = await getAllUserTaskIds(processDefinition);
+
+      return {
+        id: this.uuid,
+        title: this.title,
+        description: this.description,
+        user: userId,
+        locked: true,
+        deployed: false,
+        svg: svg,
+        bpmnXml: xml,
+        lessonsCount: lessonsInDiagram.length,
+        minLessons: shortestPath.length
+      };
+    },
+    async hydrate(scenario: Scenario){
+      this.uuid = scenario.id;
+      this.title = scenario.title;
+      this.description = scenario.description;
+      this.diagram = await BpmnStorageService.pull.getDiagramXml(scenario) || baseDiagramXml;
     },
     async loadInDiagram(){
       this.bpmnModeler?.importXML(this.diagram);
@@ -83,8 +110,8 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
           const result = await this.bpmnModeler.saveXML({ format: true });
           return result?.xml;
         }
-      } catch (err) {
-        console.error("Error saving BPMN diagram as XML:", err);
+      } catch (err: any) {
+        throw new BpmnPersistError("Error saving BPMN diagram as XML: " + err.toString());
       }
     },
     async getDiagramSvg(): Promise<string | undefined> {
@@ -93,8 +120,8 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
           const result = await this.bpmnModeler.saveSVG();
           return result?.svg;
         }
-      } catch (err) {
-        console.error("Error saving BPMN diagram as SVG:", err);
+      } catch (err: any) {
+        throw new BpmnPersistError("Error saving BPMN diagram as SVG: " + err.toString());
       }
     },
     async downloadDiagramAsXML() {
@@ -131,8 +158,8 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
           if (this.bpmnModeler) {
             await this.bpmnModeler.importXML(xml);
           }
-        } catch (err) {
-          console.error("Error importing BPMN diagram:", err);
+        } catch (err: any) {
+          throw new BpmnImportError(err.toString());
         }
       };
       reader.readAsText(file);
