@@ -11,15 +11,16 @@ DROP FUNCTION IF EXISTS update_reqpal_level();
 DROP FUNCTION IF EXISTS initiate_reqpal_level(UUID);
 DROP FUNCTION IF EXISTS calculate_threshold(INTEGER);
 
-CREATE OR REPLACE FUNCTION calculate_threshold(current_level INTEGER)
+CREATE OR REPLACE FUNCTION calculate_threshold(level INTEGER)
     RETURNS INTEGER
     LANGUAGE plpgsql
 AS
 $$
 DECLARE
     base_xp INTEGER := 25;
+    increment INTEGER := 50;
 BEGIN
-    RETURN base_xp * (current_level + 1) * (current_level + 1);
+    RETURN base_xp + ((level - 1) * increment);
 END;
 $$;
 
@@ -49,7 +50,7 @@ BEGIN
 
             IF NOT user_exists THEN
                 current_level := 0;
-                current_xp_threshold := calculate_threshold(current_level);
+                current_xp_threshold := calculate_threshold(current_level+1);
                 reqpal_xp := 0;
 
                 INSERT INTO user_reqpal_levels (user_id, xp, level, xp_threshold)
@@ -67,7 +68,7 @@ BEGIN
                 LOOP
                     current_level := current_level + 1;
                     new_xp := new_xp - current_xp_threshold;
-                    current_xp_threshold := calculate_threshold(current_level);
+                    current_xp_threshold := calculate_threshold(current_level+1);
                 END LOOP;
 
             UPDATE user_reqpal_levels
