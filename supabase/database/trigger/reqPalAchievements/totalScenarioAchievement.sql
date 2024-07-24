@@ -1,15 +1,15 @@
 -- Author: Laura
 
 --------------------------------------------
--- React on newly gained xp on user_statistics
+-- React on newly finished scenarios on user_statistics
 -- update ReqPal achievements accordingly
 --------------------------------------------
 
-DROP TRIGGER IF EXISTS handle_xp_achievement_trigger_insert ON user_statistics;
-DROP TRIGGER IF EXISTS handle_xp_achievement_trigger_update ON user_statistics;
-DROP FUNCTION IF EXISTS update_xp_achievement();
+DROP TRIGGER IF EXISTS handle_scenario_achievement_trigger_insert ON user_statistics;
+DROP TRIGGER IF EXISTS handle_scenario_achievement_trigger_update ON user_statistics;
+DROP FUNCTION IF EXISTS update_scenario_achievement();
 
-CREATE OR REPLACE FUNCTION update_xp_achievement()
+CREATE OR REPLACE FUNCTION update_scenario_achievement()
     RETURNS TRIGGER
     LANGUAGE plpgsql AS
 $$
@@ -23,7 +23,7 @@ BEGIN
     SELECT id
     INTO achievement_id
     FROM reqpal_achievements
-    WHERE target_field = 'total_xp'
+    WHERE target_field = 'total_scenarios'
     LIMIT 1;
 
     SELECT max
@@ -37,7 +37,7 @@ BEGIN
         INTO new_level, new_level_id
         FROM reqpal_achievement_levels
         WHERE reqpal_achievement_id = achievement_id
-          AND NEW.total_xp >= threshold
+          AND NEW.total_scenarios >= threshold
         ORDER BY level DESC
         LIMIT 1;
 
@@ -66,14 +66,14 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER handle_xp_achievement_trigger_insert
+CREATE TRIGGER handle_scenario_achievement_trigger_insert
     AFTER INSERT
     ON user_statistics
     FOR EACH ROW
-EXECUTE FUNCTION update_xp_achievement();
+EXECUTE FUNCTION update_scenario_achievement();
 
-CREATE TRIGGER handle_xp_achievement_trigger_update
-    AFTER UPDATE OF total_xp
+CREATE TRIGGER handle_scenario_achievement_trigger_update
+    AFTER UPDATE OF total_scenarios
     ON user_statistics
     FOR EACH ROW
-EXECUTE FUNCTION update_xp_achievement();
+EXECUTE FUNCTION update_scenario_achievement();
