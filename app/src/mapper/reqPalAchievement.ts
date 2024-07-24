@@ -18,6 +18,7 @@ export const mapToReqPalAchievement = (input: any, levelsExist: boolean): ReqPal
         created_at: input.created_at,
         target_field: input.target_field,
         firstLevelImage: image,
+        example: input.example ? input.example : false,
         levels: reqPalAchievementLevels
     };
 };

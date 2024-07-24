@@ -61,9 +61,8 @@ export const useAchievementStore = defineStore('achievement', {
 
             if (authStore.user) {
                 this.images = [];
-                const badges = await AchievementService.pull.fetchAchievementImagesBadges();
-                const banners = await AchievementService.pull.fetchAchievementImagesBanners();
-                this.images = [...badges, ...banners];
+                const badges = await AchievementService.pull.fetchAchievementImages('badges');
+                this.images = [...badges];
             } else {
                 throw new AuthenticationError("No authorized user found.", 401)
             }
@@ -115,7 +114,7 @@ export const useAchievementStore = defineStore('achievement', {
 
             if (authStore.user) {
                 this.images = [];
-                const badges = await AchievementService.pull.fetchReqPalAchievementImages();
+                const badges = await AchievementService.pull.fetchAchievementImages('reqpal');
                 this.images = [...badges];
             } else {
                 throw new AuthenticationError("No authorized user found.", 401)

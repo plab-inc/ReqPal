@@ -533,7 +533,9 @@ export type Database = {
           deployed: boolean
           description: string | null
           id: string
+          lessons: number
           locked: boolean
+          minLessons: number
           title: string
           user_id: string
           version: number
@@ -543,7 +545,9 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title: string
           user_id: string
           version?: number
@@ -553,7 +557,9 @@ export type Database = {
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title?: string
           user_id?: string
           version?: number

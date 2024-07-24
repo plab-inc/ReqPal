@@ -19,10 +19,8 @@ class AchievementServiceClass {
 
     public pull = {
         fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this),
-        fetchAchievementImagesBadges: this.fetchAchievementImagesBadges.bind(this),
-        fetchAchievementImagesBanners: this.fetchAchievementImagesBanners.bind(this),
+        fetchAchievementImages: this.fetchAchievementImages.bind(this),
         fetchAchievementsByModerator: this.fetchAchievementsByModerator.bind(this),
-        fetchReqPalAchievementImages: this.fetchReqPalAchievementImages.bind(this)
     }
 
     private async fetchAchievementsByUser(userUUID: string): Promise<Achievement[] | undefined> {
@@ -87,11 +85,11 @@ class AchievementServiceClass {
         if (error) throw error;
     }
 
-    async fetchAchievementImagesBadges(): Promise<any> {
+    async fetchAchievementImages(folderName: string): Promise<any> {
         const {data, error} = await supabase
             .storage
             .from('achievement-images')
-            .list('badges', {
+            .list(folderName, {
                 limit: 100,
                 offset: 0,
                 sortBy: {column: 'name', order: 'asc'},
@@ -100,27 +98,7 @@ class AchievementServiceClass {
         if (data) {
             let images: string[] = [];
             data.forEach(d => {
-                images.push(createPathToImage("badges", d.name));
-            })
-            return images;
-        }
-    }
-
-    async fetchAchievementImagesBanners(): Promise<any> {
-        const {data, error} = await supabase
-            .storage
-            .from('achievement-images')
-            .list('banners', {
-                limit: 100,
-                offset: 0,
-                sortBy: {column: 'name', order: 'asc'},
-            })
-        if (error) throw error;
-        if (data) {
-            let images: string[] = [];
-            data.forEach(d => {
-                if (d.name !== ".emptyFolderPlaceholder")
-                    images.push(createPathToImage("banners", d.name));
+                images.push(createPathToImage(folderName, d.name));
             })
             return images;
         }
@@ -150,25 +128,6 @@ class AchievementServiceClass {
         }
     }
 
-    async fetchReqPalAchievementImages(): Promise<any> {
-        const {data, error} = await supabase
-            .storage
-            .from('achievement-images')
-            .list('reqpal', {
-                limit: 100,
-                offset: 0,
-                sortBy: {column: 'name', order: 'asc'},
-            })
-        if (error) throw error;
-        if (data) {
-            let images: string[] = [];
-            data.forEach(d => {
-                images.push(createPathToImage("reqpal", d.name));
-            })
-            return images;
-        }
-    }
-
     private async uploadReqPalAchievement(achievement: ReqPalAchievement, userUUID: string): Promise<ReqPalAchievement | undefined> {
         const {data, error} = await supabase
             .from('reqpal_achievements')
@@ -176,7 +135,8 @@ class AchievementServiceClass {
                 {
                     user_id: userUUID,
                     description: achievement.description,
-                    target_field: achievement.target_field
+                    target_field: achievement.target_field,
+                    example: achievement.example
                 }
             )
             .select()
@@ -196,7 +156,8 @@ class AchievementServiceClass {
             .from("reqpal_achievements")
             .update({
                 description: achievement.description,
-                target_field: achievement.target_field
+                target_field: achievement.target_field,
+                example: achievement.example
             })
             .eq("id", achievement.id);
 
