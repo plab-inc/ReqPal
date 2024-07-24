@@ -1,19 +1,26 @@
 import {supabase} from "@/plugins/supabase.ts";
-import {Achievement} from "@/types/achievement.ts";
+import {Achievement, ReqPalAchievement, ReqPalAchievementLevelDTO} from "@/types/achievement.ts";
 import {createPathToImage} from "@/utils/achievementImage.ts";
+import {mapToReqPalAchievement} from "@/mapper/reqPalAchievement.ts";
 
 class AchievementServiceClass {
 
     public push = {
         uploadAchievement: this.uploadAchievement.bind(this),
         updateAchievement: this.updateAchievement.bind(this),
-        deleteAchievement: this.deleteAchievement.bind(this)
+        deleteAchievement: this.deleteAchievement.bind(this),
+        deleteReqPalAchievement: this.deleteReqPalAchievement.bind(this),
+        uploadReqPalAchievement: this.uploadReqPalAchievement.bind(this),
+        updateReqPalAchievement: this.updateReqPalAchievement.bind(this),
+        deleteReqPalAchievementLevel: this.deleteReqPalAchievementLevel.bind(this),
+        uploadReqPalAchievementLevel: this.uploadReqPalAchievementLevel.bind(this),
+        updateReqPalAchievementLevel: this.updateReqPalAchievementLevel.bind(this)
     };
 
     public pull = {
         fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this),
-        fetchAchievementImagesBadges: this.fetchAchievementImagesBadges.bind(this),
-        fetchAchievementImagesBanners: this.fetchAchievementImagesBanners.bind(this)
+        fetchAchievementImages: this.fetchAchievementImages.bind(this),
+        fetchAchievementsByModerator: this.fetchAchievementsByModerator.bind(this),
     }
 
     private async fetchAchievementsByUser(userUUID: string): Promise<Achievement[] | undefined> {
@@ -78,11 +85,11 @@ class AchievementServiceClass {
         if (error) throw error;
     }
 
-    async fetchAchievementImagesBadges(): Promise<any> {
+    async fetchAchievementImages(folderName: string): Promise<any> {
         const {data, error} = await supabase
             .storage
             .from('achievement-images')
-            .list('badges', {
+            .list(folderName, {
                 limit: 100,
                 offset: 0,
                 sortBy: {column: 'name', order: 'asc'},
@@ -91,30 +98,134 @@ class AchievementServiceClass {
         if (data) {
             let images: string[] = [];
             data.forEach(d => {
-                images.push(createPathToImage("badges", d.name));
+                images.push(createPathToImage(folderName, d.name));
             })
             return images;
         }
     }
 
-    async fetchAchievementImagesBanners(): Promise<any> {
+    private async fetchAchievementsByModerator(userUUID: string): Promise<ReqPalAchievement[] | undefined> {
+
         const {data, error} = await supabase
-            .storage
-            .from('achievement-images')
-            .list('banners', {
-                limit: 100,
-                offset: 0,
-                sortBy: {column: 'name', order: 'asc'},
-            })
+            .from('reqpal_achievements')
+            .select(`
+            *,
+            reqpal_achievement_levels(*)
+        `)
+            .eq('user_id', userUUID);
+
         if (error) throw error;
+
         if (data) {
-            let images: string[] = [];
+            let result: ReqPalAchievement[] = [];
+
             data.forEach(d => {
-                if(d.name !== ".emptyFolderPlaceholder")
-                images.push(createPathToImage("banners", d.name));
-            })
-            return images;
+                const mapped: ReqPalAchievement = mapToReqPalAchievement(d, true);
+                result.push(mapped);
+            });
+
+            return result;
         }
+    }
+
+    private async uploadReqPalAchievement(achievement: ReqPalAchievement, userUUID: string): Promise<ReqPalAchievement | undefined> {
+        const {data, error} = await supabase
+            .from('reqpal_achievements')
+            .insert(
+                {
+                    user_id: userUUID,
+                    description: achievement.description,
+                    target_field: achievement.target_field,
+                    example: achievement.example
+                }
+            )
+            .select()
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return mapToReqPalAchievement(data[0], false);
+        }
+    }
+
+    private async updateReqPalAchievement(achievement: ReqPalAchievement): Promise<void> {
+        if (!achievement.id) {
+            throw new Error("Achievement Id not found.")
+        }
+        const {error} = await supabase
+            .from("reqpal_achievements")
+            .update({
+                description: achievement.description,
+                target_field: achievement.target_field,
+                example: achievement.example
+            })
+            .eq("id", achievement.id);
+
+        if (error) {
+            throw error;
+        }
+    }
+
+    async deleteReqPalAchievement(achievementId: string): Promise<void> {
+        const {data, error} = await supabase
+            .from("reqpal_achievements")
+            .delete()
+            .eq("id", achievementId)
+            .select();
+
+        if (error) throw error;
+    }
+
+    private async uploadReqPalAchievementLevel(achievementLevel: ReqPalAchievementLevelDTO): Promise<ReqPalAchievementLevelDTO | undefined> {
+        const {data, error} = await supabase
+            .from('reqpal_achievement_levels')
+            .insert(
+                {
+                    reqpal_achievement_id: achievementLevel.reqpal_achievement_id,
+                    title: achievementLevel.title,
+                    level: achievementLevel.level,
+                    threshold: achievementLevel.threshold,
+                    image: achievementLevel.image,
+                    xp: achievementLevel.xp
+                }
+            )
+            .select()
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return data[0];
+        }
+    }
+
+    private async updateReqPalAchievementLevel(achievementLevel: ReqPalAchievementLevelDTO): Promise<void> {
+        if (!achievementLevel.id) {
+            throw new Error("Achievement Level Id not found.")
+        }
+        const {error} = await supabase
+            .from("reqpal_achievement_levels")
+            .update({
+                title: achievementLevel.title,
+                level: achievementLevel.level,
+                threshold: achievementLevel.threshold,
+                image: achievementLevel.image,
+                xp: achievementLevel.xp
+            })
+            .eq("id", achievementLevel.id);
+
+        if (error) {
+            throw error;
+        }
+    }
+
+    async deleteReqPalAchievementLevel(achievementLevelId: string): Promise<void> {
+        const {data, error} = await supabase
+            .from("reqpal_achievement_levels")
+            .delete()
+            .eq("id", achievementLevelId)
+            .select();
+
+        if (error) throw error;
     }
 }
 
