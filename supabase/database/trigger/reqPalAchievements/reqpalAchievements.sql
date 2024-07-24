@@ -64,7 +64,6 @@ DROP TRIGGER IF EXISTS trigger_calculate_xp_on_insert ON user_reqpal_achievement
 DROP TRIGGER IF EXISTS trigger_calculate_xp_on_update ON user_reqpal_achievements;
 DROP FUNCTION IF EXISTS calculate_xp_on_achievement_level_change();
 
-
 CREATE OR REPLACE FUNCTION calculate_xp_on_achievement_level_change()
     RETURNS TRIGGER
     LANGUAGE plpgsql AS
@@ -101,9 +100,10 @@ BEGIN
         END LOOP;
 
     IF total_new_xp > 0 THEN
-        UPDATE user_statistics
-        SET total_xp = total_xp + total_new_xp
-        WHERE user_id = NEW.user_id;
+        INSERT INTO user_statistics (user_id, total_xp)
+        VALUES (NEW.user_id, total_new_xp)
+        ON CONFLICT (user_id) DO UPDATE
+            SET total_xp = user_statistics.total_xp + total_new_xp;
 
         INSERT INTO xp_activity_logs (user_id, received_xp, action)
         VALUES (NEW.user_id, total_new_xp, 'ReqPal Achievement: ' || level_title);
