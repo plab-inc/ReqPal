@@ -18,6 +18,7 @@ begin
     end if;
 
     IF user_role = 'teacher' THEN
+        user_role := 'pending';
         teacher_id := new.id;
     ELSE
         teacher_id := new.raw_user_meta_data ->> 'teacher';
@@ -25,6 +26,10 @@ begin
 
     insert into public.profiles (id, username, teacher, role)
     values (new.id, new.raw_user_meta_data ->> 'username', teacher_id, user_role);
+
+    IF user_role = 'pending' THEN
+        INSERT INTO teacher_requests(user_id, approved) VALUES (new.id, FALSE);
+    end if;
 
     perform set_claim(new.id, 'userroles', jsonb_build_array(user_role));
     perform update_user_permissions(new.id);

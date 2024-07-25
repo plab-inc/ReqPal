@@ -76,6 +76,7 @@
         </div>
         <div v-if="authStore.user && authStore.isModerator">
           <v-list-item rounded prepend-icon="mdi-seal" title="ReqPal-Achievements" to="/reqpal-achievements"/>
+          <v-list-item rounded prepend-icon="mdi-account-clock" title="Teacher-Requests" to="/teacher-requests"/>
         </div>
       </v-list>
       <template v-slot:append>

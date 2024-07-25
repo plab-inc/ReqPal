@@ -24,6 +24,7 @@ import {
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
 import { fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
 
 const routes = [
     {
@@ -214,6 +215,17 @@ const routes = [
                         requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser
+                    ]
+                },
+            },
+            {
+                path: "/teacher-requests",
+                name: "TeacherRequests",
+                component: () => import("@/views/user/PendingTeacherOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchTeacherRequests
                     ]
                 },
             },

@@ -58,6 +58,11 @@ export const useAuthStore = defineStore('auth', {
         },
         async updateUsername(username: string) {
             await authService.push.updateUsername(username);
+        },
+        async isClaimsAdmin() {
+            const data = await authService.pull.isClaimsAdmin();
+            if (data) return data.data;
+            return false;
         }
     },
 });
