@@ -2,15 +2,17 @@ import {defineStore} from "pinia";
 import {useAuthStore} from "@/stores/auth.ts";
 import {AuthenticationError} from "@/errors/custom.ts";
 import TeacherRequestService from "@/services/authentication/teacherRequest.ts";
-import {TeacherRequest} from "@/types/teacherRequest.ts";
+import {TeacherRequest, TeacherRequestDTO} from "@/types/teacherRequest.ts";
 
 interface TeacherRequestState {
-    requests: TeacherRequest[]
+    requests: TeacherRequest[],
+    latestRequest: TeacherRequestDTO | null
 }
 
 export const useTeacherRequestStore = defineStore('teacherRequests', {
     state: (): TeacherRequestState => ({
-        requests: []
+        requests: [],
+        latestRequest: null
     }),
 
     getters: {
@@ -27,6 +29,21 @@ export const useTeacherRequestStore = defineStore('teacherRequests', {
                 const data = await TeacherRequestService.pull.fetchTeacherRequests();
                 if (data) {
                     this.requests = data;
+                    return data;
+                }
+            } else {
+                throw new AuthenticationError("No authorized user found.", 401)
+            }
+        },
+
+        async fetchLatestTeacherRequestByUser(): Promise<TeacherRequestDTO | undefined> {
+            this.requests = [];
+            this.latestRequest = null;
+            const authStore = useAuthStore();
+            if (authStore.user && authStore.isPending) {
+                const data = await TeacherRequestService.pull.fetchLatestTeacherRequestByUser(authStore.user.id);
+                if (data) {
+                    this.latestRequest = data;
                     return data;
                 }
             } else {
@@ -56,6 +73,16 @@ export const useTeacherRequestStore = defineStore('teacherRequests', {
             } else {
                 throw new AuthenticationError("No authorized user found.", 401)
             }
-        }
+        },
+
+        async sendNewRequest() {
+            const authStore = useAuthStore();
+            if (authStore.user && authStore.isPending && !this.latestRequest) {
+                const data = await TeacherRequestService.push.createNewTeacherRequest(authStore.user.id);
+                if (data) this.latestRequest = data;
+            } else {
+                throw new AuthenticationError("No authorized user found.", 401)
+            }
+        },
     }
 });

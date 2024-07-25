@@ -195,7 +195,7 @@ export const useLessonStore = defineStore('lesson', {
 
         async uploadUsedHintForQuestion(questionUUID: string) {
             const authStore = useAuthStore();
-            if (!authStore.isTeacher && authStore.user && this.currentLesson) {
+            if (authStore.isStudent && authStore.user && this.currentLesson) {
                 await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
             }
         },

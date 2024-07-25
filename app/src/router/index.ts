@@ -7,7 +7,13 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresModerator, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
+import {
+    requiresAuth,
+    requiresModerator,
+    requiresPending,
+    requiresStudent,
+    requiresTeacher
+} from "@/middlewares/auth.ts";
 import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
@@ -24,7 +30,7 @@ import {
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
 import { fetchScenarios } from "@/middlewares/scenario.ts";
-import {fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
+import {fetchLatestTeacherRequestByUser, fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
 
 const routes = [
     {
@@ -226,6 +232,17 @@ const routes = [
                     middleware: [
                         requiresModerator,
                         fetchTeacherRequests
+                    ]
+                },
+            },
+            {
+                path: "/teacher-request",
+                name: "PendingRequests",
+                component: () => import("@/views/user/PendingTeacherRequest.vue"),
+                meta: {
+                    middleware: [
+                        requiresPending,
+                        fetchLatestTeacherRequestByUser
                     ]
                 },
             },
