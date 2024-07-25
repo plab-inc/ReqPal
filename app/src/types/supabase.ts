@@ -419,6 +419,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          example: boolean | null
           id: string
           target_field: string | null
           user_id: string | null
@@ -426,6 +427,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -433,6 +435,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -1008,7 +1011,7 @@ export type Database = {
           {
             foreignKeyName: "user_statistics_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1053,7 +1056,7 @@ export type Database = {
     Functions: {
       calculate_threshold: {
         Args: {
-          current_level: number
+          level: number
         }
         Returns: number
       }
