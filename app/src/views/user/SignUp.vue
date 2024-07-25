@@ -127,7 +127,7 @@ const submit = async () => {
   if (isFormValid.value) {
 
     try {
-      const role = isTeacher.value ? 'teacher' : 'student';
+      const role = isTeacher.value ? 'pending' : 'student';
       const teacher = isTeacher.value ? undefined : selectedTeacher.value;
       await authStore.signUp(email.value, password.value, username.value, role, teacher)
           .then(() => {

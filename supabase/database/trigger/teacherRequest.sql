@@ -23,6 +23,10 @@ begin
             UPDATE profiles
             SET role = user_role
             WHERE id = NEW.user_id;
+
+            UPDATE auth.users
+            SET raw_user_meta_data = jsonb_set(raw_user_meta_data, '{role}', to_jsonb(user_role))
+            WHERE id = new.user_id;
         else
             raise exception 'Claims Admin Rechte benötigt für diese Operation.';
         end if;
