@@ -19,6 +19,7 @@
         <template v-slot:item.actions="{ item }">
           <div>
             <v-btn
+                v-if="!item.approved"
                 class="ml-1"
                 density="compact"
                 color="success"
