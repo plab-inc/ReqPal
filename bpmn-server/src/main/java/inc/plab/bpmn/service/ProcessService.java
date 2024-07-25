@@ -34,7 +34,6 @@ public class ProcessService {
     }
 
     public ProcessInstance startWorkflow(String processDefinitionKey, String studentId) throws Exception {
-
         ProcessInstance existingInstance = runtimeService.createProcessInstanceQuery()
                 .processDefinitionKey(processDefinitionKey)
                 .variableValueEquals("studentId", studentId)
@@ -64,7 +63,6 @@ public class ProcessService {
     }
 
     public String invokeItem(String processDefinitionKey, String studentId, String lessonResults) throws Exception {
-
         Task currentTask = taskService.createTaskQuery()
                 .processDefinitionKey(processDefinitionKey)
                 .taskAssignee(studentId)
@@ -99,23 +97,19 @@ public class ProcessService {
 
         taskService.complete(currentTask.getId());
 
-
         Task nextTask = taskService.createTaskQuery()
                 .processDefinitionKey(processDefinitionKey)
                 .taskAssignee(studentId)
                 .singleResult();
 
         if (nextTask == null) {
-            logger.error("Scenario completed");
             return null;
         }
 
         return (String) taskService.getVariable(nextTask.getId(), "lessonId");
     }
 
-
     public String getProcessInstanceStatus(String processDefinitionKey, String studentId) throws Exception {
-
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processDefinitionKey(processDefinitionKey)
                 .variableValueEquals("studentId", studentId)
@@ -176,4 +170,16 @@ public class ProcessService {
         return responseJson.toString();
     }
 
+    public String getCurrentLessonId(String processInstanceId, String studentId) {
+        Task currentTask = taskService.createTaskQuery()
+                .processInstanceId(processInstanceId)
+                .taskAssignee(studentId)
+                .singleResult();
+
+        if (currentTask == null) {
+            return null;
+        }
+
+        return (String) taskService.getVariable(currentTask.getId(), "lessonId");
+    }
 }

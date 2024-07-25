@@ -1,5 +1,5 @@
-import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
-import {useLessonStore} from "@/stores/lesson.ts";
+import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
+import { useLessonStore } from "@/stores/lesson.ts";
 
 export async function fetchLessons(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
@@ -25,7 +25,7 @@ export async function loadLessonByUUID(to: RouteLocationNormalized, from: RouteL
 export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-        await lessonStore.fetchQuestionsForLesson(to.params.lessonUUID.toString());
+      await lessonStore.fetchQuestionsWithLesson(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
         return next({name: 'Error'});

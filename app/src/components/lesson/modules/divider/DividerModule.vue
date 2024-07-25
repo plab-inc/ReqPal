@@ -8,5 +8,5 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-  <v-divider color="warning" class="my-5"/>
+  <v-divider color="warning" class="my-2" opacity="1" />
 </template>

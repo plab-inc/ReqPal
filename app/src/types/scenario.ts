@@ -17,6 +17,15 @@ export type Scenario = {
   svg?: string | Blob,
 }
 
+export type ScenarioProgress = {
+  scenario: Scenario,
+  user_id: String,
+  currentStep: number,
+  started: boolean,
+  ended: boolean,
+  currentLessonId?: string,
+}
+
 export type ScenarioForm = {
   scenarioName: string,
   scenarioDescription: string,

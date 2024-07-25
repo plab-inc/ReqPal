@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/bpmn/process")
 public class ProcessController {
@@ -22,35 +25,38 @@ public class ProcessController {
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/start/{scenarioId}")
-    public ResponseEntity<String> startWorkflow(
+    public ResponseEntity<Map<String, String>> startWorkflow(
             @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user) {
         try {
             String processDefinitionKey = "Process_" + scenarioId;
             ProcessInstance processInstance = processService.startWorkflow(processDefinitionKey, String.valueOf(user.getId()));
-            return ResponseEntity.ok("ProcessInstance started with processInstanceId: " + processInstance.getId());
+            String lessonId = processService.getCurrentLessonId(processInstance.getId(), String.valueOf(user.getId()));
+
+            Map<String, String> response = new HashMap<>();
+            response.put("processInstanceId", processInstance.getId());
+            response.put("lessonId", lessonId);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Failed to start workflow: " + e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("error", "Failed to start workflow: " + e.getMessage()));
         }
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/invoke/{scenarioId}")
-    public ResponseEntity<String> invokeItem(
+    public ResponseEntity<Map<String, String>> invokeItem(
             @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user,
             @RequestBody String lessonResults) {
         try {
             String processDefinitionKey = "Process_" + scenarioId;
-            String taskId = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
+            String nextLessonId = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
 
-            if (taskId == null) {
-                return ResponseEntity.ok("Scenario completed.");
-            }
-
-            return ResponseEntity.ok("Task completed, nextLessonId is: " + taskId);
+            Map<String, String> response = new HashMap<>();
+            response.put("nextLessonId", nextLessonId);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Error completing task: " + e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("error", "Error completing task: " + e.getMessage()));
         }
     }
 
@@ -59,7 +65,6 @@ public class ProcessController {
     public ResponseEntity<String> getProcessInstanceStatus(
             @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user) {
-
         try {
             String processDefinitionKey = "Process_" + scenarioId;
             String responseJson = processService.getProcessInstanceStatus(processDefinitionKey, String.valueOf(user.getId()));
@@ -67,7 +72,6 @@ public class ProcessController {
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
-
     }
 
     @ExceptionHandler({RequestNotPermitted.class})

@@ -1,5 +1,5 @@
-import {Database} from "@/types/supabase.ts";
-import {ObjectiveDTO} from "@/types/objective.ts";
+import { Database } from "@/types/supabase.ts";
+import { ObjectiveDTO } from "@/types/objective.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
@@ -23,6 +23,11 @@ export type Lesson = {
 
     creatorAvatar?: string,
     creatorUsername?: string,
+}
+
+export type LessonQuestions = {
+  lesson: Lesson,
+  questions: Question[]
 }
 
 export type LessonForm = {

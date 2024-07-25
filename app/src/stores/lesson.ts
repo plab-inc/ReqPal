@@ -1,9 +1,9 @@
-import {defineStore} from 'pinia';
-import {Lesson, LessonDTO, Question} from "@/types/lesson.ts";
+import { defineStore } from "pinia";
+import { Lesson, LessonDTO, Question } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
 
 interface LessonState {
@@ -57,10 +57,11 @@ export const useLessonStore = defineStore('lesson', {
     },
 
     actions: {
-        async fetchQuestionsForLesson(lessonUUID: string) {
-            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
-            if (Array.isArray(questions)) {
-                this.currentQuestions = questions;
+      async fetchQuestionsWithLesson(lessonUUID: string) {
+        const lessonWithQuestions = await lessonService.pull.fetchLessonWithQuestions(lessonUUID);
+        if (lessonWithQuestions) {
+          this.currentQuestions = lessonWithQuestions.questions;
+          this.currentLesson = lessonWithQuestions.lesson;
                 this.setUpLessonModules();
             }
         },
@@ -104,6 +105,10 @@ export const useLessonStore = defineStore('lesson', {
                 this.currentLesson = lesson;
             }
         },
+
+      loadLessonWithQuestions(lessonUUID: string) {
+        this.clearLessonModules();
+      },
 
         addLessonModuleWithData(componentName: string, componentUUID: string, data: {
             uuid: string,
