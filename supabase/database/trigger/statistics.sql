@@ -8,15 +8,16 @@
 
 DROP TRIGGER IF EXISTS handle_user_level_xp_trigger ON user_levels;
 
-create or replace function update_objective_statistics() returns trigger
-    language plpgsql
-as
+CREATE OR REPLACE FUNCTION update_objective_statistics()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS
 $$
 DECLARE
-    received_xp INTEGER;
-    new_xp      INTEGER;
-    xp          INTEGER := 0;
-    user_exists BOOLEAN;
+    received_xp     INTEGER;
+    new_xp          INTEGER;
+    xp              INTEGER := 0;
+    user_exists     BOOLEAN;
     objective_title text;
 BEGIN
     IF TG_OP = 'INSERT' OR NEW.xp IS DISTINCT FROM OLD.xp THEN

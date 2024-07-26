@@ -66,9 +66,9 @@ export const useUtilStore = defineStore({
         addGamificationAlert(activity: XpActivityLogDTO) {
             const xp: number | null = activity.received_xp;
             const action: string | null = activity.action;
-            let alertText : string = "";
-            let actionType : string = "";
-            let actionTitle : string = "";
+            let alertText: string = "";
+            let actionType: string = "";
+            let actionTitle: string = "";
 
             if (action) {
                 const actionParts = action.split(':');
@@ -87,11 +87,14 @@ export const useUtilStore = defineStore({
                 case('Achievement'):
                     alertText = xp + " XP für Achievement " + actionTitle + " erhalten!";
                     break;
+                case('ReqPal Achievement'):
+                    alertText= xp + " XP für ReqPal Achievement " + actionTitle + " erhalten!";
+                    break;
                 default:
                     alertText = xp + " XP erhalten!"
             }
 
-            const id : string = Date.now().toString();
+            const id: string = Date.now().toString();
             this.gamificationAlerts.push({id: id, message: alertText, type: "success"});
         }
     }

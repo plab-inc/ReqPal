@@ -11,10 +11,30 @@ export async function fetchAchievementsByUser(to: RouteLocationNormalized, from:
     }
 }
 
+export async function fetchReqPalAchievementsByModerator(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    try {
+        const achievementStore = useAchievementStore();
+        await achievementStore.fetchReqPalAchievementsByModerator();
+        return next();
+    } catch (error) {
+        return next({name: 'Error'});
+    }
+}
+
 export async function fetchAchievementImages(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const achievementStore = useAchievementStore();
         await achievementStore.fetchAchievementImages();
+        return next();
+    } catch (error) {
+        return next({name: 'Error'});
+    }
+}
+
+export async function fetchReqPalAchievementImages(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    try {
+        const achievementStore = useAchievementStore();
+        await achievementStore.fetchReqPalAchievementImages();
         return next();
     } catch (error) {
         return next({name: 'Error'});

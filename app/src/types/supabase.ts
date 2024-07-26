@@ -419,6 +419,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          example: boolean | null
           id: string
           target_field: string | null
           user_id: string | null
@@ -426,6 +427,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -433,6 +435,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -567,6 +570,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_requests: {
+        Row: {
+          approved: boolean | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_requests_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -979,6 +1011,61 @@ export type Database = {
           },
         ]
       }
+      user_scenario: {
+        Row: {
+          created_at: string
+          currentLesson_id: string | null
+          currentStep: number
+          ended: boolean
+          id: string
+          scenario_id: string
+          started: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currentLesson_id?: string | null
+          currentStep?: number
+          ended?: boolean
+          id?: string
+          scenario_id?: string
+          started?: boolean
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          currentLesson_id?: string | null
+          currentStep?: number
+          ended?: boolean
+          id?: string
+          scenario_id?: string
+          started?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_currentLesson_id_fkey"
+            columns: ["currentLesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_scenario_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_scenario_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_statistics: {
         Row: {
           created_at: string
@@ -1008,7 +1095,7 @@ export type Database = {
           {
             foreignKeyName: "user_statistics_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1053,7 +1140,7 @@ export type Database = {
     Functions: {
       calculate_threshold: {
         Args: {
-          current_level: number
+          level: number
         }
         Returns: number
       }
