@@ -1,17 +1,17 @@
 package inc.plab.bpmn.controller;
 
+import inc.plab.bpmn.dto.BpmnResponseDto;
+import inc.plab.bpmn.dto.ExceptionResponseDto;
+import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
+import inc.plab.bpmn.dto.WorkflowResponseDto;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
 import inc.plab.bpmn.service.ProcessService;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/bpmn/process")
@@ -25,52 +25,37 @@ public class ProcessController {
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/start/{scenarioId}")
-    public ResponseEntity<Map<String, String>> startWorkflow(
+    public ResponseEntity<BpmnResponseDto<?>> startWorkflow(
             @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user) {
         try {
-            String processDefinitionKey = "Process_" + scenarioId;
-            ProcessInstance processInstance = processService.startWorkflow(processDefinitionKey, String.valueOf(user.getId()));
-            String lessonId = processService.getCurrentLessonId(processInstance.getId(), String.valueOf(user.getId()));
-
-            Map<String, String> response = new HashMap<>();
-            response.put("processInstanceId", processInstance.getId());
-            response.put("lessonId", lessonId);
+            WorkflowResponseDto response = processService.startWorkflowForScenario(scenarioId, String.valueOf(user.getId()));
+            response.setStatus("success");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(Map.of("error", "Failed to start workflow: " + e.getMessage()));
+            ExceptionResponseDto<String> errorResponse = new ExceptionResponseDto<>();
+            errorResponse.setStatus("error");
+            errorResponse.setDescription("Failed to start workflow: " + e.getMessage());
+            return ResponseEntity.status(400).body(errorResponse);
         }
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/invoke/{scenarioId}")
-    public ResponseEntity<Map<String, String>> invokeItem(
+    public ResponseEntity<BpmnResponseDto<?>> invokeItem(
             @PathVariable("scenarioId") String scenarioId,
             @AuthenticationPrincipal SupabaseUser user,
             @RequestBody String lessonResults) {
         try {
             String processDefinitionKey = "Process_" + scenarioId;
-            String nextLessonId = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("nextLessonId", nextLessonId);
+            InvokeLessonUserTaskResponseDto response = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
+            response.setStatus("success");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(Map.of("error", "Error completing task: " + e.getMessage()));
-        }
-    }
-
-    @RateLimiter(name = "rateLimiterBpmn")
-    @GetMapping(value = "/status/{scenarioId}", produces = "application/json")
-    public ResponseEntity<String> getProcessInstanceStatus(
-            @PathVariable("scenarioId") String scenarioId,
-            @AuthenticationPrincipal SupabaseUser user) {
-        try {
-            String processDefinitionKey = "Process_" + scenarioId;
-            String responseJson = processService.getProcessInstanceStatus(processDefinitionKey, String.valueOf(user.getId()));
-            return ResponseEntity.ok(responseJson);
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            ExceptionResponseDto<String> errorResponse = new ExceptionResponseDto<>();
+            errorResponse.setStatus("error");
+            errorResponse.setDescription("Error completing task: " + e.getMessage());
+            return ResponseEntity.status(400).body(errorResponse);
         }
     }
 

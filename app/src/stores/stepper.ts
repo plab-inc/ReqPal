@@ -2,7 +2,6 @@ import { Scenario, ScenarioProgress } from "@/types/scenario";
 import { defineStore } from "pinia";
 import ScenarioService from "@/services/database/scenario";
 import { useLessonStore } from "@/stores/lesson";
-import { InvokeItemResponse, StartWorkflowResponse } from "@/types/bpmn";
 import { invokeItem, startWorkflow } from "@/services/api/process";
 import { useUtilStore } from "@/stores/util";
 import { BpmnProcessError } from "@/errors/custom.ts";
@@ -84,7 +83,7 @@ export const useStepperStore = defineStore("stepper", {
       if (this.currentStep === 0 && this.scenario) {
         try {
           utilStore.startLoadingBar();
-          const response: StartWorkflowResponse = await startWorkflow(this.scenario.id);
+          const response = await startWorkflow(this.scenario.id);
           this.currentLessonId = response.lessonId;
           this.isStarted = true;
           await this.loadInLesson().then(this.addLessonStep);
@@ -102,7 +101,7 @@ export const useStepperStore = defineStore("stepper", {
       if (this.scenario && !this.getCurrentStep.endStep) {
         try {
           utilStore.startLoadingBar();
-          const response: InvokeItemResponse = await invokeItem(this.scenario.id, lessonAnswer);
+          const response = await invokeItem(this.scenario.id, lessonAnswer);
           if (response.nextLessonId) {
             this.currentLessonId = response.nextLessonId;
             await this.loadInLesson().then(this.addLessonStep);
@@ -121,7 +120,7 @@ export const useStepperStore = defineStore("stepper", {
     },
 
     async fetchScenarioProgress() {
-      const scenarioProgress = await ScenarioService.fetchScenarioProgressByScenario("2118957a-8e6d-46b7-937f-0567da10cb22");
+      const scenarioProgress = await ScenarioService.pull.fetchScenarioProgressByScenario("2118957a-8e6d-46b7-937f-0567da10cb22");
       if (scenarioProgress) {
         this.loadScenarioProgress(scenarioProgress).then(() => {
           this.initializeSteps();

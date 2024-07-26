@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ExceptionResponseDto<T> implements BpmnResponseDto<T> {
+public class WorkflowResponseDto implements BpmnResponseDto<WorkflowDescription> {
     private String status;
-    private T description;
+    private WorkflowDescription description;
 }

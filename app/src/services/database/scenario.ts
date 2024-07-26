@@ -6,7 +6,8 @@ class ScenarioServiceClass {
 
   public pull = {
     fetchScenarios: this.fetchScenarios.bind(this),
-    fetchScenario: this.fetchScenarioById.bind(this)
+    fetchScenario: this.fetchScenarioById.bind(this),
+    fetchScenarioProgressByScenario: this.fetchScenarioProgressByScenario.bind(this)
   };
 
   public push = {
@@ -77,7 +78,7 @@ class ScenarioServiceClass {
     }
   }
 
-  public async fetchScenarioProgressByScenario(scenarioId: string): Promise<ScenarioProgress | undefined> {
+  private async fetchScenarioProgressByScenario(scenarioId: string): Promise<ScenarioProgress | undefined> {
 
     const { data, error } = await supabase
       .from("user_scenario")
@@ -103,10 +104,10 @@ class ScenarioServiceClass {
           createdAt: data.scenario.created_at
         },
         user_id: data.user_id,
-        currentStep: data.currentStep,
+        currentStep: data.step,
         started: data.started,
         ended: data.ended,
-        currentLessonId: data.currentLesson_id || undefined
+        currentLessonId: data.lesson_id || undefined
       };
     }
 

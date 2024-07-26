@@ -4,23 +4,10 @@ export interface StartWorkflowResponse {
 }
 
 export interface InvokeItemResponse {
-  nextLessonId?: string;
-  message?: string;
+  nextLessonId: string;
 }
 
-export interface ProcessInstanceStatus {
-  scenarioId: string;
-  processInstanceId: string;
-  processDefinitionKey: string;
-  isEnded: boolean;
-  openTasks: TaskDetails[];
-  processInstanceVariables: any;
-}
-
-export interface TaskDetails {
-  taskId: string;
-  lessonId: string;
-  taskName: string;
-  taskDefinitionKey: string;
-  assignee: string;
+export interface BpmnResponse {
+  status: string;
+  description: StartWorkflowResponse | InvokeItemResponse;
 }
