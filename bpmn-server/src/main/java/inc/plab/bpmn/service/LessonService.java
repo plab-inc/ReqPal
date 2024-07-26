@@ -1,51 +1,65 @@
 package inc.plab.bpmn.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import inc.plab.bpmn.model.evaluation.Answer;
+import inc.plab.bpmn.model.evaluation.AnswerResult;
+import inc.plab.bpmn.jsonValidation.JsonValidator;
+import inc.plab.bpmn.model.evaluation.LessonResult;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.question.Question;
 import inc.plab.bpmn.model.question.QuestionRepository;
 import lombok.AllArgsConstructor;
-import org.camunda.spin.SpinList;
 import org.camunda.spin.json.SpinJsonNode;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.camunda.spin.Spin.JSON;
+
 @Service
 @AllArgsConstructor
 public class LessonService {
+    /*
+    interface RequestBodyLesson {
+        uuid: string,
+        answers: LessonAnswer[],
+        used_hints: number
+    }
+    interface LessonAnswer {
+        uuid: string,
+        question: string,
+        options: string,
+        type: string
+    }
+     */
 
     private final LessonRepository lessonRepository;
     private QuestionRepository questionRepository;
 
     public int evaluateLesson(String lessonId, SpinJsonNode lessonResult) {
-/*
-interface RequestBodyLesson {
-    uuid: string,
-    answers: LessonAnswer[],
-    used_hints: number
-}
 
-interface LessonAnswer {
-    uuid: string,
-    question: string,
-    options: string,
-    type: string
-}
- */
+        System.out.println("Validating ... lessonResult");
+        System.out.println(lessonResult);
+
+        JsonValidator.validateJson(lessonResult.toString());
+
+        System.out.println("VALID IN LESSON SERVICE");
+
+        LessonResult lessonResultObject = JSON(lessonResult).mapTo(LessonResult.class);
         int totalPoints = 0;
-        List<LessonResult> results = new LinkedList<LessonResult>();
 
-        if (lessonResult.hasProp("answers")) {
-            SpinList<SpinJsonNode> answers = lessonResult.prop("answers").elements();
-            for (SpinJsonNode answer : answers) {
-                String type = String.valueOf(answer.prop("type"));
-                LessonResult res = evaluateQuestionType(type, answer);
-                if (res != null) {
-                    results.add(res);
-                    totalPoints += res.getScore();
-                }
+        List<AnswerResult> results = new LinkedList<>();
+
+        lessonResultObject.getAnswers().forEach(a -> {
+            System.out.println(a.getQuestionId());
+            System.out.println(a.getOptions());
+            System.out.println(a.getType());
+        });
+
+        for (Answer answer : lessonResultObject.getAnswers()) {
+            AnswerResult res = evaluateQuestionType(answer.getType(), answer);
+            if (res != null) {
+                results.add(res);
+                totalPoints += res.getScore();
             }
         }
 
@@ -54,45 +68,67 @@ interface LessonAnswer {
         return totalPoints;
     }
 
-    private LessonResult evaluateQuestionType(String type, SpinJsonNode answer) {
-        String lowerCaseType = type.toLowerCase();
-        return switch (lowerCaseType) {
-            case ("trueorfalse") -> evaluateTrueOrFalse(answer);
-            case ("multiplechoice") -> evaluateMultipleChoice(answer);
-            case ("slider") -> evaluateSlider(answer);
-            case ("qualification") -> evaluateProductQualification(answer);
-            default -> null;
-        };
-    }
+    private AnswerResult evaluateQuestionType(String type, Answer answer) {
+        String lowerCaseType = type.toLowerCase().trim();
 
-    private LessonResult evaluateProductQualification(SpinJsonNode answer) {
-        return null;
-    }
-
-    private LessonResult evaluateSlider(SpinJsonNode answer) {
-        return null;
-    }
-
-    private LessonResult evaluateMultipleChoice(SpinJsonNode answer) {
-        return null;
-    }
-
-    private LessonResult evaluateTrueOrFalse(SpinJsonNode answer) {
-        // get question by id
-        String questionId = answer.prop("questionId").stringValue();
-        UUID questionUUID = UUID.fromString(questionId);
-        Optional<Question> questionOptional = questionRepository.findById(questionUUID);
-        if(questionOptional.isPresent()) {
-            Question question = questionOptional.get();
-            // compare solution and answer
-            Map<String, Object> solution = question.getSolution();
-            Object solutionData = solution.get("solution");
-        //    ObjectMapper objectMapper = new ObjectMapper();
-        //    String jsonValue = objectMapper.writeValueAsString(solutionData);
-        //    System.out.println(jsonValue);
+        switch (lowerCaseType) {
+            case "trueorfalse" -> {
+                return evaluateTrueOrFalse(answer);
+            }
+            case "multiplechoice" -> {
+                return evaluateMultipleChoice(answer);
+            }
+            case "slider" -> {
+                return evaluateSlider(answer);
+            }
+            case "qualification" -> {
+                return evaluateProductQualification(answer);
+            }
+            default -> {
+                System.out.println("Unrecognized type: " + lowerCaseType);
+                return null;
+            }
         }
-        // save result in LessonResult
-        // save score in LessonResult
+
+    }
+
+    private AnswerResult evaluateProductQualification(Answer answer) {
+        return null;
+    }
+
+    private AnswerResult evaluateSlider(Answer answer) {
+        return null;
+    }
+
+    private AnswerResult evaluateMultipleChoice(Answer answer) {
+        return null;
+    }
+
+    private AnswerResult evaluateTrueOrFalse(Answer answer) {
+
+        UUID questionUUID = UUID.fromString(answer.getQuestionId());
+        Optional<Question> questionOptional = questionRepository.findById(questionUUID);
+        AnswerResult result = new AnswerResult();
+
+        if (questionOptional.isPresent()) {
+            boolean booleanValue = Boolean.parseBoolean((String) answer.getOptions());
+            boolean resultIsCorrect = false;
+
+            Question question = questionOptional.get();
+            Map<String, Object> solution = question.getSolution();
+            // TODO for this to work for every question, we need to save question options in this form {value: true}
+            Boolean value = (Boolean) solution.get("value");
+            int score = 0;
+
+            if (value == booleanValue) {
+                resultIsCorrect = true;
+                score = question.getPoints();
+            }
+            result.setCorrect(resultIsCorrect);
+            result.setScore(score);
+            return result;
+        }
+
         return null;
     }
 
