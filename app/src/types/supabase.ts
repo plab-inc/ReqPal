@@ -532,6 +532,7 @@ export type Database = {
       }
       scenarios: {
         Row: {
+          achievements: string[]
           created_at: string
           deployed: boolean
           description: string | null
@@ -544,6 +545,7 @@ export type Database = {
           version: number
         }
         Insert: {
+          achievements?: string[]
           created_at?: string
           deployed?: boolean
           description?: string | null
@@ -556,6 +558,7 @@ export type Database = {
           version?: number
         }
         Update: {
+          achievements?: string[]
           created_at?: string
           deployed?: boolean
           description?: string | null

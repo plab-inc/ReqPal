@@ -146,7 +146,6 @@ async function createAchievementLevel() {
   try {
     const achievement = achievementStore.getReqPalAchievement;
     if (achievement) {
-      console.log(achievement)
       localAchievementLevel.value.reqpal_achievement_id = achievement.id;
       await achievementStore.uploadReqPalAchievementLevel(localAchievementLevel.value);
       AlertService.addSuccessAlert("ReqPal-Achievement-Level wurde erstellt.")
