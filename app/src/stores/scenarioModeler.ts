@@ -7,7 +7,12 @@ import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import BpmnModeler from "bpmn-js/lib/Modeler";
-import { findShortestPath, getAllUserTaskIds, validateProcessDefinition } from "@/bpmn/modeler/helpers.ts";
+import {
+  findShortestPath,
+  getAllAchievementIds,
+  getAllUserTaskIds,
+  validateProcessDefinition
+} from "@/bpmn/modeler/helpers.ts";
 import { BpmnImportError, BpmnPersistError } from "@/errors/custom.ts";
 
 interface ModelerState {
@@ -81,6 +86,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
 
       const shortestPath = await findShortestPath(processDefinition);
       const lessonsInDiagram = await getAllUserTaskIds(processDefinition);
+      const achievementsInDiagram = await getAllAchievementIds(processDefinition);
 
       return {
         id: this.uuid,
@@ -92,7 +98,8 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         svg: svg,
         bpmnXml: xml,
         lessonsCount: lessonsInDiagram.length,
-        minLessons: shortestPath.length
+        minLessons: shortestPath.length,
+        achievements: achievementsInDiagram
       };
     },
     async hydrate(scenario: Scenario){

@@ -11,6 +11,7 @@ export type Scenario = {
   locked: boolean,
   lessonsCount: number,
   minLessons: number,
+  achievements: string[];
   version?: number,
   createdAt?: string,
   bpmnXml?: string | Blob,
