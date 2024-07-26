@@ -97,6 +97,7 @@ class ScenarioServiceClass {
           deployed: data.scenario.deployed,
           locked: data.scenario.locked,
           lessonsCount: data.scenario.lessons,
+          achievements: data.scenario.achievements,
           minLessons: data.scenario.minLessons,
           version: data.scenario.version,
           createdAt: data.scenario.created_at

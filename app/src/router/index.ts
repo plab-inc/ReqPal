@@ -6,7 +6,7 @@ import {
     RouteLocationRaw,
     Router
 } from "vue-router";
-
+import { fetchObjectiveLevelsByUser, fetchReqPalLevelByUser } from "@/middlewares/level.ts";
 import {
     requiresAuth,
     requiresModerator,
@@ -14,31 +14,18 @@ import {
     requiresStudent,
     requiresTeacher
 } from "@/middlewares/auth.ts";
-import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
-import {
-    fetchLessons,
-    fetchQuestionsForLesson,
-    loadLessonByUUID,
-} from "@/middlewares/lesson.ts";
-import {useUtilStore} from "@/stores/util.ts";
-import {fetchProductsByUser} from "@/middlewares/product.ts";
-import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
-import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
-import { requiresAuth, requiresModerator, requiresStudent, requiresTeacher } from "@/middlewares/auth.ts";
 import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
 import { fetchLessons, fetchQuestionsForLesson, loadLessonByUUID } from "@/middlewares/lesson.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { fetchProductsByUser } from "@/middlewares/product.ts";
 import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
-import { fetchObjectiveLevelsByUser, fetchReqPalLevelByUser } from "@/middlewares/level.ts";
 import {
     fetchAchievementImages,
     fetchAchievementsByUser,
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
-import { fetchScenarios } from "@/middlewares/scenario.ts";
-import {fetchLatestTeacherRequestByUser, fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
+import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
 import { fetchScenarioProgress, fetchScenarios } from "@/middlewares/scenario.ts";
 
 const routes = [
