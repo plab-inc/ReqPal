@@ -123,7 +123,7 @@ END;
 $$;
 
 CREATE TRIGGER handle_user_achievement_xp_trigger
-    AFTER INSERT OR UPDATE
+    AFTER INSERT OR UPDATE of amount
     ON user_achievements
     FOR EACH ROW
 EXECUTE FUNCTION update_achievement_statistics();
