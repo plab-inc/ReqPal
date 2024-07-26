@@ -14,13 +14,13 @@
         permanent
     >
       <v-list nav>
-        <v-list-item v-if="authStore.user"
+        <v-list-item v-if="!authStore.isPending && authStore.user"
                      :title="authStore.user?.user_metadata.username"
                      :subtitle="authStore.user?.email"
                      :active="false"
                      :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
                      :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
-                     to="/profile"
+                     :to="authStore.isStudent ? '/profile' : '/account'"
                      elevation="3"
                      rounded
         />
@@ -38,10 +38,13 @@
             exact/>
         <v-divider class="my-1"/>
         <div v-if="authStore.user">
-          <div v-if="!authStore.isTeacher">
+          <div v-if="authStore.isPending">
+            <v-list-item rounded prepend-icon="mdi-account-clock" title="Anfrage Status" to="/teacher-request"/>
+          </div>
+          <div v-if="authStore.isStudent">
             <v-list-item rounded prepend-icon="mdi-progress-star-four-points" title="Meine Fortschritte" to="/profile"/>
           </div>
-          <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
+          <v-list-group value="Lektionen" v-if="authStore.isStudent">
             <template v-slot:activator="{ props }">
               <v-list-item
                   v-bind="props"
@@ -76,6 +79,7 @@
         </div>
         <div v-if="authStore.user && authStore.isModerator">
           <v-list-item rounded prepend-icon="mdi-seal" title="ReqPal-Achievements" to="/reqpal-achievements"/>
+          <v-list-item rounded prepend-icon="mdi-account-clock" title="Teacher-Requests" to="/teacher-requests"/>
         </div>
       </v-list>
       <template v-slot:append>

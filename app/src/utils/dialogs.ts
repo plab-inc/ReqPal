@@ -185,3 +185,19 @@ export const DeployScenarioFirstTime: DialogText = {
     confirmLabel: "Veröffentlichen",
     cancelLabel: "Zurück"
 };
+
+export const ApproveTeacherRequest: DialogText = {
+    title: "Dozent-Anfrage freigeben",
+    message: "Möchten Sie wirklich diese Dozenten-Anfrage freigeben? " +
+        "Dadurch erhält der Nutzer Rechte und Funktionen eines Dozenten.",
+    confirmLabel: "Freigeben",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteTeacherRequest: DialogText = {
+    title: "Dozent-Anfrage löschen",
+    message: "Möchten Sie wirklich diese Dozenten-Anfrage löschen? " +
+        "Der Nutzer muss ansonsten erneut eine Anfrage stellen.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
