@@ -10,21 +10,18 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @Transactional
 @AllArgsConstructor
-public class GamificationService {
+public class LevelService {
 
     private final ObjectiveRepository objectiveRepository;
     private final UserLevelRepository userLevelRepository;
     private final ProfileRepository profileRepository;
-
-    public void hello() {
-        System.out.println("Hello from GamificationService");
-    }
 
     public void addXpToObjectiveForUser(int xp, String objectiveId, String userId) {
         UUID userUUID = UUID.fromString(userId);
@@ -45,7 +42,7 @@ public class GamificationService {
             int newXp = xp + userLevel.getXp();
 
             if (newXp >= userLevel.getXpThreshold()) {
-                userLevel = updateObjectiveLevel(objective, userLevel, newXp);
+                updateObjectiveLevel(objective, userLevel, newXp);
             } else {
                 userLevel.setXp(newXp);
             }
@@ -54,7 +51,7 @@ public class GamificationService {
         userLevelRepository.save(userLevel);
     }
 
-    private UserLevel updateObjectiveLevel(Objective objective, UserLevel userLevel, int newXp) {
+    private void updateObjectiveLevel(Objective objective, UserLevel userLevel, int newXp) {
         int newLevel = userLevel.getLevel();
         int maxLevel = objective.getMaxLevel();
         int currentThreshold = userLevel.getXpThreshold();
@@ -77,7 +74,6 @@ public class GamificationService {
 
         userLevel.setXpThreshold(currentThreshold);
         userLevel.setLevel(newLevel);
-        return userLevel;
     }
 
     private int calculateThreshold(int currentLevel) {
@@ -97,6 +93,7 @@ public class GamificationService {
         userLevel.setUser(user);
         userLevel.setMax(false);
         userLevel.setObjective(objective);
+        userLevel.setCreatedAt(OffsetDateTime.now());
 
         return userLevel;
     }
