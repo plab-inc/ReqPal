@@ -5,6 +5,8 @@ import { useLessonStore } from "@/stores/lesson";
 import { InvokeItemResponse, StartWorkflowResponse } from "@/types/bpmn";
 import { invokeItem, startWorkflow } from "@/services/api/process";
 import { useUtilStore } from "@/stores/util";
+import { BpmnProcessError } from "@/errors/custom.ts";
+import router from "@/router/index.ts";
 
 export interface Step {
   title: string;
@@ -76,6 +78,24 @@ export const useStepperStore = defineStore("stepper", {
       }
     },
 
+    async start() {
+      const utilStore = useUtilStore();
+      if (this.currentStep === 0 && this.scenario) {
+        try {
+          utilStore.startLoadingBar();
+          const response: StartWorkflowResponse = await startWorkflow(this.scenario.id);
+          this.currentLessonId = response.lessonId;
+          this.isStarted = true;
+          await this.loadInLesson().then(this.addLessonStep);
+          this.currentStep++;
+        } catch (error) {
+          throw new BpmnProcessError("Es gab ein Problem das Szenario zu starten.");
+        } finally {
+          utilStore.stopLoadingBar();
+        }
+      }
+    },
+
     async nextStep() {
       const utilStore = useUtilStore();
       if (this.scenario && !this.getCurrentStep.endStep) {
@@ -86,11 +106,13 @@ export const useStepperStore = defineStore("stepper", {
             this.currentLessonId = response.nextLessonId;
             await this.loadInLesson().then(this.addLessonStep);
             this.currentStep++;
+            if (this.currentStep === this.scenario.lessonsCount) this.removePlaceholderStep();
           } else {
             this.completeScenario();
           }
         } catch (error) {
-          console.error("Error invoking next lesson:", error);
+          await router.push({ path: "/error" });
+          throw new BpmnProcessError("Es gab ein Problem das Szenario fortzuführen.");
         } finally {
           utilStore.stopLoadingBar();
         }
@@ -111,24 +133,6 @@ export const useStepperStore = defineStore("stepper", {
       if (this.currentLessonId) {
         const lessonStore = useLessonStore();
         await lessonStore.fetchQuestionsWithLesson(this.currentLessonId);
-      }
-    },
-
-    async start() {
-      const utilStore = useUtilStore();
-      if (this.currentStep === 0 && this.scenario) {
-        try {
-          utilStore.startLoadingBar();
-          const response: StartWorkflowResponse = await startWorkflow(this.scenario.id);
-          this.currentLessonId = response.lessonId;
-          this.isStarted = true;
-          await this.loadInLesson().then(this.addLessonStep);
-          this.currentStep++;
-        } catch (error) {
-          console.error("Error starting workflow:", error);
-        } finally {
-          utilStore.stopLoadingBar();
-        }
       }
     },
 
