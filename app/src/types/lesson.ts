@@ -25,6 +25,11 @@ export type Lesson = {
     creatorUsername?: string,
 }
 
+export type LessonAnswer = {
+  uuid: string,
+  answers: any[]
+}
+
 export type LessonQuestions = {
   lesson: Lesson,
   questions: Question[]
@@ -36,11 +41,6 @@ export type LessonForm = {
     description: string;
     questions: Question[];
     objectiveIds: string[];
-}
-
-export type UserAnswer = {
-    question_id: string,
-    answer: string[]
 }
 
 export type LessonStatistic = {

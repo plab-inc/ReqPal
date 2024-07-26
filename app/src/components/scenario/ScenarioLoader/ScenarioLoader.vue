@@ -36,7 +36,7 @@
                    @click="stepperStore.nextStep" />
             <v-btn variant="outlined" size="x-large" text="Nächste Lektion" color="white"
                      v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
-                   @click="stepperStore.nextStep" />
+                   @click="submitLesson" />
           </v-col>
         </v-row>
       </template>
@@ -50,8 +50,19 @@ import StartWindow from "@/components/scenario/ScenarioLoader/StartWindow.vue";
 import ResultsWindow from "@/components/scenario/ScenarioLoader/ResultsWindow.vue";
 import LessonWindow from "@/components/scenario/ScenarioLoader/LessonWindow.vue";
 import { onMounted } from "vue";
-
-const stepperStore = useStepperStore();
+import { useLessonStore } from "@/stores/lesson.ts";
+import { LessonAnswer } from "@/types/lesson.ts";
 
 onMounted(() => stepperStore.initializeSteps());
+
+const stepperStore = useStepperStore();
+const lessonStore = useLessonStore();
+
+const submitLesson = async () => {
+  if (!(await lessonStore.isLessonFormValid())) return;
+
+  const lessonAnswer: LessonAnswer | null = await lessonStore.generateUserResults();
+
+  if (lessonAnswer) await stepperStore.nextStep(lessonAnswer);
+};
 </script>

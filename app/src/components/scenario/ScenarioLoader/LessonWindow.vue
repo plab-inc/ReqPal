@@ -13,11 +13,20 @@
     {{ lessonStore.currentLesson?.lessonDTO.description }}
   </v-row>
   <v-divider opacity="1" class="my-2" />
-  <LessonQuestions :components="lessonStore.getLessonModules" />
+  <v-form @submit.prevent ref="formRef">
+    <LessonQuestions :components="lessonStore.getLessonModules" />
+  </v-form>
 </template>
 <script setup lang="ts">
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
 import { useLessonStore } from "@/stores/lesson.ts";
+import { onMounted, ref } from "vue";
+import { VForm } from "vuetify/components";
 
 const lessonStore = useLessonStore();
+const formRef = ref<VForm | null>(null);
+
+onMounted(() => {
+  lessonStore.lessonForm = formRef.value;
+});
 </script>

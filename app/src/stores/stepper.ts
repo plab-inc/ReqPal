@@ -7,6 +7,7 @@ import { invokeItem, startWorkflow } from "@/services/api/process";
 import { useUtilStore } from "@/stores/util";
 import { BpmnProcessError } from "@/errors/custom.ts";
 import router from "@/router/index.ts";
+import { LessonAnswer } from "@/types/lesson.ts";
 
 export interface Step {
   title: string;
@@ -96,12 +97,12 @@ export const useStepperStore = defineStore("stepper", {
       }
     },
 
-    async nextStep() {
+    async nextStep(lessonAnswer: LessonAnswer) {
       const utilStore = useUtilStore();
       if (this.scenario && !this.getCurrentStep.endStep) {
         try {
           utilStore.startLoadingBar();
-          const response: InvokeItemResponse = await invokeItem(this.scenario.id, { "question_1": false });
+          const response: InvokeItemResponse = await invokeItem(this.scenario.id, lessonAnswer);
           if (response.nextLessonId) {
             this.currentLessonId = response.nextLessonId;
             await this.loadInLesson().then(this.addLessonStep);
