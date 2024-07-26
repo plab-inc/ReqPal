@@ -13,12 +13,11 @@ DECLARE
 begin
     user_role := new.raw_user_meta_data ->> 'role';
 
-    IF NOT (user_role = 'student' OR user_role = 'teacher') THEN
+    IF NOT (user_role = 'student' OR user_role = 'pending') THEN
         raise exception 'Die Rolle ist nicht gültig.';
     end if;
 
-    IF user_role = 'teacher' THEN
-        user_role := 'pending';
+    IF user_role = 'pending' THEN
         teacher_id := new.id;
     ELSE
         teacher_id := new.raw_user_meta_data ->> 'teacher';

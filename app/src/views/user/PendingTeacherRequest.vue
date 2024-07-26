@@ -6,14 +6,14 @@
   </v-row>
   <v-divider/>
   <v-container>
-    <v-row v-if="teacherRequestStore.latestRequest">
-      <v-col v-if="!teacherRequestStore.latestRequest.approved">
+    <v-row v-if="request">
+      <v-col v-if="!request.approved">
         <div class="text-subtitle-1">
           <v-alert color="info" icon="mdi-school" title="Infos zum Status" text="Ihre Anfrage wird noch bearbeitet und überprüft.
           Sobald Ihre Anfrage freigegeben wurde, erhalten Sie vollen Zugriff als Dozent auf ReqPal!"></v-alert>
         </div>
       </v-col>
-      <v-col v-if="teacherRequestStore.latestRequest.approved">
+      <v-col v-if="request.approved">
         <div class="text-subtitle-1">
           <v-alert color="success" icon="mdi-school" title="Status aktualisiert" text="Ihre Anfrage wurde überprüft und freigegeben.
           Loggen Sie sich erneut ein, um vollen Zugriff als Dozent auf ReqPal zu erhalten!"></v-alert>
@@ -37,8 +37,11 @@
 <script setup lang="ts">
 import {useTeacherRequestStore} from "@/stores/teacherRequest.ts";
 import AlertService from "@/services/util/alert.ts";
+import {ref} from "vue";
+import {TeacherRequestDTO} from "@/types/teacherRequest.ts";
 
 const teacherRequestStore = useTeacherRequestStore();
+const request = ref<TeacherRequestDTO | null>(teacherRequestStore.latestRequest)
 
 async function sendNewRequest() {
   try {
