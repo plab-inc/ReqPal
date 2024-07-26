@@ -8,6 +8,7 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
     user: input.user_id,
     title: input.title,
     description: input.description ?? '',
+    achievements: input.achievements,
     deployed: input.deployed,
     locked: input.locked,
     version: input.version,

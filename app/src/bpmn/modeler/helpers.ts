@@ -92,3 +92,10 @@ export async function getAllUserTaskIds(processDefinition: ModdleElement): Promi
     .map(task => task.lessonToSolve!)
     .filter(lessonToSolve => lessonToSolve !== undefined);
 }
+
+export async function getAllAchievementIds(processDefinition: ModdleElement): Promise<string[]> {
+  return processDefinition.flowElements
+    .filter((element: FlowElement) => element.$type === "bpmn:ServiceTask")
+    .map(task => task.achievementToAssign!)
+    .filter(achievementToAssign => achievementToAssign !== undefined);
+}
