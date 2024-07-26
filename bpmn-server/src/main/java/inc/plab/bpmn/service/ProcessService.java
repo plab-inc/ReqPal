@@ -34,43 +34,54 @@ public class ProcessService {
     }
 
     public ProcessInstance startWorkflow(String processDefinitionKey, String studentId) throws Exception {
-        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery()
+
+        ProcessInstance existingInstance = runtimeService.createProcessInstanceQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .variableValueEquals("studentId", studentId)
+                .singleResult();
+
+        if (existingInstance != null) {
+            logger.error("Scenario is already running for studentId: {}", studentId);
+            throw new Exception("Scenario is already running for studentId: " + studentId);
+        }
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processDefinitionKey)
                 .latestVersion()
-                .list();
+                .singleResult();
 
-        if (processDefinitions.isEmpty()) {
+        if (processDefinition == null) {
             logger.error("No process definition found with key {}", processDefinitionKey);
             throw new Exception("No process definition found with key: " + processDefinitionKey);
         }
 
-        ProcessDefinition processDefinition = processDefinitions.get(0);
         Map<String, Object> variables = new HashMap<>();
         variables.put("studentId", studentId);
         variables.put("totalPoints", 0);
+        variables.put("gainedAchievements", JSON("[]"));
 
         return runtimeService.startProcessInstanceById(processDefinition.getId(), variables);
     }
 
-    public void invokeItem(String taskId, String studentId, String lessonResults) throws Exception {
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (task == null) {
-            logger.error("Task {} for Student {} not found", taskId, studentId);
-            throw new Exception("Task not found: " + taskId);
+    public String invokeItem(String processDefinitionKey, String studentId, String lessonResults) throws Exception {
+
+        Task currentTask = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee(studentId)
+                .singleResult();
+
+        if (currentTask == null) {
+            logger.error("Task {} for Student not found", studentId);
+            throw new Exception("Task not found");
         }
 
-        if (!studentId.equals(task.getAssignee())) {
-            logger.error("Task {} not assigned to Student {}", taskId, studentId);
-            throw new Exception("Forbidden: Task is not assigned to this studentId: " + studentId);
-        }
-
-        String lessonId = (String) taskService.getVariable(task.getId(), "lessonId");
+        String lessonId = (String) taskService.getVariable(currentTask.getId(), "lessonId");
         if (lessonId == null) {
-            logger.error("UserTask {} without lessonId", taskId);
-            throw new Exception("No lessonId in task found: " + taskId);
+            logger.error("UserTask {} without lessonId", currentTask.getId());
+            throw new Exception("No lessonId in task found: " + currentTask.getId());
         }
 
-        SpinJsonNode lessonResultsJson = (SpinJsonNode) runtimeService.getVariable(task.getProcessInstanceId(), "lessonResults");
+        SpinJsonNode lessonResultsJson = (SpinJsonNode) runtimeService.getVariable(currentTask.getProcessInstanceId(), "lessonResults");
         SpinJsonNode lessonResultJson = JSON(lessonResults);
 
         if (lessonResultsJson == null) {
@@ -83,21 +94,39 @@ public class ProcessService {
 
         lessonResultsJson.append(newLesson);
 
-        runtimeService.setVariable(task.getProcessInstanceId(), "lastLessonResult", lessonResultJson);
-        runtimeService.setVariable(task.getProcessInstanceId(), "lessonResults", lessonResultsJson);
-        taskService.complete(task.getId());
+        runtimeService.setVariable(currentTask.getProcessInstanceId(), "lastLessonResult", lessonResultJson);
+        runtimeService.setVariable(currentTask.getProcessInstanceId(), "lessonResults", lessonResultsJson);
+
+        taskService.complete(currentTask.getId());
+
+
+        Task nextTask = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee(studentId)
+                .singleResult();
+
+        if (nextTask == null) {
+            logger.error("Scenario completed");
+            return null;
+        }
+
+        return (String) taskService.getVariable(nextTask.getId(), "lessonId");
     }
 
 
-    public String getProcessInstanceStatus(String processInstanceId, String studentId) throws Exception {
+    public String getProcessInstanceStatus(String processDefinitionKey, String studentId) throws Exception {
+
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-                .processInstanceId(processInstanceId)
+                .processDefinitionKey(processDefinitionKey)
+                .variableValueEquals("studentId", studentId)
                 .singleResult();
 
         if (processInstance == null) {
-            logger.error("Process instance {} for student {} no found", processInstanceId, studentId);
-            throw new Exception("Process instance not found: " + processInstanceId);
+            logger.error("Process instance for processDefinitionKey {} with student {} no found", processDefinitionKey, studentId);
+            throw new Exception("Process instance not found.");
         }
+
+        String processInstanceId = processInstance.getId();
 
         List<Task> tasks = taskService.createTaskQuery()
                 .processInstanceId(processInstanceId)
@@ -137,10 +166,11 @@ public class ProcessService {
 
         SpinJsonNode responseJson = Spin.JSON("{}");
 
+        responseJson.prop("scenarioId", processDefinitionKey.substring(8));
         responseJson.prop("processInstanceId", processInstanceId);
-        responseJson.prop("processDefinitionId", processInstance.getProcessDefinitionId());
+        responseJson.prop("processDefinitionKey", processDefinitionKey);
         responseJson.prop("isEnded", processInstance.isEnded());
-        responseJson.prop("tasks", taskDetails);
+        responseJson.prop("openTasks", taskDetails);
         responseJson.prop("processInstanceVariables", processInstanceVariablesJson);
 
         return responseJson.toString();

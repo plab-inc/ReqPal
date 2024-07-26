@@ -7,7 +7,13 @@ import {
     Router
 } from "vue-router";
 
-import {requiresAuth, requiresStudent, requiresTeacher} from "@/middlewares/auth.ts";
+import {
+    requiresAuth,
+    requiresModerator,
+    requiresPending,
+    requiresStudent,
+    requiresTeacher
+} from "@/middlewares/auth.ts";
 import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
 import {
     fetchLessons,
@@ -18,8 +24,13 @@ import {useUtilStore} from "@/stores/util.ts";
 import {fetchProductsByUser} from "@/middlewares/product.ts";
 import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
 import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
-import {fetchAchievementImages, fetchAchievementsByUser} from "@/middlewares/achievement.ts";
+import {
+    fetchAchievementImages,
+    fetchAchievementsByUser, fetchReqPalAchievementImages,
+    fetchReqPalAchievementsByModerator
+} from "@/middlewares/achievement.ts";
 import { fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchLatestTeacherRequestByUser, fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
 
 const routes = [
     {
@@ -131,6 +142,18 @@ const routes = [
               }
             },
             {
+                path: "/reqpal-achievements",
+                name: "ReqPalAchievements",
+                component: () => import("@/views/achievement/ReqPalAchievementOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchReqPalAchievementsByModerator,
+                        fetchReqPalAchievementImages
+                    ]
+                }
+            },
+            {
                 path: "/scenario",
                 name: "Scenario Overview",
                 component: () => import("@/views/scenario/ScenarioOverview.vue"),
@@ -198,6 +221,28 @@ const routes = [
                         requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser
+                    ]
+                },
+            },
+            {
+                path: "/teacher-requests",
+                name: "TeacherRequests",
+                component: () => import("@/views/user/PendingTeacherOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchTeacherRequests
+                    ]
+                },
+            },
+            {
+                path: "/teacher-request",
+                name: "PendingRequests",
+                component: () => import("@/views/user/PendingTeacherRequest.vue"),
+                meta: {
+                    middleware: [
+                        requiresPending,
+                        fetchLatestTeacherRequestByUser
                     ]
                 },
             },

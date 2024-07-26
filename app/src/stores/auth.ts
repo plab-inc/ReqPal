@@ -21,6 +21,10 @@ export const useAuthStore = defineStore('auth', {
         isLoggedIn: (state) => !!state.user,
         isAdmin: (state) => state.userMetadata?.userroles?.includes('admin'),
         isTeacher: (state) => state.appMetadata?.userroles?.includes('teacher'),
+        isStudent: (state) => {
+            return !state.appMetadata?.userroles?.includes('teacher') && !state.appMetadata?.userroles?.includes('pending');
+        },
+        isPending: (state) => state.appMetadata?.userroles?.includes('pending'),
         isModerator: (state) => state.appMetadata?.userroles?.includes('moderator'),
         sessionToken: (state) => state.session ? state.session.access_token : '',
     },
@@ -58,6 +62,11 @@ export const useAuthStore = defineStore('auth', {
         },
         async updateUsername(username: string) {
             await authService.push.updateUsername(username);
+        },
+        async isClaimsAdmin() {
+            const data = await authService.pull.isClaimsAdmin();
+            if (data) return data.data;
+            return false;
         }
     },
 });

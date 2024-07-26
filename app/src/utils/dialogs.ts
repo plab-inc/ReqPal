@@ -151,6 +151,22 @@ export const DeleteAchievement: DialogText = {
     cancelLabel: "Zurück"
 };
 
+export const DeleteReqPalAchievement: DialogText = {
+    title: "Achievement löschen",
+    message: "Möchten Sie wirklich das ausgewählte ReqPal-Achievement löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte ReqPal-Achievements und Level der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteReqPalAchievementLevel: DialogText = {
+    title: "Achievement löschen",
+    message: "Möchten Sie wirklich das ausgewählte ReqPal-Achievement-Level löschen? " +
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte ReqPal-Achievements und Level der Lernenden.",
+    confirmLabel: "Löschen",
+    cancelLabel: "Zurück"
+};
+
 export const DeleteLesson: DialogText = {
     title: "Lektion löschen",
     message: "Möchten Sie wirklich die ausgewählte Lektion löschen? " +
@@ -167,5 +183,21 @@ export const DeployScenarioFirstTime: DialogText = {
       "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine neue Version veröffentlicht werden." +
       "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
     confirmLabel: "Veröffentlichen",
+    cancelLabel: "Zurück"
+};
+
+export const ApproveTeacherRequest: DialogText = {
+    title: "Dozent-Anfrage freigeben",
+    message: "Möchten Sie wirklich diese Dozenten-Anfrage freigeben? " +
+        "Dadurch erhält der Nutzer Rechte und Funktionen eines Dozenten.",
+    confirmLabel: "Freigeben",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteTeacherRequest: DialogText = {
+    title: "Dozent-Anfrage löschen",
+    message: "Möchten Sie wirklich diese Dozenten-Anfrage löschen? " +
+        "Der Nutzer muss ansonsten erneut eine Anfrage stellen.",
+    confirmLabel: "Löschen",
     cancelLabel: "Zurück"
 };

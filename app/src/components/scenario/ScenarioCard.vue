@@ -6,7 +6,7 @@
     rounded
     elevation="10"
   >
-    <div :style="scenario?.locked ? 'background: #fa756b': 'background: white' "
+    <div :style="scenario?.locked ? 'background: #908ba3': 'background: white' "
          v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5" />
     <div class="elevation-8">
       <v-card-title class="text-h4 pb-0">
@@ -70,14 +70,14 @@
 
 <script setup lang="ts">
 import { defineProps, ref } from "vue";
-import { Scenario, ScenarioDTO } from "@/types/scenario.ts";
+import { Scenario } from "@/types/scenario.ts";
 import router from "@/router/index.ts";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import { useScenarioStore } from "@/stores/scenario.ts";
-import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { DeployScenarioFirstTime } from "@/utils/dialogs.ts";
+import http from "@/services/api/api.ts";
 
 const props = defineProps<{
   scenario?: Scenario
@@ -95,12 +95,8 @@ const editScenario = (scenario: Scenario) => {
 }
 
 const deleteScenario = async (scenario: Scenario) => {
-  //TODO Logic to handle deleted Scenarios
-  await ScenarioService.push.deleteScenario(scenario).then((scenarioDTO: ScenarioDTO | undefined) => {
-    if(scenarioDTO){
-      scenarioStore.getScenarios.splice(scenarioStore.getScenarios.findIndex(s => s.id === scenarioDTO.id), 1);
-      BpmnStorageService.push.manageScenarioAssets(scenario, 'delete')
-    }
+  await http.post(`scenario/delete/${scenario.id}`).then(() => {
+    scenarioStore.getScenarios.splice(scenarioStore.getScenarios.findIndex(s => s.id === scenario.id), 1);
   })
 }
 
@@ -111,15 +107,15 @@ const lockScenario = (scenario: Scenario) => {
 }
 
 const deployScenario = (scenario: Scenario) => {
-  //TODO Logic to deploy Scenarios
   if (!scenario.deployed) utilStore.openDialog(DeployScenarioFirstTime, () => {
-    ScenarioService.push.toggleField(scenario, "deployed");
     scenario.deployed = !scenario.deployed;
   });
+  http.post(`scenario/deploy/${scenario.id}`);
 }
 
 const newScenario = () => {
-  scenarioModelerStore.flushScenario().then(() => {
+  scenarioModelerStore.generateNewUUID();
+  scenarioModelerStore.flushScenarioData().then(() => {
     router.push({path: '/scenario/builder'});
   });
 }

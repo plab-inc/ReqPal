@@ -377,6 +377,79 @@ export type Database = {
           },
         ]
       }
+      reqpal_achievement_levels: {
+        Row: {
+          id: string
+          image: string | null
+          level: number
+          reqpal_achievement_id: string | null
+          threshold: number | null
+          title: string | null
+          xp: number
+        }
+        Insert: {
+          id?: string
+          image?: string | null
+          level: number
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+          xp?: number
+        }
+        Update: {
+          id?: string
+          image?: string | null
+          level?: number
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievement_levels_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reqpal_achievements: {
+        Row: {
+          created_at: string
+          description: string | null
+          example: boolean | null
+          id: string
+          target_field: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          example?: boolean | null
+          id?: string
+          target_field?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          example?: boolean | null
+          id?: string
+          target_field?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requirements: {
         Row: {
           catalog_id: string
@@ -459,31 +532,40 @@ export type Database = {
       }
       scenarios: {
         Row: {
+          achievements: string[]
           created_at: string
           deployed: boolean
           description: string | null
           id: string
+          lessons: number
           locked: boolean
+          minLessons: number
           title: string
           user_id: string
           version: number
         }
         Insert: {
+          achievements?: string[]
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title: string
           user_id: string
           version?: number
         }
         Update: {
+          achievements?: string[]
           created_at?: string
           deployed?: boolean
           description?: string | null
           id?: string
+          lessons?: number
           locked?: boolean
+          minLessons?: number
           title?: string
           user_id?: string
           version?: number
@@ -491,6 +573,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_requests: {
+        Row: {
+          approved: boolean | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_requests_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -819,6 +930,55 @@ export type Database = {
           },
         ]
       }
+      user_reqpal_achievements: {
+        Row: {
+          created_at: string
+          id: string
+          max: boolean | null
+          reqpal_achievement_id: string | null
+          reqpal_achievement_level_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_level_id_fkey"
+            columns: ["reqpal_achievement_level_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievement_levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_reqpal_levels: {
         Row: {
           created_at: string
@@ -847,6 +1007,61 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_reqpal_levels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_scenario: {
+        Row: {
+          created_at: string
+          currentLesson_id: string | null
+          currentStep: number
+          ended: boolean
+          id: string
+          scenario_id: string
+          started: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currentLesson_id?: string | null
+          currentStep?: number
+          ended?: boolean
+          id?: string
+          scenario_id?: string
+          started?: boolean
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          currentLesson_id?: string | null
+          currentStep?: number
+          ended?: boolean
+          id?: string
+          scenario_id?: string
+          started?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_currentLesson_id_fkey"
+            columns: ["currentLesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_scenario_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_scenario_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -883,7 +1098,7 @@ export type Database = {
           {
             foreignKeyName: "user_statistics_user_id_fkey"
             columns: ["user_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -928,7 +1143,7 @@ export type Database = {
     Functions: {
       calculate_threshold: {
         Args: {
-          current_level: number
+          level: number
         }
         Returns: number
       }

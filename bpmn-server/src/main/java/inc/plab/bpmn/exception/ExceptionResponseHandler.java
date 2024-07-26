@@ -1,35 +1,23 @@
 package inc.plab.bpmn.exception;
 
 import inc.plab.bpmn.dto.ExceptionResponseDto;
-import io.jsonwebtoken.JwtException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import spinjar.com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import lombok.NonNull;
 
 @ControllerAdvice
+@RestController
 public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 
     private static final String FORBIDDEN_ERROR_MESSAGE = "Access Denied: You do not have sufficient privileges to access this resource.";
+    private static final String SOMETHING_WRONG_MESSAGE = "Something went wrong.";
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ExceptionResponseDto<String>> responseStatusExceptionHandler(final ResponseStatusException exception) {
@@ -63,12 +51,27 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ExceptionResponseDto<String>> usernameNotFoundExceptionHandler(final UsernameNotFoundException exception) {
+        final var exceptionResponse = new ExceptionResponseDto<String>();
+        exceptionResponse.setStatus(HttpStatus.UNAUTHORIZED.toString());
+        exceptionResponse.setDescription(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(ProcessEngineException.class)
+    public ResponseEntity<ExceptionResponseDto<String>> elementNotSupportedExceptionHandler(final ProcessEngineException exception) {
+        final var exceptionResponse = new ExceptionResponseDto<String>();
+        exceptionResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        exceptionResponse.setDescription(exception.getCode() + "-" + exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> serverExceptionHandler(final Exception exception) {
         final var exceptionResponse = new ExceptionResponseDto<String>();
         exceptionResponse.setStatus(HttpStatus.NOT_IMPLEMENTED.toString());
-        exceptionResponse.setDescription("Something went wrong.");
+        exceptionResponse.setDescription(SOMETHING_WRONG_MESSAGE);
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(exceptionResponse);
     }
-
 }

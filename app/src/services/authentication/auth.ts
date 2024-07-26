@@ -14,6 +14,7 @@ class AuthServiceClass {
     public pull = {
         signInWithPassword: this.signIn.bind(this),
         signOut: this.signOut.bind(this),
+        isClaimsAdmin: this.isClaimsAdmin.bind(this)
     }
 
     private async signIn(email: string, password: string) {
@@ -98,6 +99,12 @@ class AuthServiceClass {
             redirectTo: 'https://www.lethalgoose.com/account',
         });
         if (error) throw error;
+    }
+
+    private async isClaimsAdmin() {
+        const {data, error} = await supabase
+            .rpc('is_claims_admin', {});
+        return {data, error};
     }
 
 }
