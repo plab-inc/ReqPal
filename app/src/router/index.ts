@@ -7,6 +7,23 @@ import {
     Router
 } from "vue-router";
 
+import {
+    requiresAuth,
+    requiresModerator,
+    requiresPending,
+    requiresStudent,
+    requiresTeacher
+} from "@/middlewares/auth.ts";
+import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
+import {
+    fetchLessons,
+    fetchQuestionsForLesson,
+    loadLessonByUUID,
+} from "@/middlewares/lesson.ts";
+import {useUtilStore} from "@/stores/util.ts";
+import {fetchProductsByUser} from "@/middlewares/product.ts";
+import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
+import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
 import { requiresAuth, requiresModerator, requiresStudent, requiresTeacher } from "@/middlewares/auth.ts";
 import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
 import { fetchLessons, fetchQuestionsForLesson, loadLessonByUUID } from "@/middlewares/lesson.ts";
@@ -20,6 +37,8 @@ import {
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
+import { fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchLatestTeacherRequestByUser, fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
 import { fetchScenarioProgress, fetchScenarios } from "@/middlewares/scenario.ts";
 
 const routes = [
@@ -221,6 +240,28 @@ const routes = [
                         requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser
+                    ]
+                },
+            },
+            {
+                path: "/teacher-requests",
+                name: "TeacherRequests",
+                component: () => import("@/views/user/PendingTeacherOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchTeacherRequests
+                    ]
+                },
+            },
+            {
+                path: "/teacher-request",
+                name: "PendingRequests",
+                component: () => import("@/views/user/PendingTeacherRequest.vue"),
+                meta: {
+                    middleware: [
+                        requiresPending,
+                        fetchLatestTeacherRequestByUser
                     ]
                 },
             },

@@ -50,7 +50,20 @@ export async function requiresStudent(to: RouteLocationNormalized, from: RouteLo
 
     const authStore = useAuthStore();
 
-    if (await isAuthenticated() && !authStore.isTeacher) {
+    if (await isAuthenticated() && authStore.isStudent) {
+        return next();
+    }
+
+    alertService.addErrorAlert("Sie haben keine Zugriffsberechtigung.")
+    return next({name: 'Home'});
+}
+
+
+export async function requiresPending(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+
+    const authStore = useAuthStore();
+
+    if (await isAuthenticated() && authStore.isPending) {
         return next();
     }
 

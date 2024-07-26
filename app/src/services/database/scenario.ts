@@ -38,7 +38,8 @@ class ScenarioServiceClass {
         description: scenario.description,
         title: scenario.title,
         minLessons: scenario.minLessons,
-        lessons: scenario.lessonsCount
+        lessons: scenario.lessonsCount,
+        achievements: scenario.achievements
       })
       .select().single()
 
