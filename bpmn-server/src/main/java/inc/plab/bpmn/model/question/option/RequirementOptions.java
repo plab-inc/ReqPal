@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.evaluation.options;
+package inc.plab.bpmn.model.question.option;
 
 import java.util.List;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequirementOptions {
+public class RequirementOptions extends Option {
     private String catalogId;
     private List<String> productIds;
     private String requirementId;
