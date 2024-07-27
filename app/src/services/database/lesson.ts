@@ -1,12 +1,6 @@
-import {supabase} from "@/plugins/supabase";
-import {
-    Lesson,
-    LessonDTO,
-    LessonForm,
-    LessonStatistic,
-    Question
-} from "@/types/lesson.ts";
-import {mapToLesson} from "@/mapper/lesson.ts";
+import { supabase } from "@/plugins/supabase";
+import { Lesson, LessonDTO, LessonForm, LessonQuestions, LessonStatistic, Question } from "@/types/lesson.ts";
+import { mapToLesson } from "@/mapper/lesson.ts";
 
 class LessonServiceClass {
 
@@ -18,6 +12,7 @@ class LessonServiceClass {
     };
 
     public pull = {
+        fetchLessonWithQuestions: this.fetchLessonWithQuestions.bind(this),
         fetchLessons: this.fetchLessons,
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
@@ -46,6 +41,36 @@ class LessonServiceClass {
                 result.push(mapped);
             });
             return result;
+        }
+    }
+
+    private async fetchLessonWithQuestions(lessonUUID: string): Promise<LessonQuestions | undefined> {
+        const { data, error } = await supabase
+          .from("lessons")
+          .select(`*,
+              questions:questions(
+                uuid,
+                lesson_uuid,
+                question,
+                question_type,
+                options,
+                hint,
+                position,
+                points
+              ),lesson_objectives:lesson_objectives(objectives(*))`)
+          .eq("uuid", lessonUUID)
+          .single();
+
+        if (error) throw error;
+
+        if (data && data.questions) {
+            const lesson: Lesson = mapToLesson(data);
+            const questions: Question[] = data.questions as Question[];
+
+            return {
+                lesson,
+                questions
+            };
         }
     }
 

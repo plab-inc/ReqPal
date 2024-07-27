@@ -1,11 +1,21 @@
-import axios from "axios"
-import { useAuthStore } from "@/stores/auth.ts";
+import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 
-const authStore = useAuthStore();
-
-export default axios.create({
+const httpClient = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
-  headers: {
-    'Authorization': 'Bearer ' + authStore.sessionToken
-  }
 });
+
+httpClient.interceptors.request.use(
+  (config) => {
+    const authStore = useAuthStore(); // Zugriff auf den Auth-Store
+    if (authStore.sessionToken) {
+      config.headers["Authorization"] = `Bearer ${authStore.sessionToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default httpClient;

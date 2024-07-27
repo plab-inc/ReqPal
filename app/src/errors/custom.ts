@@ -39,6 +39,13 @@ export class BpmnImportError extends Error {
   }
 }
 
+export class BpmnProcessError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BpmnProcessError";
+  }
+}
+
 export class ConversionError extends Error {
     private code: number;
 

@@ -1,4 +1,4 @@
-package inc.plab.bpmn.delegate;
+package inc.plab.bpmn.delegate.camunda;
 
 import inc.plab.bpmn.service.AchievementService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

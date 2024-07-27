@@ -73,6 +73,8 @@
           <v-list-item rounded prepend-icon="mdi-school" title="Lektionen"
                        :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons"/>
           <v-list-item rounded prepend-icon="mdi-graph-outline" title="Szenarien" to="/scenario" />
+          <v-list-item rounded prepend-icon="mdi-ray-start-vertex-end" title="Szenarien Starten"
+                       to="/scenario/loader" />
           <v-divider class="my-1"/>
           <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives"/>
           <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements"/>
@@ -150,14 +152,14 @@
 
 <script lang="ts" setup>
 import router from "@/router";
-import {useUtilStore} from "@/stores/util.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useThemeStore} from "@/stores/theme.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useThemeStore } from "@/stores/theme.ts";
 import Dialog from "@/components/util/Dialog.vue";
-import {useProfileStore} from "@/stores/profile.ts";
-import {onBeforeMount, ref} from "vue";
-import {supabase} from "@/plugins/supabase.ts";
-import {XpActivityLogDTO} from "@/types/gamification.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { onBeforeMount, ref } from "vue";
+import { supabase } from "@/plugins/supabase.ts";
+import { XpActivityLogDTO } from "@/types/gamification.ts";
 import Snackbar from "@/components/util/Snackbar.vue";
 
 const utilStore = useUtilStore();

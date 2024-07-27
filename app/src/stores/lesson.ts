@@ -1,10 +1,12 @@
-import {defineStore} from 'pinia';
-import {Lesson, LessonDTO, Question} from "@/types/lesson.ts";
+import { defineStore } from "pinia";
+import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
+import { VForm } from "vuetify/components";
+import { toRaw } from "vue";
 
 interface LessonState {
     examples: Lesson[],
@@ -12,6 +14,7 @@ interface LessonState {
     currentLesson: Lesson | null;
     currentQuestions: any;
     lessonModules: LessonModuleEntry[];
+  lessonForm: VForm | null;
 }
 
 export interface LessonModuleEntry {
@@ -26,7 +29,8 @@ export const useLessonStore = defineStore('lesson', {
         lessons: [],
         currentLesson: null,
         currentQuestions: [],
-        lessonModules: []
+      lessonModules: [],
+      lessonForm: null
     }),
 
     getters: {
@@ -57,10 +61,44 @@ export const useLessonStore = defineStore('lesson', {
     },
 
     actions: {
-        async fetchQuestionsForLesson(lessonUUID: string) {
-            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
-            if (Array.isArray(questions)) {
-                this.currentQuestions = questions;
+      async isLessonFormValid() {
+        if (!this.lessonForm) {
+          return false;
+        }
+
+        return (await this.lessonForm?.validate().then(value => {
+          return value.valid;
+        }));
+      },
+      async generateUserResults(): Promise<LessonAnswer | null> {
+        const questions = this.filterComponentsByQuestionOnly();
+        if (this.currentLesson) {
+          return {
+            uuid: this.currentLesson?.lessonDTO.uuid,
+            answers: questions.map(component => {
+              return {
+                uuid: component.uuid,
+                question: component.data.question,
+                options: toRaw(component.data.options),
+                type: component.type
+              };
+            })
+          };
+        }
+        return null;
+      },
+      filterComponentsByQuestionOnly() {
+        return this.lessonModules.filter(c =>
+          c.type === "MultipleChoice" ||
+          c.type === "TrueOrFalse" ||
+          c.type === "Slider" ||
+          c.type === "Requirement");
+      },
+      async fetchQuestionsWithLesson(lessonUUID: string) {
+        const lessonWithQuestions = await lessonService.pull.fetchLessonWithQuestions(lessonUUID);
+        if (lessonWithQuestions) {
+          this.currentQuestions = lessonWithQuestions.questions;
+          this.currentLesson = lessonWithQuestions.lesson;
                 this.setUpLessonModules();
             }
         },
@@ -104,6 +142,10 @@ export const useLessonStore = defineStore('lesson', {
                 this.currentLesson = lesson;
             }
         },
+
+      loadLessonWithQuestions(lessonUUID: string) {
+        this.clearLessonModules();
+      },
 
         addLessonModuleWithData(componentName: string, componentUUID: string, data: {
             uuid: string,

@@ -93,11 +93,11 @@
 
 <script setup lang="ts">
 
-import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
+import { LessonModuleEntry, useLessonStore } from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
-import {Lesson, LessonStatistic} from "@/types/lesson.ts";
+import { Lesson, LessonStatistic } from "@/types/lesson.ts";
 import Score from "@/components/lesson/results/Score.vue";
-import {ref, watch} from "vue";
+import { ref, watch } from "vue";
 
 const lessonStore = useLessonStore();
 const currentLesson: Lesson | null = lessonStore.getCurrentLesson;
@@ -155,7 +155,7 @@ watch(filters, async (newShowSolutions) => {
     components.value = lessonStore.getLessonModules;
   }
   if (!filters.value.includes('showSolutions') && currentLesson?.lessonDTO) {
-    await lessonStore.fetchQuestionsForLesson(currentLesson.lessonDTO.uuid);
+    await lessonStore.fetchQuestionsWithLesson(currentLesson.lessonDTO.uuid);
     components.value = lessonStore.getLessonModules;
   }
 }, {deep: true});
