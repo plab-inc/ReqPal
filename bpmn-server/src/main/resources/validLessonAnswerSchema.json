@@ -11,24 +11,65 @@
             "type": "string"
           },
           "options": {
-            "anyOf": [
+            "oneOf": [
               {
-                "type": "null"
+                "type": "object",
+                "properties": {
+                  "input": { "type": "boolean" }
+                },
+                "required": ["input"]
               },
               {
-                "type": "string"
+                "type": "object",
+                "properties": {
+                  "answers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer" },
+                        "description": { "type": "string" },
+                        "input": { "type": "boolean" }
+                      },
+                      "required": ["id", "description", "input"]
+                    }
+                  }
+                },
+                "required": ["answers"]
               },
               {
-                "type": "boolean"
+                "type": "object",
+                "properties": {
+                  "input": { "type": "integer" },
+                  "minValue": { "type": "integer" },
+                  "maxValue": { "type": "integer" },
+                  "steps": { "type": "integer" }
+                },
+                "required": ["input", "minValue", "maxValue", "steps"]
               },
               {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "catalogId": { "type": "string" },
+                  "productIds": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "requirementId": { "type": "string" },
+                  "askForQualification": { "type": "boolean" },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string" },
+                        "input": { "type": "integer" }
+                      },
+                      "required": ["id", "input"]
+                    }
+                  }
+                },
+                "required": ["catalogId", "productIds", "requirementId", "askForQualification"]
               }
             ]
           },
