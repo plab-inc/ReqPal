@@ -14,6 +14,24 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static org.camunda.spin.Spin.JSON;
+/*
+Testing with:
+{
+  "answers": [
+    {
+      "questionId": "87e378a2-10b0-43b7-9c90-67fd03d8b8b3",
+      "options": "true",
+      "type": "TrueOrFalse"
+    },
+     {
+      "questionId": "87e378a2-10b0-43b7-9c90-67fd03d8b8b3",
+      "options": "false",
+      "type": "TrueOrFalse"
+    }
+  ]
+}
+ */
+
 
 @Service
 @AllArgsConstructor
