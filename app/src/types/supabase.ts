@@ -1017,38 +1017,38 @@ export type Database = {
       user_scenario: {
         Row: {
           created_at: string
-          currentLesson_id: string | null
-          currentStep: number
           ended: boolean
           id: string
+          lesson_id: string | null
           scenario_id: string
           started: boolean
+          step: number
           user_id: string
         }
         Insert: {
           created_at?: string
-          currentLesson_id?: string | null
-          currentStep?: number
           ended?: boolean
           id?: string
+          lesson_id?: string | null
           scenario_id?: string
           started?: boolean
+          step?: number
           user_id?: string
         }
         Update: {
           created_at?: string
-          currentLesson_id?: string | null
-          currentStep?: number
           ended?: boolean
           id?: string
+          lesson_id?: string | null
           scenario_id?: string
           started?: boolean
+          step?: number
           user_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "user_scenario_currentLesson_id_fkey"
-            columns: ["currentLesson_id"]
+            columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
