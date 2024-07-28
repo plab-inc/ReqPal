@@ -18,8 +18,6 @@ public class OptionConverter implements AttributeConverter<Option, String> {
     @Override
     public String convertToDatabaseColumn(Option option) {
         try {
-            System.out.println("option");
-            System.out.println(option);
             return objectMapper.writeValueAsString(option);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Could not convert option to JSON string", e);
@@ -29,10 +27,6 @@ public class OptionConverter implements AttributeConverter<Option, String> {
     @Override
     public Option convertToEntityAttribute(String json) {
         try {
-            System.out.println("converting json to entity attribute");
-            System.out.println("json");
-            System.out.println(json);
-
             // TODO for this to work we need to save the type in the options json
             if (objectMapper.readValue(json, Map.class) == null) {
                 return null;

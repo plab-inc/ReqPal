@@ -11,10 +11,12 @@ public abstract class Result {
     private double score;
 
     public Result(String questionId, String type, double score) {
-
+        this.questionId = questionId;
+        this.type = type;
+        this.score = score;
     }
 
-    public Result() {
-
+    public void addPointsToScore(double points) {
+        score += points;
     }
 }

@@ -15,8 +15,6 @@ public class JsonValidator {
 
     public static void validateJson(String jsonString) {
         try {
-            System.out.println(jsonString);
-
             InputStream schemaStream = JsonValidator.class.getResourceAsStream("/schemas/validLessonAnswerSchema.json");
             ObjectMapper mapper = new ObjectMapper();
             JsonNode schemaNode = mapper.readTree(schemaStream);

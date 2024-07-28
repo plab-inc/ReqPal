@@ -9,7 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MultipleChoiceResult {
     private int id;
-    private String description;
     private boolean input;
     private boolean isCorrect;
 }

@@ -1,8 +1,11 @@
 package inc.plab.bpmn.service;
 
+import inc.plab.bpmn.exception.InvalidAnswerOptionsException;
+import inc.plab.bpmn.model.productRequirement.ProductRequirement;
+import inc.plab.bpmn.model.productRequirement.ProductRequirementRepository;
 import inc.plab.bpmn.model.question.Question;
 import inc.plab.bpmn.model.question.QuestionRepository;
-import inc.plab.bpmn.model.question.evaluation.Answer;
+import inc.plab.bpmn.mapper.Answer;
 import inc.plab.bpmn.model.question.evaluation.result.*;
 import inc.plab.bpmn.model.question.option.*;
 import inc.plab.bpmn.model.question.solution.MultipleChoiceSolution;
@@ -15,84 +18,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-/*
-TODO TESTING DATA
-{
-  "answers": [
-    {
-      "options": {
-        "input": true,
-        "type": "TrueOrFalse"
-      },
-      "type": "TrueOrFalse",
-      "questionId": "87e378a2-10b0-43b7-9c90-67fd03d8b8b3"
-    },
-    {
-      "options": {
-        "type": "MultipleChoice",
-        "answers":
-        [
-        {
-          "id": 0,
-          "description": "Option 1",
-          "input": true
-        },
-        {
-          "id": 1,
-          "description": "Option 2",
-          "input": false
-        },
-        {
-          "id": 2,
-          "description": "Option 3",
-          "input": true
-        }
-      ]},
-      "type": "MultipleChoice",
-      "questionId": "4e40ad58-7aaa-4936-9eb8-3ac475ddc9c7"
-    },
-    {
-      "options": {
-        "type": "Slider",
-        "input": 15,
-        "minValue": 0,
-        "maxValue": 20,
-        "steps": 1
-      },
-      "type": "Slider",
-      "questionId": "21ca6762-0be9-407f-8976-b10dbd20f73d"
-    },
-    {
-      "options": {
-        "type": "Requirement",
-        "catalogId": "deadbc97-95b9-49a0-8b61-d4b8c07178a0",
-        "productIds": [
-          "2180cb13-347f-44a7-8b71-4515581f76d3",
-          "51f0e68f-d189-4c04-8668-ee5ce8e1ceb6"
-        ],
-        "requirementId": "e5df7e41-89a7-447c-8932-ea3821ce7839",
-        "askForQualification": true,
-        "products": [
-          {
-            "id": "2180cb13-347f-44a7-8b71-4515581f76d3",
-            "input": 1
-          },
-          {
-            "id": "51f0e68f-d189-4c04-8668-ee5ce8e1ceb6",
-            "input": 1
-          }
-        ]
-      },
-      "type": "Requirement",
-      "questionId": "ad9b58c3-1ca1-4070-9dfc-34d61f798b34"
-    }
-  ]
-}
- */
+
 @Service
 @AllArgsConstructor
 public class EvaluationService {
     private QuestionRepository questionRepository;
+    private ProductRequirementRepository productRequirementRepository;
 
     public Result evaluateQuestionType(Answer answer) {
         String lowerCaseType = answer.getType().toLowerCase().trim();
@@ -127,10 +58,14 @@ public class EvaluationService {
                 Question question = questionOptional.get();
                 if (question.getSolution() instanceof SliderSolution solution) {
                     return getSliderResult(sliderOptions, solution, question);
+                } else {
+                    throw new InvalidAnswerOptionsException("Expected SliderSolution but found: " + question.getSolution().getClass().getSimpleName());
                 }
+            } else {
+                throw new InvalidAnswerOptionsException("Question not found for UUID: " + questionUUID);
             }
         }
-        return null;
+        throw new InvalidAnswerOptionsException("Unrecognized options for type Slider");
     }
 
     private static SliderResult getSliderResult(SliderOptions sliderOptions, SliderSolution solution, Question question) {
@@ -149,6 +84,9 @@ public class EvaluationService {
 
     private Result evaluateRequirement(Answer answer) {
         if (answer.getOptions() instanceof RequirementOptions requirementOptions) {
+            if (!requirementOptions.isAskForQualification()) {
+                return null;
+            }
             UUID questionUUID = UUID.fromString(answer.getQuestionId());
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
 
@@ -156,19 +94,47 @@ public class EvaluationService {
                 Question question = questionOptional.get();
                 if (question.getSolution() instanceof RequirementSolution solution) {
                     return getRequirementResult(requirementOptions, solution, question);
+                } else {
+                    throw new InvalidAnswerOptionsException("Expected RequirementSolution but found: " + question.getSolution().getClass().getSimpleName());
                 }
+            } else {
+                throw new InvalidAnswerOptionsException("Question not found for UUID: " + questionUUID);
             }
         }
-        return null;
+        throw new InvalidAnswerOptionsException("Unrecognized options for type Requirement");
     }
 
     private Result getRequirementResult(RequirementOptions requirementOptions, RequirementSolution solution, Question question) {
         RequirementResult requirementResult = new RequirementResult(question.getId().toString(), question.getQuestionType(), 0);
+        requirementResult.setRequirementId(requirementOptions.getRequirementId());
+        List<ProductResult> productResults = requirementResult.getProductResults();
 
-        // get products and their qualification
-        // in table product_requirements -> get relationship
-        //compare with input
+        String reqId = requirementOptions.getRequirementId();
+        List<ProductOptions> productOptions = requirementOptions.getProducts();
+        double pointsPerRightAnswer = (double) question.getPoints() / productOptions.size();
 
+        productOptions.forEach(product -> {
+            UUID productUUID = UUID.fromString(product.getId());
+            UUID requirementUUID = UUID.fromString(reqId);
+            Optional<ProductRequirement> productRequirementOptional = productRequirementRepository.findByProductIdAndRequirementId(productUUID, requirementUUID);
+            if (productRequirementOptional.isPresent()) {
+                ProductRequirement productRequirement = productRequirementOptional.get();
+
+                ProductResult productResult = new ProductResult();
+                productResult.setId(product.getId());
+                productResult.setCorrect(false);
+                productResult.setInput(product.getInput());
+
+                int min = Math.max(productRequirement.getQualification() - solution.getToleranceValue(), 0);
+                int max = Math.min(productRequirement.getQualification() + solution.getToleranceValue(), productRequirement.getQualification());
+
+                if (product.getInput() >= min && product.getInput() <= max) {
+                    productResult.setCorrect(true);
+                    requirementResult.addPointsToScore(pointsPerRightAnswer);
+                }
+                productResults.add(productResult);
+            }
+        });
         return requirementResult;
     }
 
@@ -183,10 +149,14 @@ public class EvaluationService {
                 // TODO save solution as {answers: [] }
                 if (question.getSolution() instanceof MultipleChoiceSolution solution) {
                     return getMultipleChoiceResult(multipleChoiceOptions, solution, question);
+                } else {
+                    throw new InvalidAnswerOptionsException("Expected MultipleChoiceSolution but found: " + question.getSolution().getClass().getSimpleName());
                 }
+            } else {
+                throw new InvalidAnswerOptionsException("Question not found for UUID: " + questionUUID);
             }
         }
-        return null;
+        throw new InvalidAnswerOptionsException("Unrecognized options for type MultipleChoice");
     }
 
     private Result getMultipleChoiceResult(MultipleChoiceOptions multipleChoiceOptions, MultipleChoiceSolution solution, Question question) {
@@ -201,7 +171,7 @@ public class EvaluationService {
             MultipleChoiceOption option = userAnswers.stream().filter(a -> a.getId() == answerSolution.getId()).findAny()
                     .orElse(null);
             if (option != null) {
-                MultipleChoiceResult resultOption = new MultipleChoiceResult(option.getId(), option.getDescription(), option.isInput(), false);
+                MultipleChoiceResult resultOption = new MultipleChoiceResult(option.getId(), option.isInput(), false);
 
                 if (option.isInput() == answerSolution.isSolution()) {
                     resultOption.setCorrect(true);
@@ -224,12 +194,14 @@ public class EvaluationService {
                 if (question.getSolution() instanceof TrueOrFalseSolution solution) {
                     // TODO for this to work for every question, we need to save question options in this form {value: true}
                     return getTrueOrFalseResult(trueOrFalseOptions, solution, question);
+                } else {
+                    throw new InvalidAnswerOptionsException("Expected TrueOrFalseSolution but found: " + question.getSolution().getClass().getSimpleName());
                 }
+            } else {
+                throw new InvalidAnswerOptionsException("Question not found for UUID: " + questionUUID);
             }
-        } else {
-            System.out.println("Unrecognized options for type TrueOrFalse");
         }
-        return null;
+        throw new InvalidAnswerOptionsException("Unrecognized options for type TrueOrFalse");
     }
 
     private TrueOrFalseResult getTrueOrFalseResult(TrueOrFalseOptions trueOrFalseOptions, TrueOrFalseSolution solution, Question question) {

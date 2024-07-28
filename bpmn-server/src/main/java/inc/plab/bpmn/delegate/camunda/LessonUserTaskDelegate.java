@@ -25,6 +25,7 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
         if (delegateExecution.getEventName().equals("end")) {
             evaluateLessonTask(delegateExecution);
+            System.out.println("Out of Delegate");
         }
 
     }
@@ -49,25 +50,23 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
     private void evaluateLessonTask(DelegateExecution delegateExecution) {
         String lessonId = (String) delegateExecution.getVariable("lessonId");
-        double currentTotalPoints = (double) delegateExecution.getVariable("totalPoints");
+        int currentTotalPoints = (int) delegateExecution.getVariable("totalPoints");
         SpinJsonNode lastLessonResult = (SpinJsonNode) delegateExecution.getVariable("lastLessonResult");
         SpinJsonNode allLessonResults = (SpinJsonNode) delegateExecution.getVariable("lessonResults");
 
         LessonResult lessonResult = lessonService.evaluateLesson(lessonId, lastLessonResult);
-        System.out.println("========================");
-        System.out.println("Finished evaluating.");
-        System.out.println("========================");
+        int newScore = (int) Math.round(lessonResult.getTotalScore());
+
         for (SpinJsonNode lesson : allLessonResults.elements()) {
             if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
-                lesson.prop("achievedPoints", Math.round(lessonResult.getTotalScore()));
+                lesson.prop("achievedPoints", newScore);
                 break;
             }
         }
 
         delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
-        delegateExecution.setVariable("totalPoints", currentTotalPoints + Math.round(lessonResult.getTotalScore()));
+        delegateExecution.setVariable("totalPoints", currentTotalPoints + newScore);
         delegateExecution.setVariable("lessonResults", allLessonResults);
+        System.out.println("End of Delegate");
     }
-
-
 }

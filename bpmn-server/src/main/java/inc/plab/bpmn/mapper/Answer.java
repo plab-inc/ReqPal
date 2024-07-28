@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.question.evaluation;
+package inc.plab.bpmn.mapper;
 
 import lombok.Getter;
 import lombok.Setter;
