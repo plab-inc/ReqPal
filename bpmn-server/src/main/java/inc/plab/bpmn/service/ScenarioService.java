@@ -69,11 +69,13 @@ public class ScenarioService {
 
         Scenario scenario = scenarioOptional.get();
 
+        bucketService.deleteObjectFromBucket("bpmn", scenario.getBpmnPath());
+        bucketService.deleteObjectFromBucket("bpmn", scenario.getSvgPath());
+
         if (scenario.getDeployed()) {
             cleanUpAllDeploymentsToScenario(scenario);
         }
 
-        bucketService.deleteObjectFromBucket("bpmn", scenario.getBpmnPath());
         scenarioRepository.delete(scenario);
 
         return Optional.of(String.valueOf(scenario.getId()));

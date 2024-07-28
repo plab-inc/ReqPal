@@ -9,23 +9,24 @@
     <CardImageTeacher v-if=isTeacher :scenario="scenario" />
     <div class="elevation-8">
       <CardInfosTeacher v-if="isTeacher" :scenario="scenario" />
-      <CardInfosStudent v-if="isStudent" :scenario="scenario" />
+      <CardInfosStudent v-if="isStudent && scenario" :scenario="scenario" />
       <v-card-actions>
         <v-container class="pa-0 align-content-end" style="height: 75px">
           <CardActionsTeacher v-if="isTeacher" :scenario="scenario" />
-          <CardActionsStudent v-if="isStudent" :scenario="scenario" />
-          <v-row v-if="scenario && isTeacher" no-gutters>
-            <v-btn block :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+          <CardActionsStudent v-if="isStudent && scenario" :scenario="scenario" />
+          <v-row v-if="scenario" no-gutters>
+            <v-btn block color="white" variant="plain" :ripple="false"
+                   :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
                    :text="isTeacher ? 'Statistiken': 'Details'" @click="show = !show" />
           </v-row>
         </v-container>
       </v-card-actions>
     </div>
     <v-expand-transition>
-      <div v-show="isStudent || show">
+      <div v-show="show">
         <v-card-text>
           <CardDetailsTeacher v-if="isTeacher" />
-          <CardDetailsStudent v-if="isStudent" />
+          <CardDetailsStudent v-if="isStudent && scenario" :scenario="scenario" />
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -51,18 +52,7 @@ const props = defineProps<{
 const authStore = useAuthStore();
 const show = ref<boolean>(false);
 
-const isTeacher = true;
-const isStudent = false;
+const isTeacher = false;
+const isStudent = true;
 
 </script>
-
-<style scoped>
-.svg-container {
-  display: flex;
-  height: 200px;
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
-</style>

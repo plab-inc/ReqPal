@@ -72,9 +72,8 @@
           <v-divider class="my-1"/>
           <v-list-item rounded prepend-icon="mdi-school" title="Lektionen"
                        :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons"/>
-          <v-list-item rounded prepend-icon="mdi-graph-outline" title="Szenarien" to="/scenario" />
-          <v-list-item rounded prepend-icon="mdi-ray-start-vertex-end" title="Szenarien Starten"
-                       to="/scenario/loader" />
+          <v-list-item rounded :prepend-icon="authStore.isTeacher ? 'mdi-graph-outline':'mdi-ray-start-vertex-end'"
+                       title="Szenarien" to="/scenario" />
           <v-divider class="my-1"/>
           <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives"/>
           <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements"/>

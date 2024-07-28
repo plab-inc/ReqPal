@@ -47,8 +47,7 @@ public class ProcessController {
             @AuthenticationPrincipal SupabaseUser user,
             @RequestBody String lessonResults) {
         try {
-            String processDefinitionKey = "Process_" + scenarioId;
-            InvokeLessonUserTaskResponseDto response = processService.invokeItem(processDefinitionKey, String.valueOf(user.getId()), lessonResults);
+            InvokeLessonUserTaskResponseDto response = processService.invokeItem(scenarioId, String.valueOf(user.getId()), lessonResults);
             response.setStatus("success");
             return ResponseEntity.ok(response);
         } catch (Exception e) {

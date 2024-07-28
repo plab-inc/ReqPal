@@ -1,4 +1,4 @@
-import { Scenario, ScenarioDTO } from "@/types/scenario.ts";
+import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioUserDTO } from "@/types/scenario.ts";
 
 export const mapToScenario = (input: ScenarioDTO): Scenario => {
   return {
@@ -13,5 +13,16 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
     locked: input.locked,
     version: input.version,
     createdAt: input.created_at
+  };
+};
+
+export const mapToScenarioProgress = (inputScenarioUser: ScenarioUserDTO, inputScenario: Scenario): ScenarioProgress => {
+  return {
+    scenario: inputScenario,
+    user_id: inputScenarioUser.user_id,
+    currentStep: inputScenarioUser.step,
+    started: inputScenarioUser.started,
+    ended: inputScenarioUser.ended,
+    currentLessonId: inputScenarioUser.lesson_id || undefined
   };
 };

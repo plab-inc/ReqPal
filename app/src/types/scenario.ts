@@ -1,6 +1,7 @@
 import { Database } from "@/types/supabase.ts";
 
 export type ScenarioDTO = Database["public"]["Tables"]["scenarios"]["Row"];
+export type ScenarioUserDTO = Database["public"]["Tables"]["user_scenario"]["Row"];
 
 export type Scenario = {
   id: string,

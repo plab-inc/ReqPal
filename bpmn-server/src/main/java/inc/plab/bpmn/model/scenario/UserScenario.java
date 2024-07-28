@@ -49,4 +49,8 @@ public class UserScenario {
     @JoinColumn(name = "lesson_Id")
     private Lesson currentLesson;
 
+    @Transient
+    public void increaseStep() {
+        this.currentStep++;
+    }
 }

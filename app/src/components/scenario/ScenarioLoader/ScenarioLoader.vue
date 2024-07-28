@@ -52,8 +52,13 @@ import LessonWindow from "@/components/scenario/ScenarioLoader/LessonWindow.vue"
 import { onMounted } from "vue";
 import { useLessonStore } from "@/stores/lesson.ts";
 import { LessonAnswer } from "@/types/lesson.ts";
+import router from "@/router/index.ts";
 
-onMounted(() => stepperStore.initializeSteps());
+onMounted(() => {
+  if (!stepperStore.scenario) {
+    router.push({ path: "/scenario" });
+  }
+});
 
 const stepperStore = useStepperStore();
 const lessonStore = useLessonStore();

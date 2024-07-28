@@ -15,3 +15,14 @@ const props = defineProps<{
 const scenarioModelerStore = useScenarioModelerStore();
 
 </script>
+
+<style scoped>
+.svg-container {
+  display: flex;
+  height: 200px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+</style>
