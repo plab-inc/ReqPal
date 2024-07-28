@@ -45,6 +45,7 @@ function init() {
 
   if (!fields.value.options) {
     fields.value.options = {
+      type: "Slider",
       minValue: 0,
       maxValue: 10,
       steps: 1
@@ -77,6 +78,7 @@ function checkSolution() {
 
 watch(inputValue, (newInput) => {
   fields.value.options = {
+    type: "Slider",
     steps: fields.value.options.steps,
     minValue: fields.value.options.minValue,
     maxValue: fields.value.options.maxValue,

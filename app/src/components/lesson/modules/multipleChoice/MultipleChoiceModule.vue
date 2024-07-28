@@ -2,9 +2,9 @@
 
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
-import { useAuthStore } from "@/stores/auth.ts";
-import { useLessonStore } from "@/stores/lesson.ts";
-import { ref, watch } from "vue";
+import {useAuthStore} from "@/stores/auth.ts";
+import {useLessonStore} from "@/stores/lesson.ts";
+import {ref, watch} from "vue";
 
 interface Props {
   componentId: string,
@@ -23,13 +23,18 @@ const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
 
 const fields = ref<any>({
-  options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options'),
+  options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options') || {
+    type: "MultipleChoice",
+    answers: []
+  },
 });
 
 function checkSolution(id: number) {
-  if (solution) {
-    const found = solution.find((s: any) => s.id === id);
-    if(isTeacher && found) return found.solution;
+  if (solution && solution.answers) {
+    const found = solution.answers.find((s: any) => s.id === id);
+    if (isTeacher && found) {
+      return found.solution;
+    }
     if (found) {
       const option = fields.value.options.find((o: any) => o.id === id);
       if (option) {
@@ -42,19 +47,26 @@ function checkSolution(id: number) {
 init();
 
 function init() {
-  fields.value.options.forEach((option: any) => {
-    if(option.input === undefined) {
-      const objects = fields.value.options.map((option: any) => ({
-        id: option.id,
-        description: option.description,
-        input: false,
-      }));
-      fields.value.options = objects;
-      updateStoreData(objects)
-    }
+  if (fields.value.options && fields.value.options.answers) {
 
-    selectedAnswers.value[option.id] = option.input !== undefined ? option.input : false;
-  })
+    if (isTeacher) {
+      fields.value.options.answers.forEach((option: any) => {
+        selectedAnswers.value[option.id] = checkSolution(option.id);
+      })
+    } else {
+      fields.value.options.answers.forEach((option: any) => {
+        if (option.input === undefined) {
+          fields.value.options.answers = fields.value.options.answers.map((option: any) => ({
+            id: option.id,
+            description: option.description,
+            input: false,
+          }));
+          updateStoreData(fields.value.options)
+        }
+        selectedAnswers.value[option.id] = option.input !== undefined ? option.input : false;
+      })
+    }
+  }
 }
 
 function updateStoreData(fields: any) {
@@ -62,13 +74,12 @@ function updateStoreData(fields: any) {
 }
 
 watch(selectedAnswers, (newAnswers) => {
-  const objects = fields.value.options.map((option: any) => ({
+  fields.value.options.answers = fields.value.options.answers.map((option: any) => ({
     id: option.id,
     description: option.description,
     input: newAnswers[option.id] !== undefined ? newAnswers[option.id] : false
   }));
-  fields.value.options = objects;
-  updateStoreData(objects)
+  updateStoreData(fields.value.options)
 }, {deep: true});
 
 </script>
@@ -94,7 +105,7 @@ watch(selectedAnswers, (newAnswers) => {
               <v-container>
                 <div class="text-h6">{{ question }}</div>
 
-                <v-checkbox v-for="(answer) in fields.options"
+                <v-checkbox v-for="(answer) in fields.options.answers"
                             :key="answer.id"
                             :label="answer.description"
                             v-model="selectedAnswers[answer.id]"
@@ -111,7 +122,7 @@ watch(selectedAnswers, (newAnswers) => {
               <v-container>
                 <div class="text-h6">{{ question }}</div>
 
-                <v-checkbox v-for="(answer) in fields.options"
+                <v-checkbox v-for="(answer) in fields.options.answers"
                             :key="answer.id"
                             :label="answer.description"
                             v-model="selectedAnswers[answer.id]"

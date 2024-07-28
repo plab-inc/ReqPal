@@ -146,7 +146,6 @@ public class EvaluationService {
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
             if (questionOptional.isPresent()) {
                 Question question = questionOptional.get();
-                // TODO save solution as {answers: [] }
                 if (question.getSolution() instanceof MultipleChoiceSolution solution) {
                     return getMultipleChoiceResult(multipleChoiceOptions, solution, question);
                 } else {
@@ -192,7 +191,6 @@ public class EvaluationService {
             if (questionOptional.isPresent()) {
                 Question question = questionOptional.get();
                 if (question.getSolution() instanceof TrueOrFalseSolution solution) {
-                    // TODO for this to work for every question, we need to save question options in this form {value: true}
                     return getTrueOrFalseResult(trueOrFalseOptions, solution, question);
                 } else {
                     throw new InvalidAnswerOptionsException("Expected TrueOrFalseSolution but found: " + question.getSolution().getClass().getSimpleName());

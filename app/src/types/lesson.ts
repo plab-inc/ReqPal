@@ -26,7 +26,6 @@ export type Lesson = {
 }
 
 export type LessonAnswer = {
-  uuid: string,
   answers: any[]
 }
 

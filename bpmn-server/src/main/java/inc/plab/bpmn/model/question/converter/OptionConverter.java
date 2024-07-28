@@ -27,7 +27,6 @@ public class OptionConverter implements AttributeConverter<Option, String> {
     @Override
     public Option convertToEntityAttribute(String json) {
         try {
-            // TODO for this to work we need to save the type in the options json
             if (objectMapper.readValue(json, Map.class) == null) {
                 return null;
             }

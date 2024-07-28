@@ -25,7 +25,6 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
         if (delegateExecution.getEventName().equals("end")) {
             evaluateLessonTask(delegateExecution);
-            System.out.println("Out of Delegate");
         }
 
     }
@@ -67,6 +66,5 @@ public class LessonUserTaskDelegate implements JavaDelegate {
         delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
         delegateExecution.setVariable("totalPoints", currentTotalPoints + newScore);
         delegateExecution.setVariable("lessonResults", allLessonResults);
-        System.out.println("End of Delegate");
     }
 }

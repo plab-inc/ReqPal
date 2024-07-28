@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import { ref, watch } from "vue";
+import {ref, watch} from "vue";
 import {requiredBooleanRule} from "@/utils/validationRules.ts";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
@@ -15,22 +14,32 @@ const props = defineProps<Props>();
 const lessonStore = useLessonStore();
 const question = lessonStore.getLessonModuleFieldValues(props.componentId, 'question')
 const hint = lessonStore.getLessonModuleFieldValues(props.componentId, 'hint')
-const solution = lessonStore.getLessonModuleFieldValues(props.componentId, 'solution');
+const solution = lessonStore.getLessonModuleFieldValues(props.componentId, 'solution') || null;
 const questionId = lessonStore.getLessonModuleFieldValues(props.componentId, 'uuid');
 const points = lessonStore.getLessonModuleFieldValues(props.componentId, 'points');
 const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
 
 const fields = ref<any>({
-  options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options'),
+  options: lessonStore.getLessonModuleFieldValues(props.componentId, 'options') || {type: "TrueOrFalse", input: null},
 });
 
-function updateStoreData(fields: any) {
-  lessonStore.setLessonModuleData(props.componentId, 'options', fields.options);
+init();
+
+function init() {
+  if (solution && authStore.isTeacher) {
+    fields.value.options.input = solution.value;
+  }
 }
 
-watch(fields, (newFields) => {
-  updateStoreData(newFields)
+function updateStoreData() {
+  lessonStore.setLessonModuleData(props.componentId, 'options', fields.value.options);
+}
+
+watch(fields.value.options, (newValue) => {
+  console.log(newValue)
+  fields.value.options = newValue;
+  updateStoreData();
 }, {deep: true});
 
 </script>
@@ -55,11 +64,11 @@ watch(fields, (newFields) => {
             <v-col>
               <div class="text-h6">{{ question }}</div>
               <v-container>
-                <v-radio-group v-model="fields.options" :rules="[requiredBooleanRule]">
+                <v-radio-group v-model="fields.options.input" :rules="[requiredBooleanRule]">
                   <v-radio label="True" :value="true"
-                           :class="{'disabled': solution !== undefined,'right': (solution !== undefined && solution === fields.options), 'wrong': (solution !== undefined && solution !== fields.options)}"></v-radio>
+                           :class="{'disabled': solution,'right': (solution && solution.value === fields.options.input), 'wrong': (solution && solution.value !== fields.options.input)}"></v-radio>
                   <v-radio label="False" :value="false"
-                           :class="{'disabled': solution !== undefined, 'right': (solution !== undefined && !solution === !fields.options), 'wrong': (solution !== undefined && solution !== fields.options)}"></v-radio>
+                           :class="{'disabled': solution, 'right': (solution && !solution.value === !fields.options.input), 'wrong': (solution && solution.value !== fields.options.input)}"></v-radio>
                 </v-radio-group>
               </v-container>
             </v-col>
@@ -69,15 +78,15 @@ watch(fields, (newFields) => {
             <v-col>
               <div class="text-h6">{{ question }}</div>
               <v-container>
-                <v-radio-group v-model="fields.options" :rules="[requiredBooleanRule]">
+                <v-radio-group v-model="fields.options.input" :rules="[requiredBooleanRule]">
                   <v-radio label="True" :value="true"
-                           :class="{'disabled': solution !== undefined,
-                           'right': (solution !== undefined && solution),
-                           'wrong': (solution !== undefined && !solution)}"></v-radio>
+                           :class="{'disabled': solution,
+                           'right': (solution && solution),
+                           'wrong': (solution && !solution)}"></v-radio>
                   <v-radio label="False" :value="false"
-                           :class="{'disabled': solution !== undefined,
-                           'right': (solution !== undefined && !solution),
-                           'wrong': (solution !== undefined && solution)}"></v-radio>
+                           :class="{'disabled': solution,
+                           'right': (solution && !solution.value),
+                           'wrong': (solution && solution.value)}"></v-radio>
                 </v-radio-group>
               </v-container>
             </v-col>

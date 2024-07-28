@@ -29,6 +29,7 @@ init();
 function init() {
   if (!storedOptions) {
     sliderOptions.value = {
+      type: "Slider",
       minValue: 0,
       maxValue: 10,
       steps: 1
@@ -40,6 +41,7 @@ function init() {
 
   if (!storedSolution) {
     sliderSolution.value = {
+      type: "Slider",
       correctValue: 5,
       toleranceValue: 0
     };

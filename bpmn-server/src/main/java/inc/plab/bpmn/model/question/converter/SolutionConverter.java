@@ -27,7 +27,6 @@ public class SolutionConverter implements AttributeConverter<Solution, String> {
     @Override
     public Solution convertToEntityAttribute(String json) {
         try {
-            // TODO for this to work we need to save the type in the solution json
             if (objectMapper.readValue(json, Map.class) == null) {
                 return null;
             }

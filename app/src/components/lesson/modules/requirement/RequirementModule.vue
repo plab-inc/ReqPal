@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useCatalogStore } from "@/stores/catalog.ts";
-import { Requirement } from "@/types/catalog.ts";
-import { onBeforeMount, ref, watch } from "vue";
-import { useLessonStore } from "@/stores/lesson.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
+import {Requirement} from "@/types/catalog.ts";
+import {onBeforeMount, ref, watch} from "vue";
+import {useLessonStore} from "@/stores/lesson.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
-import { useAuthStore } from "@/stores/auth.ts";
-import { useProductStore } from "@/stores/product.ts";
+import {useAuthStore} from "@/stores/auth.ts";
+import {useProductStore} from "@/stores/product.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
@@ -90,11 +90,6 @@ onBeforeMount(async () => {
   loading.value = false;
 });
 
-init();
-
-function init() {
-}
-
 function checkSolution(product: ProductOptions) {
   if (product.solution) {
     let minValue: number = getMinValueForProduct(product);
@@ -130,8 +125,8 @@ function openProductPage(url: string) {
 }
 
 watch(products.value, (newProducts) => {
-
   let updatedOptions: {
+    type: string,
     catalogId: any,
     requirementId: any,
     askForQualification: any,
@@ -141,6 +136,7 @@ watch(products.value, (newProducts) => {
       input: number
     }[]
   } = {
+    type: "Requirement",
     catalogId: fields.value.options.catalogId,
     requirementId: fields.value.options.requirementId,
     askForQualification: fields.value.options.askForQualification,
