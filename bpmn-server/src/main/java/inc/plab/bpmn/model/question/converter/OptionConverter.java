@@ -1,10 +1,9 @@
-package inc.plab.bpmn.model.question;
+package inc.plab.bpmn.model.question.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import inc.plab.bpmn.model.question.option.MultipleChoiceOptions;
-import inc.plab.bpmn.model.question.option.Option;
-import inc.plab.bpmn.model.question.option.TrueOrFalseOptions;
+import inc.plab.bpmn.model.question.option.*;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
@@ -38,19 +37,24 @@ public class OptionConverter implements AttributeConverter<Option, String> {
             if (objectMapper.readValue(json, Map.class) == null) {
                 return null;
             }
-            Map<String, Object> map = objectMapper.readValue(json, Map.class);
+            Map<String, Object> map = objectMapper.readValue(json, new TypeReference<>() {
+            });
 
             String type = (String) map.get("type");
 
-            if ("MultipleChoice".equals(type)) {
+            if ("MultipleChoice".equalsIgnoreCase(type)) {
                 return objectMapper.readValue(json, MultipleChoiceOptions.class);
-            } else if ("TrueOrFalse".equals(type)) {
+            } else if ("TrueOrFalse".equalsIgnoreCase(type)) {
                 return objectMapper.readValue(json, TrueOrFalseOptions.class);
+            } else if ("Slider".equalsIgnoreCase(type)) {
+                return objectMapper.readValue(json, SliderOptions.class);
+            } else if ("Requirement".equalsIgnoreCase(type)) {
+                return objectMapper.readValue(json, RequirementOptions.class);
             } else {
-                throw new IllegalArgumentException("Unknown solution type: " + type);
+                return null;
             }
         } catch (IOException e) {
-            throw new IllegalArgumentException("Could not convert JSON string to solution", e);
+            throw new IllegalArgumentException("Could not convert JSON string to option", e);
         }
     }
 }

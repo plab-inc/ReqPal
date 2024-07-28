@@ -12,11 +12,4 @@ public class RequirementOptions extends Option {
     private String requirementId;
     private boolean askForQualification;
     private List<Product> products;
-
-    @Getter
-    @Setter
-    public static class Product {
-        private String id;
-        private int input;
-    }
 }

@@ -1,5 +1,6 @@
 package inc.plab.bpmn.delegate.camunda;
 
+import inc.plab.bpmn.model.question.evaluation.LessonResult;
 import inc.plab.bpmn.service.LessonService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -48,21 +49,23 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
     private void evaluateLessonTask(DelegateExecution delegateExecution) {
         String lessonId = (String) delegateExecution.getVariable("lessonId");
-        int currentTotalPoints = (int) delegateExecution.getVariable("totalPoints");
+        double currentTotalPoints = (double) delegateExecution.getVariable("totalPoints");
         SpinJsonNode lastLessonResult = (SpinJsonNode) delegateExecution.getVariable("lastLessonResult");
         SpinJsonNode allLessonResults = (SpinJsonNode) delegateExecution.getVariable("lessonResults");
 
-        int achievedPoints = lessonService.evaluateLesson(lessonId, lastLessonResult);
-
+        LessonResult lessonResult = lessonService.evaluateLesson(lessonId, lastLessonResult);
+        System.out.println("========================");
+        System.out.println("Finished evaluating.");
+        System.out.println("========================");
         for (SpinJsonNode lesson : allLessonResults.elements()) {
             if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
-                lesson.prop("achievedPoints", achievedPoints);
+                lesson.prop("achievedPoints", Math.round(lessonResult.getTotalScore()));
                 break;
             }
         }
 
-        delegateExecution.setVariable("lastLessonAchievedPoints", achievedPoints);
-        delegateExecution.setVariable("totalPoints", currentTotalPoints + achievedPoints);
+        delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
+        delegateExecution.setVariable("totalPoints", currentTotalPoints + Math.round(lessonResult.getTotalScore()));
         delegateExecution.setVariable("lessonResults", allLessonResults);
     }
 

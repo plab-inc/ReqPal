@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.evaluation;
+package inc.plab.bpmn.model.question.evaluation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,6 @@ import java.util.List;
 
 @Setter
 @Getter
-public class LessonResult {
+public class LessonAnswer {
     private List<Answer> answers;
-    private int score = 0;
 }

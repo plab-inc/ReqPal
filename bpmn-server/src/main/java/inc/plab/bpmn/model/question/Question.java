@@ -1,9 +1,10 @@
 package inc.plab.bpmn.model.question;
 
 import inc.plab.bpmn.model.lesson.Lesson;
+import inc.plab.bpmn.model.question.converter.OptionConverter;
+import inc.plab.bpmn.model.question.converter.SolutionConverter;
 import inc.plab.bpmn.model.question.option.Option;
 import inc.plab.bpmn.model.question.solution.Solution;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,6 @@ import lombok.Setter;
 import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Getter

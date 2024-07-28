@@ -1,4 +1,4 @@
-package inc.plab.bpmn.jsonValidation;
+package inc.plab.bpmn.validation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +17,7 @@ public class JsonValidator {
         try {
             System.out.println(jsonString);
 
-            InputStream schemaStream = JsonValidator.class.getResourceAsStream("/validLessonAnswerSchema.json");
+            InputStream schemaStream = JsonValidator.class.getResourceAsStream("/schemas/validLessonAnswerSchema.json");
             ObjectMapper mapper = new ObjectMapper();
             JsonNode schemaNode = mapper.readTree(schemaStream);
 

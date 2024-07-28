@@ -1,16 +1,9 @@
 package inc.plab.bpmn.service;
 
-import inc.plab.bpmn.model.evaluation.*;
-import inc.plab.bpmn.jsonValidation.JsonValidator;
-import inc.plab.bpmn.model.evaluation.result.MultipleChoiceResult;
+import inc.plab.bpmn.model.question.evaluation.*;
+import inc.plab.bpmn.model.question.evaluation.result.*;
+import inc.plab.bpmn.validation.JsonValidator;
 import inc.plab.bpmn.model.question.option.*;
-import inc.plab.bpmn.model.evaluation.result.MultipleChoiceResults;
-import inc.plab.bpmn.model.evaluation.result.Result;
-import inc.plab.bpmn.model.evaluation.result.TrueOrFalseResult;
-import inc.plab.bpmn.model.question.Question;
-import inc.plab.bpmn.model.question.QuestionRepository;
-import inc.plab.bpmn.model.question.solution.MultipleChoiceSolution;
-import inc.plab.bpmn.model.question.solution.TrueOrFalseSolution;
 import lombok.AllArgsConstructor;
 import org.camunda.spin.json.SpinJsonNode;
 import org.springframework.stereotype.Service;
@@ -116,180 +109,44 @@ TODO adjust frontend to send in this format (to change: trueorfalse, multiple ch
 }
  */
 
-
 @Service
 @AllArgsConstructor
 public class LessonService {
-    private QuestionRepository questionRepository;
+    final EvaluationService evaluationService;
 
-    public int evaluateLesson(String lessonId, SpinJsonNode lessonResult) {
-        JsonValidator.validateJson(lessonResult.toString());
+    public LessonResult evaluateLesson(String lessonId, SpinJsonNode lessonAnswer) {
+        JsonValidator.validateJson(lessonAnswer.toString());
 
-        LessonResult lessonResultObject = mapToLessonResult(lessonResult);
-        int totalPoints = 0;
+        LessonAnswer lessonAnswerObject = mapToLessonAnswer(lessonAnswer);
 
-        List<Result> results = new LinkedList<>();
+        LessonResult lessonResult = new LessonResult();
+        lessonResult.setLessonId(lessonId);
+        List<Result> results = lessonResult.getResults();
 
-        // loggingForTesting(lessonResultObject);
-
-        for (Answer answer : lessonResultObject.getAnswers()) {
-            Result res = evaluateQuestionType(answer);
+        for (Answer answer : lessonAnswerObject.getAnswers()) {
+            Result res = evaluationService.evaluateQuestionType(answer);
             if (res != null) {
                 results.add(res);
-                totalPoints += res.getScore();
+                lessonResult.addPointsToTotalScore(res.getScore());
             }
         }
+        System.out.println("=====================");
+        System.out.println("Finished evaluating:");
 
-        results.forEach(r -> System.out.println(r.getScore()));
+        for (Result result : lessonResult.getResults()) {
+            System.out.println("Result " + result.getQuestionId());
+            System.out.println("Result " + result.getScore());
+        }
+        System.out.println("=====================");
         System.out.println("totalPoints");
-        System.out.println(totalPoints);
-        return totalPoints;
+        System.out.println(lessonResult.getTotalScore());
+        return lessonResult;
     }
 
-    private Result evaluateQuestionType(Answer answer) {
-        String lowerCaseType = answer.getType().toLowerCase().trim();
+    public LessonAnswer mapToLessonAnswer(SpinJsonNode lessonAnswerJson) {
+        LessonAnswer lessonAnswer = JSON(lessonAnswerJson).mapTo(LessonAnswer.class);
 
-        switch (lowerCaseType) {
-            case "trueorfalse" -> {
-                return evaluateTrueOrFalse(answer);
-            }
-            case "multiplechoice" -> {
-                return evaluateMultipleChoice(answer);
-            }
-            case "slider" -> {
-                return evaluateSlider(answer);
-            }
-            case "requirement" -> {
-                return evaluateProductQualification(answer);
-            }
-            default -> {
-                System.out.println("Unrecognized type: " + lowerCaseType);
-                return null;
-            }
-        }
-
-    }
-
-    private Result evaluateProductQualification(Answer answer) {
-        if (answer.getOptions() instanceof RequirementOptions) {
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
-            Optional<Question> questionOptional = questionRepository.findById(questionUUID);
-
-            if (questionOptional.isPresent()) {
-                System.out.println("PRESENT");
-                System.out.println(questionOptional.get());
-            }
-        }
-        return null;
-    }
-
-    private Result evaluateSlider(Answer answer) {
-        if (answer.getOptions() instanceof SliderOptions) {
-            System.out.println("ANSWER SLIDER:");
-            System.out.println(answer.getType());
-            System.out.println(answer.getQuestionId());
-            System.out.println(answer.getOptions());
-
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
-            System.out.println("questionUUID");
-            System.out.println(questionUUID);
-            Optional<Question> questionOptional = questionRepository.findById(questionUUID);
-
-            if (questionOptional.isPresent()) {
-                System.out.println("PRESENT");
-                System.out.println(questionOptional.get());
-            }
-        }
-        return null;
-    }
-
-    private Result evaluateMultipleChoice(Answer answer) {
-        if (answer.getOptions() instanceof MultipleChoiceOptions multipleChoiceOptions) {
-
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
-
-            try {
-                Optional<Question> questionOptional = questionRepository.findById(questionUUID);
-                if (questionOptional.isPresent()) {
-                    MultipleChoiceResults result = new MultipleChoiceResults();
-                    result.setScore(0);
-                    Question question = questionOptional.get();
-                    // TODO save solution as {answers: [] }
-                    if (question.getSolution() instanceof MultipleChoiceSolution solution) {
-                        List<MultipleChoiceOption> userAnswers = multipleChoiceOptions.getAnswers();
-                        List<MultipleChoiceResult> results = result.getResults();
-
-                        //todo use float maybe
-                        int pointsPerRightAnswer = question.getPoints() / solution.getAnswers().toArray().length;
-
-                        solution.getAnswers().forEach(answerSolution -> {
-                            MultipleChoiceOption option = userAnswers.stream().filter(a -> a.getId() == answerSolution.getId()).findAny()
-                                    .orElse(null);
-                            if (option != null) {
-                                MultipleChoiceResult resultOption = new MultipleChoiceResult();
-                                resultOption.setId(option.getId());
-                                resultOption.setInput(option.isInput());
-                                resultOption.setDescription(option.getDescription());
-                                resultOption.setCorrect(false);
-                                if (option.isInput() == answerSolution.isSolution()) {
-                                    resultOption.setCorrect(true);
-                                    int newScore = result.getScore() + pointsPerRightAnswer;
-                                    result.setScore(newScore);
-                                }
-                                results.add(resultOption);
-                            }
-                        });
-                        result.setResults(results);
-                        result.setQuestionId(String.valueOf(questionUUID));
-                        return result;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return null;
-    }
-
-    private Result evaluateTrueOrFalse(Answer answer) {
-        if (answer.getOptions() instanceof TrueOrFalseOptions trueOrFalseOptions) {
-
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
-            Optional<Question> questionOptional = questionRepository.findById(questionUUID);
-
-            if (questionOptional.isPresent()) {
-                TrueOrFalseResult result = new TrueOrFalseResult();
-                boolean resultIsCorrect = false;
-                Question question = questionOptional.get();
-
-                if (question.getSolution() instanceof TrueOrFalseSolution solution) {
-
-                    // TODO for this to work for every question, we need to save question options in this form {value: true}
-                    int score = 0;
-
-                    if (solution.isValue() == trueOrFalseOptions.isInput()) {
-                        resultIsCorrect = true;
-                        score = question.getPoints();
-                    }
-
-                    result.setCorrect(resultIsCorrect);
-                    result.setScore(score);
-                    result.setQuestionId(String.valueOf(questionUUID));
-                    result.setInput(trueOrFalseOptions.isInput());
-
-                    return result;
-                }
-            }
-        } else {
-            System.out.println("Unrecognized options for type TrueOrFalse");
-        }
-        return null;
-    }
-
-    public LessonResult mapToLessonResult(SpinJsonNode lessonResultJson) {
-        LessonResult lessonResult = JSON(lessonResultJson).mapTo(LessonResult.class);
-
-        for (Answer answer : lessonResult.getAnswers()) {
+        for (Answer answer : lessonAnswer.getAnswers()) {
             SpinJsonNode optionsNode = JSON(answer.getOptions());
             switch (answer.getType()) {
                 case "TrueOrFalse":
@@ -312,11 +169,12 @@ public class LessonService {
                     System.out.println("Unknown type: " + answer.getType());
             }
         }
-        return lessonResult;
+        return lessonAnswer;
     }
 
-    private void loggingForTesting(LessonResult lessonResult) {
-        lessonResult.getAnswers().forEach(answer -> {
+    //todo remove when not needed anymore
+    private void loggingForTesting(LessonAnswer lessonAnswer) {
+        lessonAnswer.getAnswers().forEach(answer -> {
             // Ausgabe des Typs der Antwort
             System.out.println("Type: " + answer.getType());
 
@@ -351,7 +209,7 @@ public class LessonService {
                     System.out.println("ProductIds: " + options.getProductIds());
                     System.out.println("RequirementId: " + options.getRequirementId());
                     System.out.println("AskForQualification: " + options.isAskForQualification());
-                    List<RequirementOptions.Product> products = options.getProducts();
+                    List<Product> products = options.getProducts();
                     products.forEach(pr -> {
                         System.out.println("Product from list:");
                         System.out.println(pr.getId());
@@ -363,7 +221,7 @@ public class LessonService {
             } else {
                 System.out.println("Unknown type: " + answer.getType());
             }
-            System.out.println(); // Für eine Leerzeile zwischen den Antworten
+            System.out.println();
         });
 
     }
