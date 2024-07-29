@@ -1,5 +1,5 @@
 import { supabase } from "@/plugins/supabase";
-import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioUserDTO } from "@/types/scenario.ts";
+import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
 import { mapToScenario, mapToScenarioProgress } from "@/mapper/scenario.ts";
 
 class ScenarioServiceClass {
@@ -82,7 +82,7 @@ class ScenarioServiceClass {
 
   private async createScenarioProgress(scenario: Scenario, userId: string) {
     const { data, error } = await supabase
-      .from("user_scenario")
+      .from("scenario_user_progress")
       .insert(
         { scenario_id: scenario.id, user_id: userId }
       )
@@ -91,7 +91,7 @@ class ScenarioServiceClass {
     if (error) throw error;
 
     if (data) {
-      return mapToScenarioProgress(data as ScenarioUserDTO, scenario);
+      return mapToScenarioProgress(data as ScenarioProgressDTO, scenario);
     }
   }
 
@@ -99,7 +99,7 @@ class ScenarioServiceClass {
   private async fetchScenarioProgressByScenario(scenario: Scenario): Promise<ScenarioProgress | undefined> {
 
     const { data, error } = await supabase
-      .from("user_scenario")
+      .from("scenario_user_progress")
       .select("*")
       .eq("scenario_id", scenario.id)
       .single();
@@ -107,7 +107,7 @@ class ScenarioServiceClass {
     if (error) throw error;
 
     if (data) {
-      return mapToScenarioProgress(data as ScenarioUserDTO, scenario);
+      return mapToScenarioProgress(data as ScenarioProgressDTO, scenario);
     }
   }
 
@@ -115,7 +115,7 @@ class ScenarioServiceClass {
     const scenarioIds = scenarios.map(scenario => scenario.id);
 
     const { data, error } = await supabase
-      .from("user_scenario")
+      .from("scenario_user_progress")
       .select("*")
       .in("scenario_id", scenarioIds);
 
@@ -124,7 +124,7 @@ class ScenarioServiceClass {
     if (data) {
       return data.map(item => {
         const correspondingScenario = scenarios.find(scenario => scenario.id === item.scenario_id);
-        return correspondingScenario ? mapToScenarioProgress(item as ScenarioUserDTO, correspondingScenario) : undefined;
+        return correspondingScenario ? mapToScenarioProgress(item as ScenarioProgressDTO, correspondingScenario) : undefined;
       }).filter(item => item !== undefined) as ScenarioProgress[];
     }
   }

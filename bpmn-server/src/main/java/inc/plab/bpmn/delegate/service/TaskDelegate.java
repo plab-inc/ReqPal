@@ -5,9 +5,9 @@ import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.scenario.Scenario;
+import inc.plab.bpmn.model.scenario.ScenarioProgress;
+import inc.plab.bpmn.model.scenario.ScenarioProgressRepository;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
-import inc.plab.bpmn.model.scenario.UserScenario;
-import inc.plab.bpmn.model.scenario.UserScenarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.camunda.bpm.engine.RuntimeService;
@@ -29,7 +29,7 @@ public class TaskDelegate {
 
     private final RuntimeService runtimeService;
     private final TaskService taskService;
-    private final UserScenarioRepository userScenarioRepository;
+    private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
     private final ScenarioRepository scenarioRepository;
     private static final Logger logger = LoggerFactory.getLogger(TaskDelegate.class);
@@ -42,7 +42,7 @@ public class TaskDelegate {
             throw new Exception("Scenario is not deployed");
         }
 
-        UserScenario scenarioProgress = getScenarioProgress(scenario, studentId).orElseThrow(() -> new Exception("No progress to scenario found."));
+        ScenarioProgress scenarioProgress = getScenarioProgress(scenario, studentId).orElseThrow(() -> new Exception("No progress to scenario found."));
 
         if (!scenarioProgress.getStarted()) {
             throw new Exception("Scenario is not started.");
@@ -73,8 +73,8 @@ public class TaskDelegate {
         return scenarioRepository.findByIdAndUser_Id(UUID.fromString(scenarioId), UUID.fromString(studentId));
     }
 
-    private Optional<UserScenario> getScenarioProgress(Scenario scenario, String studentId) {
-        return userScenarioRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId));
+    private Optional<ScenarioProgress> getScenarioProgress(Scenario scenario, String studentId) {
+        return scenarioProgressRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId));
     }
 
     private String generateProcessDefinitionKey(String scenarioId) {
@@ -82,7 +82,7 @@ public class TaskDelegate {
     }
 
     @SneakyThrows
-    private void updateScenarioProgress(UserScenario scenarioProgress, String newLessonId) {
+    private void updateScenarioProgress(ScenarioProgress scenarioProgress, String newLessonId) {
 
         scenarioProgress.increaseStep();
 
@@ -97,7 +97,7 @@ public class TaskDelegate {
             scenarioProgress.setEnded(true);
         }
 
-        userScenarioRepository.save(scenarioProgress);
+        scenarioProgressRepository.save(scenarioProgress);
     }
 
     private Task fetchCurrentTask(String processDefinitionKey, String studentId) throws Exception {

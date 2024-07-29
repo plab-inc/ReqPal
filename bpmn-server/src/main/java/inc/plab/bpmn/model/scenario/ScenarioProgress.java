@@ -13,8 +13,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_scenario", schema = "public")
-public class UserScenario {
+@Table(name = "scenario_user_progress", schema = "public")
+public class ScenarioProgress {
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;

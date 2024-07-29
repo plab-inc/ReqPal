@@ -1,4 +1,4 @@
-import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioUserDTO } from "@/types/scenario.ts";
+import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
 
 export const mapToScenario = (input: ScenarioDTO): Scenario => {
   return {
@@ -16,7 +16,7 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
   };
 };
 
-export const mapToScenarioProgress = (inputScenarioUser: ScenarioUserDTO, inputScenario: Scenario): ScenarioProgress => {
+export const mapToScenarioProgress = (inputScenarioUser: ScenarioProgressDTO, inputScenario: Scenario): ScenarioProgress => {
   return {
     scenario: inputScenario,
     user_id: inputScenarioUser.user_id,

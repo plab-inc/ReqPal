@@ -530,6 +530,61 @@ export type Database = {
         }
         Relationships: []
       }
+      scenario_user_progress: {
+        Row: {
+          created_at: string
+          ended: boolean
+          id: string
+          lesson_id: string | null
+          scenario_id: string
+          started: boolean
+          step: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          step?: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          step?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_currentLesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_scenario_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_scenario_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scenarios: {
         Row: {
           achievements: string[]
@@ -1014,57 +1069,40 @@ export type Database = {
           },
         ]
       }
-      user_scenario: {
+      user_scenario_progress: {
         Row: {
+          achievements: Json | null
           created_at: string
-          ended: boolean
           id: string
-          lesson_id: string | null
-          scenario_id: string
-          started: boolean
-          step: number
-          user_id: string
+          lesson_results: Json | null
+          objectives: Json | null
+          score: number | null
+          user_scenario_id: string | null
         }
         Insert: {
+          achievements?: Json | null
           created_at?: string
-          ended?: boolean
           id?: string
-          lesson_id?: string | null
-          scenario_id?: string
-          started?: boolean
-          step?: number
-          user_id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          score?: number | null
+          user_scenario_id?: string | null
         }
         Update: {
+          achievements?: Json | null
           created_at?: string
-          ended?: boolean
           id?: string
-          lesson_id?: string | null
-          scenario_id?: string
-          started?: boolean
-          step?: number
-          user_id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          score?: number | null
+          user_scenario_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_scenario_currentLesson_id_fkey"
-            columns: ["lesson_id"]
+            foreignKeyName: "user_scenario_progress_user_scenario_id_fkey"
+            columns: ["user_scenario_id"]
             isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_scenario_scenario_id_fkey"
-            columns: ["scenario_id"]
-            isOneToOne: false
-            referencedRelation: "scenarios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_scenario_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "scenario_user_progress"
             referencedColumns: ["id"]
           },
         ]

@@ -1,7 +1,7 @@
 import { Database } from "@/types/supabase.ts";
 
 export type ScenarioDTO = Database["public"]["Tables"]["scenarios"]["Row"];
-export type ScenarioUserDTO = Database["public"]["Tables"]["user_scenario"]["Row"];
+export type ScenarioProgressDTO = Database["public"]["Tables"]["scenario_user_progress"]["Row"];
 
 export type Scenario = {
   id: string,
@@ -26,10 +26,4 @@ export type ScenarioProgress = {
   started: boolean,
   ended: boolean,
   currentLessonId?: string,
-}
-
-export type ScenarioForm = {
-  scenarioName: string,
-  scenarioDescription: string,
-  processId: string
 }

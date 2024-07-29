@@ -5,9 +5,9 @@ import inc.plab.bpmn.dto.WorkflowResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.scenario.Scenario;
+import inc.plab.bpmn.model.scenario.ScenarioProgress;
+import inc.plab.bpmn.model.scenario.ScenarioProgressRepository;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
-import inc.plab.bpmn.model.scenario.UserScenario;
-import inc.plab.bpmn.model.scenario.UserScenarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -32,7 +32,7 @@ public class WorkflowDelegate {
     private static final Logger logger = LoggerFactory.getLogger(WorkflowDelegate.class);
     private final TaskService taskService;
     private final ScenarioRepository scenarioRepository;
-    private final UserScenarioRepository userScenarioRepository;
+    private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
 
     public WorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) throws Exception {
@@ -43,9 +43,9 @@ public class WorkflowDelegate {
             throw new Exception("Scenario is locked or not deployed");
         }
 
-        UserScenario userScenario = getScenarioProgress(scenario, studentId).orElseThrow(() -> new Exception("No progress to scenario found."));
+        ScenarioProgress scenarioProgress = getScenarioProgress(scenario, studentId).orElseThrow(() -> new Exception("No progress to scenario found."));
 
-        if (userScenario.getStarted()) {
+        if (scenarioProgress.getStarted()) {
             throw new Exception("Scenario already started.");
         }
 
@@ -55,7 +55,7 @@ public class WorkflowDelegate {
         Lesson currentLesson = lessonRepository.findById(UUID.fromString(Objects.requireNonNull(getCurrentLessonId(processInstance.getId(), studentId))))
                 .orElseThrow(() -> new Exception("Current lesson not found."));
 
-        updateScenarioProgress(userScenario, currentLesson);
+        updateScenarioProgress(scenarioProgress, currentLesson);
 
         WorkflowDescription description = new WorkflowDescription(processInstance.getId(), currentLesson.getId().toString());
         WorkflowResponseDto response = new WorkflowResponseDto();
@@ -75,19 +75,19 @@ public class WorkflowDelegate {
         return runtimeService.startProcessInstanceById(processDefinition.getId(), variables);
     }
 
-    private void updateScenarioProgress(UserScenario scenarioProgress, Lesson currentLesson) {
+    private void updateScenarioProgress(ScenarioProgress scenarioProgress, Lesson currentLesson) {
         scenarioProgress.setStarted(true);
         scenarioProgress.setCurrentLesson(currentLesson);
         scenarioProgress.increaseStep();
-        userScenarioRepository.save(scenarioProgress);
+        scenarioProgressRepository.save(scenarioProgress);
     }
 
     private Optional<Scenario> getScenario(String scenarioId, String studentId) {
         return scenarioRepository.findByIdAndUser_Id(UUID.fromString(scenarioId), UUID.fromString(studentId));
     }
 
-    private Optional<UserScenario> getScenarioProgress(Scenario scenario, String studentId) {
-        return userScenarioRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId));
+    private Optional<ScenarioProgress> getScenarioProgress(Scenario scenario, String studentId) {
+        return scenarioProgressRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId));
     }
 
     private String generateProcessDefinitionKey(String scenarioId) {
