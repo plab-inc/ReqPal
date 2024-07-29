@@ -2,6 +2,7 @@ package inc.plab.bpmn.delegate.camunda;
 
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
 import inc.plab.bpmn.service.LessonService;
+import inc.plab.bpmn.service.UserScenarioProgressService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.spin.json.SpinJsonNode;
@@ -13,9 +14,11 @@ import java.util.Date;
 public class LessonUserTaskDelegate implements JavaDelegate {
 
     final LessonService lessonService;
+    final UserScenarioProgressService userscenarioProgressService;
 
-    public LessonUserTaskDelegate(LessonService lessonService) {
+    public LessonUserTaskDelegate(LessonService lessonService, UserScenarioProgressService userscenarioProgressService) {
         this.lessonService = lessonService;
+        this.userscenarioProgressService = userscenarioProgressService;
     }
 
     @Override
@@ -54,17 +57,21 @@ public class LessonUserTaskDelegate implements JavaDelegate {
         SpinJsonNode allLessonResults = (SpinJsonNode) delegateExecution.getVariable("lessonResults");
 
         LessonResult lessonResult = lessonService.evaluateLesson(lessonId, lastLessonResult);
-        int newScore = (int) Math.round(lessonResult.getTotalScore());
+        if (lessonResult != null) {
+            userscenarioProgressService.addLessonResult(lessonResult);
+            int newScore = (int) Math.round(lessonResult.getTotalScore());
+            userscenarioProgressService.addPointsToScore(newScore);
 
-        for (SpinJsonNode lesson : allLessonResults.elements()) {
-            if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
-                lesson.prop("achievedPoints", newScore);
-                break;
+            for (SpinJsonNode lesson : allLessonResults.elements()) {
+                if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
+                    lesson.prop("achievedPoints", newScore);
+                    break;
+                }
             }
-        }
 
-        delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
-        delegateExecution.setVariable("totalPoints", currentTotalPoints + newScore);
-        delegateExecution.setVariable("lessonResults", allLessonResults);
+            delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
+            delegateExecution.setVariable("totalPoints", currentTotalPoints + newScore);
+            delegateExecution.setVariable("lessonResults", allLessonResults);
+        }
     }
 }

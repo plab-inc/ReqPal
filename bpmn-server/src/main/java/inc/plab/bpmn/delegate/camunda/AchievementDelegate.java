@@ -1,6 +1,7 @@
 package inc.plab.bpmn.delegate.camunda;
 
 import inc.plab.bpmn.service.AchievementService;
+import inc.plab.bpmn.service.UserScenarioProgressService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,11 @@ import java.util.List;
 public class AchievementDelegate implements JavaDelegate {
 
     final AchievementService achievementService;
+    final UserScenarioProgressService userscenarioProgressService;
 
-    public AchievementDelegate(AchievementService achievementService) {
+    public AchievementDelegate(AchievementService achievementService, UserScenarioProgressService userscenarioProgressService) {
         this.achievementService = achievementService;
+        this.userscenarioProgressService = userscenarioProgressService;
     }
 
     @Override
@@ -23,6 +26,7 @@ public class AchievementDelegate implements JavaDelegate {
         String userId = (String) delegateExecution.getVariable("studentId");
         String achievementId = (String) delegateExecution.getVariable("achievementId");
         achievementService.addAchievementToUser(achievementId, userId);
+        userscenarioProgressService.addGainedAchievement(achievementId);
         addAchievementToVariable(delegateExecution, achievementId);
     }
 

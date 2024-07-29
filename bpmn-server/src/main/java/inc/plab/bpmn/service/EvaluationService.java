@@ -1,6 +1,7 @@
 package inc.plab.bpmn.service;
 
 import inc.plab.bpmn.exception.InvalidAnswerOptionsException;
+import inc.plab.bpmn.exception.InvalidQuestionTypeException;
 import inc.plab.bpmn.model.productRequirement.ProductRequirement;
 import inc.plab.bpmn.model.productRequirement.ProductRequirementRepository;
 import inc.plab.bpmn.model.question.Question;
@@ -41,12 +42,8 @@ public class EvaluationService {
             case "requirement" -> {
                 return evaluateRequirement(answer);
             }
-            default -> {
-                System.out.println("Unrecognized type: " + lowerCaseType);
-                return null;
-            }
+            default -> throw new InvalidQuestionTypeException("Unknown question type: " + lowerCaseType);
         }
-
     }
 
     private Result evaluateSlider(Answer answer) {

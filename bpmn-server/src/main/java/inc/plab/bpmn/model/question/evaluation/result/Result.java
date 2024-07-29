@@ -1,10 +1,12 @@
 package inc.plab.bpmn.model.question.evaluation.result;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public abstract class Result {
     private String questionId;
     private String type;
