@@ -51,4 +51,9 @@ public class Scenario {
         return String.format("%s/%s/%s.bpmn", user.getId(), this.id, this.id);
     }
 
+    @Transient
+    public String getSvgPath() {
+        return String.format("%s/%s/%s.svg", user.getId(), this.id, this.id);
+    }
+
 }

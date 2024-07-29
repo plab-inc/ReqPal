@@ -90,11 +90,6 @@ onBeforeMount(async () => {
   loading.value = false;
 });
 
-init();
-
-function init() {
-}
-
 function checkSolution(product: ProductOptions) {
   if (product.solution) {
     let minValue: number = getMinValueForProduct(product);
@@ -130,8 +125,8 @@ function openProductPage(url: string) {
 }
 
 watch(products.value, (newProducts) => {
-
   let updatedOptions: {
+    type: string,
     catalogId: any,
     requirementId: any,
     askForQualification: any,
@@ -141,6 +136,7 @@ watch(products.value, (newProducts) => {
       input: number
     }[]
   } = {
+    type: "Requirement",
     catalogId: fields.value.options.catalogId,
     requirementId: fields.value.options.requirementId,
     askForQualification: fields.value.options.askForQualification,
@@ -161,9 +157,12 @@ watch(products.value, (newProducts) => {
 
 <template>
   <v-card :loading="loading"
-          variant="outlined"
+          variant="text"
+          elevation="8"
+          color="white"
   >
     <v-card-title class="text-h4 text-decoration-underline">
+      Anforderung:
       {{ requirement?.title ? requirement?.title : "Der Katalog zu dieser Komponente ist nicht mehr verfügbar" }}
     </v-card-title>
     <v-card-text class="text-h5 mt-1">
@@ -184,7 +183,6 @@ watch(products.value, (newProducts) => {
       </v-col>
     </v-row>
     <v-row>
-      <v-divider class="mb-5"/>
       <v-col :lg="12/products.length >= 3 ? (12/products.length) : 3" v-for="product in products">
         <v-hover>
           <template v-slot:default="{ isHovering, props }">

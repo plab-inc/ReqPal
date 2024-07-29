@@ -2,11 +2,11 @@
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
-import { useLessonFormStore } from "@/stores/lessonForm.ts";
-import { requiredStringRule } from "@/utils/validationRules.ts";
-import { ref, watch } from "vue";
+import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import {requiredStringRule} from "@/utils/validationRules.ts";
+import {ref, watch} from "vue";
 
-interface multipleChoiceAnswer{
+interface multipleChoiceAnswer {
   id: number,
   description: string,
   solution: boolean
@@ -29,22 +29,30 @@ const answers = ref<multipleChoiceAnswer[]>([]);
 init();
 
 function init() {
-  const storedOptions = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'options') || [];
-  const storedSolutions = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || [];
+  const storedOptions = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'options') || {
+    type: "MultipleChoice",
+    answers: []
+  };
+
+  const storedSolutions = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {
+    type: "MultipleChoice",
+    answers: []
+  };
 
   fields.value.question = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'question');
   fields.value.hint = lessonFormStore.getLessonModuleFieldValues(props.componentId, 'hint');
-
-  const initialAnswers = storedOptions.map((option: any, index: number) => ({
-    id: option.id,
-    description: option.description,
-    solution: storedSolutions[index].solution
-  }));
-
-  while (initialAnswers.length < minAnswers) {
-    initialAnswers.push(createNewAnswer(initialAnswers.length));
+  let initialAnswers = [];
+  if (storedOptions.answers.length > 0 && storedSolutions.answers.length > 0) {
+    initialAnswers = storedOptions.answers.map((option: any, index: number) => ({
+      id: option.id,
+      description: option.description,
+      solution: storedSolutions.answers[index].solution
+    }));
+  } else {
+    while (initialAnswers.length < minAnswers) {
+      initialAnswers.push(createNewAnswer(initialAnswers.length));
+    }
   }
-
   answers.value = initialAnswers;
   updateStoreData(answers.value);
 }
@@ -57,8 +65,8 @@ function updateStoreData(newAnswers: multipleChoiceAnswer[]) {
   const options = newAnswers.map(a => ({id: a.id, description: a.description.trim()}));
   const solutions = newAnswers.map(a => ({id: a.id, solution: a.solution}));
 
-  lessonFormStore.setLessonModuleData(props.componentId, 'options', options);
-  lessonFormStore.setLessonModuleData(props.componentId, 'solution', solutions);
+  lessonFormStore.setLessonModuleData(props.componentId, 'options', {type: "MultipleChoice", answers: options});
+  lessonFormStore.setLessonModuleData(props.componentId, 'solution', {type: "MultipleChoice", answers: solutions});
 }
 
 function addAnswer() {
@@ -138,7 +146,6 @@ watch(fields, (newFields) => {
     </v-row>
   </v-container>
 </template>
-
 
 <style scoped>
 </style>

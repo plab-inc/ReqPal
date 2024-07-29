@@ -23,8 +23,9 @@ const products = ref<Product[]>([]);
 
 const fields = ref<any>({
   question: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {toleranceValue: 0},
+  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {type: "Requirement", toleranceValue: 0},
   options: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'options') || {
+    type: "Requirement",
     catalogId: undefined,
     requirementId: undefined,
     askForQualification: false,

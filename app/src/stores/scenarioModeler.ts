@@ -50,6 +50,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       this.diagram = baseDiagramXml;
     },
     async generateNewUUID(){
+      console.log("Derp");
       this.uuid = uuidv4();
     },
     async saveScenario() {

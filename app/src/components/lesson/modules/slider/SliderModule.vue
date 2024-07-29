@@ -43,14 +43,6 @@ function init() {
     correctValue.value = (+solution.correctValue);
   }
 
-  if (!fields.value.options) {
-    fields.value.options = {
-      minValue: 0,
-      maxValue: 10,
-      steps: 1
-    };
-  }
-
   if (fields.value.options.hasOwnProperty('input')) {
     inputValue.value = fields.value.options.input;
   } else {
@@ -77,6 +69,7 @@ function checkSolution() {
 
 watch(inputValue, (newInput) => {
   fields.value.options = {
+    type: "Slider",
     steps: fields.value.options.steps,
     minValue: fields.value.options.minValue,
     maxValue: fields.value.options.maxValue,

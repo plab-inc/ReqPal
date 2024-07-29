@@ -1,20 +1,18 @@
 package inc.plab.bpmn.model.question;
 
 import inc.plab.bpmn.model.lesson.Lesson;
-import inc.plab.bpmn.model.user.UserAnswer;
-import inc.plab.bpmn.model.user.UserHint;
+import inc.plab.bpmn.model.question.converter.OptionConverter;
+import inc.plab.bpmn.model.question.converter.SolutionConverter;
+import inc.plab.bpmn.model.question.option.Option;
+import inc.plab.bpmn.model.question.solution.Solution;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -24,6 +22,7 @@ import java.util.UUID;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @ColumnDefault("uuid_generate_v4()")
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
@@ -32,7 +31,8 @@ public class Question {
 
     @Column(name = "solution")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> solution;
+    @Convert(converter = SolutionConverter.class)
+    private Solution solution;
 
     @NotNull
     @Column(name = "question_type", nullable = false, length = Integer.MAX_VALUE)
@@ -40,7 +40,8 @@ public class Question {
 
     @Column(name = "options")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> options;
+    @Convert(converter = OptionConverter.class)
+    private Option options;
 
     @Column(name = "hint", length = Integer.MAX_VALUE)
     private String hint;
@@ -56,11 +57,5 @@ public class Question {
 
     @Column(name = "points")
     private Integer points;
-
-    @OneToMany(mappedBy = "question")
-    private Set<UserAnswer> userAnswers = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "question")
-    private Set<UserHint> userHints = new LinkedHashSet<>();
 
 }

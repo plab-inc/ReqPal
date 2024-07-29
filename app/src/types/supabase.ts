@@ -530,6 +530,99 @@ export type Database = {
         }
         Relationships: []
       }
+      scenario_user_progress: {
+        Row: {
+          created_at: string
+          ended: boolean
+          id: string
+          lesson_id: string | null
+          scenario_id: string
+          started: boolean
+          step: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          step?: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          step?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_currentLesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "user_scenario_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_scenario_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenario_user_statistics: {
+        Row: {
+          achievements: Json | null
+          created_at: string
+          id: string
+          lesson_results: Json | null
+          objectives: Json | null
+          scenario_user_progress_id: string
+          score: number | null
+        }
+        Insert: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id: string
+          score?: number | null
+        }
+        Update: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id?: string
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_progress_scenario_user_progress_id_fkey"
+            columns: ["scenario_user_progress_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_user_progress"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scenarios: {
         Row: {
           achievements: string[]
@@ -1007,61 +1100,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_reqpal_levels_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_scenario: {
-        Row: {
-          created_at: string
-          ended: boolean
-          id: string
-          lesson_id: string | null
-          scenario_id: string
-          started: boolean
-          step: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          ended?: boolean
-          id?: string
-          lesson_id?: string | null
-          scenario_id?: string
-          started?: boolean
-          step?: number
-          user_id?: string
-        }
-        Update: {
-          created_at?: string
-          ended?: boolean
-          id?: string
-          lesson_id?: string | null
-          scenario_id?: string
-          started?: boolean
-          step?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_scenario_currentLesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_scenario_scenario_id_fkey"
-            columns: ["scenario_id"]
-            isOneToOne: false
-            referencedRelation: "scenarios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_scenario_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

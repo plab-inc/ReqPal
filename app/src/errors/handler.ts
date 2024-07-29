@@ -1,13 +1,14 @@
 import AlertService from "@/services/util/alert.ts";
 import {
-    AuthenticationError,
-    BpmnImportError,
-    BpmnParsingError,
-    BpmnPersistError,
-    ConversionError,
-    DatabaseError,
-    PrivilegeError,
-    UserAlreadyRegisteredError
+  AuthenticationError,
+  BpmnImportError,
+  BpmnParsingError,
+  BpmnPersistError,
+  BpmnProcessError,
+  ConversionError,
+  DatabaseError,
+  PrivilegeError,
+  UserAlreadyRegisteredError
 } from "@/errors/custom.ts";
 
 const errorHandler = (error: unknown): void => {
@@ -49,6 +50,11 @@ const errorHandler = (error: unknown): void => {
         AlertService.addErrorAlert("Es gibt Probleme mit dem Speichern des Diagrams: " + error.message);
         return;
     }
+
+  if (error instanceof BpmnProcessError) {
+    AlertService.addErrorAlert(error.message);
+    return;
+  }
 
     if (error instanceof BpmnImportError) {
         AlertService.addErrorAlert("Es gibt Probleme mit dem Importieren des Diagrams: " + error.message);

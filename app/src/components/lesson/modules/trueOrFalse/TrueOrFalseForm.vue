@@ -11,7 +11,7 @@ const lessonFormStore = useLessonFormStore();
 
 const fields = ref<any>({
   question: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || false,
+  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {type: "TrueOrFalse", value: false},
   hint: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'hint')
 });
 
@@ -41,7 +41,7 @@ watch(fields, (newFields) => {
       <v-col cols="6">
         <v-radio-group
             label="Lösung zur Frage:"
-            v-model="fields.solution"
+            v-model="fields.solution.value"
         >
           <v-radio label="Richtig" :value="true"></v-radio>
           <v-radio label="Falsch" :value="false"></v-radio>
