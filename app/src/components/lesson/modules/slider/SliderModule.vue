@@ -43,15 +43,6 @@ function init() {
     correctValue.value = (+solution.correctValue);
   }
 
-  if (!fields.value.options) {
-    fields.value.options = {
-      type: "Slider",
-      minValue: 0,
-      maxValue: 10,
-      steps: 1
-    };
-  }
-
   if (fields.value.options.hasOwnProperty('input')) {
     inputValue.value = fields.value.options.input;
   } else {

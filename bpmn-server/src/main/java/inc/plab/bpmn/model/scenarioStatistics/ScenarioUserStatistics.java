@@ -1,12 +1,12 @@
-package inc.plab.bpmn.model.scenarioProgress;
+package inc.plab.bpmn.model.scenarioStatistics;
 
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
-import inc.plab.bpmn.model.scenario.UserScenario;
-import inc.plab.bpmn.model.scenarioProgress.converter.gainedAchievements.AchievementConverter;
-import inc.plab.bpmn.model.scenarioProgress.converter.gainedAchievements.GainedAchievements;
-import inc.plab.bpmn.model.scenarioProgress.converter.lessonResults.LessonResultConverter;
-import inc.plab.bpmn.model.scenarioProgress.converter.objectives.GainedObjectives;
-import inc.plab.bpmn.model.scenarioProgress.converter.objectives.ObjectiveConverter;
+import inc.plab.bpmn.model.scenario.ScenarioProgress;
+import inc.plab.bpmn.model.scenarioStatistics.converter.gainedAchievements.AchievementConverter;
+import inc.plab.bpmn.model.scenarioStatistics.converter.gainedAchievements.GainedAchievements;
+import inc.plab.bpmn.model.scenarioStatistics.converter.lessonResults.LessonResultConverter;
+import inc.plab.bpmn.model.scenarioStatistics.converter.objectives.GainedObjectives;
+import inc.plab.bpmn.model.scenarioStatistics.converter.objectives.ObjectiveConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -24,8 +24,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_scenario_progress")
-public class UserScenarioProgress {
+@Table(name = "scenario_user_statistics")
+public class ScenarioUserStatistics {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @ColumnDefault("uuid_generate_v4()")
@@ -39,8 +39,8 @@ public class UserScenarioProgress {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_scenario_id")
-    private UserScenario userScenario;
+    @JoinColumn(name = "scenario_user_progress_id")
+    private ScenarioProgress scenarioProgress;
 
     @Column(name = "objectives")
     @JdbcTypeCode(SqlTypes.JSON)

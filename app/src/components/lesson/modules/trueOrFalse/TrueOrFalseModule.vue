@@ -30,6 +30,7 @@ function init() {
   if (solution && authStore.isTeacher) {
     fields.value.options.input = solution.value;
   }
+  updateStoreData();
 }
 
 function updateStoreData() {
@@ -37,7 +38,6 @@ function updateStoreData() {
 }
 
 watch(fields.value.options, (newValue) => {
-  console.log(newValue)
   fields.value.options = newValue;
   updateStoreData();
 }, {deep: true});

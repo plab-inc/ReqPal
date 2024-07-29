@@ -49,8 +49,7 @@ public class WorkflowDelegate {
             throw new Exception("Scenario already started.");
         }
 
-        String processDefinitionKey = generateProcessDefinitionKey(scenarioId);
-        ProcessInstance processInstance = startWorkflow(processDefinitionKey, studentId);
+        ProcessInstance processInstance = startWorkflow(scenario, studentId);
 
         Lesson currentLesson = lessonRepository.findById(UUID.fromString(Objects.requireNonNull(getCurrentLessonId(processInstance.getId(), studentId))))
                 .orElseThrow(() -> new Exception("Current lesson not found."));
@@ -63,14 +62,15 @@ public class WorkflowDelegate {
         return response;
     }
 
-    public ProcessInstance startWorkflow(String processDefinitionKey, String studentId) throws Exception {
+    public ProcessInstance startWorkflow(Scenario scenario, String studentId) throws Exception {
         validateStudentId(studentId);
+        String processDefinitionKey = generateProcessDefinitionKey(String.valueOf(scenario.getId()));
         checkForExistingInstance(processDefinitionKey, studentId);
 
         ProcessDefinition processDefinition = fetchProcessDefinition(processDefinitionKey);
         validateProcessDefinition(processDefinition, processDefinitionKey);
 
-        Map<String, Object> variables = initializeVariables(studentId);
+        Map<String, Object> variables = initializeVariables(studentId, String.valueOf(scenario.getId()));
 
         return runtimeService.startProcessInstanceById(processDefinition.getId(), variables);
     }
@@ -126,11 +126,12 @@ public class WorkflowDelegate {
         }
     }
 
-    private Map<String, Object> initializeVariables(String studentId) {
+    private Map<String, Object> initializeVariables(String studentId, String scenarioId) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("studentId", studentId);
         variables.put("totalPoints", 0);
         variables.put("gainedAchievements", JSON("[]"));
+        variables.put("scenarioId", scenarioId);
         return variables;
     }
 

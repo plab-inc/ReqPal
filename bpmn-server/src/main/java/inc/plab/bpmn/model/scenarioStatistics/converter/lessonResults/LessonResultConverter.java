@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.scenarioProgress.converter.lessonResults;
+package inc.plab.bpmn.model.scenarioStatistics.converter.lessonResults;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

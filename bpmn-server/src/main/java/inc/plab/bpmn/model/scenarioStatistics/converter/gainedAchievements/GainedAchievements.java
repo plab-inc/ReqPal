@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.scenarioProgress.converter.gainedAchievements;
+package inc.plab.bpmn.model.scenarioStatistics.converter.gainedAchievements;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.scenarioProgress.converter.gainedAchievements;
+package inc.plab.bpmn.model.scenarioStatistics.converter.gainedAchievements;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

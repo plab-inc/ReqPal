@@ -2,7 +2,7 @@ package inc.plab.bpmn.delegate.camunda;
 
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
 import inc.plab.bpmn.service.LessonService;
-import inc.plab.bpmn.service.UserScenarioProgressService;
+import inc.plab.bpmn.service.ScenarioUserStatisticsService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.spin.json.SpinJsonNode;
@@ -14,11 +14,11 @@ import java.util.Date;
 public class LessonUserTaskDelegate implements JavaDelegate {
 
     final LessonService lessonService;
-    final UserScenarioProgressService userscenarioProgressService;
+    final ScenarioUserStatisticsService scenarioUserStatisticsService;
 
-    public LessonUserTaskDelegate(LessonService lessonService, UserScenarioProgressService userscenarioProgressService) {
+    public LessonUserTaskDelegate(LessonService lessonService, ScenarioUserStatisticsService scenarioUserStatisticsService) {
         this.lessonService = lessonService;
-        this.userscenarioProgressService = userscenarioProgressService;
+        this.scenarioUserStatisticsService = scenarioUserStatisticsService;
     }
 
     @Override
@@ -52,15 +52,17 @@ public class LessonUserTaskDelegate implements JavaDelegate {
 
     private void evaluateLessonTask(DelegateExecution delegateExecution) {
         String lessonId = (String) delegateExecution.getVariable("lessonId");
+        String userId = (String) delegateExecution.getVariable("studentId");
+        String scenarioId = (String) delegateExecution.getVariable("scenarioId");
         int currentTotalPoints = (int) delegateExecution.getVariable("totalPoints");
         SpinJsonNode lastLessonResult = (SpinJsonNode) delegateExecution.getVariable("lastLessonResult");
         SpinJsonNode allLessonResults = (SpinJsonNode) delegateExecution.getVariable("lessonResults");
 
         LessonResult lessonResult = lessonService.evaluateLesson(lessonId, lastLessonResult);
         if (lessonResult != null) {
-            userscenarioProgressService.addLessonResult(lessonResult);
             int newScore = (int) Math.round(lessonResult.getTotalScore());
-            userscenarioProgressService.addPointsToScore(newScore);
+            scenarioUserStatisticsService.addLessonResult(lessonResult, userId, scenarioId);
+            scenarioUserStatisticsService.addPointsToScore(newScore, userId, scenarioId);
 
             for (SpinJsonNode lesson : allLessonResults.elements()) {
                 if (lesson.prop("lessonId").stringValue().equals(lessonId)) {

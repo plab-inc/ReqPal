@@ -68,6 +68,7 @@ public class EvaluationService {
     private static SliderResult getSliderResult(SliderOptions sliderOptions, SliderSolution solution, Question question) {
         SliderResult sliderResult = new SliderResult(question.getId().toString(), question.getQuestionType(), 0);
         sliderResult.setCorrect(false);
+        sliderResult.setInput(sliderOptions.getInput());
 
         int min = Math.max(solution.getCorrectValue() - solution.getToleranceValue(), 0);
         int max = Math.min(solution.getCorrectValue() + solution.getToleranceValue(), solution.getCorrectValue());

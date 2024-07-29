@@ -1,4 +1,4 @@
-package inc.plab.bpmn.model.scenarioProgress.converter.objectives;
+package inc.plab.bpmn.model.scenarioStatistics.converter.objectives;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
