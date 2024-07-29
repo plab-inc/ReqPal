@@ -21,7 +21,7 @@ public class ProcessService {
     }
 
     @SneakyThrows
-    public InvokeLessonUserTaskResponseDto invokeItem(String processDefinitionKey, String studentId, String lessonResults) {
-        return taskDelegate.invokeLessonUserTask(processDefinitionKey, studentId, lessonResults);
+    public InvokeLessonUserTaskResponseDto invokeItem(String scenarioId, String studentId, String lessonResults) {
+        return taskDelegate.invokeLessonUserTask(scenarioId, studentId, lessonResults);
     }
 }

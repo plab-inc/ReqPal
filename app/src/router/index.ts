@@ -26,7 +26,7 @@ import {
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
 import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
-import { fetchScenarioProgress, fetchScenarios } from "@/middlewares/scenario.ts";
+import { fetchScenarios } from "@/middlewares/scenario.ts";
 
 const routes = [
     {
@@ -155,7 +155,6 @@ const routes = [
                 component: () => import("@/views/scenario/ScenarioOverview.vue"),
                 meta: {
                     middleware: [
-                        requiresTeacher,
                         fetchScenarios
                     ]
                 }
@@ -177,9 +176,7 @@ const routes = [
                 name: "Scenario Loader",
                 component: () => import("@/views/scenario/ScenarioStepper.vue"),
                 meta: {
-                    middleware: [
-                        fetchScenarioProgress
-                    ]
+                    middleware: []
                 }
             },
             {

@@ -5,9 +5,9 @@ import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.scenario.Scenario;
+import inc.plab.bpmn.model.scenario.ScenarioProgress;
+import inc.plab.bpmn.model.scenario.ScenarioProgressRepository;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
-import inc.plab.bpmn.model.scenario.UserScenario;
-import inc.plab.bpmn.model.scenario.UserScenarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.camunda.bpm.engine.RuntimeService;
@@ -29,15 +29,26 @@ public class TaskDelegate {
 
     private final RuntimeService runtimeService;
     private final TaskService taskService;
-    private final UserScenarioRepository userScenarioRepository;
+    private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
     private final ScenarioRepository scenarioRepository;
     private static final Logger logger = LoggerFactory.getLogger(TaskDelegate.class);
 
     @SneakyThrows
-    public InvokeLessonUserTaskResponseDto invokeLessonUserTask(String processDefinitionKey, String studentId, String lessonResults) {
-        Scenario scenario = scenarioRepository.findById(UUID.fromString(processDefinitionKey.substring(8)))
-                .orElseThrow(() -> new RuntimeException("No scenario to task found."));
+    public InvokeLessonUserTaskResponseDto invokeLessonUserTask(String scenarioId, String studentId, String lessonResults) {
+        Scenario scenario = getScenario(scenarioId, studentId).orElseThrow(() -> new Exception("No matching scenario found."));
+
+        if (!scenario.getDeployed()) {
+            throw new Exception("Scenario is not deployed");
+        }
+
+        ScenarioProgress scenarioProgress = getScenarioProgress(scenario, studentId).orElseThrow(() -> new Exception("No progress to scenario found."));
+
+        if (!scenarioProgress.getStarted()) {
+            throw new Exception("Scenario is not started.");
+        }
+
+        String processDefinitionKey = generateProcessDefinitionKey(scenarioId);
 
         Task currentTask = fetchCurrentTask(processDefinitionKey, studentId);
         String lessonId = getLessonId(currentTask);
@@ -53,28 +64,40 @@ public class TaskDelegate {
                 .map(this::getLessonId)
                 .orElse(null);
 
-        updateScenarioProgress(scenario, studentId, newLessonId);
+        updateScenarioProgress(scenarioProgress, newLessonId);
 
         return createInvokeItemResponse(nextTask);
     }
 
-    @SneakyThrows
-    private void updateScenarioProgress(Scenario scenario, String studentId, String newLessonId) {
-        UserScenario userScenario = userScenarioRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId))
-                .orElseThrow(() -> new RuntimeException("No ScenarioProgress to task found."));
+    private Optional<Scenario> getScenario(String scenarioId, String studentId) {
+        return scenarioRepository.findByIdAndUser_Id(UUID.fromString(scenarioId), UUID.fromString(studentId));
+    }
 
-        userScenario.setCurrentStep(userScenario.getCurrentStep() + 1);
+    private Optional<ScenarioProgress> getScenarioProgress(Scenario scenario, String studentId) {
+        return scenarioProgressRepository.findByScenarioAndUser_Id(scenario, UUID.fromString(studentId));
+    }
+
+    private String generateProcessDefinitionKey(String scenarioId) {
+        return "Process_" + scenarioId;
+    }
+
+    @SneakyThrows
+    private void updateScenarioProgress(ScenarioProgress scenarioProgress, String newLessonId) {
+
+        scenarioProgress.increaseStep();
 
         if (newLessonId != null) {
             Lesson lesson = lessonRepository.findById(UUID.fromString(newLessonId))
                     .orElseThrow(() -> new RuntimeException("No Lesson to lessonId found."));
-            userScenario.setCurrentLesson(lesson);
-        } else {
-            userScenario.setCurrentLesson(null);
-            userScenario.setEnded(true);
+            scenarioProgress.setCurrentLesson(lesson);
         }
 
-        userScenarioRepository.save(userScenario); // Save changes to the database
+        if (newLessonId == null) {
+            scenarioProgress.setCurrentLesson(null);
+            scenarioProgress.setEnded(true);
+        }
+
+        scenarioProgressRepository.save(scenarioProgress);
     }
 
     private Task fetchCurrentTask(String processDefinitionKey, String studentId) throws Exception {

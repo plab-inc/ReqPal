@@ -1,6 +1,5 @@
 import { Scenario, ScenarioProgress } from "@/types/scenario";
 import { defineStore } from "pinia";
-import ScenarioService from "@/services/database/scenario";
 import { useLessonStore } from "@/stores/lesson";
 import { invokeItem, startWorkflow } from "@/services/api/process";
 import { useUtilStore } from "@/stores/util";
@@ -18,8 +17,8 @@ export interface Step {
 }
 
 interface StepperState {
-  scenario: Scenario | undefined;
-  currentLessonId: string | undefined;
+  scenario?: Scenario;
+  currentLessonId?: string;
   currentStep: number;
   lessonSteps: Step[];
   isStarted: boolean;
@@ -47,13 +46,13 @@ export const useStepperStore = defineStore("stepper", {
     getCurrentStep(state): Step {
       return this.allSteps[state.currentStep];
     },
-    getStepIcon: (state) => (step: Step) => {
+    getStepIcon: () => (step: Step) => {
       if (step.startStep) return "mdi-play";
       if (step.placeholderStep) return "mdi-help";
       if (step.endStep) return "mdi-flag-checkered";
       return "mdi-book-open";
     },
-    getStepColor: (state) => (step: Step) => {
+    getStepColor: () => (step: Step) => {
       if (step.startStep) return "info";
       if (step.placeholderStep) return "secondary";
       if (step.endStep) return "success";
@@ -70,6 +69,13 @@ export const useStepperStore = defineStore("stepper", {
     },
     async initializeSteps() {
       this.lessonSteps = [];
+
+      if (this.isCompleted) {
+        this.addPreviousLessons(this.currentStep - 1);
+        this.removePlaceholderStep();
+        return;
+      }
+
       if (this.currentStep > 1) {
         this.addPreviousLessons(this.currentStep - 1);
       }
@@ -77,7 +83,6 @@ export const useStepperStore = defineStore("stepper", {
         this.addLessonStep();
       }
     },
-
     async start() {
       const utilStore = useUtilStore();
       if (this.currentStep === 0 && this.scenario) {
@@ -86,8 +91,9 @@ export const useStepperStore = defineStore("stepper", {
           const response = await startWorkflow(this.scenario.id);
           this.currentLessonId = response.lessonId;
           this.isStarted = true;
-          await this.loadInLesson().then(this.addLessonStep);
           this.currentStep++;
+          await this.loadInLesson();
+          this.addLessonStep();
         } catch (error) {
           throw new BpmnProcessError("Es gab ein Problem das Szenario zu starten.");
         } finally {
@@ -95,7 +101,19 @@ export const useStepperStore = defineStore("stepper", {
         }
       }
     },
-
+    async continue(scenarioProgress: ScenarioProgress) {
+      const utilStore = useUtilStore();
+      try {
+        utilStore.startLoadingBar();
+        await this.loadScenarioProgress(scenarioProgress);
+        await this.initializeSteps();
+        await this.loadInLesson();
+      } catch (error) {
+        throw new BpmnProcessError("Es gab ein Problem das Szenario zu fortzuführen.");
+      } finally {
+        utilStore.stopLoadingBar();
+      }
+    },
     async nextStep(lessonAnswer: LessonAnswer) {
       const utilStore = useUtilStore();
       if (this.scenario && !this.getCurrentStep.endStep) {
@@ -104,9 +122,9 @@ export const useStepperStore = defineStore("stepper", {
           const response = await invokeItem(this.scenario.id, lessonAnswer);
           if (response.nextLessonId) {
             this.currentLessonId = response.nextLessonId;
-            await this.loadInLesson().then(this.addLessonStep);
             this.currentStep++;
-            if (this.currentStep === this.scenario.lessonsCount) this.removePlaceholderStep();
+            await this.loadInLesson();
+            this.addLessonStep();
           } else {
             this.completeScenario();
           }
@@ -118,39 +136,26 @@ export const useStepperStore = defineStore("stepper", {
         }
       }
     },
-
-    async fetchScenarioProgress() {
-      const scenarioProgress = await ScenarioService.pull.fetchScenarioProgressByScenario("2118957a-8e6d-46b7-937f-0567da10cb22");
-      if (scenarioProgress) {
-        this.loadScenarioProgress(scenarioProgress).then(() => {
-          this.initializeSteps();
-          this.loadInLesson();
-        });
-      }
-    },
-
     async loadInLesson() {
       if (this.currentLessonId) {
         const lessonStore = useLessonStore();
         await lessonStore.fetchQuestionsWithLesson(this.currentLessonId);
       }
     },
-
     addPreviousLessons(count: number) {
       for (let i = 0; i < count; i++) {
         this.lessonSteps.push({
           title: `Lesson ${i + 1}`,
           startStep: false,
-          placeholderStep: true,
+          placeholderStep: false,
           endStep: false,
           completed: true
         });
       }
     },
-
     addLessonStep() {
       this.lessonSteps.push({
-        title: `Lesson ${this.currentStep + 1}`,
+        title: `Lesson ${this.currentStep}`,
         startStep: false,
         placeholderStep: false,
         endStep: false,
@@ -158,15 +163,13 @@ export const useStepperStore = defineStore("stepper", {
         lessonId: this.currentLessonId
       });
     },
-
     completeScenario() {
       this.isCompleted = true;
       this.removePlaceholderStep();
       this.currentStep = this.allSteps.length - 1;
     },
-
     removePlaceholderStep() {
       this.allSteps.splice(this.allSteps.length - 2, 1);
-    },
+    }
   }
 });
