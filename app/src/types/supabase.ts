@@ -585,6 +585,44 @@ export type Database = {
           },
         ]
       }
+      scenario_user_statistics: {
+        Row: {
+          achievements: Json | null
+          created_at: string
+          id: string
+          lesson_results: Json | null
+          objectives: Json | null
+          scenario_user_progress_id: string
+          score: number | null
+        }
+        Insert: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id: string
+          score?: number | null
+        }
+        Update: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id?: string
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_progress_scenario_user_progress_id_fkey"
+            columns: ["scenario_user_progress_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_user_progress"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scenarios: {
         Row: {
           achievements: string[]
@@ -1065,44 +1103,6 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_scenario_progress: {
-        Row: {
-          achievements: Json | null
-          created_at: string
-          id: string
-          lesson_results: Json | null
-          objectives: Json | null
-          score: number | null
-          user_scenario_id: string | null
-        }
-        Insert: {
-          achievements?: Json | null
-          created_at?: string
-          id?: string
-          lesson_results?: Json | null
-          objectives?: Json | null
-          score?: number | null
-          user_scenario_id?: string | null
-        }
-        Update: {
-          achievements?: Json | null
-          created_at?: string
-          id?: string
-          lesson_results?: Json | null
-          objectives?: Json | null
-          score?: number | null
-          user_scenario_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_scenario_progress_user_scenario_id_fkey"
-            columns: ["user_scenario_id"]
-            isOneToOne: false
-            referencedRelation: "scenario_user_progress"
             referencedColumns: ["id"]
           },
         ]
