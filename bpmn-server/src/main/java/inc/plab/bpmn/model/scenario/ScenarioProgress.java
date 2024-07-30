@@ -49,6 +49,10 @@ public class ScenarioProgress {
     @JoinColumn(name = "lesson_Id")
     private Lesson currentLesson;
 
+    @NotNull
+    @Column(name = "started_version", nullable = false)
+    private Long startedVersion;
+
     @Transient
     public void increaseStep() {
         this.currentStep++;
