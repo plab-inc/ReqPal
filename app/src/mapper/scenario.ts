@@ -11,6 +11,7 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
     achievements: input.achievements,
     deployed: input.deployed,
     locked: input.locked,
+    edited: input.edited,
     version: input.version,
     createdAt: input.created_at
   };

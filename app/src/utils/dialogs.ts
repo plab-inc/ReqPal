@@ -178,11 +178,48 @@ export const DeleteLesson: DialogText = {
 
 export const DeployScenarioFirstTime: DialogText = {
     title: "Szenario Veröffentlichen",
-    message: "Möchten Sie das ausgewählte Szenario wirklich veröffentlichen?" +
-      "Diese Aktion kann nicht rückgängig gemacht werden. Ab diesem Zeitpunkt ist das Szenario für Studierende sichtbar und kann, sofern freigegeben, gestartet werden." +
+    message: "Möchten Sie das ausgewählte Szenario wirklich veröffentlichen? " +
+      "Diese Aktion kann nicht rückgängig gemacht werden. Ab diesem Zeitpunkt ist das Szenario für Studierende sichtbar und kann, sofern freigegeben, gestartet werden. " +
       "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine neue Version veröffentlicht werden." +
-      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
+      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
     confirmLabel: "Veröffentlichen",
+    cancelLabel: "Zurück"
+};
+
+export const DeployScenarioNewVersion: DialogText = {
+    title: "Neue Szenario Version Veröffentlichen",
+    message: "Möchten die neue Version des Szenarios wirklich veröffentlichen?" +
+      "Diese Aktion kann nicht rückgängig gemacht werden." +
+      "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine weitere Version veröffentlicht werden. " +
+      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios. ",
+    confirmLabel: "Neue Version Veröffentlichen",
+    cancelLabel: "Zurück"
+};
+
+export const LockScenario: DialogText = {
+    title: "Szenario Sperren",
+    message: "Möchten das Szenario wirklich sperren? " +
+      "Szenarios können dann nicht mehr von Studierenden gestartet werden. " +
+      "Ausgenommen sind Durchläufe von Szenarien die bereits gestartet wurden. Diese können von Studierenden fortgeführt werden. ",
+    confirmLabel: "Szenario Sperren",
+    cancelLabel: "Zurück"
+};
+
+export const UnlockScenario: DialogText = {
+    title: "Szenario Freigeben",
+    message: "Möchten das Szenario wirklich freigeben? " +
+      "Szenarios ab diesem Zeitpunkt von Studierenden gestartet und bearbeitet werden. " +
+      "Einmal von einem Studierendem gestartete Szenarien sind von einer erneuten Sperrung ausgenommen.",
+    confirmLabel: "Szenario Freigeben",
+    cancelLabel: "Zurück"
+};
+
+export const DeleteScenario: DialogText = {
+    title: "Szenario Freigeben",
+    message: "Achtung! Möchten das Szenario wirklich löschen? " +
+      "Szenarios werden unwiderruflich gelöscht und Studierende können es ggf. nicht mehr fertigstellen oder den Fortschritt einsehen." +
+      "Bereits erzielte Punkte und Achievements bleiben den Studierenden allerdings erhalten.",
+    confirmLabel: "Szenario Löschen",
     cancelLabel: "Zurück"
 };
 
