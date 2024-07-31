@@ -1,7 +1,6 @@
 package inc.plab.bpmn.delegate.service;
 
-import inc.plab.bpmn.dto.WorkflowDescription;
-import inc.plab.bpmn.dto.WorkflowResponseDto;
+import inc.plab.bpmn.dto.StartWorkflowResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.scenario.Scenario;
@@ -35,7 +34,7 @@ public class WorkflowDelegate {
     private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
 
-    public WorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) throws Exception {
+    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) throws Exception {
 
         Scenario scenario = getScenario(scenarioId, studentId).orElseThrow(() -> new Exception("No matching scenario found."));
 
@@ -57,10 +56,11 @@ public class WorkflowDelegate {
 
         updateScenarioProgress(scenarioProgress, currentLesson);
 
-        WorkflowDescription description = new WorkflowDescription(processInstance.getId(), currentLesson.getId().toString());
-        WorkflowResponseDto response = new WorkflowResponseDto();
-        response.setDescription(description);
-        return response;
+        StartWorkflowResponseDto startWorkflowResponseDto = new StartWorkflowResponseDto();
+        startWorkflowResponseDto.setLessonId(currentLesson.getId().toString());
+        startWorkflowResponseDto.setProcessInstanceId(processInstance.getId());
+
+        return startWorkflowResponseDto;
     }
 
     public ProcessInstance startWorkflow(String processDefinitionKey, String studentId) throws Exception {

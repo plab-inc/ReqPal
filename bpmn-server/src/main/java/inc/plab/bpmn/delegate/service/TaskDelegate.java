@@ -1,7 +1,5 @@
 package inc.plab.bpmn.delegate.service;
 
-import inc.plab.bpmn.dto.InvokeLessonUserTaskDescription;
-import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.scenario.Scenario;
@@ -35,7 +33,7 @@ public class TaskDelegate {
     private static final Logger logger = LoggerFactory.getLogger(TaskDelegate.class);
 
     @SneakyThrows
-    public InvokeLessonUserTaskResponseDto invokeLessonUserTask(String scenarioId, String studentId, String lessonResults) {
+    public Task invokeLessonUserTask(String scenarioId, String studentId, String lessonResults) {
         Scenario scenario = getScenario(scenarioId, studentId).orElseThrow(() -> new Exception("No matching scenario found."));
 
         if (!scenario.getDeployed()) {
@@ -66,7 +64,7 @@ public class TaskDelegate {
 
         updateScenarioProgress(scenarioProgress, newLessonId);
 
-        return createInvokeItemResponse(nextTask);
+        return nextTask;
     }
 
     private Optional<Scenario> getScenario(String scenarioId, String studentId) {
@@ -143,18 +141,5 @@ public class TaskDelegate {
                 .processDefinitionKey(processDefinitionKey)
                 .taskAssignee(studentId)
                 .singleResult();
-    }
-
-    private InvokeLessonUserTaskResponseDto createInvokeItemResponse(Task nextTask) {
-        InvokeLessonUserTaskResponseDto response = new InvokeLessonUserTaskResponseDto();
-
-        if (nextTask == null) {
-            response.setDescription(new InvokeLessonUserTaskDescription(null));
-            return response;
-        }
-
-        String nextLessonId = (String) taskService.getVariable(nextTask.getId(), "lessonId");
-        response.setDescription(new InvokeLessonUserTaskDescription(nextLessonId));
-        return response;
     }
 }

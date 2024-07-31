@@ -3,9 +3,11 @@ package inc.plab.bpmn.service;
 import inc.plab.bpmn.delegate.service.TaskDelegate;
 import inc.plab.bpmn.delegate.service.WorkflowDelegate;
 import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
-import inc.plab.bpmn.dto.WorkflowResponseDto;
+import inc.plab.bpmn.dto.StartWorkflowResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,14 +16,26 @@ public class ProcessService {
 
     private final WorkflowDelegate workflowDelegate;
     private final TaskDelegate taskDelegate;
+    private final TaskService taskService;
 
     @SneakyThrows
-    public WorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) {
+    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) {
         return workflowDelegate.startWorkflowForScenario(scenarioId, studentId);
     }
 
     @SneakyThrows
     public InvokeLessonUserTaskResponseDto invokeItem(String scenarioId, String studentId, String lessonResults) {
-        return taskDelegate.invokeLessonUserTask(scenarioId, studentId, lessonResults);
+        Task nextTask = taskDelegate.invokeLessonUserTask(scenarioId, studentId, lessonResults);
+
+        InvokeLessonUserTaskResponseDto response = new InvokeLessonUserTaskResponseDto();
+
+        if (nextTask == null) {
+            response.setNextLessonId(null);
+            return response;
+        }
+
+        String nextLessonId = (String) taskService.getVariable(nextTask.getId(), "lessonId");
+        response.setNextLessonId(nextLessonId);
+        return response;
     }
 }

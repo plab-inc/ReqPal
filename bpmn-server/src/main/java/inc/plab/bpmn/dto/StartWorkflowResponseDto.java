@@ -1,13 +1,13 @@
 package inc.plab.bpmn.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class WorkflowDescription {
+@RequiredArgsConstructor
+public class StartWorkflowResponseDto {
     private String processInstanceId;
     private String lessonId;
 }

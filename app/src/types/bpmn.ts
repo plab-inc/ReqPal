@@ -7,7 +7,6 @@ export interface InvokeItemResponse {
   nextLessonId: string;
 }
 
-export interface BpmnResponse {
-  status: string;
-  description: StartWorkflowResponse | InvokeItemResponse;
+export interface DeployScenarioResponse {
+  deploymentName: string;
 }

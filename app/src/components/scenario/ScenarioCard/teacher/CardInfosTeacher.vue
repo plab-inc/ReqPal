@@ -1,7 +1,7 @@
 <template>
   <v-card-title class="text-h4 pb-0">
     <v-row no-gutters justify-space-between>
-      <v-col cols="8" style="overflow: scroll">
+      <v-col cols="8" style="text-overflow: ellipsis; overflow: hidden">
         {{ scenario ? scenario.title : "Leeres Szenario" }}
       </v-col>
       <v-col v-if="scenario" cols="4" class="d-flex justify-end align-center">
