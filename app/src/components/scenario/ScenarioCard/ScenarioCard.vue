@@ -53,7 +53,7 @@ const props = defineProps<{
 const authStore = useAuthStore();
 const show = ref<boolean>(false);
 
-const isTeacher = false;
-const isStudent = true;
+const isTeacher = true;
+const isStudent = false;
 
 </script>
