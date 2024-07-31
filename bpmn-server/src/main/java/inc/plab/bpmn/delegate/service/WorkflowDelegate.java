@@ -77,6 +77,7 @@ public class WorkflowDelegate {
 
     private void updateScenarioProgress(ScenarioProgress scenarioProgress, Lesson currentLesson) {
         scenarioProgress.setStarted(true);
+        scenarioProgress.setStartedVersion(scenarioProgress.getScenario().getVersion());
         scenarioProgress.setCurrentLesson(currentLesson);
         scenarioProgress.increaseStep();
         scenarioProgressRepository.save(scenarioProgress);

@@ -46,6 +46,10 @@ public class Scenario {
     @Column(name = "version", nullable = false)
     private Long version;
 
+    @NotNull
+    @Column(name = "edited", nullable = false)
+    private Boolean edited = false;
+
     @Transient
     public String getBpmnPath(){
         return String.format("%s/%s/%s.bpmn", user.getId(), this.id, this.id);

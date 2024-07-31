@@ -50,8 +50,12 @@ public class ScenarioService {
 
         cleanUpFormerDeploymentsToScenario(scenario, deployment.getId());
 
+
+        scenario.setEdited(false);
+        if (scenario.getDeployed()) {
+            scenario.setVersion(scenario.getVersion() + 1);
+        }
         scenario.setDeployed(true);
-        scenario.setVersion(scenario.getVersion() + 1);
         scenarioRepository.save(scenario);
 
         return Optional.of(deployment.getName());

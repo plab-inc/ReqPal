@@ -22,5 +22,5 @@ import ScenarioCard from "@/components/scenario/ScenarioCard/ScenarioCard.vue";
 import { useScenarioStore } from "@/stores/scenario.ts";
 
 const scenarioStore = useScenarioStore();
-const isTeacher = false;
+const isTeacher = true;
 </script>

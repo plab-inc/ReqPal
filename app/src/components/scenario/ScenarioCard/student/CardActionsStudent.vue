@@ -1,10 +1,14 @@
 <template>
   <div v-if="scenario">
     <v-row no-gutters justify="center">
-      <v-btn v-if="!scenarioProgress" block color="white" variant="flat" text="Szenario Beginnen"
+      <v-btn v-if="!scenarioProgress" :disabled="props.scenario.locked" block
+             :color="props.scenario.locked ? 'red': 'white'" variant="flat"
+             :text="props.scenario.locked ? 'Szenario gesperrt': 'Szenario starten'"
              @click="startScenario(props.scenario)" />
-      <v-btn v-if="scenarioProgress && !scenarioProgress.ended" block color="primary" variant="flat"
-             text="Szenario Fortsetzen" @click="continueScenario(scenarioProgress)" />
+      <v-btn block :disabled="props.scenario.locked" v-if="scenarioProgress && !scenarioProgress.ended"
+             :color="props.scenario.locked ? 'red': 'primary'" variant="flat"
+             :text="props.scenario.locked ? 'Szenario gesperrt': 'Szenario fortsetzen'"
+             @click="continueScenario(scenarioProgress)" />
       <v-btn v-if="scenarioProgress?.ended" block color="success" variant="flat" text="Ergebnisse Anzeigen"
              @click="continueScenario(scenarioProgress)" />
     </v-row>
