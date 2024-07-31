@@ -538,6 +538,7 @@ export type Database = {
           lesson_id: string | null
           scenario_id: string
           started: boolean
+          started_version: number
           step: number
           user_id: string
         }
@@ -548,6 +549,7 @@ export type Database = {
           lesson_id?: string | null
           scenario_id?: string
           started?: boolean
+          started_version?: number
           step?: number
           user_id?: string
         }
@@ -558,6 +560,7 @@ export type Database = {
           lesson_id?: string | null
           scenario_id?: string
           started?: boolean
+          started_version?: number
           step?: number
           user_id?: string
         }
@@ -629,6 +632,7 @@ export type Database = {
           created_at: string
           deployed: boolean
           description: string | null
+          edited: boolean
           id: string
           lessons: number
           locked: boolean
@@ -642,6 +646,7 @@ export type Database = {
           created_at?: string
           deployed?: boolean
           description?: string | null
+          edited?: boolean
           id?: string
           lessons?: number
           locked?: boolean
@@ -655,6 +660,7 @@ export type Database = {
           created_at?: string
           deployed?: boolean
           description?: string | null
+          edited?: boolean
           id?: string
           lessons?: number
           locked?: boolean
