@@ -33,8 +33,12 @@ public class UserStatistic {
     private Profile user;
 
     @ColumnDefault("0")
-    @Column(name = "total_xp")
-    private Integer totalXp;
+    @Column(name = "total_reqpal_xp")
+    private Integer totalReqPalXp;
+
+    @ColumnDefault("0")
+    @Column(name = "total_objective_xp")
+    private Integer totalObjectiveXp;
 
     @ColumnDefault("0")
     @Column(name = "total_scenarios")

@@ -21,9 +21,8 @@ public class UserStatisticService {
     private final ProfileRepository profileRepository;
 
     public void addToTotalScenarios(int value, String userId) {
-        System.out.println("Adding " + value + " to total scenarios");
         UserStatistic userStatistic = getUserStatistic(userId);
-        if (userStatistic != null && value > 0) {
+        if (value > 0) {
             Integer currentValue = userStatistic.getTotalScenarios();
             if (currentValue == null) {
                 currentValue = 0;
@@ -34,9 +33,8 @@ public class UserStatisticService {
     }
 
     public void addToTotalPoints(int value, String userId) {
-        System.out.println("Adding " + value + " to total points");
         UserStatistic userStatistic = getUserStatistic(userId);
-        if (userStatistic != null && value > 0) {
+        if (value > 0) {
             Integer currentValue = userStatistic.getTotalPoints();
             if (currentValue == null) {
                 currentValue = 0;
@@ -46,15 +44,26 @@ public class UserStatisticService {
         }
     }
 
-    public void addToTotalXp(int value, String userId) {
-        System.out.println("Adding " + value + " to total xp");
+    public void addToTotalReqPalXp(int value, String userId) {
         UserStatistic userStatistic = getUserStatistic(userId);
-        if (userStatistic != null && value > 0) {
-            Integer currentValue = userStatistic.getTotalXp();
+        if (value > 0) {
+            Integer currentValue = userStatistic.getTotalReqPalXp();
             if (currentValue == null) {
                 currentValue = 0;
             }
-            userStatistic.setTotalXp(currentValue + value);
+            userStatistic.setTotalReqPalXp(currentValue + value);
+            userStatisticRepository.save(userStatistic);
+        }
+    }
+
+    public void addToTotalObjectiveXp(int value, String userId) {
+        UserStatistic userStatistic = getUserStatistic(userId);
+        if (value > 0) {
+            Integer currentValue = userStatistic.getTotalObjectiveXp();
+            if (currentValue == null) {
+                currentValue = 0;
+            }
+            userStatistic.setTotalObjectiveXp(currentValue + value);
             userStatisticRepository.save(userStatistic);
         }
     }
@@ -73,14 +82,14 @@ public class UserStatisticService {
                 Profile profile = profileOptional.get();
                 userStatistic.setCreatedAt(OffsetDateTime.now());
                 userStatistic.setUser(profile);
-                userStatistic.setTotalXp(0);
+                userStatistic.setTotalReqPalXp(0);
+                userStatistic.setTotalObjectiveXp(0);
                 userStatistic.setTotalPoints(0);
                 userStatistic.setTotalScenarios(0);
             } else {
-                return null;
+                throw new IllegalArgumentException("Profile not found");
             }
         }
         return userStatistic;
     }
-
 }

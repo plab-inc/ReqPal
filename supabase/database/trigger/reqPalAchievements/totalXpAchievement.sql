@@ -37,7 +37,7 @@ BEGIN
         INTO new_level, new_level_id
         FROM reqpal_achievement_levels
         WHERE reqpal_achievement_id = achievement_id
-          AND NEW.total_xp >= threshold
+          AND NEW.total_reqpal_xp >= threshold
         ORDER BY level DESC
         LIMIT 1;
 
@@ -73,7 +73,7 @@ CREATE TRIGGER handle_xp_achievement_trigger_insert
 EXECUTE FUNCTION update_xp_achievement();
 
 CREATE TRIGGER handle_xp_achievement_trigger_update
-    AFTER UPDATE OF total_xp
+    AFTER UPDATE OF total_reqpal_xp
     ON user_statistics
     FOR EACH ROW
 EXECUTE FUNCTION update_xp_achievement();

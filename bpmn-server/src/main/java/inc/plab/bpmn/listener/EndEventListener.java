@@ -16,10 +16,6 @@ public class EndEventListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution execution) {
-
-        System.out.println("Prozess beendet: " + execution.getProcessInstanceId());
-        System.out.println("EndEventListener Start.");
-
         endEventProcessingService.processEndEvent(execution);
     }
 }

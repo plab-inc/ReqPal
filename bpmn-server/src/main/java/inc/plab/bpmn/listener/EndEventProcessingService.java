@@ -24,7 +24,7 @@ public class EndEventProcessingService {
         String scenarioId = (String) execution.getVariable("scenarioId");
 
         userStatisticService.addToTotalScenarios(1, userId);
-        userStatisticService.addToTotalXp(25, userId);
+        userStatisticService.addToTotalReqPalXp(25, userId);
 
         ScenarioUserStatistics scenarioUserStatistics = scenarioUserStatisticsService.getScenarioUserStatistics(userId, scenarioId);
         if (scenarioUserStatistics != null) {
