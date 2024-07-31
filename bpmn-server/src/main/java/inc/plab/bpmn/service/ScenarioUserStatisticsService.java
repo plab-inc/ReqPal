@@ -108,7 +108,7 @@ public class ScenarioUserStatisticsService {
         scenarioUserStatisticsRepository.save(scenarioUserStatistics);
     }
 
-    private ScenarioUserStatistics getScenarioUserStatistics(String userId, String scenarioId) {
+    public ScenarioUserStatistics getScenarioUserStatistics(String userId, String scenarioId) {
         Optional<ScenarioProgress> scenarioProgressOptional = scenarioProgressRepository.findByScenarioIdAndUser_Id(UUID.fromString(scenarioId), UUID.fromString(userId));
         if (scenarioProgressOptional.isPresent()) {
             ScenarioProgress scenarioProgress = scenarioProgressOptional.get();
