@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ExceptionResponseDto {
-    private String status;
-    private String description;
+public class DeployScenarioResponseDto {
+    String deploymentName;
 }

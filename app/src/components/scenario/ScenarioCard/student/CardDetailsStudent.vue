@@ -24,7 +24,6 @@ const props = defineProps<{
 const scenarioProgressStore = useScenarioProgressStore();
 const scenarioProgress: ScenarioProgress | undefined = scenarioProgressStore.getProgressByScenario(props.scenario);
 
-
 const progressBarStatus = () => {
   if (props.scenario.locked && !scenarioProgress) return 5;
 

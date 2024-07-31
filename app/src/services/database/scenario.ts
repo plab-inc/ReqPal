@@ -42,7 +42,8 @@ class ScenarioServiceClass {
         title: scenario.title,
         minLessons: scenario.minLessons,
         lessons: scenario.lessonsCount,
-        achievements: scenario.achievements
+        achievements: scenario.achievements,
+        edited: scenario.edited
       })
       .select().single()
 
@@ -129,7 +130,7 @@ class ScenarioServiceClass {
     }
   }
 
-  private async toggleField(scenario: Scenario, field: 'locked' | 'deployed'): Promise<void> {
+  private async toggleField(scenario: Scenario, field: "locked"): Promise<void> {
     const {error} = await supabase
       .rpc('reverse_boolean_value', {
         table_name: 'scenarios',

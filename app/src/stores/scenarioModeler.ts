@@ -95,6 +95,7 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
         description: this.description,
         user: userId,
         locked: true,
+        edited: true,
         deployed: false,
         svg: svg,
         bpmnXml: xml,

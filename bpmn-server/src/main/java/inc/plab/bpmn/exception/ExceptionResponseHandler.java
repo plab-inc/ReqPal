@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 
     private static final String FORBIDDEN_ERROR_MESSAGE = "Access Denied: You do not have sufficient privileges to access this resource.";
-    private static final String SOMETHING_WRONG_MESSAGE = "Something went wrong.";
+    private static final String SOMETHING_WRONG_MESSAGE = "Something went wrong: ";
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ExceptionResponseDto> responseStatusExceptionHandler(final ResponseStatusException exception) {
@@ -71,7 +71,7 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> serverExceptionHandler(final Exception exception) {
         final var exceptionResponse = new ExceptionResponseDto();
         exceptionResponse.setStatus(HttpStatus.NOT_IMPLEMENTED.toString());
-        exceptionResponse.setDescription(SOMETHING_WRONG_MESSAGE);
+        exceptionResponse.setDescription(SOMETHING_WRONG_MESSAGE + exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(exceptionResponse);
     }
 }

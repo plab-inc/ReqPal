@@ -10,6 +10,7 @@ export type Scenario = {
   description: string,
   deployed: boolean,
   locked: boolean,
+  edited: boolean,
   lessonsCount: number,
   minLessons: number,
   achievements: string[];

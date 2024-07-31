@@ -1,6 +1,5 @@
 <template>
-  <div :style="scenario?.locked ? 'background: #908ba3': 'background: white' "
-       v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5" />
+  <div v-html="scenario ? scenario.svg : scenarioModelerStore.baseDiagramSvg" class="svg-container elevation-5" />
 </template>
 
 <script setup lang="ts">
@@ -20,6 +19,7 @@ const scenarioModelerStore = useScenarioModelerStore();
 .svg-container {
   display: flex;
   height: 200px;
+  background: white;
   overflow: hidden;
   justify-content: center;
   align-items: center;
