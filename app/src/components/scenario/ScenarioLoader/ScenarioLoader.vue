@@ -66,7 +66,6 @@ const lessonStore = useLessonStore();
 const submitLesson = async () => {
   if (!(await lessonStore.isLessonFormValid())) return;
   const lessonAnswer: LessonAnswer | null = await lessonStore.generateUserResults();
-  console.log(lessonAnswer);
   if (lessonAnswer) await stepperStore.nextStep(lessonAnswer);
 };
 </script>
