@@ -1,12 +1,12 @@
-import {defineStore} from "pinia";
-import {Lesson, LessonAnswer, LessonDTO, Question} from "@/types/lesson.ts";
+import { defineStore } from "pinia";
+import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
-import {VForm} from "vuetify/components";
-import {toRaw} from "vue";
+import { VForm } from "vuetify/components";
+import { toRaw } from "vue";
 
 interface LessonState {
     examples: Lesson[],
@@ -215,29 +215,8 @@ export const useLessonStore = defineStore('lesson', {
             return lesson;
         },
 
-        async getLessonStatistics(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.isTeacher) {
-                return await LessonService.pull.fetchLessonStatistics(lessonUUID);
-            }
-        },
-
-        async getCountOfStudentsForTeacher() {
-            const authStore = useAuthStore();
-            if (authStore.isTeacher && authStore.user) {
-                return await LessonService.pull.getCountOfStudentsForTeacher(authStore.user.id);
-            }
-        },
-
         async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string) {
             return await LessonService.pull.checkIfLessonTitleExists(lessonTitle, lessonUUID);
-        },
-
-        async uploadUsedHintForQuestion(questionUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.isStudent && authStore.user && this.currentLesson) {
-                await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
-            }
         },
 
     },

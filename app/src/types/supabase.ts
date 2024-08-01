@@ -747,55 +747,6 @@ export type Database = {
           },
         ]
       }
-      user_answers: {
-        Row: {
-          answer: Json | null
-          lesson_id: string
-          question_id: string
-          result: Json | null
-          user_id: string
-          uuid: string
-        }
-        Insert: {
-          answer?: Json | null
-          lesson_id: string
-          question_id: string
-          result?: Json | null
-          user_id: string
-          uuid?: string
-        }
-        Update: {
-          answer?: Json | null
-          lesson_id?: string
-          question_id?: string
-          result?: Json | null
-          user_id?: string
-          uuid?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_answers_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_answers_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_answers_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_feedback: {
         Row: {
           created_at: string
@@ -818,100 +769,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_feedback_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_finished_lessons: {
-        Row: {
-          finished: boolean | null
-          finished_for_first_time: boolean | null
-          id: string
-          is_started: boolean | null
-          lesson_id: string
-          new_user_points: number | null
-          used_hints: number | null
-          user_id: string
-          user_points: number | null
-        }
-        Insert: {
-          finished?: boolean | null
-          finished_for_first_time?: boolean | null
-          id?: string
-          is_started?: boolean | null
-          lesson_id: string
-          new_user_points?: number | null
-          used_hints?: number | null
-          user_id: string
-          user_points?: number | null
-        }
-        Update: {
-          finished?: boolean | null
-          finished_for_first_time?: boolean | null
-          id?: string
-          is_started?: boolean | null
-          lesson_id?: string
-          new_user_points?: number | null
-          used_hints?: number | null
-          user_id?: string
-          user_points?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_finished_lessons_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_finished_lessons_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_hints: {
-        Row: {
-          id: string
-          lesson_id: string
-          question_id: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          lesson_id: string
-          question_id: string
-          user_id: string
-        }
-        Update: {
-          id?: string
-          lesson_id?: string
-          question_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_hints_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_hints_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_hints_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -996,32 +853,6 @@ export type Database = {
           },
           {
             foreignKeyName: "user_levels_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_points: {
-        Row: {
-          id: string
-          points: number
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          points?: number
-          user_id: string
-        }
-        Update: {
-          id?: string
-          points?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_points_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

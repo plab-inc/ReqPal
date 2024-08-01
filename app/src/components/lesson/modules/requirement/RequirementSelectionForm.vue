@@ -1,15 +1,16 @@
 <script setup lang="ts">
 
-import { CatalogDTO, Product, Requirement } from "@/types/catalog.ts";
-import { useCatalogStore } from "@/stores/catalog.ts";
+import {CatalogDTO, Product, Requirement} from "@/types/catalog.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
-import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
-import { containsAtLeastOneElementRule, requiredRule, requiredStringRule } from "@/utils/validationRules.ts";
+import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
-import { onBeforeMount, ref, watch } from "vue";
+import {onBeforeMount, ref, watch} from "vue";
+import {convertStringToNumber} from "@/utils/helper.ts";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -23,7 +24,10 @@ const products = ref<Product[]>([]);
 
 const fields = ref<any>({
   question: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {type: "Requirement", toleranceValue: 0},
+  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {
+    type: "Requirement",
+    toleranceValue: 0
+  },
   options: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'options') || {
     type: "Requirement",
     catalogId: undefined,
@@ -68,6 +72,10 @@ watch(fields, async (value) => {
 
   if (catalogStore.currentCatalog?.catalog_id !== value.options.catalogId) {
     selectedRequirement.value = undefined;
+  }
+
+  if (fields.value.solution.toleranceValue) {
+    fields.value.solution.toleranceValue = convertStringToNumber(fields.value.solution.toleranceValue)
   }
 
   if (value.options.catalogId) {

@@ -19,13 +19,13 @@ public class ProcessService {
     private final TaskService taskService;
 
     @SneakyThrows
-    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) {
-        return workflowDelegate.startWorkflowForScenario(scenarioId, studentId);
+    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId, String teacherId) {
+        return workflowDelegate.startWorkflowForScenario(scenarioId, studentId, teacherId);
     }
 
     @SneakyThrows
-    public InvokeLessonUserTaskResponseDto invokeItem(String scenarioId, String studentId, String lessonResults) {
-        Task nextTask = taskDelegate.invokeLessonUserTask(scenarioId, studentId, lessonResults);
+    public InvokeLessonUserTaskResponseDto invokeItem(String scenarioId, String studentId, String teacherId, String lessonResults) {
+        Task nextTask = taskDelegate.invokeLessonUserTask(scenarioId, studentId, teacherId, lessonResults);
 
         InvokeLessonUserTaskResponseDto response = new InvokeLessonUserTaskResponseDto();
 

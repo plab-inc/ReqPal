@@ -33,8 +33,8 @@ public class TaskDelegate {
     private static final Logger logger = LoggerFactory.getLogger(TaskDelegate.class);
 
     @SneakyThrows
-    public Task invokeLessonUserTask(String scenarioId, String studentId, String lessonResults) {
-        Scenario scenario = getScenario(scenarioId, studentId).orElseThrow(() -> new Exception("No matching scenario found."));
+    public Task invokeLessonUserTask(String scenarioId, String studentId, String teacherId, String lessonResults) {
+        Scenario scenario = getScenario(scenarioId, teacherId).orElseThrow(() -> new Exception("No matching scenario found."));
 
         if (!scenario.getDeployed()) {
             throw new Exception("Scenario is not deployed");

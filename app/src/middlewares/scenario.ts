@@ -11,12 +11,10 @@ export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLoc
         const scenarioStatisticStore = useScenarioStatisticStore();
         const authStore = useAuthStore();
 
-        await scenarioStore.fetchScenarios();
-
-        if (authStore.isTeacher) await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
+    await scenarioStore.fetchScenarios();
+    await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
 // TODO set on student
         if (authStore.isTeacher) await scenarioStatisticStore.fetchScenarioStatistic(scenarioStore.scenarios);
-
         return next();
 
     } catch (error) {

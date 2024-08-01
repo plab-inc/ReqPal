@@ -1,0 +1,18 @@
+<template>
+  <v-list nav class="py-0">
+    <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Kataloge" to="/catalog" />
+    <v-list-item rounded prepend-icon="mdi-invoice-list" title="Produkte" to="/products" />
+    <v-divider class="my-1" />
+    <v-list-item rounded prepend-icon="mdi-school" title="Lektionen"
+                 :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons" />
+    <v-list-item rounded prepend-icon="mdi-graph-outline" title="Szenarien" to="/scenario" />
+    <v-divider class="my-1" />
+    <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives" />
+    <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements" />
+    <v-divider class="my-1" />
+  </v-list>
+</template>
+
+<script lang="ts" setup>
+import router from "@/router/index.ts";
+</script>

@@ -1,5 +1,5 @@
-import {supabase} from "@/plugins/supabase";
-import {ProfileDTO} from "@/types/auth.ts";
+import { supabase } from "@/plugins/supabase";
+import { ProfileDTO } from "@/types/auth.ts";
 
 class ProfileServiceClass {
 
@@ -33,15 +33,8 @@ class ProfileServiceClass {
     }
 
     private async fetchPoints(userId: string): Promise<{ points: number } | null> {
-        const {data, error} = await supabase
-            .from('user_points')
-            .select('points')
-            .eq('user_id', userId)
-            .maybeSingle()
-
-        if (error) throw error;
-
-        return data;
+      //TODO fetch points aktuallisieren
+      return null;
     }
 
     private async getUsername(userId: string): Promise<{ username: string }> {

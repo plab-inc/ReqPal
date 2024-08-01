@@ -1,5 +1,5 @@
 import { supabase } from "@/plugins/supabase";
-import { Lesson, LessonDTO, LessonForm, LessonQuestions, LessonStatistic, Question } from "@/types/lesson.ts";
+import { Lesson, LessonDTO, LessonForm, LessonQuestions, Question } from "@/types/lesson.ts";
 import { mapToLesson } from "@/mapper/lesson.ts";
 
 class LessonServiceClass {
@@ -8,7 +8,6 @@ class LessonServiceClass {
         uploadLesson: this.uploadLesson.bind(this),
         deleteLesson: this.deleteLesson.bind(this),
         togglePublished: this.togglePublished.bind(this),
-        uploadUsedHintForQuestion: this.uploadUsedHintForQuestion.bind(this),
     };
 
     public pull = {
@@ -17,7 +16,6 @@ class LessonServiceClass {
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
         fetchQuestionsWithSolutionsForLesson: this.fetchQuestionsWithSolutionsForLesson.bind(this),
-        fetchLessonStatistics: this.fetchLessonStatistics.bind(this),
         getCountOfStudentsForTeacher: this.getCountOfStudentsForTeacher.bind(this),
         checkIfLessonTitleExists: this.checkIfLessonTitleExists.bind(this)
     };
@@ -146,19 +144,6 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchLessonStatistics(lessonUUID: string): Promise<LessonStatistic[] | undefined> {
-        const {data, error} = await supabase
-            .from('user_finished_lessons')
-            .select('finished, user_points')
-            .eq('lesson_id', lessonUUID)
-
-        if (error) throw error;
-
-        if (data) {
-            return data as LessonStatistic[];
-        }
-    }
-
     private async getCountOfStudentsForTeacher(teacherUUID: string): Promise<number> {
         const {error, count} = await supabase
             .from('profiles')
@@ -171,29 +156,6 @@ class LessonServiceClass {
             return count;
         }
         return 0;
-    }
-
-    private async uploadUsedHintForQuestion(userUUID: string, questionUUID: string, lessonUUID: string): Promise<void> {
-        const {data, error} = await supabase
-            .from('user_hints')
-            .select('*')
-            .eq('question_id', questionUUID)
-            .eq('user_id', userUUID)
-            .eq('lesson_id', lessonUUID)
-
-        if (error) throw error;
-        if (!data || data.length <= 0) {
-            const {error} = await supabase
-                .from('user_hints')
-                .insert([
-                    {
-                        question_id: questionUUID,
-                        user_id: userUUID,
-                        lesson_id: lessonUUID
-                    },
-                ])
-            if (error) throw error;
-        }
     }
 
     private async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string): Promise<boolean | undefined> {

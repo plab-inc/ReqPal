@@ -10,7 +10,7 @@
       <div v-for="scenario in scenarioStore.getScenarios" :key="scenario.id">
         <ScenarioCard :scenario="scenario" />
       </div>
-      <div v-if="scenarioStore.getScenarios.length < 6 && isTeacher">
+      <div v-if="scenarioStore.getScenarios.length < 6 && authStore.isTeacher">
        <ScenarioCard/>
      </div>
     </v-row>
@@ -20,7 +20,8 @@
 <script setup lang="ts">
 import ScenarioCard from "@/components/scenario/ScenarioCard/ScenarioCard.vue";
 import { useScenarioStore } from "@/stores/scenario.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 const scenarioStore = useScenarioStore();
-const isTeacher = true;
+const authStore = useAuthStore();
 </script>

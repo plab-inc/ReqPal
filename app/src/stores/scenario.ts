@@ -4,6 +4,7 @@ import ScenarioService from "@/services/database/scenario.ts";
 import { mapToScenario } from "@/mapper/scenario.ts";
 import { BpmnStorageService } from "@/services/storage/bpmn.ts";
 import { deleteScenario, deployScenario } from "@/services/api/scenario.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 interface ScenarioState {
     scenarios: Scenario[];
@@ -24,12 +25,12 @@ export const useScenarioStore = defineStore('scenario', {
         async fetchScenarios() {
             this.scenarios = []
             const fetchedScenarios = await ScenarioService.pull.fetchScenarios();
+          const authStore = useAuthStore();
 
             if(fetchedScenarios){
                 for(const scenarioDTO of fetchedScenarios){
                     const scenario = mapToScenario(scenarioDTO);
-                   // TODO
-                    //scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
+                  if (authStore.isTeacher) scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
                     this.scenarios.push(scenario);
                 }
             }

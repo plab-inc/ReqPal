@@ -34,9 +34,9 @@ public class WorkflowDelegate {
     private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
 
-    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId) throws Exception {
+    public StartWorkflowResponseDto startWorkflowForScenario(String scenarioId, String studentId, String teacherId) throws Exception {
 
-        Scenario scenario = getScenario(scenarioId, studentId).orElseThrow(() -> new Exception("No matching scenario found."));
+        Scenario scenario = getScenario(scenarioId, teacherId).orElseThrow(() -> new Exception("No matching scenario found."));
 
         if (!scenario.getDeployed() || scenario.getLocked()) {
             throw new Exception("Scenario is locked or not deployed");
@@ -63,7 +63,7 @@ public class WorkflowDelegate {
     }
 
     public ProcessInstance startWorkflow(Scenario scenario, String studentId) throws Exception {
-        validateStudentId(studentId);
+
         String processDefinitionKey = generateProcessDefinitionKey(String.valueOf(scenario.getId()));
         checkForExistingInstance(processDefinitionKey, studentId);
 
@@ -93,12 +93,6 @@ public class WorkflowDelegate {
 
     private String generateProcessDefinitionKey(String scenarioId) {
         return "Process_" + scenarioId;
-    }
-
-    private void validateStudentId(String studentId) throws Exception {
-        if (studentId == null || studentId.isEmpty()) {
-            throw new Exception("Student ID cannot be null or empty");
-        }
     }
 
     private void checkForExistingInstance(String processDefinitionKey, String studentId) throws Exception {
