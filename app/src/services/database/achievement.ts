@@ -21,6 +21,7 @@ class AchievementServiceClass {
         fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this),
         fetchAchievementImages: this.fetchAchievementImages.bind(this),
         fetchAchievementsByModerator: this.fetchAchievementsByModerator.bind(this),
+        fetchAchievementsByIds: this.fetchAchievementsByIds.bind(this)
     }
 
     private async fetchAchievementsByUser(userUUID: string): Promise<Achievement[] | undefined> {
@@ -29,6 +30,19 @@ class AchievementServiceClass {
             .from('achievements')
             .select('*')
             .eq("user_id", userUUID);
+
+        if (error) throw error;
+
+        if (data) {
+            return data as Achievement[];
+        }
+    }
+
+    private async fetchAchievementsByIds(achievementIds: string[]): Promise<Achievement[] | undefined> {
+        const {data, error} = await supabase
+            .from('achievements')
+            .select('*')
+            .in("id", achievementIds);
 
         if (error) throw error;
 

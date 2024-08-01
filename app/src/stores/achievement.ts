@@ -56,6 +56,10 @@ export const useAchievementStore = defineStore('achievement', {
             }
         },
 
+        async fetchAchievementsByIds(achievementIds: string[]): Promise<Achievement[] | undefined> {
+            return await AchievementService.pull.fetchAchievementsByIds(achievementIds);
+        },
+
         async fetchAchievementImages(): Promise<void> {
             const authStore = useAuthStore();
 

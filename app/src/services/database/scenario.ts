@@ -1,8 +1,11 @@
-import { supabase } from "@/plugins/supabase";
-import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
-import { mapToScenario, mapToScenarioProgress } from "@/mapper/scenario.ts";
-import { v4 as uuidv4 } from "uuid";
-import {ScenarioUserStatistic} from "@/types/scenarioUserStatistic.ts";
+import {supabase} from "@/plugins/supabase";
+import {Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO} from "@/types/scenario.ts";
+import {mapToScenario, mapToScenarioProgress} from "@/mapper/scenario.ts";
+import {v4 as uuidv4} from "uuid";
+import {
+    ScenarioUserStatisticData
+} from "@/types/scenarioUserStatistic.ts";
+import {mapToScenarioUserStatisticData} from "@/mapper/scenarioUserStatistic.ts";
 
 class ScenarioServiceClass {
 
@@ -83,13 +86,13 @@ class ScenarioServiceClass {
         }
     }
 
-  private async createScenarioProgress(scenario: Scenario, userId: string) {
-    const { data, error } = await supabase
-      .from("scenario_user_progress")
-      .upsert(
-        { id: uuidv4(), scenario_id: scenario.id, user_id: userId }
-      )
-      .select().single();
+    private async createScenarioProgress(scenario: Scenario, userId: string) {
+        const {data, error} = await supabase
+            .from("scenario_user_progress")
+            .upsert(
+                {id: uuidv4(), scenario_id: scenario.id, user_id: userId}
+            )
+            .select().single();
 
         if (error) throw error;
 
@@ -124,15 +127,13 @@ class ScenarioServiceClass {
 
         if (error) throw error;
 
-    console.log(data);
-
-    if (data) {
-      return data.map(item => {
-        const correspondingScenario = scenarios.find(scenario => scenario.id === item.scenario_id);
-        return correspondingScenario ? mapToScenarioProgress(item as ScenarioProgressDTO, correspondingScenario) : undefined;
-      }).filter(item => item !== undefined) as ScenarioProgress[];
+        if (data) {
+            return data.map(item => {
+                const correspondingScenario = scenarios.find(scenario => scenario.id === item.scenario_id);
+                return correspondingScenario ? mapToScenarioProgress(item as ScenarioProgressDTO, correspondingScenario) : undefined;
+            }).filter(item => item !== undefined) as ScenarioProgress[];
+        }
     }
-  }
 
     private async toggleField(scenario: Scenario, field: "locked"): Promise<void> {
         const {error} = await supabase
@@ -146,7 +147,7 @@ class ScenarioServiceClass {
         if (error) console.error(error)
     }
 
-    private async fetchScenarioUserStatistics(scenarios: Scenario[], userId: string): Promise<ScenarioUserStatistic[] | undefined> {
+    private async fetchScenarioUserStatistics(scenarios: Scenario[], userId: string): Promise<ScenarioUserStatisticData[] | undefined> {
         const scenarioIds = scenarios.map(scenario => scenario.id);
 
         const {data, error} = await supabase
@@ -161,8 +162,11 @@ class ScenarioServiceClass {
         }
 
         if (data) {
-            console.log(data)
-            return undefined;
+            let results: ScenarioUserStatisticData[] = []
+            data.forEach(d => {
+                results.push(mapToScenarioUserStatisticData(d));
+            })
+            return results;
         }
     }
 }

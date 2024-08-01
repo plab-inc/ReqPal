@@ -1,8 +1,8 @@
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import {useScenarioStore} from "@/stores/scenario.ts";
-import {useAuthStore} from "@/stores/auth.ts";
 import {useScenarioProgressStore} from "@/stores/scenarioProgress.ts";
 import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 
 export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
@@ -11,10 +11,9 @@ export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLoc
         const scenarioStatisticStore = useScenarioStatisticStore();
         const authStore = useAuthStore();
 
-    await scenarioStore.fetchScenarios();
-    await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
-// TODO set on student
-        if (authStore.isTeacher) await scenarioStatisticStore.fetchScenarioStatistic(scenarioStore.scenarios);
+        await scenarioStore.fetchScenarios();
+        await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
+        if(authStore.isStudent) await scenarioStatisticStore.fetchScenarioStatistic(scenarioStore.scenarios);
         return next();
 
     } catch (error) {
