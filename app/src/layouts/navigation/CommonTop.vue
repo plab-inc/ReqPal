@@ -1,5 +1,5 @@
 <template>
-  <v-list nav class="py-0">
+  <v-list nav class="pb-0 pt-2">
     <v-list-item v-if="!authStore.isPending && authStore.user"
                  :title="authStore.user?.user_metadata.username"
                  :subtitle="authStore.user?.email"
@@ -15,7 +15,7 @@
                  title="Login" to="Login"
                  rounded
     />
-    <v-divider class="mt-2 mb-1" />
+    <v-divider class="mt-1 mb-1" opacity="0.5" />
     <v-list-item
       rounded prepend-icon="mdi-home"
       title="Home" to="/"
@@ -24,7 +24,7 @@
     <div v-if="authStore.user && authStore.isPending">
       <v-list-item rounded prepend-icon="mdi-account-clock" title="Anfrage Status" to="/teacher-request" />
     </div>
-    <v-divider class="my-1" />
+    <v-divider v-if="authStore.user" class="my-1" opacity="0.5" />
   </v-list>
 </template>
 

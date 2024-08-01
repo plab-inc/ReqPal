@@ -1,15 +1,19 @@
 <template>
   <v-list nav class="py-0">
-    <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
-    <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
+    <v-divider class="mb-1" opacity="0.5" />
+    <div v-if="authStore.user">
+      <v-list-item rounded prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
+      <v-list-item rounded prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
+      <v-list-item rounded prepend-icon="mdi-logout" title="Logout" @click="logout" />
+      <v-divider class="my-1" />
+    </div>
     <v-list-item
+      rounded
       :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
       :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
       @click="themeStore.toggleUserTheme"
     />
-    <v-divider class="my-1" />
-    <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
-    <v-list-item prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal" />
+    <v-list-item rounded prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal" />
   </v-list>
 </template>
 

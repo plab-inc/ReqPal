@@ -9,7 +9,6 @@
     <v-divider class="my-1" />
     <v-list-item rounded prepend-icon="mdi-trophy" title="Lernziele" to="/objectives" />
     <v-list-item rounded prepend-icon="mdi-trophy-award" title="Achievements" to="/achievements" />
-    <v-divider class="my-1" />
   </v-list>
 </template>
 
