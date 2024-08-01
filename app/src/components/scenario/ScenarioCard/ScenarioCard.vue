@@ -2,8 +2,9 @@
   <v-card
     variant="outlined"
     width="610"
-    class="ma-2"
+    class="ma-2 border-opacity-100"
     rounded
+    :border="scenario?.locked ? 'error md': 'white md'"
     elevation="10"
   >
     <CardImageTeacher v-if=isTeacher :scenario="scenario" />

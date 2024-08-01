@@ -130,7 +130,7 @@ class ScenarioServiceClass {
     }
   }
 
-  private async toggleField(scenario: Scenario, field: 'locked' | 'deployed'): Promise<void> {
+  private async toggleField(scenario: Scenario, field: "locked"): Promise<void> {
     const {error} = await supabase
       .rpc('reverse_boolean_value', {
         table_name: 'scenarios',

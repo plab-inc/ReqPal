@@ -1,9 +1,7 @@
 package inc.plab.bpmn.controller;
 
-import inc.plab.bpmn.dto.BpmnResponseDto;
-import inc.plab.bpmn.dto.ExceptionResponseDto;
 import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
-import inc.plab.bpmn.dto.WorkflowResponseDto;
+import inc.plab.bpmn.dto.StartWorkflowResponseDto;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
 import inc.plab.bpmn.service.ProcessService;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
@@ -25,40 +23,19 @@ public class ProcessController {
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/start/{scenarioId}")
-    public ResponseEntity<BpmnResponseDto<?>> startWorkflow(
-            @PathVariable("scenarioId") String scenarioId,
-            @AuthenticationPrincipal SupabaseUser user) {
-        try {
-            WorkflowResponseDto response = processService.startWorkflowForScenario(scenarioId, String.valueOf(user.getId()));
-            response.setStatus("success");
+    public ResponseEntity<StartWorkflowResponseDto> startWorkflow(@PathVariable("scenarioId") String scenarioId, @AuthenticationPrincipal SupabaseUser user) {
+        StartWorkflowResponseDto response = processService.startWorkflowForScenario(scenarioId, String.valueOf(user.getId()));
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            ExceptionResponseDto<String> errorResponse = new ExceptionResponseDto<>();
-            errorResponse.setStatus("error");
-            errorResponse.setDescription("Failed to start workflow: " + e.getMessage());
-            return ResponseEntity.status(400).body(errorResponse);
-        }
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/invoke/{scenarioId}")
-    public ResponseEntity<BpmnResponseDto<?>> invokeItem(
-            @PathVariable("scenarioId") String scenarioId,
-            @AuthenticationPrincipal SupabaseUser user,
-            @RequestBody String lessonResults) {
-        try {
+    public ResponseEntity<InvokeLessonUserTaskResponseDto> invokeItem(@PathVariable("scenarioId") String scenarioId, @AuthenticationPrincipal SupabaseUser user, @RequestBody String lessonResults) {
             InvokeLessonUserTaskResponseDto response = processService.invokeItem(scenarioId, String.valueOf(user.getId()), lessonResults);
-            response.setStatus("success");
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            ExceptionResponseDto<String> errorResponse = new ExceptionResponseDto<>();
-            errorResponse.setStatus("error");
-            errorResponse.setDescription("Error completing task: " + e.getMessage());
-            return ResponseEntity.status(400).body(errorResponse);
-        }
     }
 
-    @ExceptionHandler({RequestNotPermitted.class})
+    @ExceptionHandler(RequestNotPermitted.class)
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
     public void handleRequestNotPermitted() {
     }

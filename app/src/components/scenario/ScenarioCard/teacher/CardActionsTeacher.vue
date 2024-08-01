@@ -19,7 +19,6 @@
 import { defineProps } from "vue";
 import { Scenario } from "@/types/scenario.ts";
 import router from "@/router/index.ts";
-import http from "@/services/api/api.ts";
 import ScenarioService from "@/services/database/scenario.ts";
 import {
   DeleteScenario,
@@ -59,10 +58,11 @@ const editScenario = (scenario: Scenario) => {
 };
 
 const deleteScenario = async (scenario: Scenario) => {
-  utilStore.openDialog(DeleteScenario, () => {
-    http.post(`scenario/delete/${scenario.id}`).then(() => {
-      scenarioStore.getScenarios.splice(scenarioStore.getScenarios.findIndex(s => s.id === scenario.id), 1);
-    });
+  utilStore.openDialog(DeleteScenario, async () => {
+    utilStore.startLoadingBar();
+    await scenarioStore.deleteScenario(scenario).finally(() => utilStore.stopLoadingBar());
+    utilStore.addAlert("Szenario erfolgreich gelöscht.", "info");
+    utilStore.stopLoadingBar();
   });
 };
 
@@ -78,16 +78,17 @@ const lockScenario = (scenario: Scenario) => {
 };
 
 const deployScenario = (scenario: Scenario) => {
-  if (!scenario.deployed) utilStore.openDialog(DeployScenarioFirstTime, () => {
-    scenario.deployed = true;
-    scenario.edited = false;
-    http.post(`scenario/deploy/${scenario.id}`);
+  if (!scenario.deployed) utilStore.openDialog(DeployScenarioFirstTime, async () => {
+    utilStore.startLoadingBar();
+    await scenarioStore.deployScenario(scenario).finally(() => utilStore.stopLoadingBar());
+    utilStore.addAlert("Szenario erfolgreich veröffentlicht.", "info");
   });
 
-  if (scenario.deployed && scenario.edited) utilStore.openDialog(DeployScenarioNewVersion, () => {
-    scenario.deployed = true;
-    scenario.edited = false;
-    http.post(`scenario/deploy/${scenario.id}`);
+  if (scenario.deployed && scenario.edited) utilStore.openDialog(DeployScenarioNewVersion, async () => {
+    utilStore.startLoadingBar();
+    await scenarioStore.deployScenario(scenario).finally(() => utilStore.stopLoadingBar());
+    utilStore.addAlert("Neue Version des Szenarios erfolgreich veröffentlicht.", "info");
+    utilStore.stopLoadingBar();
   });
 };
 

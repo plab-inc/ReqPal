@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class InvokeLessonUserTaskResponseDto implements BpmnResponseDto<InvokeLessonUserTaskDescription> {
-    private String status;
-    private InvokeLessonUserTaskDescription description;
+public class InvokeLessonUserTaskResponseDto {
+    private String nextLessonId;
 }
