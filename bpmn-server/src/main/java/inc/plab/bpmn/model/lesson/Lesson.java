@@ -65,15 +65,6 @@ public class Lesson {
     private Set<Question> questions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "lesson")
-    private Set<UserAnswer> userAnswers = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserFinishedLesson> userFinishedLessons = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserHint> userHints = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
     private Set<UserLessonProgress> userLessonProgresses = new LinkedHashSet<>();
 
 }

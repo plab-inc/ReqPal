@@ -28,7 +28,8 @@ export const useScenarioStore = defineStore('scenario', {
             if(fetchedScenarios){
                 for(const scenarioDTO of fetchedScenarios){
                     const scenario = mapToScenario(scenarioDTO);
-                    scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
+                   // TODO
+                    //scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
                     this.scenarios.push(scenario);
                 }
             }
