@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
-import { ref, watch } from "vue";
+import {ref, watch} from "vue";
 import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import {requiredNumberRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
+import {convertStringToNumber} from "@/utils/helper.ts";
 
 const previewValue = ref<number>(5);
 const props = defineProps<{ componentId: string }>();
@@ -62,6 +63,12 @@ watch(fields, (newFields) => {
 }, {deep: true});
 
 watch([sliderOptions, sliderSolution], () => {
+  sliderOptions.value.maxValue = convertStringToNumber(sliderOptions.value.maxValue);
+  sliderOptions.value.minValue = convertStringToNumber(sliderOptions.value.minValue);
+  sliderOptions.value.steps = convertStringToNumber(sliderOptions.value.steps);
+  sliderSolution.value.correctValue = convertStringToNumber(sliderSolution.value.correctValue);
+  sliderSolution.value.toleranceValue = convertStringToNumber(sliderSolution.value.toleranceValue);
+
   lessonFormStore.setLessonModuleData(props.componentId, 'options', sliderOptions.value);
   lessonFormStore.setLessonModuleData(props.componentId, 'solution', sliderSolution.value);
 }, {deep: true});
