@@ -1117,25 +1117,28 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          total_objective_xp: number | null
           total_points: number | null
+          total_reqpal_xp: number | null
           total_scenarios: number | null
-          total_xp: number | null
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
+          total_objective_xp?: number | null
           total_points?: number | null
+          total_reqpal_xp?: number | null
           total_scenarios?: number | null
-          total_xp?: number | null
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
+          total_objective_xp?: number | null
           total_points?: number | null
+          total_reqpal_xp?: number | null
           total_scenarios?: number | null
-          total_xp?: number | null
           user_id?: string | null
         }
         Relationships: [
