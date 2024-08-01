@@ -1,0 +1,28 @@
+<template>
+  <v-list nav class="py-0">
+    <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
+    <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
+    <v-list-item
+      :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
+      :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
+      @click="themeStore.toggleUserTheme"
+    />
+    <v-divider class="my-1" />
+    <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
+    <v-list-item prepend-icon="mdi-scale-balance" title="Rechtliche Hinweise" to="/legal" />
+  </v-list>
+</template>
+
+<script lang="ts" setup>
+import { useAuthStore } from "@/stores/auth.ts";
+import { useThemeStore } from "@/stores/theme.ts";
+import router from "@/router/index.ts";
+
+const authStore = useAuthStore();
+const themeStore = useThemeStore();
+
+const logout = () => {
+  authStore.signOut();
+  router.push("/");
+};
+</script>

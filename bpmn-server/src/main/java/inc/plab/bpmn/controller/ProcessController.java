@@ -24,14 +24,14 @@ public class ProcessController {
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/start/{scenarioId}")
     public ResponseEntity<StartWorkflowResponseDto> startWorkflow(@PathVariable("scenarioId") String scenarioId, @AuthenticationPrincipal SupabaseUser user) {
-        StartWorkflowResponseDto response = processService.startWorkflowForScenario(scenarioId, String.valueOf(user.getId()));
+        StartWorkflowResponseDto response = processService.startWorkflowForScenario(scenarioId, String.valueOf(user.getId()), String.valueOf(user.getProfile().getTeacher().getId()));
             return ResponseEntity.ok(response);
     }
 
     @RateLimiter(name = "rateLimiterBpmn")
     @PostMapping("/invoke/{scenarioId}")
     public ResponseEntity<InvokeLessonUserTaskResponseDto> invokeItem(@PathVariable("scenarioId") String scenarioId, @AuthenticationPrincipal SupabaseUser user, @RequestBody String lessonResults) {
-            InvokeLessonUserTaskResponseDto response = processService.invokeItem(scenarioId, String.valueOf(user.getId()), lessonResults);
+        InvokeLessonUserTaskResponseDto response = processService.invokeItem(scenarioId, String.valueOf(user.getId()), String.valueOf(user.getProfile().getTeacher().getId()), lessonResults);
             return ResponseEntity.ok(response);
     }
 

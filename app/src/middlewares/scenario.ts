@@ -10,8 +10,7 @@ export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLoc
     const authStore = useAuthStore();
 
     await scenarioStore.fetchScenarios();
-
-    if (authStore.isTeacher) await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
+    await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
 
     return next();
 

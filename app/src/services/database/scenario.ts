@@ -1,6 +1,7 @@
 import { supabase } from "@/plugins/supabase";
 import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
 import { mapToScenario, mapToScenarioProgress } from "@/mapper/scenario.ts";
+import { v4 as uuidv4 } from "uuid";
 
 class ScenarioServiceClass {
 
@@ -84,8 +85,8 @@ class ScenarioServiceClass {
   private async createScenarioProgress(scenario: Scenario, userId: string) {
     const { data, error } = await supabase
       .from("scenario_user_progress")
-      .insert(
-        { scenario_id: scenario.id, user_id: userId }
+      .upsert(
+        { id: uuidv4(), scenario_id: scenario.id, user_id: userId }
       )
       .select().single();
 
@@ -121,6 +122,8 @@ class ScenarioServiceClass {
       .in("scenario_id", scenarioIds);
 
     if (error) throw error;
+
+    console.log(data);
 
     if (data) {
       return data.map(item => {

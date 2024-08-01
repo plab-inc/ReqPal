@@ -7,18 +7,18 @@
     :border="scenario?.locked ? 'error md': 'white md'"
     elevation="10"
   >
-    <CardImageTeacher v-if=isTeacher :scenario="scenario" />
+    <CardImageTeacher v-if=authStore.isTeacher :scenario="scenario" />
     <div class="elevation-8">
-      <CardInfosTeacher v-if="isTeacher" :scenario="scenario" />
-      <CardInfosStudent v-if="isStudent && scenario" :scenario="scenario" />
+      <CardInfosTeacher v-if="authStore.isTeacher" :scenario="scenario" />
+      <CardInfosStudent v-if="authStore.isStudent && scenario" :scenario="scenario" />
       <v-card-actions>
         <v-container class="pa-0 align-content-end" style="height: 75px">
-          <CardActionsTeacher v-if="isTeacher" :scenario="scenario" />
-          <CardActionsStudent v-if="isStudent && scenario" :scenario="scenario" />
+          <CardActionsTeacher v-if="authStore.isTeacher" :scenario="scenario" />
+          <CardActionsStudent v-if="authStore.isStudent && scenario" :scenario="scenario" />
           <v-row v-if="scenario" no-gutters>
             <v-btn block color="white" variant="plain" :ripple="false"
                    :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-                   :text="isTeacher ? 'Statistiken': 'Details'" @click="show = !show" />
+                   :text="authStore.isTeacher ? 'Statistiken': 'Details'" @click="show = !show" />
           </v-row>
         </v-container>
       </v-card-actions>
@@ -26,8 +26,8 @@
     <v-expand-transition>
       <div v-show="show">
         <v-card-text>
-          <CardDetailsTeacher v-if="isTeacher" />
-          <CardDetailsStudent v-if="isStudent && scenario" :scenario="scenario" />
+          <CardDetailsTeacher v-if="authStore.isTeacher" />
+          <CardDetailsStudent v-if="authStore.isStudent && scenario" :scenario="scenario" />
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -52,8 +52,4 @@ const props = defineProps<{
 
 const authStore = useAuthStore();
 const show = ref<boolean>(false);
-
-const isTeacher = true;
-const isStudent = false;
-
 </script>
