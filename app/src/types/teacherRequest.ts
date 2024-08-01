@@ -1,4 +1,4 @@
-import {Database} from "@/types/supabase.ts";
+import { Database } from "@/types/supabase.ts";
 
 export type TeacherRequestDTO = Database["public"]["Tables"]["teacher_requests"]["Row"];
 
@@ -9,5 +9,3 @@ export type TeacherRequest = {
     username: string,
     role: string
 }
-
-

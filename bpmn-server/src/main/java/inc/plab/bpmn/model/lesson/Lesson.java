@@ -1,7 +1,7 @@
 package inc.plab.bpmn.model.lesson;
 
 import inc.plab.bpmn.model.question.Question;
-import inc.plab.bpmn.model.user.*;
+import inc.plab.bpmn.model.user.Profile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -63,17 +63,4 @@ public class Lesson {
 
     @OneToMany(mappedBy = "lessonUuid")
     private Set<Question> questions = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserAnswer> userAnswers = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserFinishedLesson> userFinishedLessons = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserHint> userHints = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "lesson")
-    private Set<UserLessonProgress> userLessonProgresses = new LinkedHashSet<>();
-
 }
