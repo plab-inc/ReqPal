@@ -23,18 +23,20 @@
         <v-col cols="12">
           <v-text-field
             clearable
+            density="compact"
             v-model="scenarioModelerStore.title"
             :rules="[requiredStringRule, requiredUniqueScenarioTitleRule]"
             label="Titel des Szenarios"
             variant="outlined"
           ></v-text-field>
-          <v-text-field
-            clearable
+          <v-textarea
+            density="compact"
+            rows="2"
             v-model="scenarioModelerStore.description"
             label="Beschreibung des Szenarios"
             :rules="[requiredStringRule]"
             variant="outlined"
-          ></v-text-field>
+          ></v-textarea>
         </v-col>
       </v-row>
       <v-row no-gutters>

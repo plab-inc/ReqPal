@@ -39,8 +39,8 @@ const routes = [
                 component: () => import("@/views/home/Home.vue")
             },
             {
-                path: "/lessons",
-                name: "Lessons",
+                path: "/lesson",
+                name: "Lesson",
                 component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
@@ -50,7 +50,7 @@ const routes = [
                 }
             },
             {
-                path: "/builder",
+                path: "/lesson/builder",
                 name: "LessonBuilder",
                 component: () => import("@/views/lesson/LessonBuilder.vue"),
                 meta: {

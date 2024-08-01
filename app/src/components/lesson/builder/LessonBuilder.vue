@@ -1,88 +1,28 @@
-<script setup lang="ts">
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import {requiredStringRule, requiredUniqueLessonTitleRule} from "@/utils/validationRules.ts";
-import ModulePreview from "@/components/lesson/builder/dragAndDrop/ModulePreviewContainer.vue";
-import LessonService from "@/services/database/lesson.ts";
-import router from "@/router";
-import {useUtilStore} from "@/stores/util.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import SortableModule from "@/components/lesson/builder/dragAndDrop/SortableModuleContainer.vue";
-import ModuleTarget from "@/components/lesson/builder/dragAndDrop/ModuleTarget.vue"
-import {ref} from "vue";
-import {useObjectiveStore} from "@/stores/objective.ts";
-
-const props = defineProps<{
-  showToolTip: boolean
-}>();
-
-const templates = ['Requirement', 'TrueOrFalse', 'MultipleChoice', 'Textfield', 'Note', 'Slider', 'Divider']
-
-const lessonFormStore = useLessonFormStore();
-const lessonStore = useLessonStore();
-const utilStore = useUtilStore();
-const objectiveStore = useObjectiveStore();
-
-const MAX_LESSONS: number = 20;
-const MAX_QUESTIONS: number = 20;
-
-const form = ref<any>(null);
-const formIsValid = ref(false);
-const components = lessonFormStore.getLessonModules;
-const lessons = lessonStore.getLessons;
-
-async function validate() {
-  await form.value.validate();
-}
-
-async function uploadLesson() {
-  await validate();
-
-  if (!formIsValid.value) {
-    return;
-  }
-
-  if (components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS) {
-
-    let lesson = lessonFormStore.generateLesson();
-    await LessonService.push.uploadLesson(lesson)
-        .catch(() => {
-          utilStore.addAlert('Fehler beim Speichern der Lektion', 'error');
-        }).then(async () => {
-          utilStore.addAlert('Lektion erfolgreich gespeichert', 'success');
-          await router.push({path: '/lessons'});
-          lessonFormStore.flushStore();
-        });
-
-    return;
-  }
-  throw new Error('Die Lektion konnte nicht erstellt werden');
-}
-
-</script>
-
 <template>
-  <v-container>
-    <v-form @submit.prevent ref="form" v-model="formIsValid">
+  <v-form @submit.prevent ref="formRef">
       <v-row no-gutters>
         <v-col>
           <v-text-field
               clearable
+              density="compact"
               :rules="[requiredStringRule, requiredUniqueLessonTitleRule]"
               label="Titel der Lektion"
               variant="outlined"
               v-model="lessonFormStore.lessonTitle"
           ></v-text-field>
         </v-col>
-        <v-col>
-          <v-text-field
-              clearable
+        <v-col cols="8">
+          <v-textarea
+            class="mr-5"
+            rows="2"
+            density="compact"
               label="Beschreibung der Lektion"
               :rules="[requiredStringRule]"
               variant="outlined"
               v-model="lessonFormStore.lessonDescription"
-          ></v-text-field>
+          ></v-textarea>
         </v-col>
-        <v-col>
+        <v-col cols="4">
           <v-select
               v-model="lessonFormStore.objectiveIds"
               clearable
@@ -90,7 +30,7 @@ async function uploadLesson() {
               chips
               :items="objectiveStore.getCurrentObjectives"
               density="comfortable"
-              label="Lernziel"
+              label="Lernziele"
               item-title="name"
               item-value="id"
               variant="outlined"
@@ -103,7 +43,7 @@ async function uploadLesson() {
       <v-row no-gutters>
         <v-col cols="10">
           <ModuleTarget>
-            <v-row v-for="componentEntry in components">
+            <v-row v-for="componentEntry in lessonFormStore.getLessonModules">
               <v-col cols="12">
                 <SortableModule :id="componentEntry.uuid" :componentName="componentEntry.type"/>
               </v-col>
@@ -113,64 +53,40 @@ async function uploadLesson() {
         <v-col cols="2">
           <v-card variant="flat" class="position-sticky sticky-top">
             <v-card
-                class="ml-5"
+              class="ml-3"
                 variant="outlined"
                 color="primary"
             >
-              <v-col v-for="template in templates" :key="template">
-                <ModulePreview :title="template" :show-tool-tip="props.showToolTip" :key="template"/>
+              <v-col v-for="template in templates" :key="template" class="py-2">
+                <ModulePreview :title="template" :key="template" />
               </v-col>
-            </v-card>
-            <v-spacer class="my-1"/>
-            <v-card
-                class="ml-5 pa-1"
-                variant="outlined"
-                color="primary"
-            >
-              <v-btn
-                  block
-                  :variant="(formIsValid && components.length > 0) ? 'elevated' : 'outlined'"
-                  color="success"
-                  :disabled="!(formIsValid && components.length > 0 && components.length < MAX_QUESTIONS && lessons.length < MAX_LESSONS)"
-                  @click="uploadLesson()"
-              >
-                Lektion Speichern
-              </v-btn>
-              <v-spacer class="mt-2"/>
-              <v-btn
-                  block
-                  :disabled="formIsValid"
-                  variant="outlined"
-                  color="info"
-                  @click="validate()"
-              >
-                Lektion Validieren
-              </v-btn>
-              <v-spacer class="mt-2"/>
-              <v-btn
-                  block
-                  variant="outlined"
-                  color="warning"
-                  @click="lessonFormStore.flushStore()"
-              >
-                Lektion zurücksetzen
-              </v-btn>
-              <v-spacer class="mt-2"/>
-              <v-btn
-                  block
-                  variant="outlined"
-                  color="warning"
-                  @click="lessonFormStore.clearLessonModules()"
-              >
-                Bausteine zurücksetzen
-              </v-btn>
             </v-card>
           </v-card>
         </v-col>
       </v-row>
     </v-form>
-  </v-container>
 </template>
+<script setup lang="ts">
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import { requiredStringRule, requiredUniqueLessonTitleRule } from "@/utils/validationRules.ts";
+import ModulePreview from "@/components/lesson/builder/dragAndDrop/ModulePreviewContainer.vue";
+import SortableModule from "@/components/lesson/builder/dragAndDrop/SortableModuleContainer.vue";
+import ModuleTarget from "@/components/lesson/builder/dragAndDrop/ModuleTarget.vue";
+import { onMounted, ref } from "vue";
+import { useObjectiveStore } from "@/stores/objective.ts";
+import { VForm } from "vuetify/components";
+
+const templates = ["Requirement", "TrueOrFalse", "MultipleChoice", "Textfield", "Note", "Slider", "Divider"];
+
+const lessonFormStore = useLessonFormStore();
+const formRef = ref<VForm | null>(null);
+const objectiveStore = useObjectiveStore();
+
+onMounted(() => {
+  lessonFormStore.form = formRef.value;
+});
+
+</script>
 <style>
 .sticky-top {
   position: sticky;

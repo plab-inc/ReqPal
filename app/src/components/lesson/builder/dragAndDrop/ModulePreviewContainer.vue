@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 
-import {useDrag} from 'vue3-dnd'
-import {DragItem} from '@/types/dragItem.ts'
-import {toRefs} from '@vueuse/core'
-import {vElementHover} from "@vueuse/components";
+import { useDrag } from "vue3-dnd";
+import { DragItem } from "@/types/dragItem.ts";
+import { toRefs } from "@vueuse/core";
+import { vElementHover } from "@vueuse/components";
 import { computed, ref } from "vue";
 
 const props = defineProps<{
   title: string,
-  showToolTip: boolean
 }>();
 
 const [collect, drag] = useDrag(() => ({
@@ -56,17 +55,14 @@ function onHover(state: boolean) {
       :style="{ opacity: isDragging ? 0.3 : 1 }"
   >
     <v-card
+      max-height="45"
         v-element-hover="onHover"
         :variant="isHovered ? 'outlined' : 'elevated'"
         border
         ripple
         density="compact"
         :title="translatedTitle"
-    >
-      <v-tooltip v-if="showToolTip" location="bottom" activator="parent">
-        {{ translatedTooltip }}
-      </v-tooltip>
-    </v-card>
+    />
   </div>
 </template>
 

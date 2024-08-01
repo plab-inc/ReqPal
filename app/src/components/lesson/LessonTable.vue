@@ -101,16 +101,16 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import {useUtilStore} from "@/stores/util.ts";
-import {DeleteLesson} from "@/utils/dialogs.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {Lesson} from "@/types/lesson.ts";
+import { computed, ref } from "vue";
+import { useUtilStore } from "@/stores/util.ts";
+import { DeleteLesson } from "@/utils/dialogs.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { Lesson } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import router from "@/router";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import {v4 as uuidv4} from "uuid";
-import {useAuthStore} from "@/stores/auth.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import { v4 as uuidv4 } from "uuid";
+import { useAuthStore } from "@/stores/auth.ts";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
@@ -149,7 +149,7 @@ async function editLesson(item: Lesson) {
   await lessonService.pull.getLesson(item.lessonDTO.uuid).then((lesson) => {
     if (lesson) {
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }
@@ -162,7 +162,7 @@ async function copyLesson(item: Lesson) {
         question.uuid = uuidv4();
       })
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }

@@ -2,7 +2,7 @@
   <v-theme-provider theme="light" with-background>
     <v-row no-gutters>
       <v-col cols="9">
-        <div id="bpmn-container" ref="bpmnContainer" style="height: 67vh;">
+        <div id="bpmn-container" ref="bpmnContainer" style="height: 65vh;">
           <v-tooltip text="BPMN Datei Hochladen" location="top left">
             <template v-slot:activator="{ props }">
               <v-btn
