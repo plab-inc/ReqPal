@@ -1,6 +1,7 @@
 import {Achievement} from "@/types/achievement.ts";
 import {Objective} from "@/types/objective.ts";
 import {Database, Json} from "@/types/supabase.ts";
+import {LessonQuestions, Question} from "@/types/lesson.ts";
 
 export type ScenarioUserStatisticDTO = Database["public"]["Tables"]["scenario_user_statistics"]["Row"];
 
@@ -34,6 +35,18 @@ export type ScenarioUserStatistic = {
 export type ObjectiveStatistic = {
     objective: Objective,
     xp: number
+}
+
+export type LessonQuestionResult = {
+    totalLessonScore: number,
+    lessonQuestion: LessonQuestions,
+    questionResults: QuestionResult[]
+}
+
+export type QuestionResult = {
+    questionData: Question,
+    resultData: TrueOrFalseResult | SliderResult | MultipleChoiceResult | RequirementResult,
+    type: string
 }
 
 export type LessonResult = {

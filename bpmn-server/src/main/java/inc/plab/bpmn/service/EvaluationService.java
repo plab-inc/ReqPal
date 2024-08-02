@@ -71,7 +71,7 @@ public class EvaluationService {
         sliderResult.setInput(sliderOptions.getInput());
 
         int min = Math.max(solution.getCorrectValue() - solution.getToleranceValue(), 0);
-        int max = Math.min(solution.getCorrectValue() + solution.getToleranceValue(), solution.getCorrectValue());
+        int max = Math.min(solution.getCorrectValue() + solution.getToleranceValue(), sliderOptions.getMaxValue());
 
         if (sliderOptions.getInput() >= min && sliderOptions.getInput() <= max) {
             sliderResult.setCorrect(true);
@@ -124,7 +124,7 @@ public class EvaluationService {
                 productResult.setInput(product.getInput());
 
                 int min = Math.max(productRequirement.getQualification() - solution.getToleranceValue(), 0);
-                int max = Math.min(productRequirement.getQualification() + solution.getToleranceValue(), productRequirement.getQualification());
+                int max = Math.min(productRequirement.getQualification() + solution.getToleranceValue(), 5);
 
                 if (product.getInput() >= min && product.getInput() <= max) {
                     productResult.setCorrect(true);

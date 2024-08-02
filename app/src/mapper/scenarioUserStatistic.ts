@@ -1,25 +1,20 @@
 import {
+    LessonQuestionResult,
     LessonResult,
-    MultipleChoiceResult,
     ObjectiveStatistic,
-    ObjectiveStatisticData,
-    RequirementResult,
+    ObjectiveStatisticData, QuestionResult,
     ScenarioUserStatistic,
     ScenarioUserStatisticData,
-    SliderResult,
-    TrueOrFalseResult
 } from "@/types/scenarioUserStatistic.ts";
 import {Achievement} from "@/types/achievement.ts";
 import {Objective} from "@/types/objective.ts";
-import {Json} from "@/types/supabase.ts";
-import lesson from "@/services/database/lesson.ts";
-
+import {LessonQuestions, Question} from "@/types/lesson.ts";
 
 export const mapToScenarioUserStatisticData = (inputScenarioStatistic: any): ScenarioUserStatisticData => {
 
     let achievementsData: string[] = [];
     let objectivesData: ObjectiveStatisticData[] = []
-    
+
     if (inputScenarioStatistic.achievements && inputScenarioStatistic.achievements.gainedAchievements) {
         inputScenarioStatistic.achievements.gainedAchievements.forEach((a: string) => {
             achievementsData.push(a);
@@ -69,61 +64,40 @@ export const mapToScenarioUserStatistic = (inputScenarioStatistic: ScenarioUserS
     };
 };
 
-// TODO maybe not needed
-const mapLessonResultsToQuestionResults = (inputLessonResult: Json): LessonResult[] => {
-    if (!inputLessonResult) return [];
+const allowedQuestionTypes = ['TrueOrFalse', 'Requirement', 'MultipleChoice', 'Slider'];
 
-    return (inputLessonResult as any[]).map((resultGroup: any) => {
-        const results: (TrueOrFalseResult | SliderResult | MultipleChoiceResult | RequirementResult)[] = resultGroup.results.map((result: any) => {
-            switch (result.type) {
-                case 'TrueOrFalse':
-                    return {
-                        type: 'TrueOrFalse',
-                        input: result.input,
-                        score: result.score,
-                        correct: result.correct,
-                        questionId: result.questionId
-                    } as TrueOrFalseResult;
-                case 'Slider':
-                    return {
-                        type: 'Slider',
-                        input: result.input,
-                        score: result.score,
-                        correct: result.correct,
-                        questionId: result.questionId
-                    } as SliderResult;
-                case 'MultipleChoice':
-                    return {
-                        type: 'MultipleChoice',
-                        score: result.score,
-                        results: result.results.map((choice: any) => ({
-                            id: choice.id,
-                            input: choice.input,
-                            correct: choice.correct
-                        })),
-                        questionId: result.questionId
-                    } as MultipleChoiceResult;
-                case 'Requirement':
-                    return {
-                        type: 'Requirement',
-                        score: result.score,
-                        questionId: result.questionId,
-                        requirementId: result.requirementId,
-                        productResults: result.productResults.map((product: any) => ({
-                            id: product.id,
-                            input: product.input,
-                            correct: product.correct
-                        }))
-                    } as RequirementResult;
-                default:
-                    return null;
-            }
-        }).filter((r: any): r is TrueOrFalseResult | SliderResult | MultipleChoiceResult | RequirementResult => r !== null);
+const filterQuestionsByType = (questions: Question[]): Question[] => {
+    return questions.filter(question => allowedQuestionTypes.includes(question.question_type));
+}
 
-        return {
-            results,
-            lessonId: resultGroup.lessonId,
-            totalScore: resultGroup.totalScore
-        } as LessonResult;
+export const mapStatisticToQuestionWithResult = (inputStatistic: ScenarioUserStatistic, inputLessons: LessonQuestions[]): LessonQuestionResult[] => {
+    let result: LessonQuestionResult[] = [];
+
+    inputStatistic.lessonResults?.forEach(lessonResult => {
+        const lessonQuestion = inputLessons.find(lesson => lesson.lesson.lessonDTO.uuid === lessonResult.lessonId);
+        if (lessonQuestion) {
+            let mappedQuestionsAndResults: QuestionResult[] = [];
+
+            const filteredQuestions = filterQuestionsByType(lessonQuestion.questions);
+
+            filteredQuestions.forEach(question => {
+                const resultForQuestion = lessonResult.results.find(result => question.uuid === result.questionId);
+                if (resultForQuestion) {
+                    mappedQuestionsAndResults.push(<QuestionResult>{
+                        questionData: question,
+                        resultData: resultForQuestion,
+                        type: resultForQuestion.type ? resultForQuestion.type : ""
+                    });
+                }
+            });
+
+            result.push({
+                lessonQuestion: lessonQuestion,
+                questionResults: mappedQuestionsAndResults,
+                totalLessonScore: lessonResult.totalScore
+            });
+        }
     });
-};
+
+    return result;
+}

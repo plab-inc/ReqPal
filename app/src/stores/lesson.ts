@@ -1,12 +1,12 @@
-import { defineStore } from "pinia";
-import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
+import {defineStore} from "pinia";
+import {Lesson, LessonAnswer, LessonDTO, Question} from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import { DatabaseError } from "@/errors/custom.ts";
-import { useAuthStore } from "@/stores/auth.ts";
+import {DatabaseError} from "@/errors/custom.ts";
+import {useAuthStore} from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
-import { VForm } from "vuetify/components";
-import { toRaw } from "vue";
+import {VForm} from "vuetify/components";
+import {toRaw} from "vue";
 
 interface LessonState {
     examples: Lesson[],
@@ -98,6 +98,13 @@ export const useLessonStore = defineStore('lesson', {
                 this.currentQuestions = lessonWithQuestions.questions;
                 this.currentLesson = lessonWithQuestions.lesson;
                 this.setUpLessonModules();
+            }
+        },
+
+        async fetchQuestionsWithLessons(lessonUUIDs: string[]) {
+            const lessonWithQuestions = await lessonService.pull.fetchQuestionsWithLessons(lessonUUIDs);
+            if (lessonWithQuestions) {
+                return lessonWithQuestions;
             }
         },
 
