@@ -19,33 +19,6 @@
       </v-col>
     </v-row>
     <v-divider opacity="1" class="my-2"/>
-    <v-row v-if="scenarioStatistic">
-      <v-col>
-        <div class="d-flex align-center flex-wrap mt-2">
-          <div class="text-h6 mr-5">
-            Erhaltene Achievements:
-          </div>
-          <v-chip v-for="achievement in scenarioStatistic.achievements" class="mb-1 mr-1" color="success">
-            <v-icon class="mr-2">
-              <v-img :src="getAchievementImageUrl(achievement.image)"
-                     :alt="'ReqPal-Achievement Level Image: '+achievement.image"></v-img>
-            </v-icon>
-            {{ achievement.title }}
-          </v-chip>
-        </div>
-      </v-col>
-      <v-col>
-        <div class="d-flex align-center flex-wrap mt-2">
-          <div class="text-h6 mr-5">
-            Erhaltene XP für Lernziele:
-          </div>
-          <v-chip v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics" class="mb-1 mr-1" color="info">
-            {{ objectiveStatistic.objective.name }}: {{ objectiveStatistic.xp }} XP
-          </v-chip>
-        </div>
-      </v-col>
-    </v-row>
-    <v-divider opacity="1" class="my-2"/>
     <v-row>
       <v-col>
         <div v-if="scenarioStatistic && scenarioResults && scenarioResults.length > 0">
@@ -83,6 +56,37 @@
         </div>
       </v-col>
     </v-row>
+    <v-divider opacity="1" class="my-2"/>
+    <v-row class="mt-5">
+      <v-col>
+        <div class="text-h5 text-md-h4">
+          Belohnungen
+        </div>
+      </v-col>
+    </v-row>
+    <v-row v-if="scenarioStatistic">
+      <v-col v-if="scenarioStatistic.achievements.length > 0">
+        <div class="text-h6 mr-5 mb-2">
+          Erhaltene Achievements:
+        </div>
+        <v-row>
+          <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements">
+            <AchievementItem :achievement="achievement">
+            </AchievementItem>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col v-if="scenarioStatistic.objectiveStatistics.length > 0">
+        <div class="text-h6 mr-5 mb-2">
+          Erhaltene XP für Lernziele:
+        </div>
+        <v-row>
+          <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics">
+            <ObjectiveItem :objective-statistic="objectiveStatistic"></ObjectiveItem>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </div>
   <div v-else>
     <div class="text-h3">
@@ -99,7 +103,8 @@ import TrueOrFalseResult from "@/components/scenario/Results/TrueOrFalseResult.v
 import RequirementResult from "@/components/scenario/Results/RequirementResult.vue";
 import MultipleChoiceResult from "@/components/scenario/Results/MultipleChoiceResult.vue";
 import SliderResult from "@/components/scenario/Results/SliderResult.vue";
-import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
+import AchievementItem from "@/components/achievement/AchievementItem.vue";
+import ObjectiveItem from "@/components/objectives/ObjectiveItem.vue";
 
 const stepperStore = useStepperStore();
 const scenarioStatisticStore = useScenarioStatisticStore();

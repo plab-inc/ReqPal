@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import {ObjectiveLevel} from "@/types/level.js";
+import {ObjectiveLevel} from "@/types/level.ts";
 
 const props = defineProps<{ objectiveLevel: ObjectiveLevel }>();
 

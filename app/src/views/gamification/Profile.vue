@@ -93,7 +93,7 @@ import {User} from "@supabase/supabase-js";
 import {useProfileStore} from "@/stores/profile.ts";
 import {ref} from "vue";
 import ReqPalLevel from "@/components/gamification/ReqPalLevel.vue"
-import ObjectiveLevelComponent from "@/components/gamification/ObjectiveLevel.vue";
+import ObjectiveLevelComponent from "@/components/objectives/ObjectiveLevel.vue";
 import {useLevelStore} from "@/stores/level.js";
 import {ObjectiveLevel} from "@/types/level.js";
 
