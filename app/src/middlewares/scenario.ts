@@ -14,7 +14,7 @@ export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLoc
 
         await scenarioStore.fetchScenarios();
         await scenarioProgressStore.fetchScenarioProgresses(scenarioStore.scenarios);
-        if (authStore.isStudent) await scenarioStatisticStore.fetchScenarioStatistic(scenarioStore.scenarios);
+        if (authStore.isStudent) await scenarioStatisticStore.fetchScenarioStatistics(scenarioStore.scenarios);
         return next();
 
     } catch (error) {
@@ -29,7 +29,11 @@ export async function fetchCurrentScenarioResults(to: RouteLocationNormalized, f
         const authStore = useAuthStore();
 
         if (stepperStore.scenario && authStore.isStudent) {
-            await scenarioStatisticStore.fetchQuestionsForCurrentLessonResultsForScenario(stepperStore.scenario.id);
+            const statistic = scenarioStatisticStore.getStatisticByScenario(stepperStore.scenario.id);
+            if (statistic) {
+                scenarioStatisticStore.currentScenarioStatistic = statistic;
+                await scenarioStatisticStore.fetchCurrentLessonResultsForCurrentScenario();
+            }
         }
 
         return next();

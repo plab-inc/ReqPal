@@ -6,6 +6,7 @@ import { useUtilStore } from "@/stores/util";
 import { BpmnProcessError } from "@/errors/custom.ts";
 import router from "@/router/index.ts";
 import { LessonAnswer } from "@/types/lesson.ts";
+import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
 
 export interface Step {
   title: string;
@@ -126,7 +127,7 @@ export const useStepperStore = defineStore("stepper", {
             await this.loadInLesson();
             this.addLessonStep();
           } else {
-            this.completeScenario();
+            await this.completeScenario();
           }
         } catch (error) {
           await router.push({ path: "/error" });
@@ -163,7 +164,12 @@ export const useStepperStore = defineStore("stepper", {
         lessonId: this.currentLessonId
       });
     },
-    completeScenario() {
+    async completeScenario() {
+      const scenarioStatisticStore = useScenarioStatisticStore();
+      if (this.scenario) {
+        await scenarioStatisticStore.fetchCurrentScenarioStatistic(this.scenario);
+        await scenarioStatisticStore.fetchCurrentLessonResultsForCurrentScenario();
+      }
       this.isCompleted = true;
       this.removePlaceholderStep();
       this.currentStep = this.allSteps.length - 1;

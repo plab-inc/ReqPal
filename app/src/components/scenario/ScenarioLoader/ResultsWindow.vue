@@ -8,14 +8,41 @@
               Ergebnisse Szenario: {{ stepperStore.scenario?.title }}
             </div>
           </v-col>
-          <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
+          <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center" v-if="scenarioStatistic">
             <div class="text-h5 text-md-h4">
-              {{ scenarioStatistic?.score }} / {{ totalScenarioScore }}
+              {{ scenarioStatistic.score }} / {{ totalScenarioScore }}
               <v-icon class="mb-1" size="35" color="warning"
                       :icon="'mdi-star-four-points-circle-outline'"></v-icon>
             </div>
           </v-col>
         </v-row>
+      </v-col>
+    </v-row>
+    <v-divider opacity="1" class="my-2"/>
+    <v-row v-if="scenarioStatistic">
+      <v-col>
+        <div class="d-flex align-center flex-wrap mt-2">
+          <div class="text-h6 mr-5">
+            Erhaltene Achievements:
+          </div>
+          <v-chip v-for="achievement in scenarioStatistic.achievements" class="mb-1 mr-1" color="success">
+            <v-icon class="mr-2">
+              <v-img :src="getAchievementImageUrl(achievement.image)"
+                     :alt="'ReqPal-Achievement Level Image: '+achievement.image"></v-img>
+            </v-icon>
+            {{ achievement.title }}
+          </v-chip>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="d-flex align-center flex-wrap mt-2">
+          <div class="text-h6 mr-5">
+            Erhaltene XP für Lernziele:
+          </div>
+          <v-chip v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics" class="mb-1 mr-1" color="info">
+            {{ objectiveStatistic.objective.name }}: {{ objectiveStatistic.xp }} XP
+          </v-chip>
+        </div>
       </v-col>
     </v-row>
     <v-divider opacity="1" class="my-2"/>
@@ -72,12 +99,13 @@ import TrueOrFalseResult from "@/components/scenario/Results/TrueOrFalseResult.v
 import RequirementResult from "@/components/scenario/Results/RequirementResult.vue";
 import MultipleChoiceResult from "@/components/scenario/Results/MultipleChoiceResult.vue";
 import SliderResult from "@/components/scenario/Results/SliderResult.vue";
+import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
 
 const stepperStore = useStepperStore();
 const scenarioStatisticStore = useScenarioStatisticStore();
 let totalScenarioScore = 0;
 
-let scenarioStatistic: ScenarioUserStatistic | undefined;
+let scenarioStatistic: ScenarioUserStatistic | null;
 let scenarioResults: LessonQuestionResult[];
 
 
@@ -97,9 +125,8 @@ const getLessonModuleInstance = (lessonModuleName: string): ComponentInstance<an
 };
 
 onBeforeMount(() => {
-  //TODO Reload?
   if (stepperStore.scenario) {
-    scenarioStatistic = scenarioStatisticStore.getStatisticByScenario(stepperStore.scenario.id);
+    scenarioStatistic = scenarioStatisticStore.currentScenarioStatistic;
     scenarioResults = scenarioStatisticStore.currentScenarioResults;
     scenarioResults.forEach(res => {
       if (res.lessonQuestion.lesson.lessonDTO.points)

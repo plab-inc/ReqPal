@@ -14,7 +14,8 @@ class ScenarioServiceClass {
         fetchScenario: this.fetchScenarioById.bind(this),
         fetchScenarioProgressByScenario: this.fetchScenarioProgressByScenario.bind(this),
         fetchScenarioProgresses: this.fetchScenarioProgresses.bind(this),
-        fetchScenarioUserStatistics: this.fetchScenarioUserStatistics.bind(this)
+        fetchScenarioUserStatistics: this.fetchScenarioUserStatistics.bind(this),
+        fetchScenarioUserStatistic: this.fetchScenarioUserStatistic.bind(this)
     };
 
     public push = {
@@ -167,6 +168,24 @@ class ScenarioServiceClass {
                 results.push(mapToScenarioUserStatisticData(d));
             })
             return results;
+        }
+    }
+
+    private async fetchScenarioUserStatistic(scenario: Scenario, userId: string): Promise<ScenarioUserStatisticData | undefined> {
+
+        const {data, error} = await supabase
+            .from('scenario_user_statistics')
+            .select('*, scenario_user_progress!inner(scenario_id, user_id)')
+            .eq('scenario_user_progress.scenario_id', scenario.id)
+            .eq('scenario_user_progress.user_id', userId)
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        if (data) {
+            return mapToScenarioUserStatisticData(data);
         }
     }
 }

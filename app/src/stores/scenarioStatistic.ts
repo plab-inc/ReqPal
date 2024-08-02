@@ -13,12 +13,14 @@ import {LessonQuestions} from "@/types/lesson.ts";
 
 interface ThemeState {
     scenarioStatistics: ScenarioUserStatistic[];
+    currentScenarioStatistic: ScenarioUserStatistic | null;
     currentScenarioResults: LessonQuestionResult[];
 }
 
 export const useScenarioStatisticStore = defineStore("scenario_statistic", {
     state: (): ThemeState => ({
         scenarioStatistics: [],
+        currentScenarioStatistic: null,
         currentScenarioResults: []
     }),
     getters: {
@@ -27,7 +29,7 @@ export const useScenarioStatisticStore = defineStore("scenario_statistic", {
         }
     },
     actions: {
-        async fetchScenarioStatistic(scenarios: Scenario[]) {
+        async fetchScenarioStatistics(scenarios: Scenario[]) {
             this.scenarioStatistics = [];
             const authStore = useAuthStore();
             const achievementStore = useAchievementStore();
@@ -72,26 +74,66 @@ export const useScenarioStatisticStore = defineStore("scenario_statistic", {
             }
         },
 
-        async fetchQuestionsForCurrentLessonResultsForScenario(scenarioId: string) {
-            if (this.scenarioStatistics.length < 0) {
-                return;
-            }
+        async fetchCurrentScenarioStatistic(scenario: Scenario) {
+            this.currentScenarioStatistic = null;
 
-            const statisticByScenario = this.getStatisticByScenario(scenarioId);
+            const authStore = useAuthStore();
+            const achievementStore = useAchievementStore();
+            const objectiveStore = useObjectiveStore();
 
-            if (statisticByScenario) {
-                const lessonStore = useLessonStore();
-                const lessonIds: string[] = [];
+            if (authStore.user) {
+                const scenarioStatisticData = await ScenarioService.pull.fetchScenarioUserStatistic(scenario, authStore.user.id);
 
-                statisticByScenario.lessonResults?.forEach(res => lessonIds.push(res.lessonId));
+                if (scenarioStatisticData) {
+                    const achievementIds: string[] = [];
+                    const objectiveIds: string[] = [];
 
-                const lessons: LessonQuestions[] | undefined = await lessonStore.fetchQuestionsWithLessons(lessonIds);
-                this.currentScenarioResults = [];
+                    scenarioStatisticData.achievements?.forEach(achievementId => achievementIds.push(achievementId));
+                    scenarioStatisticData.objectives?.forEach(o => objectiveIds.push(o.objectiveId));
 
-                if (lessons) {
-                    this.currentScenarioResults = mapStatisticToQuestionWithResult(statisticByScenario, lessons);
+                    let achievements = await achievementStore.fetchAchievementsByIds(achievementIds);
+                    let objectives = await objectiveStore.fetchObjectivesByIds(objectiveIds);
+
+                    if (!achievements) achievements = [];
+                    if (!objectives) objectives = [];
+
+                    const userAchievements = scenarioStatisticData.achievements
+                        ? scenarioStatisticData.achievements
+                            .map(id => achievements.find(a => a.id === id))
+                            .filter((a): a is Achievement => a !== undefined)
+                        : [];
+
+                    const userObjectives = scenarioStatisticData.objectives
+                        ? scenarioStatisticData.objectives
+                            .map(o => objectives.find(obj => obj.id === o.objectiveId))
+                            .filter((o): o is Objective => o !== undefined)
+                        : [];
+
+                    this.currentScenarioStatistic = mapToScenarioUserStatistic(scenarioStatisticData, userAchievements, userObjectives);
+                    console.log("fetched stats")
+                    console.log(this.currentScenarioStatistic)
                 }
             }
         },
+
+        async fetchCurrentLessonResultsForCurrentScenario() {
+            if (!this.currentScenarioStatistic) {
+                return;
+            }
+
+            const lessonStore = useLessonStore();
+            const lessonIds: string[] = [];
+
+            this.currentScenarioStatistic.lessonResults?.forEach(res => lessonIds.push(res.lessonId));
+
+            const lessons: LessonQuestions[] | undefined = await lessonStore.fetchQuestionsWithLessons(lessonIds);
+            this.currentScenarioResults = [];
+
+            if (lessons) {
+                this.currentScenarioResults = mapStatisticToQuestionWithResult(this.currentScenarioStatistic, lessons);
+            }
+            console.log("fetched lesres")
+            console.log(this.currentScenarioResults)
+        }
     }
 });
