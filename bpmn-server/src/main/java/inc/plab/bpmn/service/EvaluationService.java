@@ -203,6 +203,8 @@ public class EvaluationService {
     private TrueOrFalseResult getTrueOrFalseResult(TrueOrFalseOptions trueOrFalseOptions, TrueOrFalseSolution solution, Question question) {
         TrueOrFalseResult result = new TrueOrFalseResult(question.getId().toString(), question.getQuestionType(), 0);
         result.setCorrect(false);
+        result.setInput(trueOrFalseOptions.isInput());
+
         if (solution.isValue() == trueOrFalseOptions.isInput()) {
             result.setCorrect(true);
             result.setScore(question.getPoints());
