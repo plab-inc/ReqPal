@@ -96,7 +96,7 @@ class AuthServiceClass {
 
     private async resetPassword(email: string) {
         const {error} = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://www.lethalgoose.com/account',
+            redirectTo: 'https://www.lethalgoose.com/profile/settings',
         });
         if (error) throw error;
     }

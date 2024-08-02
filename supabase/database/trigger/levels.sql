@@ -36,9 +36,9 @@ DECLARE
     current_level        INTEGER;
     user_exists          BOOLEAN;
 BEGIN
-    IF TG_OP = 'INSERT' OR NEW.total_xp IS DISTINCT FROM OLD.total_xp THEN
+    IF TG_OP = 'INSERT' OR NEW.total_reqpal_xp IS DISTINCT FROM OLD.total_reqpal_xp THEN
 
-        new_xp := NEW.total_xp - COALESCE(OLD.total_xp, 0);
+        new_xp := NEW.total_reqpal_xp - COALESCE(OLD.total_reqpal_xp, 0);
 
         IF (new_xp > 0) THEN
 
@@ -92,7 +92,7 @@ CREATE TRIGGER handle_user_statistics_insert_trigger
 EXECUTE FUNCTION update_reqpal_level();
 
 CREATE TRIGGER handle_user_statistics_update_trigger
-    AFTER UPDATE OF total_xp
+    AFTER UPDATE OF total_reqpal_xp
     ON user_statistics
     FOR EACH ROW
 EXECUTE FUNCTION update_reqpal_level();

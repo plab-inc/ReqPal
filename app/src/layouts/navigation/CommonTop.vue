@@ -6,7 +6,7 @@
                  :active="false"
                  :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
                  :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
-                 :to="authStore.isStudent ? '/profile' : '/account'"
+                 :to="authStore.isStudent ? '/profile' : '/profile/settings'"
                  elevation="3"
                  variant="outlined"
                  rounded
