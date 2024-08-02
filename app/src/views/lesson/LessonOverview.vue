@@ -4,7 +4,7 @@
       Meine Lektionen ({{
         filters.includes('showOnlyOwn') ?
             filteredLessons.length : lessons.length
-      }}/{{ MAX_LESSONS }})
+      }}/{{ lessonFormStore.MAX_LESSONS }})
     </v-col>
     <v-col cols="auto">
       <v-btn-group
@@ -13,46 +13,18 @@
           rounded
           divided
       >
-        <v-tooltip location="bottom" text="Neue Lektion im Builder erstellen">
-          <template v-slot:activator="{ props }">
-            <v-btn
-                v-bind="props"
-                color="primary"
-                @click="router.push({path: '/builder'})"
-                :disabled="lessons.length >= MAX_LESSONS"
-            >
-              Neue Lektion erstellen
-            </v-btn>
-          </template>
-        </v-tooltip>
-        <v-btn-toggle
-            elevation="3"
-            v-model="filters"
-            variant="outlined"
-            rounded
-            multiple
-            divided
-            color="warning"
-            group
+        <v-btn
+          @click="router.push({path: '/builder'})"
+          :disabled="lessons.length >= lessonFormStore.MAX_LESSONS"
         >
-          <v-btn
-              value="showExample"
-          >
-            Beispiel verbergen
-          </v-btn>
-          <v-btn
-              v-if="authStore.isModerator"
-              value="showOnlyOwn"
-          >
-            Nur Eigene Lektionen
-          </v-btn>
-        </v-btn-toggle>
+          Neue Lektion erstellen
+        </v-btn>
       </v-btn-group>
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider />
   <v-row no-gutters>
-    <v-col v-if="!filters.includes('showExample')">
+    <v-col>
       <v-list>
         <v-list-item
             v-for="lesson in examples"
@@ -62,10 +34,9 @@
             variant="outlined"
             rounded
             base-color="info"
-            min-height="80px"
             ripple
             elevation="7"
-            class="ma-5"
+            class="ma-2"
             subtitle="Beispiellektion"
         >
           <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
@@ -98,9 +69,8 @@
           </template>
         </v-list-item>
       </v-list>
-      <v-divider/>
+      <v-divider opacity="0.5" />
     </v-col>
-
     <v-col cols="12">
       <LessonTable :filters="filters"></LessonTable>
     </v-col>
@@ -109,21 +79,20 @@
 
 <script setup lang="ts">
 
-import {useLessonStore} from "@/stores/lesson.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
 import router from "@/router";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
 import lessonService from "@/services/database/lesson.ts";
-import {Lesson} from "@/types/lesson.ts";
-import {v4 as uuidv4} from "uuid";
-import {computed, ref} from "vue";
+import { Lesson } from "@/types/lesson.ts";
+import { v4 as uuidv4 } from "uuid";
+import { computed, ref } from "vue";
 import LessonTable from "@/components/lesson/LessonTable.vue";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
 const filters = ref<string[]>([]);
-const MAX_LESSONS = 20;
 const examples: Lesson[] = lessonStore.getExampleLessons;
 const lessons: Lesson[] = lessonStore.getLessons;
 
@@ -137,7 +106,7 @@ async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
     if (lesson) {
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }
@@ -150,7 +119,7 @@ async function copyLesson(lessonUUID: string) {
         question.uuid = uuidv4();
       })
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }

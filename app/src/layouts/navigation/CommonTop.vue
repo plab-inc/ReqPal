@@ -8,6 +8,7 @@
                  :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
                  :to="authStore.isStudent ? '/profile' : '/account'"
                  elevation="3"
+                 variant="outlined"
                  rounded
     />
     <v-list-item v-if="!authStore.user"
