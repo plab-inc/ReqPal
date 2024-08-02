@@ -14,7 +14,7 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
-        <v-btn title="Account Einstellungen" to="/account">
+        <v-btn title="Account Einstellungen" to="/profile/settings">
           <v-icon>mdi-cog</v-icon>
         </v-btn>
       </v-col>
@@ -94,8 +94,8 @@ import {useProfileStore} from "@/stores/profile.ts";
 import {ref} from "vue";
 import ReqPalLevel from "@/components/gamification/ReqPalLevel.vue"
 import ObjectiveLevelComponent from "@/components/objectives/ObjectiveLevel.vue";
-import {useLevelStore} from "@/stores/level.js";
-import {ObjectiveLevel} from "@/types/level.js";
+import {useLevelStore} from "@/stores/level.ts";
+import {ObjectiveLevel} from "@/types/level.ts";
 
 const levelStore = useLevelStore();
 const objectiveLevels = ref<ObjectiveLevel[] | null>(levelStore.getObjectiveLevels);

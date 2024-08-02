@@ -208,7 +208,7 @@ const routes = [
                 component: () => import("@/views/user/ResetPassword.vue"),
             },
             {
-                path: "/account",
+                path: "/profile/settings",
                 name: "Account",
                 component: () => import("@/views/user/Account.vue"),
                 meta: {
@@ -220,7 +220,7 @@ const routes = [
             {
                 path: "/profile",
                 name: "Profil",
-                component: () => import("@/views/gamification/Profile.vue"),
+                component: () => import("@/views/user/Profile.vue"),
                 meta: {
                     middleware: [
                         requiresAuth,
