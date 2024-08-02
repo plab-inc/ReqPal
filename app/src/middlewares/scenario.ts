@@ -4,6 +4,7 @@ import {useScenarioProgressStore} from "@/stores/scenarioProgress.ts";
 import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
 import {useAuthStore} from "@/stores/auth.ts";
 import {useStepperStore} from "@/stores/stepper.ts";
+import {useAchievementStore} from "@/stores/achievement.ts";
 
 export async function fetchScenarios(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
@@ -33,6 +34,25 @@ export async function fetchCurrentScenarioResults(to: RouteLocationNormalized, f
             if (statistic) {
                 scenarioStatisticStore.currentScenarioStatistic = statistic;
                 await scenarioStatisticStore.fetchCurrentLessonResultsForCurrentScenario();
+            }
+        }
+
+        return next();
+    } catch (error) {
+        return next({name: 'Error'});
+    }
+}
+
+
+export async function fetchScenarioAchievements(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+    try {
+        const stepperStore = useStepperStore();
+        const achievementStore = useAchievementStore();
+
+        if (stepperStore.scenario && stepperStore.scenario.achievements.length > 0) {
+            let achievements = await achievementStore.fetchAchievementsByIds(stepperStore.scenario.achievements);
+            if (achievements) {
+                achievementStore.achievements = achievements;
             }
         }
 

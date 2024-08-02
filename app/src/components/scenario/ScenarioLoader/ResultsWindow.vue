@@ -19,7 +19,7 @@
       </v-col>
     </v-row>
     <v-divider opacity="1" class="my-2"/>
-    <v-row>
+    <v-row class="mb-5">
       <v-col>
         <div v-if="scenarioStatistic && scenarioResults && scenarioResults.length > 0">
           <div v-for="result in scenarioResults">
@@ -57,36 +57,39 @@
       </v-col>
     </v-row>
     <v-divider opacity="1" class="my-2"/>
-    <v-row class="mt-5">
-      <v-col>
-        <div class="text-h5 text-md-h4">
-          Belohnungen
-        </div>
-      </v-col>
-    </v-row>
-    <v-row v-if="scenarioStatistic">
-      <v-col v-if="scenarioStatistic.achievements.length > 0">
-        <div class="text-h6 mr-5 mb-2">
-          Erhaltene Achievements:
-        </div>
-        <v-row>
-          <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements">
-            <AchievementItem :achievement="achievement">
-            </AchievementItem>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col v-if="scenarioStatistic.objectiveStatistics.length > 0">
-        <div class="text-h6 mr-5 mb-2">
-          Erhaltene XP für Lernziele:
-        </div>
-        <v-row>
-          <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics">
-            <ObjectiveItem :objective-statistic="objectiveStatistic"></ObjectiveItem>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <div
+        v-if="scenarioStatistic && (scenarioStatistic.achievements.length > 0 || scenarioStatistic.objectiveStatistics.length > 0)">
+      <v-row class="mt-5">
+        <v-col>
+          <div class="text-h5 text-md-h4">
+            Belohnungen
+          </div>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col v-if="scenarioStatistic.achievements.length > 0">
+          <div class="text-h6 mr-5 mb-2">
+            Erhaltene Achievements:
+          </div>
+          <v-row>
+            <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements">
+              <AchievementItem :achievement="achievement">
+              </AchievementItem>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col v-if="scenarioStatistic.objectiveStatistics.length > 0">
+          <div class="text-h6 mr-5 mb-2">
+            Erhaltene XP für Lernziele:
+          </div>
+          <v-row>
+            <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics">
+              <ObjectiveItem :objective-statistic="objectiveStatistic"></ObjectiveItem>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </div>
   </div>
   <div v-else>
     <div class="text-h3">
