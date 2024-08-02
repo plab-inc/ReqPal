@@ -24,8 +24,10 @@
             <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
               <div class="text-h5">
                 {{ totalCorrect }} / {{ multipleChoiceResult.results.length }} Richtig
-                <v-icon class="mb-1" size="35" color="success"
+                <v-icon v-if="totalCorrect > 0" class="mb-1" size="35" color="success"
                         :icon="'mdi-check-circle-outline'"></v-icon>
+                <v-icon v-else class="mb-1" size="35" color="error"
+                        :icon="'mdi-close-circle-outline'"></v-icon>
               </div>
             </v-col>
           </v-row>

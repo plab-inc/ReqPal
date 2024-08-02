@@ -55,14 +55,9 @@ public class ScenarioUserStatisticsService {
         List<LessonResult> lessonResults = scenarioUserStatistics.getLessonResults();
         if (lessonResults == null) {
             lessonResults = new ArrayList<>();
-            lessonResults.add(lessonResult);
-        } else {
-            boolean lessonIdExists = lessonResults.stream()
-                    .anyMatch(existingResult -> existingResult.getLessonId().equals(lessonResult.getLessonId()));
-            if (!lessonIdExists) {
-                lessonResults.add(lessonResult);
-            }
         }
+
+        lessonResults.add(lessonResult);
 
         scenarioUserStatistics.setLessonResults(lessonResults);
         scenarioUserStatisticsRepository.save(scenarioUserStatistics);
