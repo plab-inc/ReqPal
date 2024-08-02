@@ -26,7 +26,7 @@ export type ScenarioUserStatistic = {
     scenarioId: string,
     scenarioProgressId: string,
     achievements: Achievement[],
-    objectives: ObjectiveStatistic[],
+    objectiveStatistics: ObjectiveStatistic[],
     lessonResults: LessonResult[],
     score: number
 }

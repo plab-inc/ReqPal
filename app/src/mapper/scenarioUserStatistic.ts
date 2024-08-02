@@ -12,26 +12,31 @@ import {
 import {Achievement} from "@/types/achievement.ts";
 import {Objective} from "@/types/objective.ts";
 import {Json} from "@/types/supabase.ts";
+import lesson from "@/services/database/lesson.ts";
 
 
 export const mapToScenarioUserStatisticData = (inputScenarioStatistic: any): ScenarioUserStatisticData => {
 
     let achievementsData: string[] = [];
     let objectivesData: ObjectiveStatisticData[] = []
+    
+    if (inputScenarioStatistic.achievements && inputScenarioStatistic.achievements.gainedAchievements) {
+        inputScenarioStatistic.achievements.gainedAchievements.forEach((a: string) => {
+            achievementsData.push(a);
+        });
+    }
 
-    inputScenarioStatistic.achievements.gainedAchievements.map((a: string) => {
-        achievementsData.push(a);
-    })
-
-    inputScenarioStatistic.objectives.gainedObjectives.map((obj: any) => {
-        objectivesData.push({objectiveId: obj.id, xp: obj.xp});
-    })
+    if (inputScenarioStatistic.objectives && inputScenarioStatistic.objectives.gainedObjectives) {
+        inputScenarioStatistic.objectives.gainedObjectives.forEach((obj: any) => {
+            objectivesData.push({objectiveId: obj.id, xp: obj.xp});
+        });
+    }
 
     return {
         achievements: achievementsData,
         created_at: inputScenarioStatistic.created_at,
         id: inputScenarioStatistic.id,
-        lesson_results: inputScenarioStatistic.lesson_results,
+        lesson_results: inputScenarioStatistic.lesson_results ? inputScenarioStatistic.lesson_results : {},
         objectives: objectivesData,
         scenario_user_progress: inputScenarioStatistic.scenario_user_progress,
         scenario_user_progress_id: inputScenarioStatistic.scenario_user_progress_id,
@@ -56,7 +61,7 @@ export const mapToScenarioUserStatistic = (inputScenarioStatistic: ScenarioUserS
         achievements: achievements,
         id: inputScenarioStatistic.id,
         lessonResults: inputScenarioStatistic.lesson_results as LessonResult[],
-        objectives: objectiveStatistics,
+        objectiveStatistics: objectiveStatistics,
         scenarioId: inputScenarioStatistic.scenario_user_progress.scenario_id,
         scenarioProgressId: inputScenarioStatistic.scenario_user_progress_id,
         score: inputScenarioStatistic.score ? inputScenarioStatistic.score : 0,
