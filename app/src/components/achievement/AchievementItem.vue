@@ -1,11 +1,11 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="300">
+  <v-card variant="elevated" color="primary" max-height="250">
     <v-card-title>
       {{ achievement.title }}
     </v-card-title>
     <v-card-text>
       <div class="d-flex align-center">
-        <v-img :src="getAchievementImageUrl(achievement.image)" min-width="50" max-width="100" class="mr-5">
+        <v-img :src="getAchievementImageUrl(achievement.image)" width="60" max-width="60" class="mr-5">
         </v-img>
         <div class="text-subtitle-1 scroll-container">
           {{ achievement.description }}

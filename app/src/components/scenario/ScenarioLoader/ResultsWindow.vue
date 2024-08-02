@@ -72,8 +72,8 @@
             Erhaltene Achievements:
           </div>
           <v-row>
-            <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements">
-              <AchievementItem :achievement="achievement">
+            <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements" class="d-flex">
+              <AchievementItem class="flex-grow-1" :achievement="achievement">
               </AchievementItem>
             </v-col>
           </v-row>
@@ -83,8 +83,8 @@
             Erhaltene XP für Lernziele:
           </div>
           <v-row>
-            <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics">
-              <ObjectiveItem :objective-statistic="objectiveStatistic"></ObjectiveItem>
+            <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics" class="d-flex">
+              <ObjectiveItem class="flex-grow-1" :objective-statistic="objectiveStatistic"></ObjectiveItem>
             </v-col>
           </v-row>
         </v-col>

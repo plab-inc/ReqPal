@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="300">
+  <v-card variant="elevated" color="primary" max-height="250">
     <v-card-title>
       {{ objectiveStatistic.objective.name }}
     </v-card-title>
@@ -12,7 +12,7 @@
           <div class="text-subtitle-1 mr-2">
             {{ objectiveStatistic.xp }} XP
           </div>
-          <v-icon left color="warning" min-width="50" max-width="100">mdi-star</v-icon>
+          <v-icon left color="warning" width="60" max-width="60">mdi-star</v-icon>
         </div>
       </div>
     </v-card-text>
