@@ -5,11 +5,11 @@
     :color=progressBarColor()
     max="5"
     disabled
-    height="25"
+    height="20"
     :model-value=progressBarStatus()
     rounded="pill"
   >
-    <strong>{{ progressBarText() }}</strong>
+    {{ progressBarText() }}
   </v-progress-linear>
 </template>
 <script setup lang="ts">

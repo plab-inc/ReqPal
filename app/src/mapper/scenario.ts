@@ -20,7 +20,7 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
 export const mapToScenarioProgress = (inputScenarioUser: ScenarioProgressDTO, inputScenario: Scenario): ScenarioProgress => {
   return {
     scenario: inputScenario,
-    user_id: inputScenarioUser.user_id,
+    userId: inputScenarioUser.user_id,
     currentStep: inputScenarioUser.step,
     started: inputScenarioUser.started,
     ended: inputScenarioUser.ended,

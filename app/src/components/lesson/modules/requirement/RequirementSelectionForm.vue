@@ -1,16 +1,16 @@
 <script setup lang="ts">
 
-import {CatalogDTO, Product, Requirement} from "@/types/catalog.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { CatalogDTO, Product, Requirement, RequirementDTO } from "@/types/catalog.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
 import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
-import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
+import { containsAtLeastOneElementRule, requiredRule, requiredStringRule } from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
-import {onBeforeMount, ref, watch} from "vue";
-import {convertStringToNumber} from "@/utils/helper.ts";
+import { onBeforeMount, ref, watch } from "vue";
+import { convertStringToNumber } from "@/utils/helper.ts";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -104,8 +104,8 @@ watch(fields, async (value) => {
             v-model="fields.options.catalogId"
             :rules="[requiredRule]"
             :items="catalogs"
-            :item-title="item => item.catalog_name"
-            :item-value="item => item.catalog_id"
+            :item-title="(item: CatalogDTO) => item.catalog_name"
+            :item-value="(item: CatalogDTO) => item.catalog_id"
             :loading="loadingCatalogs"
         ></v-select>
         <v-select
@@ -113,8 +113,8 @@ watch(fields, async (value) => {
             v-model="selectedRequirement"
             :rules="[requiredRule]"
             :items="requirements"
-            :item-title="item => item.title"
-            :item-value="item => item"
+            :item-title="(item: RequirementDTO) => item.title"
+            :item-value="(item: RequirementDTO) => item"
             :loading="loadingReqs"
             :disabled="!fields.options.catalogId"
         ></v-select>

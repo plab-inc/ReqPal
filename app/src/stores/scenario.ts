@@ -25,12 +25,24 @@ export const useScenarioStore = defineStore('scenario', {
         async fetchScenarios() {
             this.scenarios = []
             const fetchedScenarios = await ScenarioService.pull.fetchScenarios();
-          const authStore = useAuthStore();
+            const authStore = useAuthStore();
+
+            let scenarioStatistics = undefined;
 
             if(fetchedScenarios){
+
+                const scenarioIds = fetchedScenarios.map(scenarioDTO => scenarioDTO.id);
+
+                if (authStore.isTeacher) scenarioStatistics = await ScenarioService.pull.getScenarioStatistics(scenarioIds);
+
                 for(const scenarioDTO of fetchedScenarios){
                     const scenario = mapToScenario(scenarioDTO);
-                  if (authStore.isTeacher) scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
+                    if (authStore.isTeacher) {
+                        scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
+                        scenario.studentProgressStatistics = scenarioStatistics?.find(stat => stat.scenarioId === scenario.id);
+
+                        console.log(scenarioStatistics);
+                    }
                     this.scenarios.push(scenario);
                 }
             }

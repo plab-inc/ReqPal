@@ -26,7 +26,7 @@
     <v-expand-transition>
       <div v-show="show">
         <v-card-text>
-          <CardDetailsTeacher v-if="authStore.isTeacher" />
+          <CardDetailsTeacher v-if="authStore.isTeacher && scenario" :scenario="scenario" />
           <CardDetailsStudent v-if="authStore.isStudent && scenario" :scenario="scenario" />
         </v-card-text>
       </div>

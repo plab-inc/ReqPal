@@ -1,5 +1,11 @@
 import { supabase } from "@/plugins/supabase";
-import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
+import {
+  Scenario,
+  ScenarioDTO,
+  ScenarioProgress,
+  ScenarioProgressDTO,
+  ScenarioProgressStatistic
+} from "@/types/scenario.ts";
 import { mapToScenario, mapToScenarioProgress } from "@/mapper/scenario.ts";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +15,8 @@ class ScenarioServiceClass {
     fetchScenarios: this.fetchScenarios.bind(this),
     fetchScenario: this.fetchScenarioById.bind(this),
     fetchScenarioProgressByScenario: this.fetchScenarioProgressByScenario.bind(this),
-    fetchScenarioProgresses: this.fetchScenarioProgresses.bind(this)
+    fetchScenarioProgresses: this.fetchScenarioProgresses.bind(this),
+    getScenarioStatistics: this.getScenarioStatistics.bind(this)
   };
 
   public push = {
@@ -97,7 +104,6 @@ class ScenarioServiceClass {
     }
   }
 
-
   private async fetchScenarioProgressByScenario(scenario: Scenario): Promise<ScenarioProgress | undefined> {
 
     const { data, error } = await supabase
@@ -123,14 +129,21 @@ class ScenarioServiceClass {
 
     if (error) throw error;
 
-    console.log(data);
-
     if (data) {
       return data.map(item => {
         const correspondingScenario = scenarios.find(scenario => scenario.id === item.scenario_id);
         return correspondingScenario ? mapToScenarioProgress(item as ScenarioProgressDTO, correspondingScenario) : undefined;
       }).filter(item => item !== undefined) as ScenarioProgress[];
     }
+  }
+
+  private async getScenarioStatistics(scenarioIds: string[]) {
+    const { data, error } = await supabase.rpc("get_szenario_statistics", {
+      szenario_ids: scenarioIds
+    });
+
+    if (error) throw error;
+    if (data) return data as ScenarioProgressStatistic[];
   }
 
   private async toggleField(scenario: Scenario, field: "locked"): Promise<void> {
@@ -142,7 +155,7 @@ class ScenarioServiceClass {
         row_id: scenario.id
       })
 
-    if (error) console.error(error)
+    if (error) throw error;
   }
 }
 

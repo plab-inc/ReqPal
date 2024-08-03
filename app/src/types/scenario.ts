@@ -13,7 +13,8 @@ export type Scenario = {
   edited: boolean,
   lessonsCount: number,
   minLessons: number,
-  achievements: string[];
+  achievements: string[],
+  studentProgressStatistics?: ScenarioProgressStatistic,
   version?: number,
   createdAt?: string,
   bpmnXml?: string | Blob,
@@ -22,9 +23,35 @@ export type Scenario = {
 
 export type ScenarioProgress = {
   scenario: Scenario,
-  user_id: String,
+  userId: String,
   currentStep: number,
   started: boolean,
   ended: boolean,
   currentLessonId?: string,
+}
+
+export type ScenarioProgressStatistic = {
+  scenarioId: string;
+  studentCount: number;
+  totalStatistics: ProgressStatistics;
+  versionsStatistics: VersionStatistics[];
+}
+
+export type VersionDetails = {
+  totalEntries: number;
+  startedCount: number;
+  endedCount: number;
+}
+
+
+export type VersionStatistics = {
+  versionNumber: number;
+  statistics: VersionDetails;
+}
+
+
+export type ProgressStatistics = {
+  totalEntries: number;
+  startedCount: number;
+  endedCount: number;
 }

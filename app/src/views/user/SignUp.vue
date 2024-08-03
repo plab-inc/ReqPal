@@ -64,8 +64,8 @@
             v-model="selectedTeacher"
             :rules="[requiredRule]"
             :items="teachers"
-            :item-title="item => item.username"
-            :item-value="item => item.id"
+            :item-title="(item: any) => item.username"
+            :item-value="(item: any) => item.id"
         ></v-select>
       </v-col>
     </v-row>
@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/auth.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import {
   matchingPasswordsRule,
   requiredAtLeast6CharsRule,
@@ -105,10 +105,10 @@ import {
 } from "@/utils/validationRules";
 
 import router from "@/router";
-import {AuthenticationError, UserAlreadyRegisteredError} from "@/errors/custom.ts";
-import {useUtilStore} from "@/stores/util.ts";
-import {useProfileStore} from "@/stores/profile.ts";
-import {onBeforeMount, ref} from "vue";
+import { AuthenticationError, UserAlreadyRegisteredError } from "@/errors/custom.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { onBeforeMount, ref } from "vue";
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();

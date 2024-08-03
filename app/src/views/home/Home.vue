@@ -50,10 +50,10 @@
                 <li>Kostenlos nutzbar</li>
               </ul>
               <div v-text="feature_subtitle"></div>
-              <v-btn v-if="!authStore.session" block color="primary" class="mt-5" @click="$router.push('signup')">
+              <v-btn v-if="!authStore.session" block color="primary" class="mt-5" @click="router.push('signup')">
                 Melde dich an!
               </v-btn>
-              <v-btn v-else block color="primary" class="mt-5" @click="$router.push('lessons')">
+              <v-btn v-else block color="primary" class="mt-5" @click="router.push('lessons')">
                 Lerne weiter
               </v-btn>
             </div>
@@ -65,8 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/auth.ts";
-import reqpal from '@/assets/reqPalBanner.svg';
+import { useAuthStore } from "@/stores/auth.ts";
+import reqpal from "@/assets/reqPalBanner.svg";
+import router from "@/router";
 
 const authStore = useAuthStore();
 
