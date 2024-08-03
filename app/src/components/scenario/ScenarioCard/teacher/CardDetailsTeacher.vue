@@ -21,9 +21,8 @@
     class="my-2"
     height="20"
     rounded="pill"
-    striped
   >
-    {{ startedCount === 0 ? "Noch keine Daten" : "" }}
+    {{ totalCount === 0 ? "Noch keine Daten" : "" }}
   </v-progress-linear>
   <div v-if="selectedVersion === null">
     {{ endedCount }} von {{ totalCount }} {{ totalCount !== 1 ? "Personen haben" : "Person hat" }} das Szenario
