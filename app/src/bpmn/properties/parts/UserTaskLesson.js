@@ -62,17 +62,15 @@ function TaskType(props) {
   };
 
   const getOptions = () => {
-    //TODO Show hint when there are no lessons
-
     const options = [];
 
     if (lessonStore.lessons.length > 0) {
       options.push({ value: 'solveLesson', label: translate('Solve Lesson') });
     }
 
-    // if (objectiveStore.objectives.length > 0) {
-    //   options.push({ value: 'chooseLearningObjective', label: translate('Choose Learning Objective') });
-    // }
+    if (lessonStore.lessons.length === 0) {
+      options.push({ value: "noLessons", label: translate("No Lessons found") });
+    }
 
     return options;
   };
@@ -148,6 +146,7 @@ function GrantAchievedPointsAsXP(props) {
   const translate = useService('translate');
   const modeling = useService('modeling');
   const bpmnFactory = useService('bpmnFactory');
+  const lessonObjectives = getLessonObjectives(getLessonToSolve(element)).join(", ") || "No objectives defined in lesson.";
 
   const getValue = () => {
     const businessObject = getBusinessObject(element);
@@ -162,16 +161,20 @@ function GrantAchievedPointsAsXP(props) {
     }
   };
 
-  //TODO description could be a list of objectives the lesson is assigned too
-
   return jsx(CheckboxEntry, {
     element,
     id: "grantPointsAsXP",
-    label: translate('Grant achieved points as XP to lesson objective(s)'),
+    label: translate("Grant achieved points as XP to lesson objective(s):"),
     getValue,
     debounce: debounce,
     setValue,
+    description: lessonObjectives
   });
+}
+
+function getLessonObjectives(lessonId) {
+  const lessonStore = useLessonStore();
+  return lessonStore.getLessonObjectives(lessonId);
 }
 
 function getLessonToSolve(element) {
