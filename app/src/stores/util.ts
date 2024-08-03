@@ -81,14 +81,17 @@ export const useUtilStore = defineStore({
             }
 
             switch (actionType) {
-                case('Lernziel'):
+                case('Objective'):
                     alertText = xp + " XP für Lernziel " + actionTitle + " erhalten!"
                     break;
                 case('Achievement'):
                     alertText = xp + " XP für Achievement " + actionTitle + " erhalten!";
                     break;
                 case('ReqPal Achievement'):
-                    alertText= xp + " XP für ReqPal Achievement " + actionTitle + " erhalten!";
+                    alertText = xp + " XP für ReqPal Achievement " + actionTitle + " erhalten!";
+                    break;
+                case('All lesson objectives'):
+                    alertText = xp + " XP für alle Lernziele dieser Lektion erhalten!";
                     break;
                 default:
                     alertText = xp + " XP erhalten!"
