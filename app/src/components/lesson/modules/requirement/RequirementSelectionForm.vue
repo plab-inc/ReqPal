@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { CatalogDTO, Product, Requirement, RequirementDTO } from "@/types/catalog.ts";
+import { CatalogDTO, Product, Requirement } from "@/types/catalog.ts";
 import { useCatalogStore } from "@/stores/catalog.ts";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
 import { useLessonFormStore } from "@/stores/lessonForm.ts";
@@ -113,8 +113,8 @@ watch(fields, async (value) => {
             v-model="selectedRequirement"
             :rules="[requiredRule]"
             :items="requirements"
-            :item-title="(item: RequirementDTO) => item.title"
-            :item-value="(item: RequirementDTO) => item"
+            :item-title="(item: Requirement) => item.title"
+            :item-value="(item: Requirement) => item"
             :loading="loadingReqs"
             :disabled="!fields.options.catalogId"
         ></v-select>
