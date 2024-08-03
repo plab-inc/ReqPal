@@ -63,21 +63,45 @@
                 Lernziel Fortschritte
               </div>
             </v-col>
-            <v-col>
-              <div v-for="objectiveLevel in objectiveLevels">
-                <v-row>
-                  <v-col class="mt-2 d-flex align-center justify-center">
-                    <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
-                  </v-col>
-                </v-row>
-              </div>
+            <v-col md="12" lg="6" v-for="objectiveLevel in objectiveLevels"
+                   class="mt-5 d-flex align-center justify-center">
+              <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
             </v-col>
           </v-row>
         </v-container>
       </v-tabs-window-item>
 
       <v-tabs-window-item :value="1">
-        Achievements
+        <v-container>
+          <v-row class="mt-2">
+            <v-col>
+              <div class="text-h6">
+                ReqPal Achievements
+              </div>
+            </v-col>
+            <v-col md="6" lg="4" v-for="achievement in studentAchievementStore.reqPalAchievements"
+                   class="mt-5 d-flex align-center justify-center">
+              <ReqPalAchievementItem :achievement="achievement"></ReqPalAchievementItem>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col>
+              <v-divider></v-divider>
+            </v-col>
+          </v-row>
+
+          <v-row class="mt-2">
+            <v-col>
+              <div class="text-h6">
+                Achievements aus Szenarien
+              </div>
+            </v-col>
+            <v-col md="6" lg="4" v-for="achievement in studentAchievementStore.achievements" class="mt-5 d-flex">
+
+            </v-col>
+          </v-row>
+        </v-container>
       </v-tabs-window-item>
 
       <v-tabs-window-item :value="2">
@@ -92,13 +116,17 @@ import {useAuthStore} from "@/stores/auth.ts";
 import {User} from "@supabase/supabase-js";
 import {useProfileStore} from "@/stores/profile.ts";
 import {ref} from "vue";
-import ReqPalLevel from "@/components/gamification/ReqPalLevel.vue"
+import ReqPalLevel from "@/components/level/ReqPalLevel.vue"
 import ObjectiveLevelComponent from "@/components/objectives/ObjectiveLevel.vue";
 import {useLevelStore} from "@/stores/level.ts";
 import {ObjectiveLevel} from "@/types/level.ts";
+import {useStudentAchievementStore} from "@/stores/studentAchievement.ts";
+import ReqPalAchievementItem from "@/components/achievement/profile/ReqPalAchievementItem.vue";
 
 const levelStore = useLevelStore();
 const objectiveLevels = ref<ObjectiveLevel[] | null>(levelStore.getObjectiveLevels);
+
+const studentAchievementStore = useStudentAchievementStore();
 
 const tab = ref<number>(0);
 const authStore = useAuthStore();
@@ -118,7 +146,6 @@ if (isoDateString) {
 .my-container {
   padding-left: 20px;
   padding-right: 20px;
-  max-width: 1000px
 }
 
 .profileData {

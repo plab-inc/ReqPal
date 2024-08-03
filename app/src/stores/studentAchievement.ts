@@ -49,7 +49,10 @@ export const useStudentAchievementStore = defineStore('studentAchievement', {
                 if (data && data.length > 0) {
                     for (const reqPalAchievement of data) {
                         const result = await AchievementService.pull.fetchPreviousReqPalAchievementLevels(reqPalAchievement);
-                        if (result) this.reqPalAchievements.push(result);
+                        if (result) {
+                            result.previousLevels.sort((a, b) => b.level - a.level);
+                            this.reqPalAchievements.push(result);
+                        }
                     }
                     return data;
                 }
