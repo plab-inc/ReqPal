@@ -1,7 +1,9 @@
 package inc.plab.bpmn.delegate.camunda;
 
 import inc.plab.bpmn.service.AchievementService;
+import inc.plab.bpmn.service.ActivityLogService;
 import inc.plab.bpmn.service.ScenarioUserStatisticsService;
+import inc.plab.bpmn.service.UserStatisticService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -15,19 +17,26 @@ public class AchievementDelegate implements JavaDelegate {
 
     final AchievementService achievementService;
     final ScenarioUserStatisticsService scenarioUserStatisticsService;
+    final ActivityLogService activityLogService;
+    final UserStatisticService userStatisticService;
 
-    public AchievementDelegate(AchievementService achievementService, ScenarioUserStatisticsService scenarioUserStatisticsService) {
+    public AchievementDelegate(AchievementService achievementService, ScenarioUserStatisticsService scenarioUserStatisticsService, ActivityLogService activityLogService, UserStatisticService userStatisticService) {
         this.achievementService = achievementService;
         this.scenarioUserStatisticsService = scenarioUserStatisticsService;
+        this.activityLogService = activityLogService;
+        this.userStatisticService = userStatisticService;
     }
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
+        int achievementXp = 25;
         String userId = (String) delegateExecution.getVariable("studentId");
         String achievementId = (String) delegateExecution.getVariable("achievementId");
         String scenarioId = (String) delegateExecution.getVariable("scenarioId");
         achievementService.addAchievementToUser(achievementId, userId);
         scenarioUserStatisticsService.addGainedAchievement(achievementId, userId, scenarioId);
+        activityLogService.addLogEntryForAchievement(achievementXp, achievementId, userId);
+        userStatisticService.addToTotalReqPalXp(achievementXp, userId);
         addAchievementToVariable(delegateExecution, achievementId);
     }
 

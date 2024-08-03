@@ -12,6 +12,7 @@ class LessonServiceClass {
 
     public pull = {
         fetchLessonWithQuestions: this.fetchLessonWithQuestions.bind(this),
+        fetchQuestionsWithLessons: this.fetchQuestionsWithLessons.bind(this),
         fetchLessons: this.fetchLessons,
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
@@ -69,6 +70,35 @@ class LessonServiceClass {
                 lesson,
                 questions
             };
+        }
+    }
+
+    private async fetchQuestionsWithLessons(lessonUUIDs: string[]): Promise<LessonQuestions[] | undefined> {
+        const { data, error } = await supabase
+            .from("lessons")
+            .select(`*,
+              questions:questions(
+                uuid,
+                lesson_uuid,
+                question,
+                question_type,
+                options,
+                hint,
+                position,
+                points
+              ),lesson_objectives:lesson_objectives(objectives(*))`)
+            .in("uuid", lessonUUIDs)
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            let resultData : LessonQuestions[] = [];
+            data.forEach(d => {
+                const mappedLesson: Lesson = mapToLesson(d);
+                const mappedQuestions: Question[] = d.questions as Question[];
+                resultData.push({lesson: mappedLesson, questions: mappedQuestions})
+            })
+            return resultData;
         }
     }
 

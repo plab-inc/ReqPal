@@ -50,7 +50,6 @@ class ObjectiveServiceClass {
         return data as Objective[];
     }
 
-
     private async uploadObjective(objective: Objective, userUUID: string): Promise<Objective | undefined> {
         const {data, error} = await supabase
             .from('objectives')

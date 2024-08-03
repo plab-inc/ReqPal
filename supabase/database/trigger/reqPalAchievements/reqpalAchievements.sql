@@ -100,10 +100,12 @@ BEGIN
         END LOOP;
 
     IF total_new_xp > 0 THEN
-        INSERT INTO user_statistics (user_id, total_xp)
+        INSERT INTO user_statistics (user_id, total_reqpal_xp)
         VALUES (NEW.user_id, total_new_xp)
         ON CONFLICT (user_id) DO UPDATE
-            SET total_xp = user_statistics.total_xp + total_new_xp;
+            SET total_reqpal_xp = user_statistics.total_reqpal_xp + EXCLUDED.total_reqpal_xp;
+
+            RAISE LOG 'NEW XP TO ADD %', total_new_xp;
 
         INSERT INTO xp_activity_logs (user_id, received_xp, action)
         VALUES (NEW.user_id, total_new_xp, 'ReqPal Achievement: ' || level_title);

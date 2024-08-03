@@ -29,13 +29,13 @@ export const useScenarioStore = defineStore('scenario', {
 
             let scenarioStatistics = undefined;
 
-            if(fetchedScenarios){
+            if (fetchedScenarios) {
 
                 const scenarioIds = fetchedScenarios.map(scenarioDTO => scenarioDTO.id);
 
-                if (authStore.isTeacher) scenarioStatistics = await ScenarioService.pull.getScenarioStatistics(scenarioIds);
+                if (authStore.isTeacher) scenarioStatistics = await ScenarioService.pull.fetchScenarioProgressStatistics(scenarioIds);
 
-                for(const scenarioDTO of fetchedScenarios){
+                for (const scenarioDTO of fetchedScenarios) {
                     const scenario = mapToScenario(scenarioDTO);
                     if (authStore.isTeacher) {
                         scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);

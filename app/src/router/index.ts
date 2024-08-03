@@ -6,7 +6,7 @@ import {
     RouteLocationRaw,
     Router
 } from "vue-router";
-import { fetchObjectiveLevelsByUser, fetchReqPalLevelByUser } from "@/middlewares/level.ts";
+import {fetchObjectiveLevelsByUser, fetchReqPalLevelByUser} from "@/middlewares/level.ts";
 import {
     requiresAuth,
     requiresModerator,
@@ -14,19 +14,19 @@ import {
     requiresStudent,
     requiresTeacher
 } from "@/middlewares/auth.ts";
-import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
-import { fetchLessons, fetchQuestionsForLesson, loadLessonByUUID } from "@/middlewares/lesson.ts";
-import { useUtilStore } from "@/stores/util.ts";
-import { fetchProductsByUser } from "@/middlewares/product.ts";
-import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
+import {fetchCatalog, fetchCatalogs} from "@/middlewares/catalogs.ts";
+import {fetchLessons, fetchQuestionsForLesson, loadLessonByUUID} from "@/middlewares/lesson.ts";
+import {useUtilStore} from "@/stores/util.ts";
+import {fetchProductsByUser} from "@/middlewares/product.ts";
+import {fetchObjectivesByLessonOwner, fetchObjectivesByUser} from "@/middlewares/objective.ts";
 import {
     fetchAchievementImages,
     fetchAchievementsByUser,
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
-import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
-import { fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchLatestTeacherRequestByUser, fetchTeacherRequests} from "@/middlewares/teacherRequest.ts";
+import {fetchCurrentScenarioResults, fetchScenarioAchievements, fetchScenarios} from "@/middlewares/scenario.ts";
 
 const routes = [
     {
@@ -126,16 +126,16 @@ const routes = [
                 }
             },
             {
-              path: "/achievements",
-              name: "Achievements",
-              component: () => import("@/views/achievement/AchievementOverview.vue"),
-              meta: {
-                middleware: [
-                  requiresTeacher,
-                  fetchAchievementsByUser,
-                  fetchAchievementImages
-                ]
-              }
+                path: "/achievements",
+                name: "Achievements",
+                component: () => import("@/views/achievement/AchievementOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchAchievementsByUser,
+                        fetchAchievementImages
+                    ]
+                }
             },
             {
                 path: "/reqpal-achievements",
@@ -176,7 +176,10 @@ const routes = [
                 name: "Scenario Loader",
                 component: () => import("@/views/scenario/ScenarioStepper.vue"),
                 meta: {
-                    middleware: []
+                    middleware: [
+                        fetchCurrentScenarioResults,
+                        fetchScenarioAchievements
+                    ]
                 }
             },
             {
@@ -205,7 +208,7 @@ const routes = [
                 component: () => import("@/views/user/ResetPassword.vue"),
             },
             {
-                path: "/account",
+                path: "/profile/settings",
                 name: "Account",
                 component: () => import("@/views/user/Account.vue"),
                 meta: {
@@ -217,7 +220,7 @@ const routes = [
             {
                 path: "/profile",
                 name: "Profil",
-                component: () => import("@/views/gamification/Profile.vue"),
+                component: () => import("@/views/user/Profile.vue"),
                 meta: {
                     middleware: [
                         requiresAuth,

@@ -55,14 +55,9 @@ public class ScenarioUserStatisticsService {
         List<LessonResult> lessonResults = scenarioUserStatistics.getLessonResults();
         if (lessonResults == null) {
             lessonResults = new ArrayList<>();
-            lessonResults.add(lessonResult);
-        } else {
-            boolean lessonIdExists = lessonResults.stream()
-                    .anyMatch(existingResult -> existingResult.getLessonId().equals(lessonResult.getLessonId()));
-            if (!lessonIdExists) {
-                lessonResults.add(lessonResult);
-            }
         }
+
+        lessonResults.add(lessonResult);
 
         scenarioUserStatistics.setLessonResults(lessonResults);
         scenarioUserStatisticsRepository.save(scenarioUserStatistics);
@@ -108,7 +103,7 @@ public class ScenarioUserStatisticsService {
         scenarioUserStatisticsRepository.save(scenarioUserStatistics);
     }
 
-    private ScenarioUserStatistics getScenarioUserStatistics(String userId, String scenarioId) {
+    public ScenarioUserStatistics getScenarioUserStatistics(String userId, String scenarioId) {
         Optional<ScenarioProgress> scenarioProgressOptional = scenarioProgressRepository.findByScenarioIdAndUser_Id(UUID.fromString(scenarioId), UUID.fromString(userId));
         if (scenarioProgressOptional.isPresent()) {
             ScenarioProgress scenarioProgress = scenarioProgressOptional.get();
