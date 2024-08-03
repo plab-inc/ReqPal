@@ -6,7 +6,7 @@ import { useUtilStore } from "@/stores/util";
 import { BpmnProcessError } from "@/errors/custom.ts";
 import router from "@/router/index.ts";
 import { LessonAnswer } from "@/types/lesson.ts";
-import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
+import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
 
 export interface Step {
   title: string;
@@ -41,7 +41,7 @@ export const useStepperStore = defineStore("stepper", {
         { title: "Start", startStep: true, placeholderStep: false, endStep: false, completed: state.isStarted },
         ...state.lessonSteps,
         { title: "", startStep: false, placeholderStep: true, endStep: false, completed: false },
-        { title: "Results", startStep: false, placeholderStep: false, endStep: true, completed: state.isCompleted }
+        { title: "Ergebnisse", startStep: false, placeholderStep: false, endStep: true, completed: state.isCompleted }
       ];
     },
     getCurrentStep(state): Step {
@@ -146,7 +146,7 @@ export const useStepperStore = defineStore("stepper", {
     addPreviousLessons(count: number) {
       for (let i = 0; i < count; i++) {
         this.lessonSteps.push({
-          title: `Lesson ${i + 1}`,
+          title: `Lektion ${i + 1}`,
           startStep: false,
           placeholderStep: false,
           endStep: false,
