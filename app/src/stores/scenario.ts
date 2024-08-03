@@ -40,8 +40,6 @@ export const useScenarioStore = defineStore('scenario', {
                     if (authStore.isTeacher) {
                         scenario.svg = await BpmnStorageService.pull.getDiagramSvg(scenario);
                         scenario.studentProgressStatistics = scenarioStatistics?.find(stat => stat.scenarioId === scenario.id);
-
-                        console.log(scenarioStatistics);
                     }
                     this.scenarios.push(scenario);
                 }

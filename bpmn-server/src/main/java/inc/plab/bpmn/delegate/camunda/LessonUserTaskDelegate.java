@@ -54,25 +54,31 @@ public class LessonUserTaskDelegate implements JavaDelegate {
         String lessonId = (String) delegateExecution.getVariable("lessonId");
         String userId = (String) delegateExecution.getVariable("studentId");
         String scenarioId = (String) delegateExecution.getVariable("scenarioId");
+        String grantPointsAsXpToObjectives = (String) delegateExecution.getVariable("grantPointsAsXP");
         int currentTotalPoints = (int) delegateExecution.getVariable("totalPoints");
+
         SpinJsonNode lastLessonResult = (SpinJsonNode) delegateExecution.getVariable("lastLessonResult");
         SpinJsonNode allLessonResults = (SpinJsonNode) delegateExecution.getVariable("lessonResults");
 
         LessonResult lessonResult = lessonService.evaluateLesson(lessonId, lastLessonResult);
         if (lessonResult != null) {
-            int newScore = (int) Math.round(lessonResult.getTotalScore());
+            int roundedTotalScore = (int) Math.round(lessonResult.getTotalScore());
+            if (grantPointsAsXpToObjectives.equals("true") && roundedTotalScore > 0) {
+                lessonService.grantPointsAsXpToLessonObjectives(lessonId, roundedTotalScore, userId, scenarioId);
+            }
+
             scenarioUserStatisticsService.addLessonResult(lessonResult, userId, scenarioId);
-            scenarioUserStatisticsService.addPointsToScore(newScore, userId, scenarioId);
+            scenarioUserStatisticsService.addPointsToScore(roundedTotalScore, userId, scenarioId);
 
             for (SpinJsonNode lesson : allLessonResults.elements()) {
                 if (lesson.prop("lessonId").stringValue().equals(lessonId)) {
-                    lesson.prop("achievedPoints", newScore);
+                    lesson.prop("achievedPoints", roundedTotalScore);
                     break;
                 }
             }
 
             delegateExecution.setVariable("lastLessonAchievedPoints", lessonResult.getTotalScore());
-            delegateExecution.setVariable("totalPoints", currentTotalPoints + newScore);
+            delegateExecution.setVariable("totalPoints", currentTotalPoints + roundedTotalScore);
             delegateExecution.setVariable("lessonResults", allLessonResults);
         }
     }

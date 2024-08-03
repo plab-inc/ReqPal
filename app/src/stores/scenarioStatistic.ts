@@ -110,8 +110,6 @@ export const useScenarioStatisticStore = defineStore("scenario_statistic", {
                         : [];
 
                     this.currentScenarioStatistic = mapToScenarioUserStatistic(scenarioStatisticData, userAchievements, userObjectives);
-                    console.log("fetched stats")
-                    console.log(this.currentScenarioStatistic)
                 }
             }
         },
@@ -132,8 +130,6 @@ export const useScenarioStatisticStore = defineStore("scenario_statistic", {
             if (lessons) {
                 this.currentScenarioResults = mapStatisticToQuestionWithResult(this.currentScenarioStatistic, lessons);
             }
-            console.log("fetched lesres")
-            console.log(this.currentScenarioResults)
         }
     }
 });

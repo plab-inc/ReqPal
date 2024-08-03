@@ -39,8 +39,23 @@ public class ActivityLogService {
         xpActivityLog.setReceivedXp(receivedXp);
         xpActivityLog.setCreatedAt(OffsetDateTime.now());
         xpActivityLog.setUser(profile);
-        xpActivityLog.setAction("Lernziel: " + objective.getName());
+        xpActivityLog.setAction("Objective: " + objective.getName());
 
+        xpActivityLogRepository.save(xpActivityLog);
+    }
+
+    public void addLogEntryForAllLessonObjectives(int receivedXp, String userId) {
+        UUID userUUID = UUID.fromString(userId);
+
+        Optional<Profile> profileOptional = profileRepository.findById(userUUID);
+        Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
+
+        XpActivityLog xpActivityLog = new XpActivityLog();
+        xpActivityLog.setReceivedXp(receivedXp);
+        xpActivityLog.setCreatedAt(OffsetDateTime.now());
+        xpActivityLog.setUser(profile);
+
+        xpActivityLog.setAction("All lesson objectives");
         xpActivityLogRepository.save(xpActivityLog);
     }
 
