@@ -76,7 +76,7 @@ import { useUtilStore } from "@/stores/util.ts";
 import { useAuthStore } from "@/stores/auth.ts";
 import { useProfileStore } from "@/stores/profile.ts";
 import { supabase } from "@/plugins/supabase.ts";
-import { XpActivityLogDTO } from "@/types/gamification.ts";
+import { XpActivityLogDTO } from "@/types/xpActivityLog.ts";
 import Snackbar from "@/components/util/Snackbar.vue";
 import Dialog from "@/components/util/Dialog.vue";
 import CommonNavTop from "@/layouts/navigation/CommonTop.vue";

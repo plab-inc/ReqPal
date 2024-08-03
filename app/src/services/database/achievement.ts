@@ -1,7 +1,18 @@
 import {supabase} from "@/plugins/supabase.ts";
-import {Achievement, ReqPalAchievement, ReqPalAchievementLevelDTO} from "@/types/achievement.ts";
+import {
+    Achievement,
+    ReqPalAchievement,
+    ReqPalAchievementLevelDTO,
+    StudentAchievement,
+    StudentReqPalAchievement
+} from "@/types/achievement.ts";
 import {createPathToImage} from "@/utils/achievementImage.ts";
 import {mapToReqPalAchievement} from "@/mapper/reqPalAchievement.ts";
+import {
+    mapToStudentAchievement,
+    mapToStudentReqPalAchievement,
+    mapToStudentReqPalAchievementWithLevels
+} from "@/mapper/studentAchievement.ts";
 
 class AchievementServiceClass {
 
@@ -19,6 +30,9 @@ class AchievementServiceClass {
 
     public pull = {
         fetchAchievementsByUser: this.fetchAchievementsByUser.bind(this),
+        fetchAchievementsByStudent: this.fetchAchievementsByStudent.bind(this),
+        fetchReqPalAchievementsByStudent: this.fetchReqPalAchievementsByStudent.bind(this),
+        fetchPreviousReqPalAchievementLevels: this.fetchPreviousReqPalAchievementLevels.bind(this),
         fetchAchievementImages: this.fetchAchievementImages.bind(this),
         fetchAchievementsByModerator: this.fetchAchievementsByModerator.bind(this),
         fetchAchievementsByIds: this.fetchAchievementsByIds.bind(this)
@@ -35,6 +49,59 @@ class AchievementServiceClass {
 
         if (data) {
             return data as Achievement[];
+        }
+    }
+
+    private async fetchAchievementsByStudent(userUUID: string): Promise<StudentAchievement[] | undefined> {
+
+        const {data, error} = await supabase
+            .from('user_achievements')
+            .select('*, achievements:achievements(title, description, image)')
+            .eq("user_id", userUUID);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            const result: StudentAchievement[] = [];
+            data.forEach(d => {
+                result.push(mapToStudentAchievement(d));
+            })
+            return result;
+        }
+    }
+
+    private async fetchReqPalAchievementsByStudent(userUUID: string): Promise<StudentReqPalAchievement[] | undefined> {
+
+        const {data, error} = await supabase
+            .from('user_reqpal_achievements')
+            .select('*, reqpal_achievement_level:reqpal_achievement_level_id(level, threshold, title, image, xp), reqpal_achievement:reqpal_achievements(id, description, example)')
+            .eq("user_id", userUUID);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            const result: StudentReqPalAchievement[] = [];
+            data.forEach(d => {
+                result.push(mapToStudentReqPalAchievement(d));
+            })
+            return result;
+        }
+    }
+
+    private async fetchPreviousReqPalAchievementLevels(studentReqPalAchievement: StudentReqPalAchievement): Promise<StudentReqPalAchievement | undefined> {
+        const currentLevel = studentReqPalAchievement.currentLevel.level;
+        const level = currentLevel > 1 ? currentLevel - 1 : 1;
+
+        const {data, error} = await supabase
+            .from('reqpal_achievement_levels')
+            .select('level, threshold, title, image, xp')
+            .lte('level', level)
+            .eq("reqpal_achievement_id", studentReqPalAchievement.reqPalAchievementId);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            return mapToStudentReqPalAchievementWithLevels(studentReqPalAchievement, data);
         }
     }
 

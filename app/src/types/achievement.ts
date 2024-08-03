@@ -1,7 +1,5 @@
 import {Database} from "@/types/supabase.ts";
 
-export type AchievementDTO = Database["public"]["Tables"]["achievements"]["Row"];
-export type ReqPalAchievementDTO = Database["public"]["Tables"]["reqpal_achievements"]["Row"]
 export type ReqPalAchievementLevelDTO = Database["public"]["Tables"]["reqpal_achievement_levels"]["Row"]
 
 export type Achievement = {
@@ -19,4 +17,30 @@ export type ReqPalAchievement = {
     firstLevelImage: string | null,
     example: boolean,
     levels: ReqPalAchievementLevelDTO[]
+}
+
+export type StudentAchievement = {
+    title: string;
+    description: string;
+    image: string;
+    amount: number;
+    created_at: string;
+}
+
+export type StudentReqPalAchievementLevel = {
+    level: number;
+    threshold: number;
+    title: string;
+    image: string;
+    xp: number;
+}
+
+export type StudentReqPalAchievement = {
+    description: string;
+    created_at: string;
+    example: boolean;
+    currentLevel: StudentReqPalAchievementLevel;
+    previousLevels: StudentReqPalAchievementLevel[];
+    max: boolean;
+    reqPalAchievementId: string;
 }

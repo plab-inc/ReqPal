@@ -20,7 +20,7 @@ import { useUtilStore } from "@/stores/util.ts";
 import { fetchProductsByUser } from "@/middlewares/product.ts";
 import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
 import {
-    fetchAchievementImages,
+    fetchAchievementImages, fetchAchievementsByStudent,
     fetchAchievementsByUser,
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
@@ -239,7 +239,8 @@ const routes = [
                         requiresAuth,
                         requiresStudent,
                         fetchReqPalLevelByUser,
-                        fetchObjectiveLevelsByUser
+                        fetchObjectiveLevelsByUser,
+                        fetchAchievementsByStudent
                     ]
                 },
             },
