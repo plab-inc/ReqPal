@@ -1074,6 +1074,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_szenario_statistics: {
+        Args: {
+          szenario_ids: string[]
+        }
+        Returns: Json
+      }
       get_teacher_uuid: {
         Args: {
           user_uuid: string
