@@ -12,7 +12,6 @@ class ProfileServiceClass {
     public pull = {
         fetchProfile: this.fetchProfile.bind(this),
         fetchTeachers: this.getTeachers.bind(this),
-        fetchPoints: this.fetchPoints.bind(this),
         fetchUserStatistic: this.fetchUserStatistic.bind(this),
         getAvatar: this.getAvatar.bind(this),
         getUsername: this.getUsername.bind(this),
@@ -32,11 +31,6 @@ class ProfileServiceClass {
 
         return data;
 
-    }
-
-    private async fetchPoints(userId: string): Promise<{ points: number } | null> {
-        //TODO fetch points aktuallisieren
-        return null;
     }
 
     private async getUsername(userId: string): Promise<{ username: string }> {

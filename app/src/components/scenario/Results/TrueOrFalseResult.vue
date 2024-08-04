@@ -9,7 +9,7 @@
             </v-col>
             <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
               <div class="text-h5">
-                {{ trueOrFalseResult.score }} / {{ questionResult.questionData.points }}
+                {{ roundNumberToTwoDecimals(trueOrFalseResult.score) }} / {{ questionResult.questionData.points }}
                 <v-icon class="mb-1" size="35" color="warning"
                         :icon="'mdi-star-four-points-circle-outline'"></v-icon>
               </div>
@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import {QuestionResult, TrueOrFalseResult} from "@/types/scenarioUserStatistic.ts";
 import {onBeforeMount} from "vue";
+import {roundNumberToTwoDecimals} from "@/utils/helper.ts";
 
 interface Props {
   questionResult: QuestionResult,

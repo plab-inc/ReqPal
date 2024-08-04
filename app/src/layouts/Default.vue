@@ -95,7 +95,6 @@ const drawer = ref(null);
 onBeforeMount(async () => {
   if (authStore.user) {
     await profileStore.fetchProfile(authStore.user.id);
-    await profileStore.fetchPoints(authStore.user.id);
   }
 });
 

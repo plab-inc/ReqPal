@@ -6,7 +6,6 @@ import {AuthenticationError} from "@/errors/custom.ts";
 
 interface ProfileState {
     username: string | null;
-    points: number;
     avatar: string;
     userStatistic: UserStatisticDTO | null;
 }
@@ -14,7 +13,6 @@ interface ProfileState {
 export const useProfileStore = defineStore('profile', {
     state: (): ProfileState => ({
         username: null,
-        points: 0,
         avatar: '',
         userStatistic: null
     }),
@@ -33,14 +31,6 @@ export const useProfileStore = defineStore('profile', {
             if (data) {
                 this.username = data.username;
                 this.avatar = data.avatar;
-            }
-        },
-
-        async fetchPoints(userId: string) {
-            const data = await profileService.pull.fetchPoints(userId);
-            if (data?.points) {
-                this.points = data.points;
-                this.points = Math.round(this.points);
             }
         },
 

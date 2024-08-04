@@ -6,12 +6,20 @@
       :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
       item-value="lessonDTO.uuid"
       select-strategy="all"
-      show-expand
-      expand-on-click
       hover
       height="75vh"
       no-data-text="Sie haben noch keine Lektionen erstellt."
   >
+    <template v-slot:item.objectives="{ item }">
+          <v-chip v-for="objective in item.objectives"
+                  prepend-icon="mdi-trophy"
+                  elevation="8" class="mr-1"
+                  @click="router.push({name: 'Objectives'})"
+          >
+            {{ objective.name }}
+          </v-chip>
+    </template>
+
     <template v-slot:item.creatorUsername="{ item }">
       <v-chip
           :prepend-avatar="'avatars/' + item.creatorAvatar + '.png'"
@@ -61,42 +69,6 @@
         />
       </div>
     </template>
-    <template v-slot:expanded-row="{ columns, item }">
-      <tr v-if="item.objectives.length > 0">
-        <td :colspan="columns.length">
-          <v-list>
-            <v-list-subheader>Lernziele</v-list-subheader>
-
-            <v-list-item
-                v-for="(objective, i) in item.objectives"
-                :key="i"
-                :value="objective"
-                color="primary"
-                variant="plain"
-            >
-              <template v-slot:prepend>
-                <v-icon icon="mdi-trophy"></v-icon>
-              </template>
-
-              <v-list-item-title v-text="objective.name"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </td>
-      </tr>
-      <tr v-else>
-        <td :colspan="columns.length">
-          <v-list>
-            <v-list-subheader>Lernziele</v-list-subheader>
-            <v-list-item
-                color="primary"
-                variant="plain"
-            >
-              <v-list-item-title v-text="'Noch keine Lernziele zur Lektion hinzugefügt'"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </td>
-      </tr>
-    </template>
   </v-data-table-virtual>
 </template>
 
@@ -122,15 +94,17 @@ const props = defineProps<{ filters: string[] }>();
 const lessons = lessonStore.getLessons;
 
 const headers = ref([
-  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
+  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "auto", align: "start"},
   {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
+  {title: "Lernziele", value: "objectives", sortable: true, width: "auto", align: "center"},
   {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
 const headersModerator = ref([
-  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
+  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "auto", align: "start"},
   {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
+  {title: "Lernziele", value: "objectives", sortable: true, width: "auto", align: "center"},
   {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
   {title: "Besitzer", value: "creatorUsername", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
