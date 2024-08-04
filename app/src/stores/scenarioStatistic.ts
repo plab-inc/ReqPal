@@ -124,7 +124,7 @@ export const useScenarioStatisticStore = defineStore("scenario_statistic", {
 
             this.currentScenarioStatistic.lessonResults?.forEach(res => lessonIds.push(res.lessonId));
 
-            const lessons: LessonQuestions[] | undefined = await lessonStore.fetchQuestionsWithLessons(lessonIds);
+            const lessons: LessonQuestions[] | undefined = await lessonStore.fetchLessonsWithQuestions(lessonIds);
             this.currentScenarioResults = [];
 
             if (lessons) {

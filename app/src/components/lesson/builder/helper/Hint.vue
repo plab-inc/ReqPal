@@ -1,12 +1,20 @@
 <script setup lang="ts">
 
+import alertService from "@/services/util/alert.ts";
+
 interface Props {
-  questionId: string,
   hint: string
 }
 
 const props = defineProps<Props>();
 
+function openHintDialog() {
+  alertService.openDialog(
+      "Hinweis",
+      props.hint,
+      "Danke!"
+  )
+}
 </script>
 
 <template>
@@ -16,11 +24,9 @@ const props = defineProps<Props>();
              :elevation="8"
              size="40"
              color="warning"
-             icon="mdi-lightbulb-on-outline" />
+             icon="mdi-lightbulb-on-outline"
+             @click.stop="openHintDialog"
+      />
     </template>
   </v-tooltip>
 </template>
-
-<style scoped>
-
-</style>

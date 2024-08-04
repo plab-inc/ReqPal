@@ -96,7 +96,7 @@ export const useLessonStore = defineStore('lesson', {
                 c.type === "Slider" ||
                 c.type === "Requirement");
         },
-        async fetchQuestionsWithLesson(lessonUUID: string) {
+        async fetchLessonWithQuestions(lessonUUID: string) {
             const lessonWithQuestions = await lessonService.pull.fetchLessonWithQuestions(lessonUUID);
             if (lessonWithQuestions) {
                 this.currentQuestions = lessonWithQuestions.questions;
@@ -105,8 +105,8 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        async fetchQuestionsWithLessons(lessonUUIDs: string[]) {
-            const lessonWithQuestions = await lessonService.pull.fetchQuestionsWithLessons(lessonUUIDs);
+        async fetchLessonsWithQuestions(lessonUUIDs: string[]) {
+            const lessonWithQuestions = await lessonService.pull.fetchLessonsWithQuestions(lessonUUIDs);
             if (lessonWithQuestions) {
                 return lessonWithQuestions;
             }

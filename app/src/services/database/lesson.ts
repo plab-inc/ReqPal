@@ -12,7 +12,7 @@ class LessonServiceClass {
 
     public pull = {
         fetchLessonWithQuestions: this.fetchLessonWithQuestions.bind(this),
-        fetchQuestionsWithLessons: this.fetchQuestionsWithLessons.bind(this),
+        fetchLessonsWithQuestions: this.fetchLessonsWithQuestions.bind(this),
         fetchLessons: this.fetchLessons,
         fetchQuestionsForLesson: this.fetchQuestionsForLesson.bind(this),
         getLesson: this.getLesson.bind(this),
@@ -73,7 +73,7 @@ class LessonServiceClass {
         }
     }
 
-    private async fetchQuestionsWithLessons(lessonUUIDs: string[]): Promise<LessonQuestions[] | undefined> {
+    private async fetchLessonsWithQuestions(lessonUUIDs: string[]): Promise<LessonQuestions[] | undefined> {
         const { data, error } = await supabase
             .from("lessons")
             .select(`*,
