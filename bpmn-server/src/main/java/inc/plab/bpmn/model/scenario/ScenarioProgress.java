@@ -1,13 +1,17 @@
 package inc.plab.bpmn.model.scenario;
 
 import inc.plab.bpmn.model.lesson.Lesson;
+import inc.plab.bpmn.model.lesson.QuestionAnswer;
 import inc.plab.bpmn.model.user.Profile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -52,6 +56,10 @@ public class ScenarioProgress {
     @NotNull
     @Column(name = "started_version", nullable = false)
     private Long startedVersion;
+
+    @Column(name = "lesson_answers")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<QuestionAnswer> lessonAnswers;
 
     @Transient
     public void increaseStep() {

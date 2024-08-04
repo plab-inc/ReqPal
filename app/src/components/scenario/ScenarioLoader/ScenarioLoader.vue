@@ -29,14 +29,21 @@
 
         <v-row class="justify-end ma-2" no-gutters>
           <v-col cols="auto">
-            <v-btn size="x-large" text="Szenario Starten" variant="outlined" color="white"
-                   v-if="stepperStore.getCurrentStep.startStep" @click="stepperStore.start"/>
-            <v-btn variant="outlined" size="x-large" text="Fortschritt speichern und beenden" color="white" class="mr-2"
+            <v-btn variant="outlined" size="x-large" text="Szenario Verlassen" color="warning" class="mr-2"
+                   v-if="stepperStore.getCurrentStep.startStep || stepperStore.getCurrentStep.endStep" to="/scenario" />
+
+            <v-btn size="x-large" color="success" text="Szenario Starten" variant="outlined"
+                   v-if="stepperStore.getCurrentStep.startStep" @click="stepperStore.start" append-icon="mdi-play" />
+
+            <v-btn variant="outlined" size="x-large" text="Lektions Fortschritt Speichern und Szenario verlassen"
+                   color="warning" class="mr-2"
                    v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
-                   @click="stepperStore.nextStep"/>
-            <v-btn variant="outlined" size="x-large" text="Nächste Lektion" color="white"
+                   @click="quitScenario()" />
+            <v-btn variant="outlined" color="success" size="x-large" text="Nächste Lektion"
                    v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
-                   @click="submitLesson"/>
+                   @click="submitLesson"
+                   append-icon="mdi-play"
+            />
           </v-col>
         </v-row>
       </template>
@@ -45,14 +52,15 @@
 </template>
 
 <script setup lang="ts">
-import {useStepperStore} from "@/stores/stepper.ts";
+import { useStepperStore } from "@/stores/stepper.ts";
 import StartWindow from "@/components/scenario/ScenarioLoader/StartWindow.vue";
 import ResultsWindow from "@/components/scenario/ScenarioLoader/ResultsWindow.vue";
 import LessonWindow from "@/components/scenario/ScenarioLoader/LessonWindow.vue";
-import {onMounted} from "vue";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {LessonAnswer} from "@/types/lesson.ts";
+import { onMounted } from "vue";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { QuestionAnswer } from "@/types/lesson.ts";
 import router from "@/router/index.ts";
+import { useUtilStore } from "@/stores/util.ts";
 
 onMounted(() => {
   if (!stepperStore.scenario) {
@@ -62,10 +70,25 @@ onMounted(() => {
 
 const stepperStore = useStepperStore();
 const lessonStore = useLessonStore();
+const utilStore = useUtilStore();
+
+const saveLesson = async () => {
+  utilStore.startLoadingBar();
+  const questionAnswers: QuestionAnswer[] | null = await lessonStore.generateQuestionAnswers();
+  if (questionAnswers) {
+    await stepperStore.saveLessonAnswers(questionAnswers)
+      .then(() => utilStore.addAlert("Lektions Fortschritt gespeichert.", "info"))
+      .finally(() => utilStore.stopLoadingBar());
+  }
+};
+
+const quitScenario = async () => {
+  await saveLesson().then(() => router.push("/scenario"));
+};
 
 const submitLesson = async () => {
   if (!(await lessonStore.isLessonFormValid())) return;
-  const lessonAnswer: LessonAnswer | null = await lessonStore.generateUserResults();
-  if (lessonAnswer) await stepperStore.nextStep(lessonAnswer);
+  const questionAnswers: QuestionAnswer[] | null = await lessonStore.generateQuestionAnswers();
+  if (questionAnswers) await stepperStore.nextStep(questionAnswers);
 };
 </script>

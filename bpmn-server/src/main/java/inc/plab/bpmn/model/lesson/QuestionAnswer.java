@@ -1,11 +1,11 @@
-package inc.plab.bpmn.mapper;
+package inc.plab.bpmn.model.lesson;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Answer {
+public class QuestionAnswer {
     private String questionId;
     private Object options;
     private String type;

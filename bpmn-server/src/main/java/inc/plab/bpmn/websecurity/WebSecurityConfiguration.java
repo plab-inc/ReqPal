@@ -49,7 +49,7 @@ public class WebSecurityConfiguration {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5000","http://localhost:4173"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5000", "http://localhost:4173", "https://www.lethalgoose.com:8080", "https://www.lethalgoose.com:8080"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "X-Refresh-Token", "Origin", "Content-Type", "Accept"));
         corsConfiguration.setMaxAge(Duration.ofMinutes(10));

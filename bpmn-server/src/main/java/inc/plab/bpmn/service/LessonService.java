@@ -1,19 +1,21 @@
 package inc.plab.bpmn.service;
 
-import inc.plab.bpmn.mapper.Answer;
-import inc.plab.bpmn.mapper.LessonAnswer;
-import inc.plab.bpmn.mapper.LessonMapper;
+import inc.plab.bpmn.mapper.QuestionAnswerMapper;
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonObjective;
 import inc.plab.bpmn.model.lesson.LessonRepository;
-import inc.plab.bpmn.model.question.evaluation.*;
-import inc.plab.bpmn.model.question.evaluation.result.*;
+import inc.plab.bpmn.model.lesson.QuestionAnswer;
+import inc.plab.bpmn.model.question.evaluation.LessonResult;
+import inc.plab.bpmn.model.question.evaluation.result.Result;
 import inc.plab.bpmn.validation.JsonValidator;
 import lombok.AllArgsConstructor;
 import org.camunda.spin.json.SpinJsonNode;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -25,15 +27,15 @@ public class LessonService {
     final ActivityLogService activityLogService;
     final UserStatisticService userStatisticService;
 
-    public LessonResult evaluateLesson(String lessonId, SpinJsonNode lessonAnswer) {
-        JsonValidator.validateJson(lessonAnswer.toString());
-        LessonAnswer lessonAnswerObject = LessonMapper.mapToLessonAnswer(lessonAnswer);
+    public LessonResult evaluateLesson(String lessonId, SpinJsonNode lessonAnswers) {
+        JsonValidator.validateJson(lessonAnswers.toString());
+        List<QuestionAnswer> questionAnswers = QuestionAnswerMapper.mapToQuestionAnswer(lessonAnswers);
 
         LessonResult lessonResult = new LessonResult();
         lessonResult.setLessonId(lessonId);
         List<Result> results = lessonResult.getResults();
 
-        for (Answer answer : lessonAnswerObject.getAnswers()) {
+        for (QuestionAnswer answer : questionAnswers) {
             Result res = evaluationService.evaluateQuestionType(answer);
             if (res != null) {
                 results.add(res);
