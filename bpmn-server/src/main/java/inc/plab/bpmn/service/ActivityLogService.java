@@ -27,53 +27,39 @@ public class ActivityLogService {
     private final AchievementRepository achievementRepository;
 
     public void addLogEntryForObjective(int receivedXp, String objectiveId, String userId) {
-        UUID userUUID = UUID.fromString(userId);
-
-        Optional<Profile> profileOptional = profileRepository.findById(userUUID);
-        Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
-
         Optional<Objective> objectiveOptional = objectiveRepository.findById(UUID.fromString(objectiveId));
         Objective objective = objectiveOptional.orElseThrow(() -> new IllegalArgumentException("Objective not found"));
 
-        XpActivityLog xpActivityLog = new XpActivityLog();
-        xpActivityLog.setReceivedXp(receivedXp);
-        xpActivityLog.setCreatedAt(OffsetDateTime.now());
-        xpActivityLog.setUser(profile);
-        xpActivityLog.setAction("Objective: " + objective.getName());
+        addLogEntry(receivedXp, "Objective: " + objective.getName(), userId);
+    }
 
-        xpActivityLogRepository.save(xpActivityLog);
+    public void addLogEntryForFinishedScenario(int receivedXp, String userId) {
+        addLogEntry(receivedXp, "Scenario Completed", userId);
     }
 
     public void addLogEntryForAllLessonObjectives(int receivedXp, String userId) {
-        UUID userUUID = UUID.fromString(userId);
-
-        Optional<Profile> profileOptional = profileRepository.findById(userUUID);
-        Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
-
-        XpActivityLog xpActivityLog = new XpActivityLog();
-        xpActivityLog.setReceivedXp(receivedXp);
-        xpActivityLog.setCreatedAt(OffsetDateTime.now());
-        xpActivityLog.setUser(profile);
-
-        xpActivityLog.setAction("All lesson objectives");
-        xpActivityLogRepository.save(xpActivityLog);
+        addLogEntry(receivedXp, "All Lesson Objectives", userId);
     }
 
     public void addLogEntryForAchievement(int receivedXp, String achievementId, String userId) {
+        Optional<Achievement> achievementOptional = achievementRepository.findById(UUID.fromString(achievementId));
+        Achievement achievement = achievementOptional.orElseThrow(() -> new IllegalArgumentException("Achievement not found"));
+
+        addLogEntry(receivedXp, "Achievement: " + achievement.getTitle(), userId);
+    }
+
+    private void addLogEntry(int receivedXp, String text, String userId) {
         UUID userUUID = UUID.fromString(userId);
 
         Optional<Profile> profileOptional = profileRepository.findById(userUUID);
         Profile profile = profileOptional.orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
-        Optional<Achievement> achievementOptional = achievementRepository.findById(UUID.fromString(achievementId));
-        Achievement achievement = achievementOptional.orElseThrow(() -> new IllegalArgumentException("Achievement not found"));
-
         XpActivityLog xpActivityLog = new XpActivityLog();
         xpActivityLog.setReceivedXp(receivedXp);
         xpActivityLog.setCreatedAt(OffsetDateTime.now());
         xpActivityLog.setUser(profile);
-        xpActivityLog.setAction("Achievement: " + achievement.getTitle());
 
+        xpActivityLog.setAction(text);
         xpActivityLogRepository.save(xpActivityLog);
     }
 }
