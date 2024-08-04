@@ -80,12 +80,12 @@
               </div>
             </v-col>
             <v-col md="6" lg="4" v-for="achievement in studentAchievementStore.reqPalAchievements"
-                   class="mt-5 d-flex align-center justify-center">
-              <ReqPalAchievementItem :achievement="achievement"></ReqPalAchievementItem>
+                   class="mt-5 d-flex">
+              <ReqPalAchievementItem class="flex-grow-1" :achievement="achievement"></ReqPalAchievementItem>
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row class="mt-2">
             <v-col>
               <v-divider></v-divider>
             </v-col>
@@ -98,7 +98,7 @@
               </div>
             </v-col>
             <v-col md="6" lg="4" v-for="achievement in studentAchievementStore.achievements" class="mt-5 d-flex">
-
+              <StudentAchievementItem class="flex-grow-1" :achievement="achievement"></StudentAchievementItem>
             </v-col>
           </v-row>
         </v-container>
@@ -122,6 +122,7 @@ import {useLevelStore} from "@/stores/level.ts";
 import {ObjectiveLevel} from "@/types/level.ts";
 import {useStudentAchievementStore} from "@/stores/studentAchievement.ts";
 import ReqPalAchievementItem from "@/components/achievement/profile/ReqPalAchievementItem.vue";
+import StudentAchievementItem from "@/components/achievement/profile/StudentAchievementItem.vue";
 
 const levelStore = useLevelStore();
 const objectiveLevels = ref<ObjectiveLevel[] | null>(levelStore.getObjectiveLevels);

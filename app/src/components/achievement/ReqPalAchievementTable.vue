@@ -119,6 +119,7 @@ const headers = ref([
 const levelHeaders = ref([
   {title: "Level", value: "level", sortable: true, width: "auto", align: "start"},
   {title: "Titel", value: "title", sortable: true, width: "auto", align: "center"},
+  {title: "Beschreibung", value: "description", sortable: true, width: "auto", align: "center"},
   {title: "Schwellenwert", value: "threshold", sortable: true, width: "auto", align: "center"},
   {title: "XP-Belohnung", value: "xp", sortable: true, width: "auto", align: "center"},
   {title: "Bild", value: "image", sortable: false, width: "auto", align: "center"},

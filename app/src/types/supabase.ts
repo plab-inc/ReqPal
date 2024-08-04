@@ -379,6 +379,7 @@ export type Database = {
       }
       reqpal_achievement_levels: {
         Row: {
+          description: string | null
           id: string
           image: string | null
           level: number
@@ -388,6 +389,7 @@ export type Database = {
           xp: number
         }
         Insert: {
+          description?: string | null
           id?: string
           image?: string | null
           level: number
@@ -397,6 +399,7 @@ export type Database = {
           xp?: number
         }
         Update: {
+          description?: string | null
           id?: string
           image?: string | null
           level?: number

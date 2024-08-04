@@ -31,6 +31,7 @@ export type StudentReqPalAchievementLevel = {
     level: number;
     threshold: number;
     title: string;
+    description: string;
     image: string;
     xp: number;
 }

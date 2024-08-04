@@ -74,7 +74,7 @@ class AchievementServiceClass {
 
         const {data, error} = await supabase
             .from('user_reqpal_achievements')
-            .select('*, reqpal_achievement_level:reqpal_achievement_level_id(level, threshold, title, image, xp), reqpal_achievement:reqpal_achievements(id, description, example)')
+            .select('*, reqpal_achievement_level:reqpal_achievement_level_id(level, threshold, title, description, image, xp), reqpal_achievement:reqpal_achievements(id, description, example)')
             .eq("user_id", userUUID);
 
         if (error) throw error;
@@ -90,11 +90,11 @@ class AchievementServiceClass {
 
     private async fetchPreviousReqPalAchievementLevels(studentReqPalAchievement: StudentReqPalAchievement): Promise<StudentReqPalAchievement | undefined> {
         const currentLevel = studentReqPalAchievement.currentLevel.level;
-        const level = currentLevel > 1 ? currentLevel - 1 : 1;
+        const level = currentLevel > 1 ? currentLevel : 1;
 
         const {data, error} = await supabase
             .from('reqpal_achievement_levels')
-            .select('level, threshold, title, image, xp')
+            .select('level, threshold, title, description, image, xp')
             .lte('level', level)
             .eq("reqpal_achievement_id", studentReqPalAchievement.reqPalAchievementId);
 
@@ -264,6 +264,7 @@ class AchievementServiceClass {
                 {
                     reqpal_achievement_id: achievementLevel.reqpal_achievement_id,
                     title: achievementLevel.title,
+                    description: achievementLevel.description,
                     level: achievementLevel.level,
                     threshold: achievementLevel.threshold,
                     image: achievementLevel.image,
@@ -288,6 +289,7 @@ class AchievementServiceClass {
             .update({
                 title: achievementLevel.title,
                 level: achievementLevel.level,
+                description: achievementLevel.description,
                 threshold: achievementLevel.threshold,
                 image: achievementLevel.image,
                 xp: achievementLevel.xp
