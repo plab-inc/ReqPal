@@ -1,11 +1,14 @@
 import {defineStore} from 'pinia';
 import profileService from "@/services/database/profile.ts";
 import {useAuthStore} from "@/stores/auth.ts";
+import {UserStatisticDTO} from "@/types/studentStatistic.ts";
+import {AuthenticationError} from "@/errors/custom.ts";
 
 interface ProfileState {
     username: string | null;
     points: number;
     avatar: string;
+    userStatistic: UserStatisticDTO | null;
 }
 
 export const useProfileStore = defineStore('profile', {
@@ -13,10 +16,14 @@ export const useProfileStore = defineStore('profile', {
         username: null,
         points: 0,
         avatar: '',
+        userStatistic: null
     }),
     getters: {
         getAvatarURL(): string {
             return import.meta.env.BASE_URL + 'avatars/' + this.avatar + '.png';
+        },
+        getUserStatistic: (state) => {
+            return state.userStatistic;
         }
     },
     actions: {
@@ -43,7 +50,7 @@ export const useProfileStore = defineStore('profile', {
 
         async checkIfUsernameExistsExcludingUUID(username: string) {
             const authStore = useAuthStore();
-            if(authStore.user) {
+            if (authStore.user) {
                 return profileService.pull.checkIfUsernameExistsExcludingUUID(username, authStore.user.id);
             }
         },
@@ -60,6 +67,21 @@ export const useProfileStore = defineStore('profile', {
 
         async getTeachers() {
             return await profileService.pull.fetchTeachers();
-        }
+        },
+
+        async fetchStatisticsByStudent(): Promise<UserStatisticDTO | undefined> {
+            const authStore = useAuthStore();
+            this.userStatistic = null;
+
+            if (authStore.user && authStore.isStudent) {
+                const data = await profileService.pull.fetchUserStatistic(authStore.user.id);
+                if (data) {
+                    this.userStatistic = data;
+                    return data;
+                }
+            } else {
+                throw new AuthenticationError("No authorized user found.", 401)
+            }
+        },
     },
 });

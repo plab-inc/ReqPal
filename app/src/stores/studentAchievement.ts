@@ -22,6 +22,22 @@ export const useStudentAchievementStore = defineStore('studentAchievement', {
         getAchievements: (state) => {
             return state.achievements;
         },
+        getTotalAmountOfNonUniqueAchievements: (state) => {
+            let amount: number = 0;
+            state.achievements.forEach(a => amount += a.amount);
+            return amount;
+        },
+        getTotalAmountOfAchievementsAndReqPalAchievements: (state) => {
+            let amount: number = 0;
+            state.achievements.forEach(a => amount += a.amount);
+            return amount + state.reqPalAchievements.length;
+        },
+        getTotalAmountOfUniqueAchievements: (state) => {
+            return state.achievements.length;
+        },
+        getTotalAmountOfReqPalAchievements: (state) => {
+            return state.reqPalAchievements.length;
+        },
     },
 
     actions: {

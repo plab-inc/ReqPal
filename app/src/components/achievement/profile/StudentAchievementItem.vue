@@ -17,8 +17,8 @@
             </div>
           </v-col>
           <v-col md="4" lg="2" v-if="achievement.amount > 1" class="d-flex justify-center align-center">
-            <div class="text-subtitle-1 ml-1 mr-1">
-              {{ achievement.amount }} Mal
+            <div class="text-subtitle-1 ml-1 mr-1 text-center">
+              {{ achievement.amount }} Mal gesammelt
             </div>
           </v-col>
         </v-row>

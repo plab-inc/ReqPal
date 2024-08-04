@@ -27,6 +27,7 @@ import {
 } from "@/middlewares/achievement.ts";
 import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
 import { fetchCurrentScenarioResults, fetchScenarioAchievements, fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchStatisticsByStudent} from "@/middlewares/profile.ts";
 
 const routes = [
     {
@@ -240,7 +241,8 @@ const routes = [
                         requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser,
-                        fetchAchievementsByStudent
+                        fetchAchievementsByStudent,
+                        fetchStatisticsByStudent
                     ]
                 },
             },
