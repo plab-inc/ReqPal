@@ -95,6 +95,7 @@ public class TaskDelegate {
             scenarioProgress.setEnded(true);
         }
 
+        scenarioProgress.setLessonAnswers(null);
         scenarioProgressRepository.save(scenarioProgress);
     }
 

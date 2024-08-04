@@ -1,4 +1,5 @@
 import { Database } from "@/types/supabase.ts";
+import { QuestionAnswer } from "@/types/lesson.ts";
 
 export type ScenarioDTO = Database["public"]["Tables"]["scenarios"]["Row"];
 export type ScenarioProgressDTO = Database["public"]["Tables"]["scenario_user_progress"]["Row"];
@@ -28,6 +29,7 @@ export type ScenarioProgress = {
   started: boolean,
   ended: boolean,
   currentLessonId?: string,
+  currentLessonAnswers?: QuestionAnswer[]
 }
 
 export type ScenarioProgressStatistic = {

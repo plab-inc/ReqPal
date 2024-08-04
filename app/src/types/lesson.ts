@@ -5,28 +5,30 @@ export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
 
 export type Question = {
-    [key: string]: any;
-    uuid: string;
-    question: string | null;
-    options: string[] | null;
-    hint: string | null;
-    points?: number | null;
+  [key: string]: any;
+  uuid: string;
+  question: string | null;
+  options: string[] | null;
+  hint: string | null;
+  points?: number | null;
 
-    solution?: any | null;
-    position?: number | null;
-    type?: string | null;
+  solution?: any | null;
+  position?: number | null;
+  type?: string | null;
 }
 
 export type Lesson = {
-    lessonDTO: LessonDTO,
-    objectives: ObjectiveDTO[],
+  lessonDTO: LessonDTO,
+  objectives: ObjectiveDTO[],
 
-    creatorAvatar?: string,
-    creatorUsername?: string,
+  creatorAvatar?: string,
+  creatorUsername?: string,
 }
 
-export type LessonAnswer = {
-  answers: any[]
+export type QuestionAnswer = {
+  questionId: string,
+  type: string
+  options: any,
 }
 
 export type LessonQuestions = {
@@ -35,14 +37,9 @@ export type LessonQuestions = {
 }
 
 export type LessonForm = {
-    uuid: string;
-    title: string;
-    description: string;
-    questions: Question[];
-    objectiveIds: string[];
-}
-
-export type LessonStatistic = {
-    finished: boolean,
-    user_points: number
+  uuid: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  objectiveIds: string[];
 }

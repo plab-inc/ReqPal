@@ -5,8 +5,10 @@ import { invokeItem, startWorkflow } from "@/services/api/process";
 import { useUtilStore } from "@/stores/util";
 import { BpmnProcessError } from "@/errors/custom.ts";
 import router from "@/router/index.ts";
-import { LessonAnswer } from "@/types/lesson.ts";
+import { QuestionAnswer } from "@/types/lesson.ts";
 import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
+import ScenarioService from "@/services/database/scenario.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 
 export interface Step {
   title: string;
@@ -20,6 +22,7 @@ export interface Step {
 interface StepperState {
   scenario?: Scenario;
   currentLessonId?: string;
+  currentLessonAnswers?: QuestionAnswer[];
   currentStep: number;
   lessonSteps: Step[];
   isStarted: boolean;
@@ -30,6 +33,7 @@ export const useStepperStore = defineStore("stepper", {
   state: (): StepperState => ({
     scenario: undefined,
     currentLessonId: undefined,
+    currentLessonAnswers: undefined,
     currentStep: 0,
     lessonSteps: [],
     isStarted: false,
@@ -67,6 +71,7 @@ export const useStepperStore = defineStore("stepper", {
       this.currentLessonId = scenarioProgress.currentLessonId;
       this.isStarted = scenarioProgress.started;
       this.isCompleted = scenarioProgress.ended;
+      this.currentLessonAnswers = scenarioProgress.currentLessonAnswers;
     },
     async initializeSteps() {
       this.lessonSteps = [];
@@ -109,18 +114,19 @@ export const useStepperStore = defineStore("stepper", {
         await this.loadScenarioProgress(scenarioProgress);
         await this.initializeSteps();
         await this.loadInLesson();
+        await this.loadInAnswers();
       } catch (error) {
         throw new BpmnProcessError("Es gab ein Problem das Szenario zu fortzuführen.");
       } finally {
         utilStore.stopLoadingBar();
       }
     },
-    async nextStep(lessonAnswer: LessonAnswer) {
+    async nextStep(lessonAnswers: QuestionAnswer[]) {
       const utilStore = useUtilStore();
       if (this.scenario && !this.getCurrentStep.endStep) {
         try {
           utilStore.startLoadingBar();
-          const response = await invokeItem(this.scenario.id, lessonAnswer);
+          const response = await invokeItem(this.scenario.id, lessonAnswers);
           if (response.nextLessonId) {
             this.currentLessonId = response.nextLessonId;
             this.currentStep++;
@@ -141,6 +147,19 @@ export const useStepperStore = defineStore("stepper", {
       if (this.currentLessonId) {
         const lessonStore = useLessonStore();
         await lessonStore.fetchQuestionsWithLesson(this.currentLessonId);
+      }
+    },
+    async loadInAnswers() {
+      if (this.currentLessonAnswers) {
+        const lessonStore = useLessonStore();
+        await lessonStore.loadInUserAnswers(this.currentLessonAnswers);
+        this.currentLessonAnswers = undefined;
+      }
+    },
+    async saveLessonAnswers(lessonAnswers: QuestionAnswer[]) {
+      const authStore = useAuthStore();
+      if (this.scenario && authStore.user?.id) {
+        await ScenarioService.push.saveLessonAnswersInProgress(this.scenario, authStore.user?.id, lessonAnswers);
       }
     },
     addPreviousLessons(count: number) {
@@ -176,6 +195,6 @@ export const useStepperStore = defineStore("stepper", {
     },
     removePlaceholderStep() {
       this.allSteps.splice(this.allSteps.length - 2, 1);
-    }
+    },
   }
 });

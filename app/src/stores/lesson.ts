@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
+import { Lesson, LessonDTO, Question, QuestionAnswer } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
 import { DatabaseError } from "@/errors/custom.ts";
@@ -74,20 +74,24 @@ export const useLessonStore = defineStore('lesson', {
                 return value.valid;
             }));
         },
-        async generateUserResults(): Promise<LessonAnswer | null> {
+        async generateQuestionAnswers(): Promise<QuestionAnswer[] | null> {
             const questions = this.filterComponentsByQuestionOnly();
             if (this.currentLesson) {
-                return {
-                    answers: questions.map(component => {
-                        return {
-                            questionId: component.uuid,
-                            options: toRaw(component.data.options),
-                            type: component.type
-                        };
-                    })
-                };
+                return questions.map(component => {
+                    return {
+                        questionId: component.uuid,
+                        options: toRaw(component.data.options),
+                        type: component.type
+                    };
+                });
             }
             return null;
+        },
+        async loadInUserAnswers(answers: QuestionAnswer[]) {
+            answers.forEach(answer => {
+                const comp = this.lessonModules.find(c => c.uuid === answer.questionId);
+                if (comp) comp.data.options = answer.options;
+            });
         },
         filterComponentsByQuestionOnly() {
             return this.lessonModules.filter(c =>
@@ -150,10 +154,6 @@ export const useLessonStore = defineStore('lesson', {
             if (lesson) {
                 this.currentLesson = lesson;
             }
-        },
-
-        loadLessonWithQuestions(lessonUUID: string) {
-            this.clearLessonModules();
         },
 
         addLessonModuleWithData(componentName: string, componentUUID: string, data: {
