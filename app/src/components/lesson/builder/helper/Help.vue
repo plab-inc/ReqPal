@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import AlertService from "@/services/util/alert.ts";
 import {DialogType} from "@/stores/util.ts";
+import AlertService from "@/services/util/alert.ts";
 
 interface Props {
   dialogType: DialogType
 }
 
-const props = defineProps<Props>();
-
+defineProps<Props>();
 </script>
 <template>
   <v-tooltip :text="'Erklärung'" location="top">
@@ -17,7 +16,7 @@ const props = defineProps<Props>();
              :elevation="8"
              color="info"
              size="40"
-             @click="AlertService.addHelpDialog(props.dialogType)"></v-btn>
+             @click.stop="AlertService.addHelpDialog(dialogType)"></v-btn>
     </template>
   </v-tooltip>
 </template>
