@@ -1,12 +1,13 @@
-import {defineStore} from "pinia";
-import {Lesson, LessonAnswer, LessonDTO, Question} from "@/types/lesson.ts";
+import { defineStore } from "pinia";
+import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
-import {VForm} from "vuetify/components";
-import {toRaw} from "vue";
+import { VForm } from "vuetify/components";
+import { toRaw } from "vue";
+import { ObjectiveDTO } from "@/types/objective.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -58,6 +59,9 @@ export const useLessonStore = defineStore('lesson', {
         getLessonModules: (state) => {
             return state.lessonModules;
         },
+        getLessonObjectives: (state: any) => (lessonId: string) => {
+            return state.lessons.find((lesson: Lesson) => lesson.lessonDTO.uuid === lessonId)?.objectives.map((objective: ObjectiveDTO) => objective.name) || [];
+        }
     },
 
     actions: {

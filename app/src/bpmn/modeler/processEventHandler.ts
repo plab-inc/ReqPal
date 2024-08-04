@@ -3,8 +3,7 @@ import ElementRegistry from "diagram-js/lib/core/ElementRegistry";
 import Modeling from "bpmn-js/lib/features/modeling/Modeling";
 import { Moddle } from "bpmn-js/lib/model/Types.ts";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
-import { ModdleElement } from "bpmn-js/lib/model/Types";
-import { Element } from "bpmn-js/lib/model/Types";
+import { Element, ModdleElement } from "bpmn-js/lib/model/Types";
 
 class ProcessEventHandler {
 
@@ -28,8 +27,6 @@ class ProcessEventHandler {
   }
 
   private updateProcessProps: EventBusEventCallback<void> = (): void => {
-    //TODO Better synergy between store and xml props during import
-
     const scenarioModelerStore = useScenarioModelerStore();
 
     const process = this.elementRegistry.filter((element: ModdleElement) => element.type === "bpmn:Process")[0] as Element;
