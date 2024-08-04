@@ -12,7 +12,8 @@ export const mcExplanation: DialogText = {
     message: "In einer Multiple-Choice-Aufgabe ist das Ziel, alle Aussagen auszuwählen, die auf die zuvor gestellte Frage zutreffen. " +
         "Sie haben die Möglichkeit, mehrere oder auch keine Aussagen auszuwählen. " +
         "Bitte lesen Sie die Frage sorgfältig durch und überlegen Sie, welche Aussagen wahr und welche falsch sind. " +
-        "Sobald Sie eine Aussage auswählen, gilt sie als zutreffend.",
+        "Sobald Sie eine Aussage auswählen, gilt sie als zutreffend. " +
+        "Die Gesamtpunktzahl der Aufgabe wird gleichmäßig auf jede Antwortmöglichkeit verteilt. Für jede richtige Antwort können dementsprechend Teilpunkte erhalten werden.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -22,7 +23,8 @@ export const tfExplanation: DialogText = {
         "Sie haben zwei Optionen zur Auswahl, und Ihre Aufgabe besteht darin, diejenige auszuwählen, die am besten zur Aussage passt. " +
         "Beachten Sie, dass dementsprechend nur eine Option ausgewählt werden kann. " +
         "Eine 'True' Auswahl bedeutet, dass die Aussage korrekt ist, während 'False' bedeutet, dass die Aussage nicht korrekt ist. " +
-        "Bitte lesen Sie die Aussage sorgfältig durch und entscheiden Sie, ob sie wahr oder falsch ist.",
+        "Bitte lesen Sie die Aussage sorgfältig durch und entscheiden Sie, ob sie wahr oder falsch ist. " +
+        "In dieser Aufgabe kann man entweder die Gesamtpunktzahl bei richtiger Antwort erhalten oder keine Punkte bei falscher Antwort.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -31,8 +33,8 @@ export const sliderExplanation: DialogText = {
     message: "In einer Slider Aufgabe ist das Ziel, einen Wert auszuwählen oder einzuschätzen abhängig von der gestellten Frage. " +
         "Der Slider kann mithilfe der Maus bewegt werden. Klicken Sie auf den Slider und ziehen Sie diesen nach links oder rechts. " +
         "Links wird der Wert kleiner, rechts wird dieser größer. Wählen Sie so einen Wert aus. Manchmal muss der Wert nicht 100% korrekt sein, da es einen " +
-        "Toleranzbereich geben kann, je nach Aufgabe."
-    ,
+        "Toleranzbereich geben kann, je nach Aufgabe. " +
+        "In dieser Aufgabe kann man entweder die Gesamtpunktzahl bei richtiger Antwort erhalten oder keine Punkte bei falscher Antwort.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -41,8 +43,8 @@ export const productQualificationExplanation: DialogText = {
     message: "In dieser Aufgabe ist das Ziel, die angegebenen Produkte nach ihrer Qualifizierung zu bewerten. " +
         "Recherchieren Sie hierfür zunächst mithilfe der bereitgestellten Links und Kriterien oder Anforderungen. " +
         "Daraufhin können Sie mithilfe des Sliders einen Wert zwischen 1 und 5 auswählen. Der Wert 1 ist schlecht, also nicht gut geeignet, während " +
-        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut."
-    ,
+        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut. " +
+        "Die Gesamtpunktzahl der Aufgabe wird gleichmäßig auf jedes zu bewertende Produkt verteilt. Für jede richtige Bewertung des Produkts können dementsprechend Teilpunkte erhalten werden.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -51,10 +53,10 @@ export const productQualificationTeacherExplanation: DialogText = {
     message: "Hier können Sie einen von Ihnen hochgeladenen Katalog auswählen und daraufhin eine Anforderung daraus auswählen. Entweder wird die Anforderung alleine in der Lektion" +
         " angezeigt, so dass dann z.B. ein darauffolgendes Modul Bezug auf die Anforderung nehmen kann, oder Sie können hier direkt eine Produkt Qualifizierungs-Aufgabe zu der Anforderung erstellen. " +
         "In der Produkt Qualifizierungs-Aufgabe ist das Ziel, die angegebenen Produkte nach ihrer Qualifizierung zu bewerten. Wählen Sie hierfür Produkte aus dem Katalog aus. " +
-        "Mthilfe der bereitgestellten Links und Anforderungen können die Lernenden dann die Produkte evaluieren. " +
+        "Mithilfe der bereitgestellten Links und Anforderungen können die Lernenden dann die Produkte evaluieren. " +
         "Mit dem Slider wird ein Wert zwischen 1 und 5 ausgewählt. Der Wert 1 ist schlecht, also nicht gut geeignet, während " +
-        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut."
-    ,
+        "der Wert 5 sehr gut ist, also das Produkt eignet sich sehr gut. " +
+        "Die Gesamtpunktzahl der Aufgabe wird gleichmäßig auf jedes zu bewertende Produkt verteilt. Für jede richtige Bewertung des Produkts können dementsprechend Teilpunkte erhalten werden.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -62,7 +64,8 @@ export const notesExplanation: DialogText = {
     title: "Notizen: Erklärung",
     message: "Nutzen Sie die bereitgestellten Textfelder, um sich Notizen zu Produkten, Anforderungen oder anderen Themen zu machen. " +
         "Das Textfeld besitzt einen Titel, dass Ihnen helfen kann, Ihre Gedanken direkt zu einer bestimmten Kategorie zuzuordnen. " +
-        "In dem Feld 'Allgemein' können Sie frei alles notieren, was Ihnen wichtig ist oder auffällt.",
+        "In dem Feld 'Allgemein' können Sie frei alles notieren, was Ihnen wichtig ist oder auffällt. " +
+        "Die Notizen werden nicht bewertet und bringen auch keine Punkte ein.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -70,13 +73,15 @@ export const notesTeacherExplanation: DialogText = {
     title: "Notizen: Erklärung",
     message: "Mithilfe von Textfeldern können sich Lernende Notizen beim Bearbeiten von Lektionen machen. Sie können den Notizfeldern Titel geben, " +
         "so dass die Lernenden dazu angeregt werden, sich Notizen zu bestimmten Kategorieren zu machen. " +
-        "Hierbei handelt es sich um keine direkte Aufgabe, sondern nur um eine Hilfestellung für die Lernenden.",
+        "Hierbei handelt es sich um keine direkte Aufgabe, sondern nur um eine Hilfestellung für die Lernenden. " +
+        "Die Notizen können nicht bewertet werden oder Punkte einbringen.",
     confirmLabel: explanationConfirmation,
 }
 
 export const dividerTeacherExplanation: DialogText = {
     title: "Trenner: Erklärung",
-    message: "Mithilfe von Trennern können Sie die Lektion in verschiedene Abschnitte unterteilen. ",
+    message: "Mithilfe von Trennern können Sie die Lektion in verschiedene Abschnitte unterteilen. " +
+        "Die Trenner können nicht bewertet werden oder Punkte einbringen.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -91,7 +96,8 @@ export const productExplanation: DialogText = {
 export const textfieldExplanation: DialogText = {
     title: "Textfeld: Erklärung",
     message: "Hier können Sie einen Text eingeben, welcher in der Lektion dann angezeigt wird. Es kann sich dabei um eine Erklärung, einen Hinweis, eine Aufgabenstellung oder" +
-        " eine motivierende Nachricht handeln. Der Text ist unabhängig von den anderen Modulen, kann aber durch Kontext und ihrer Reihenfolge Bezug auf z.B. darauffolgende Module nehmen.",
+        " eine motivierende Nachricht handeln. Der Text ist unabhängig von den anderen Modulen, kann aber durch Kontext und ihrer Reihenfolge Bezug auf z.B. darauffolgende Module nehmen. " +
+        "Die Textfelder können nicht bewertet werden oder Punkte einbringen.",
     confirmLabel: explanationConfirmation,
 }
 
@@ -114,7 +120,7 @@ export const LessonReset: DialogText = {
 export const DeleteRequirement: DialogText = {
     title: "Requirement löschen",
     message: "Möchten Sie wirklich die ausgewählte Anforderung löschen? " +
-      "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
     confirmLabel: "Löschen",
     cancelLabel: "Zurück"
 };
@@ -122,7 +128,7 @@ export const DeleteRequirement: DialogText = {
 export const DeleteRequirements: DialogText = {
     title: "Requirements löschen",
     message: "Möchten Sie wirklich die ausgewählten Anforderungen löschen? " +
-      "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
+        "Dies kann nicht rückgängig gemacht werden und hat möglicherweise Auswirkungen auf bereits erstellte Lektionen.",
     confirmLabel: "Löschen",
     cancelLabel: "Zurück"
 };
@@ -179,9 +185,9 @@ export const DeleteLesson: DialogText = {
 export const DeployScenarioFirstTime: DialogText = {
     title: "Szenario Veröffentlichen",
     message: "Möchten Sie das ausgewählte Szenario wirklich veröffentlichen? " +
-      "Diese Aktion kann nicht rückgängig gemacht werden. Ab diesem Zeitpunkt ist das Szenario für Studierende sichtbar und kann, sofern freigegeben, gestartet werden. " +
-      "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine neue Version veröffentlicht werden." +
-      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
+        "Diese Aktion kann nicht rückgängig gemacht werden. Ab diesem Zeitpunkt ist das Szenario für Studierende sichtbar und kann, sofern freigegeben, gestartet werden. " +
+        "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine neue Version veröffentlicht werden." +
+        "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios.",
     confirmLabel: "Veröffentlichen",
     cancelLabel: "Zurück"
 };
@@ -189,9 +195,9 @@ export const DeployScenarioFirstTime: DialogText = {
 export const DeployScenarioNewVersion: DialogText = {
     title: "Neue Szenario Version Veröffentlichen",
     message: "Möchten die neue Version des Szenarios wirklich veröffentlichen?" +
-      "Diese Aktion kann nicht rückgängig gemacht werden." +
-      "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine weitere Version veröffentlicht werden. " +
-      "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios. ",
+        "Diese Aktion kann nicht rückgängig gemacht werden." +
+        "Einmal von einem Studierenden gestartete Szenarien können nicht mehr bearbeitet werden. Es kann dann nur eine weitere Version veröffentlicht werden. " +
+        "Studierende, die das Szenario dann starten, bearbeiten die neue Version. Bereits gestartete Szenarien sind von den Änderungen in der Version nicht betroffen, mit Ausnahme des Titels und der Beschreibung des Szenarios. ",
     confirmLabel: "Neue Version Veröffentlichen",
     cancelLabel: "Zurück"
 };
@@ -199,8 +205,8 @@ export const DeployScenarioNewVersion: DialogText = {
 export const LockScenario: DialogText = {
     title: "Szenario Sperren",
     message: "Möchten das Szenario wirklich sperren? " +
-      "Szenarios können dann nicht mehr von Studierenden gestartet werden. " +
-      "Ausgenommen sind Durchläufe von Szenarien die bereits gestartet wurden. Diese können von Studierenden fortgeführt werden. ",
+        "Szenarios können dann nicht mehr von Studierenden gestartet werden. " +
+        "Ausgenommen sind Durchläufe von Szenarien die bereits gestartet wurden. Diese können von Studierenden fortgeführt werden. ",
     confirmLabel: "Szenario Sperren",
     cancelLabel: "Zurück"
 };
@@ -208,8 +214,8 @@ export const LockScenario: DialogText = {
 export const UnlockScenario: DialogText = {
     title: "Szenario Freigeben",
     message: "Möchten das Szenario wirklich freigeben? " +
-      "Szenarios ab diesem Zeitpunkt von Studierenden gestartet und bearbeitet werden. " +
-      "Einmal von einem Studierendem gestartete Szenarien sind von einer erneuten Sperrung ausgenommen.",
+        "Szenarios ab diesem Zeitpunkt von Studierenden gestartet und bearbeitet werden. " +
+        "Einmal von einem Studierendem gestartete Szenarien sind von einer erneuten Sperrung ausgenommen.",
     confirmLabel: "Szenario Freigeben",
     cancelLabel: "Zurück"
 };
@@ -217,8 +223,8 @@ export const UnlockScenario: DialogText = {
 export const DeleteScenario: DialogText = {
     title: "Szenario Freigeben",
     message: "Achtung! Möchten das Szenario wirklich löschen? " +
-      "Szenarios werden unwiderruflich gelöscht und Studierende können es ggf. nicht mehr fertigstellen oder den Fortschritt einsehen." +
-      "Bereits erzielte Punkte und Achievements bleiben den Studierenden allerdings erhalten.",
+        "Szenarios werden unwiderruflich gelöscht und Studierende können es ggf. nicht mehr fertigstellen oder den Fortschritt einsehen." +
+        "Bereits erzielte Punkte und Achievements bleiben den Studierenden allerdings erhalten.",
     confirmLabel: "Szenario Löschen",
     cancelLabel: "Zurück"
 };
