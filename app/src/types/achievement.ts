@@ -15,7 +15,6 @@ export type ReqPalAchievement = {
     created_at: string,
     target_field: string,
     firstLevelImage: string | null,
-    example: boolean,
     levels: ReqPalAchievementLevelDTO[]
 }
 

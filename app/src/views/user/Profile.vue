@@ -1,11 +1,11 @@
 <template>
+  <v-row justify="space-between" align="center" class="mb-1">
+    <v-col cols="auto" class="text-h4">
+      Meine Fortschritte
+    </v-col>
+  </v-row>
+  <v-divider></v-divider>
   <v-container>
-    <v-row class="mb-5">
-      <v-col class="text-h4">
-        Meine Fortschritte
-      </v-col>
-    </v-row>
-
     <v-tabs
         v-model="tab"
         color="primary"
@@ -13,7 +13,7 @@
     >
       <v-tab :value="0">
         <v-icon left class="mr-1">mdi-progress-star-four-points</v-icon>
-        Level
+        Levels
       </v-tab>
       <v-tab :value="1">
         <v-icon left class="mr-1">mdi-medal-outline</v-icon>
@@ -21,10 +21,9 @@
       </v-tab>
       <v-tab :value="2">
         <v-icon left class="mr-1">mdi-chart-box-outline</v-icon>
-        Statistik
+        Statistiken
       </v-tab>
     </v-tabs>
-
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="0">
         <v-container>
@@ -60,7 +59,6 @@
           </v-row>
         </v-container>
       </v-tabs-window-item>
-
       <v-tabs-window-item :value="1">
         <v-container>
           <v-row class="mt-2">
@@ -78,13 +76,11 @@
               Noch keine ReqPal Achievements gesammelt.
             </v-col>
           </v-row>
-
           <v-row class="mt-2">
             <v-col>
               <v-divider></v-divider>
             </v-col>
           </v-row>
-
           <v-row class="mt-2">
             <v-col>
               <div class="text-h6">
@@ -101,7 +97,6 @@
           </v-row>
         </v-container>
       </v-tabs-window-item>
-
       <v-tabs-window-item :value="2">
         <StudentStatistic></StudentStatistic>
       </v-tabs-window-item>

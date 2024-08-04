@@ -1,8 +1,8 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="250" class="flex-card">
-    <v-card-title>
-      {{ currentAchievementLevel.title }}
-    </v-card-title>
+  <v-card :prepend-icon="achievement.max ? 'mdi-crown' : ''" variant="elevated" color="primary" max-height="250" class="flex-card">
+    <template v-slot:title>
+      <span> {{ currentAchievementLevel.title }}</span>
+    </template>
     <v-card-item class="flex-grow-1">
       <v-card-text>
         <v-row>

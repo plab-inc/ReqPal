@@ -4,7 +4,7 @@
       <div class="d-flex align-center justify-space-between">
         ReqPal Level
         <div class="d-flex align-center">
-          <v-icon left>mdi-star</v-icon>
+          <v-icon left class="mr-1">mdi-star</v-icon>
           <span>{{ reqPalLevel.level }}</span>
         </div>
       </div>

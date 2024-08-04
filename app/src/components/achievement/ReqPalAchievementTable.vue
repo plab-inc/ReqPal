@@ -112,7 +112,6 @@ const achievementStore = useAchievementStore();
 const headers = ref([
   {title: "Beschreibung", value: "description", sortable: true, width: "25%", align: "start"},
   {title: "Ziel", value: "target_field", sortable: true, width: "auto", align: "center"},
-  {title: "Beispiel", value: "example", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 

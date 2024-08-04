@@ -1,12 +1,12 @@
 <template>
   <v-row v-if="scenarioStatistic">
     <v-col class="text-subtitle-1">
-      <v-chip color="warning">
-        <v-icon class="mr-2" color="warning"
-                :icon="'mdi-star-four-points-circle-outline'"></v-icon>
-        {{ scenarioStatistic.score }} Punkte
-      </v-chip>
       <div class="d-flex align-center flex-wrap mt-2">
+        <v-chip color="warning" class="mb-1 mr-1">
+          <v-icon class="mr-2" color="warning"
+                  :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+          {{ scenarioStatistic.score }} Punkte
+        </v-chip>
         <v-chip v-for="achievement in scenarioStatistic.achievements" class="mb-1 mr-1" color="success">
           <v-icon class="mr-2">
             <v-img :src="getAchievementImageUrl(achievement.image)"

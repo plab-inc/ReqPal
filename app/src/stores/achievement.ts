@@ -103,7 +103,7 @@ export const useAchievementStore = defineStore('achievement', {
             const authStore = useAuthStore();
 
             if (authStore.user) {
-                const data = await AchievementService.pull.fetchAchievementsByModerator(authStore.user.id);
+                const data = await AchievementService.pull.fetchReqPalAchievementsByModerator(authStore.user.id);
                 if (data && data.length > 0) {
                     this.reqPalAchievements = data;
                     return data;

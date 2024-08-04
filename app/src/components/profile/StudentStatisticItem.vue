@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="250">
+  <v-card variant="elevated" :color="color ? color : 'primary'" max-height="250">
     <v-card-item>
       <v-row>
         <v-col sm="2" class="d-flex justify-center align-center">
@@ -23,7 +23,8 @@ interface Props {
   statisticValue: number,
   statisticUnit: string,
   statisticTitel: string,
-  icon: string
+  icon: string,
+  color?: string
 }
 
 defineProps<Props>();

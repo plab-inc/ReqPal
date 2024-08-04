@@ -34,7 +34,7 @@ class AchievementServiceClass {
         fetchReqPalAchievementsByStudent: this.fetchReqPalAchievementsByStudent.bind(this),
         fetchPreviousReqPalAchievementLevels: this.fetchPreviousReqPalAchievementLevels.bind(this),
         fetchAchievementImages: this.fetchAchievementImages.bind(this),
-        fetchAchievementsByModerator: this.fetchAchievementsByModerator.bind(this),
+        fetchReqPalAchievementsByModerator: this.fetchReqPalAchievementsByModerator.bind(this),
         fetchAchievementsByIds: this.fetchAchievementsByIds.bind(this)
     }
 
@@ -74,7 +74,7 @@ class AchievementServiceClass {
 
         const {data, error} = await supabase
             .from('user_reqpal_achievements')
-            .select('*, reqpal_achievement_level:reqpal_achievement_level_id(level, threshold, title, description, image, xp), reqpal_achievement:reqpal_achievements(id, description, example)')
+            .select('*, reqpal_achievement_level:reqpal_achievement_level_id(level, threshold, title, description, image, xp), reqpal_achievement:reqpal_achievements(id, description)')
             .eq("user_id", userUUID);
 
         if (error) throw error;
@@ -185,7 +185,7 @@ class AchievementServiceClass {
         }
     }
 
-    private async fetchAchievementsByModerator(userUUID: string): Promise<ReqPalAchievement[] | undefined> {
+    private async fetchReqPalAchievementsByModerator(userUUID: string): Promise<ReqPalAchievement[] | undefined> {
 
         const {data, error} = await supabase
             .from('reqpal_achievements')
@@ -216,8 +216,7 @@ class AchievementServiceClass {
                 {
                     user_id: userUUID,
                     description: achievement.description,
-                    target_field: achievement.target_field,
-                    example: achievement.example
+                    target_field: achievement.target_field
                 }
             )
             .select()
@@ -237,8 +236,7 @@ class AchievementServiceClass {
             .from("reqpal_achievements")
             .update({
                 description: achievement.description,
-                target_field: achievement.target_field,
-                example: achievement.example
+                target_field: achievement.target_field
             })
             .eq("id", achievement.id);
 

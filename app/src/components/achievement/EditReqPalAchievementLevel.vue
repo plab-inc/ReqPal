@@ -98,7 +98,6 @@ const localAchievementLevel = ref<ReqPalAchievementLevelDTO>({
   description: "",
   image: "",
   level: 0,
-  description: "",
   reqpal_achievement_id: "",
   threshold: 0,
   title: "",
