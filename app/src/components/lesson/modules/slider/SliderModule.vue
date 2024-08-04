@@ -14,10 +14,10 @@ const props = defineProps<Props>();
 const inputValue = ref<number>(0);
 
 const lessonStore = useLessonStore();
-const question = lessonStore.getLessonModuleFieldValues(props.componentId, 'question')
-const hint = lessonStore.getLessonModuleFieldValues(props.componentId, 'hint')
+const question = lessonStore.getLessonModuleFieldValues(props.componentId, 'question');
+const hint : string = lessonStore.getLessonModuleFieldValues(props.componentId, 'hint') || null;
 const solution = lessonStore.getLessonModuleFieldValues(props.componentId, 'solution');
-const questionId = lessonStore.getLessonModuleFieldValues(props.componentId, 'uuid');
+
 const minValue = ref<number>();
 const maxValue = ref<number>();
 const correctValue = ref<number>();
@@ -130,7 +130,7 @@ watch(inputValue, (newInput) => {
             <Help dialog-type="sliderExplanation"></Help>
           </div>
           <div>
-            <Hint v-if="hint" :hint="hint" :questionId="questionId"></Hint>
+            <Hint v-if="hint" :hint="hint"></Hint>
           </div>
         </v-col>
       </v-row>

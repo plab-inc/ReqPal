@@ -241,7 +241,7 @@ watch(products.value, (newProducts) => {
                     </v-slider>
                   </v-col>
                   <v-col v-if="product.comment" cols="auto">
-                    <Hint :hint="product.comment" :questionId="fields.questionId"></Hint>
+                    <Hint :hint="product.comment"></Hint>
                   </v-col>
                 </v-row>
               </v-container>

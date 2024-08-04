@@ -146,7 +146,7 @@ export const useStepperStore = defineStore("stepper", {
     async loadInLesson() {
       if (this.currentLessonId) {
         const lessonStore = useLessonStore();
-        await lessonStore.fetchQuestionsWithLesson(this.currentLessonId);
+        await lessonStore.fetchLessonWithQuestions(this.currentLessonId);
       }
     },
     async loadInAnswers() {

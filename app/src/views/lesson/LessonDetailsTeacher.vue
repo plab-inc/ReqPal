@@ -59,7 +59,7 @@ watch(filters, async (newShowSolutions) => {
     components.value = lessonStore.getLessonModules;
   }
   if (!filters.value.includes('showSolutions') && currentLesson?.lessonDTO) {
-    await lessonStore.fetchQuestionsWithLesson(currentLesson.lessonDTO.uuid);
+    await lessonStore.fetchLessonWithQuestions(currentLesson.lessonDTO.uuid);
     components.value = lessonStore.getLessonModules;
   }
 }, {deep: true});

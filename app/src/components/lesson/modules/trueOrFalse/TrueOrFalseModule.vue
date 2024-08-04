@@ -13,9 +13,8 @@ interface Props {
 const props = defineProps<Props>();
 const lessonStore = useLessonStore();
 const question = lessonStore.getLessonModuleFieldValues(props.componentId, 'question')
-const hint = lessonStore.getLessonModuleFieldValues(props.componentId, 'hint')
+const hint : string = lessonStore.getLessonModuleFieldValues(props.componentId, 'hint') || null;
 const solution = lessonStore.getLessonModuleFieldValues(props.componentId, 'solution') || null;
-const questionId = lessonStore.getLessonModuleFieldValues(props.componentId, 'uuid');
 const points = lessonStore.getLessonModuleFieldValues(props.componentId, 'points');
 const authStore = useAuthStore();
 const isTeacher: boolean = authStore.isTeacher;
@@ -97,7 +96,7 @@ watch(fields.value.options, (newValue) => {
             <Help dialog-type="tfExplanation"></Help>
           </div>
           <div>
-            <Hint v-if="hint" :hint="hint" :questionId="questionId"></Hint>
+            <Hint v-if="hint" :hint="hint"></Hint>
           </div>
         </v-col>
       </v-row>
