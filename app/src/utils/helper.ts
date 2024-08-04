@@ -4,3 +4,10 @@ export const shuffleArray = (array: any) => {
         [array[i], array[j]] = [array[j], array[i]];
     }
 };
+
+export function convertStringToNumber(value: string) {
+    const numValue = Number(value);
+    if (!isNaN(numValue)) {
+        return numValue;
+    }
+}

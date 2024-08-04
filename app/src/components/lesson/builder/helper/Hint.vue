@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import alertService from "@/services/util/alert.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {useAuthStore} from "@/stores/auth.ts";
 
 interface Props {
   questionId: string,
@@ -10,27 +7,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const lessonStore = useLessonStore();
-const authStore = useAuthStore();
-
-function openWarningDialog() {
-  if (authStore.isTeacher || (!lessonStore.currentLesson?.isStarted && lessonStore.currentLesson?.isFinished)) {
-    openHintDialog();
-  } else {
-    alertService.openDialog('Warnung: Hinweise anzeigen',
-        'Wenn Sie sich einen Hinweis anschauen, gibt es 10 Punkte Abzug pro Hinweis. ' +
-        'Falls Sie sich diesen Hinweis bereits angeschaut haben, gibt es keine zusätzlichen Punktabzüge.',
-        'Hinweis anzeigen', 'Zurück zur Lektion', openHintDialog);
-  }
-}
-
-function openHintDialog() {
-  alertService.openDialog('Hinweis', props.hint, 'Danke!', undefined, onHintClick)
-}
-
-async function onHintClick() {
-  await lessonStore.uploadUsedHintForQuestion(props.questionId);
-}
 </script>
 
 <template>
@@ -40,8 +16,7 @@ async function onHintClick() {
              :elevation="8"
              size="40"
              color="warning"
-             icon="mdi-lightbulb-on-outline"
-             @click.stop="openWarningDialog"></v-btn>
+             icon="mdi-lightbulb-on-outline" />
     </template>
   </v-tooltip>
 </template>

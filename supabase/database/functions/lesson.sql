@@ -1,5 +1,4 @@
 -- Author: Fabian, Laura
-
 create or replace function create_lesson_from_json(data jsonb) returns void
     language plpgsql
 as
@@ -7,7 +6,8 @@ $$
 DECLARE
     v_lesson_uuid uuid;
     question      jsonb;
-     total_points  int4 := 0;
+    objective_id  uuid;
+    total_points  int4 := 0;
 BEGIN
     INSERT INTO lessons (uuid, title, description, user_id, published)
     VALUES ((data ->> 'uuid')::uuid,
@@ -60,6 +60,14 @@ BEGIN
     UPDATE lessons
     SET points = total_points
     WHERE uuid = v_lesson_uuid;
+
+    DELETE FROM lesson_objectives WHERE lesson_id = v_lesson_uuid;
+
+    FOR objective_id IN SELECT (jsonb_array_elements_text(data -> 'objectiveIds'))::uuid
+        LOOP
+            INSERT INTO lesson_objectives (lesson_id, objective_id)
+            VALUES (v_lesson_uuid, objective_id);
+        END LOOP;
 END;
 $$;
 
@@ -74,6 +82,10 @@ BEGIN
                    'uuid', l.uuid,
                    'title', l.title,
                    'description', l.description,
+                   'objectiveIds', COALESCE(
+                           (SELECT jsonb_agg(objective_id)
+                            FROM lesson_objectives
+                            WHERE lesson_id = l.uuid), '[]'::jsonb),
                    'questions', COALESCE(
                            jsonb_agg(
                                    jsonb_build_object(

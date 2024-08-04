@@ -13,103 +13,24 @@
       v-model="drawer"
       permanent
     >
-      <v-list nav>
-        <v-list-item v-if="authStore.user"
-                     :title="authStore.user?.user_metadata.username"
-                     :subtitle="authStore.user?.email"
-                     :active="false"
-                     :prepend-avatar="profileStore.avatar ? profileStore.getAvatarURL : ''"
-                     :prepend-icon="!profileStore.avatar ? 'mdi-account-circle' : ''"
-                     to="/account"
-                     elevation="3"
-                     rounded
-        />
-        <v-list-item v-if="!authStore.user"
-                     prepend-icon="mdi-login"
-                     title="Login" to="Login"
-                     rounded
-        />
-      </v-list>
-      <v-divider class="my-1" />
-      <v-list nav>
-        <v-list-item
-          rounded prepend-icon="mdi-home"
-          title="Home" to="/"
-          exact />
-        <v-divider class="my-1" />
-        <div v-if="authStore.user">
-          <v-list-group value="Lektionen" v-if="!authStore.isTeacher">
-            <template v-slot:activator="{ props }">
-              <v-list-item
-                v-bind="props"
-                prepend-icon="mdi-school"
-                title="Lernen"
-                rounded
-              />
-            </template>
-            <v-list-item
-              rounded
-              to="/lessons"
-              title="Lektionen"
-              :active="router.currentRoute.value.path.startsWith('/lessons')"
-              :subtitle="lessonStore.openLessons <= 0 ? 'Keine offenen' : lessonStore.openLessons +' Lektion(en) offen'"
-            >
-              <template v-slot:prepend>
-                <v-progress-circular
-                  class="mr-4"
-                  size="27"
-                  :model-value="openLessonsPercentage"
-                  :color="openLessonsColor"
-                />
-              </template>
-            </v-list-item>
-            <v-list-item
-              title="Meine Punkte"
-              :subtitle="profileStore.points"
-              rounded
-            >
-              <template v-slot:prepend>
-                <v-icon class="mr-n5 ml-n1" size="34" color="warning">
-                  mdi-star-four-points-circle-outline
-                </v-icon>
-              </template>
-            </v-list-item>
-          </v-list-group>
-        </div>
-        <div v-if="authStore.user && authStore.isTeacher">
-          <v-list-item rounded prepend-icon="mdi-text-box-multiple" title="Meine Kataloge" to="/catalogs" />
-          <v-list-item rounded prepend-icon="mdi-invoice-list" title="Meine Produkte" to="/products" />
-          <v-list-item rounded prepend-icon="mdi-upload" title="Katalog Hochladen" to="/catalogs/upload" />
-          <v-divider class="my-1" />
-          <v-list-item rounded prepend-icon="mdi-school" title="Erstellte Lektionen"
-                       :active="router.currentRoute.value.path.startsWith('/lessons')" to="/lessons" />
-          <v-list-item rounded prepend-icon="mdi-tools" title="Lektionen Erstellen" to="/builder" />
-        </div>
-      </v-list>
-      <template v-slot:append>
-        <v-divider class="my-2" />
-        <v-list>
-          <div v-if="authStore.user">
-            <v-list-item prepend-icon="mdi-cog" title="Account Einstellungen" to="/account" />
-            <v-list-item prepend-icon="mdi-logout" title="Logout" @click="logout" />
-          </div>
-          <v-list-item
-            :prepend-icon="themeStore.currentTheme === 'light' ? 'mdi-weather-night' : 'mdi-weather-sunny'"
-            :title="themeStore.currentTheme === 'light' ? 'Dunkles Thema' : 'Helles Thema'"
-            @click="themeStore.toggleUserTheme"
-          />
-          <v-divider class="my-1" />
-          <v-list-item prepend-icon="mdi-email-fast" title="Feedback" to="/feedback" />
-          <v-list-item
-            prepend-icon="mdi-scale-balance"
-            title="Rechtliche Hinweise"
-            to="/legal"
-          />
-        </v-list>
+      <CommonNavTop />
+      <template v-if="authStore.isTeacher">
+        <TeacherNav />
       </template>
+      <template v-if="authStore.isStudent">
+        <StudentNav />
+      </template>
+      <template v-if="authStore.user && authStore.isModerator">
+        <ModeratorNav />
+      </template>
+      <CommonNavBottom />
     </v-navigation-drawer>
     <v-main>
       <v-container fluid>
+        <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
+          <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
+          {{ removeAlertWithDelay(alert.id) }}
+        </div>
         <v-row>
           <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
@@ -134,13 +55,14 @@
           </v-col>
         </v-row>
         <div v-for="dialog in utilStore.dialogs">
-          <Dialog @confirm="dialog.onConfirm(); utilStore.closeDialog(dialog.id)"
-                  @cancel="utilStore.closeDialog(dialog.id)"
-                  :title="dialog.content.title"
-                  :message="dialog.content.message"
-                  :confirm-label="dialog.content.confirmLabel"
-                  :cancel-label="dialog.content.cancelLabel"
-                  :onlyConfirmButton="dialog.onlyConfirmButton"
+          <Dialog
+            @confirm="dialog.onConfirm(); utilStore.closeDialog(dialog.id)"
+            @cancel="utilStore.closeDialog(dialog.id)"
+            :title="dialog.content.title"
+            :message="dialog.content.message"
+            :confirm-label="dialog.content.confirmLabel"
+            :cancel-label="dialog.content.cancelLabel"
+            :onlyConfirmButton="dialog.onlyConfirmButton"
           />
         </div>
       </v-container>
@@ -149,25 +71,26 @@
 </template>
 
 <script lang="ts" setup>
-import router from "@/router";
+import { onBeforeMount, ref } from "vue";
 import { useUtilStore } from "@/stores/util.ts";
 import { useAuthStore } from "@/stores/auth.ts";
-import { useThemeStore } from "@/stores/theme.ts";
-import Dialog from "@/components/util/Dialog.vue";
 import { useProfileStore } from "@/stores/profile.ts";
-import { useLessonStore } from "@/stores/lesson.ts";
-import { onBeforeMount, ref, watch } from "vue";
+import { supabase } from "@/plugins/supabase.ts";
+import { XpActivityLogDTO } from "@/types/gamification.ts";
+import Snackbar from "@/components/util/Snackbar.vue";
+import Dialog from "@/components/util/Dialog.vue";
+import CommonNavTop from "@/layouts/navigation/CommonTop.vue";
+import TeacherNav from "@/layouts/navigation/Teacher.vue";
+import StudentNav from "@/layouts/navigation/Student.vue";
+import ModeratorNav from "@/layouts/navigation/Moderator.vue";
+import CommonNavBottom from "@/layouts/navigation/CommonBottom.vue";
 
 const utilStore = useUtilStore();
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
-const themeStore = useThemeStore();
-const lessonStore = useLessonStore();
 
 const rail = ref(true);
 const drawer = ref(null);
-const openLessonsColor = ref<string>("error");
-const openLessonsPercentage = ref<number>(100);
 
 onBeforeMount(async () => {
   if (authStore.user) {
@@ -182,28 +105,20 @@ const removeAlertWithDelay = (alertId: string, delay = 10000) => {
   }, delay);
 };
 
-const logout = () => {
-  authStore.signOut();
-  router.push("/");
-};
-
-function routeRelatedToCatalog() {
-  return router.currentRoute.value.path.startsWith("/catalogs") || router.currentRoute.value.path.startsWith("/products");
-}
-
-watch(() => lessonStore.openLessons, () => {
-  if (lessonStore.openLessons === 0 || lessonStore.lessons.length === 0) {
-    openLessonsColor.value = "success";
-    openLessonsPercentage.value = 100;
-    return;
-  }
-  if (lessonStore.openLessons === lessonStore.lessons.length) {
-    openLessonsColor.value = "error";
-    openLessonsPercentage.value = 100;
-    return;
-  }
-  openLessonsColor.value = "warning";
-  openLessonsPercentage.value = (lessonStore.openLessons / lessonStore.lessons.length) * 100;
-}, { immediate: true });
-
+supabase
+  .channel("schema-db-changes")
+  .on(
+    "postgres_changes",
+    {
+      event: "INSERT",
+      table: "xp_activity_logs",
+      schema: "public",
+      filter: `user_id=eq.${authStore.user?.id}`
+    },
+    (payload) => {
+      let activity: XpActivityLogDTO = payload.new as XpActivityLogDTO;
+      utilStore.addGamificationAlert(activity);
+    }
+  )
+  .subscribe();
 </script>

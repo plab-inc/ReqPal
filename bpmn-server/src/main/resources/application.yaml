@@ -1,0 +1,68 @@
+camunda:
+  bpm:
+    metrics:
+      enabled: false
+    database:
+      type: postgres
+      table-prefix: camunda.
+      schema-name: camunda
+      schema-update: false
+    admin-user:
+      id: camunda
+      password: camunda
+    history-level: NONE
+    generic-properties:
+      properties:
+        historyTimeToLive: P1D
+    default-serialization-format: application/json
+    webapp:
+      application-path: /camunda
+spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 1
+      maximum-pool-size: 5
+      idle-timeout: 300000
+      max-lifetime: 600000
+  security:
+    filter:
+      order: 10
+server:
+  port: 8081
+resilience4j:
+  ratelimiter:
+    instances:
+      rateLimiterBpmn:
+        limit-for-period: 5
+        limit-refresh-period: 60s
+        timeout-duration: 0s
+app:
+  aws:
+    endpoint:  ${AWS_ENDPOINT}
+    access:
+      key:
+        id: ${AWS_ACCESS_KEY_ID}
+        secret: ${AWS_ACCESS_KEY_SECRET}
+  jwt:
+    secret: ${JWT_SECRET}
+  technical-user:
+    teacher:
+      id: ${TECHNICAL_TEACHER}
+    student:
+      id: ${TECHNICAL_STUDENT}

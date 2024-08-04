@@ -1,5 +1,8 @@
 import Palette from "diagram-js/lib/features/palette/Palette";
-import PaletteProvider, { PaletteEntries, PaletteEntriesCallback } from "diagram-js/lib/features/palette/PaletteProvider";
+import PaletteProvider, {
+  PaletteEntries,
+  PaletteEntriesCallback
+} from "diagram-js/lib/features/palette/PaletteProvider";
 import Create from "diagram-js/lib/features/create/Create";
 import BpmnFactory from "bpmn-js/lib/features/modeling/BpmnFactory";
 import ElementFactory from "bpmn-js/lib/features/modeling/ElementFactory";
@@ -25,18 +28,17 @@ class CustomPalette implements PaletteProvider {
   getPaletteEntries(): PaletteEntriesCallback {
     return (entries: PaletteEntries): PaletteEntries => {
       this.removeUnusedEntries(entries);
-      const userTaskEntries = this.createUserTaskEntries();
+      const taskEntries = this.createTaskEntries();
 
       return {
         ...entries,
-        ...userTaskEntries
+        ...taskEntries
       };
     };
   }
 
   private removeUnusedEntries(entries: PaletteEntries) {
     const keysToRemove = [
-      'create.group',
       'create.service-task',
       'create.intermediate-event',
       'create.data-store',
@@ -49,12 +51,23 @@ class CustomPalette implements PaletteProvider {
     keysToRemove.forEach(key => delete entries[key]);
   }
 
-  private createUserTaskEntries(): PaletteEntries {
+  private createTaskEntries(): PaletteEntries {
     const createUserTask = (event: any) => {
-      const businessObject = this.bpmnFactory.create('bpmn:UserTask', { 'camunda:assignee': '$(data.starterUserId)' });
+      const businessObject = this.bpmnFactory.create('bpmn:UserTask');
 
       const shape = this.elementFactory.createShape({
         type: 'bpmn:UserTask',
+        businessObject: businessObject
+      });
+
+      this.create.start(event, shape);
+    };
+
+    const createServiceTask = (event: any) => {
+      const businessObject = this.bpmnFactory.create('bpmn:ServiceTask');
+
+      const shape = this.elementFactory.createShape({
+        type: 'bpmn:ServiceTask',
         businessObject: businessObject
       });
 
@@ -69,6 +82,15 @@ class CustomPalette implements PaletteProvider {
         action: {
           dragstart: createUserTask,
           click: createUserTask
+        }
+      },
+      'create.service-task': {
+        group: 'activity',
+        className: 'bpmn-icon-service-task',
+        title: this.translate('Create Gamification Service'),
+        action: {
+          dragstart: createServiceTask,
+          click: createServiceTask
         }
       }
     };

@@ -14,7 +14,7 @@
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
-              @click="router.push({path: '/catalogs/upload'})"
+              @click="router.push({path: '/catalog/upload'})"
               :disabled="catalogs.length >= MAX_CATALOGS"
             >
               Neuen Katalog Hochladen

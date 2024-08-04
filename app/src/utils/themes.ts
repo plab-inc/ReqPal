@@ -28,6 +28,9 @@ export const dark: ThemeDefinition = {
     success: '#3ED6C3',
     warning: '#FFC93C',
     textColor: '#e8e8e8',
-    highlightColor: '#edd9ff'
+    highlightColor: '#edd9ff',
+    bronzeColor: '#cd7f32',
+    silverColor: '#c0c0c0',
+    goldColor: '#ffd700'
   },
 };

@@ -34,12 +34,36 @@ export async function requiresTeacher(to: RouteLocationNormalized, from: RouteLo
     return next({name: 'Home'});
 }
 
+export async function requiresModerator(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+
+    const authStore = useAuthStore();
+
+    if (await isAuthenticated() && authStore.isModerator) {
+        return next();
+    }
+
+    alertService.addErrorAlert("Sie haben keine Zugriffsberechtigung.")
+    return next({name: 'Home'});
+}
 
 export async function requiresStudent(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
 
     const authStore = useAuthStore();
 
-    if (await isAuthenticated() && !authStore.isTeacher) {
+    if (await isAuthenticated() && authStore.isStudent) {
+        return next();
+    }
+
+    alertService.addErrorAlert("Sie haben keine Zugriffsberechtigung.")
+    return next({name: 'Home'});
+}
+
+
+export async function requiresPending(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+
+    const authStore = useAuthStore();
+
+    if (await isAuthenticated() && authStore.isPending) {
         return next();
     }
 

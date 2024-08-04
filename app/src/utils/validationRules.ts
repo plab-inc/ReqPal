@@ -1,13 +1,29 @@
-import {useProfileStore} from "@/stores/profile.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
-import {useCatalogStore} from "@/stores/catalog.ts";
+import { useProfileStore } from "@/stores/profile.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { useScenarioStore } from "@/stores/scenario.ts";
+import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
 export const maxPointsPerQuestion = 1000;
 export const minPointsPerQuestion = 10;
 export const requiredRule = (value: any): boolean | string => !!value || "Benötigt";
 export const requiredStringRule = (value: string | null | any): boolean | string => {
     if (typeof value === 'string') return (value && !!value.trim()) || "Benötigt";
+    return "Benötigt";
+}
+
+export const requiredSvgRule = (value: string | null | any): boolean | string => {
+    if (typeof value === 'string') {
+        const isNotEmpty = value && !!value.trim();
+        const startsWithSlash = value.startsWith('/');
+        const endsWithSvg = value.endsWith('.svg');
+
+        if (isNotEmpty && startsWithSlash && endsWithSvg) {
+            return true;
+        }
+        return "Muss mit '/' beginnen und mit '.svg' enden";
+    }
     return "Benötigt";
 }
 
@@ -19,6 +35,14 @@ export const requiredAtLeast6CharsRule = (value: string | null | any): boolean |
     }
     return true;
 }
+
+export const maxLengthRule = (value: string | null | any): boolean | string => {
+    const maxLength = 200;
+    if (typeof value === 'string') {
+        return (value && value.length <= maxLength) || `Die Zeichenanzahl darf maximal ${maxLength} betragen.`;
+    }
+    return `Die Zeichenanzahl darf maximal ${maxLength} betragen.`;
+};
 
 export const minMaxWords = (value: string | null | any): boolean | string => {
 
@@ -52,6 +76,21 @@ export const requiredNumberRule = (value: null | number | string): boolean | str
         {
             const numericValue = parseFloat(value);
             return !isNaN(numericValue) ? true : 'Benötigt';
+        }
+    }
+};
+
+export const requiredPositiveNumberRule = (value: null | number | string): boolean | string => {
+    if (value === null || value === undefined || value === '') {
+        return 'Zahl muss größer als 0 sein';
+    }
+
+    if (typeof value === 'number') {
+        return !Number.isNaN(value) && value > 0 ? true : 'Zahl muss größer als 0 sein';
+    } else {
+        {
+            const numericValue = parseFloat(value);
+            return !isNaN(numericValue) && numericValue > 0 ? true : 'Zahl muss größer als 0 sein';
         }
     }
 };
@@ -126,6 +165,14 @@ export const requiredUniqueLessonTitleRule = async (): Promise<boolean | string>
     const lessonStore = useLessonStore();
     const lessonFormStore = useLessonFormStore();
     const exists = await lessonStore.checkIfLessonTitleExists(lessonFormStore.lessonTitle, lessonFormStore.uuid);
+    if (exists) return "Der Titel existiert bereits.";
+    return true;
+};
+
+export const requiredUniqueScenarioTitleRule = async (): Promise<boolean | string> => {
+    const scenarioStore = useScenarioStore();
+    const scenarioModelerStore = useScenarioModelerStore();
+    const exists = await scenarioStore.checkIfScenarioTitleExists(scenarioModelerStore.title, scenarioModelerStore.uuid);
     if (exists) return "Der Titel existiert bereits.";
     return true;
 };

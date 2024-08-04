@@ -1,11 +1,13 @@
-import {defineStore} from 'pinia';
-import {Lesson, LessonAnswer, LessonDTO, Question, UserAnswer} from "@/types/lesson.ts";
+import { defineStore } from "pinia";
+import { Lesson, LessonAnswer, LessonDTO, Question } from "@/types/lesson.ts";
 import lessonService from "@/services/database/lesson.ts";
 import LessonService from "@/services/database/lesson.ts";
-import {DatabaseError} from "@/errors/custom.ts";
-import {useAuthStore} from "@/stores/auth.ts";
+import { DatabaseError } from "@/errors/custom.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import profileService from "@/services/database/profile.ts";
+import { VForm } from "vuetify/components";
 import { toRaw } from "vue";
+import { ObjectiveDTO } from "@/types/objective.ts";
 
 interface LessonState {
     examples: Lesson[],
@@ -13,7 +15,7 @@ interface LessonState {
     currentLesson: Lesson | null;
     currentQuestions: any;
     lessonModules: LessonModuleEntry[];
-    openLessons: number;
+    lessonForm: VForm | null;
 }
 
 export interface LessonModuleEntry {
@@ -29,7 +31,7 @@ export const useLessonStore = defineStore('lesson', {
         currentLesson: null,
         currentQuestions: [],
         lessonModules: [],
-        openLessons: 0
+        lessonForm: null
     }),
 
     getters: {
@@ -57,75 +59,75 @@ export const useLessonStore = defineStore('lesson', {
         getLessonModules: (state) => {
             return state.lessonModules;
         },
-        getAmountOfFinishedLessons: (state) => {
-            const finishedLessons = state.lessons.filter(l => l.isFinished === true);
-            return finishedLessons.length;
-        },
+        getLessonObjectives: (state: any) => (lessonId: string) => {
+            return state.lessons.find((lesson: Lesson) => lesson.lessonDTO.uuid === lessonId)?.objectives.map((objective: ObjectiveDTO) => objective.name) || [];
+        }
     },
 
     actions: {
-        async fetchQuestionsForLesson(lessonUUID: string) {
-            const questions = await lessonService.pull.fetchQuestionsForLesson(lessonUUID);
-            if (Array.isArray(questions)) {
-                this.currentQuestions = questions;
+        async isLessonFormValid() {
+            if (!this.lessonForm) {
+                return false;
+            }
+
+            return (await this.lessonForm?.validate().then(value => {
+                return value.valid;
+            }));
+        },
+        async generateUserResults(): Promise<LessonAnswer | null> {
+            const questions = this.filterComponentsByQuestionOnly();
+            if (this.currentLesson) {
+                return {
+                    answers: questions.map(component => {
+                        return {
+                            questionId: component.uuid,
+                            options: toRaw(component.data.options),
+                            type: component.type
+                        };
+                    })
+                };
+            }
+            return null;
+        },
+        filterComponentsByQuestionOnly() {
+            return this.lessonModules.filter(c =>
+                c.type === "MultipleChoice" ||
+                c.type === "TrueOrFalse" ||
+                c.type === "Slider" ||
+                c.type === "Requirement");
+        },
+        async fetchQuestionsWithLesson(lessonUUID: string) {
+            const lessonWithQuestions = await lessonService.pull.fetchLessonWithQuestions(lessonUUID);
+            if (lessonWithQuestions) {
+                this.currentQuestions = lessonWithQuestions.questions;
+                this.currentLesson = lessonWithQuestions.lesson;
                 this.setUpLessonModules();
+            }
+        },
+
+        async fetchQuestionsWithLessons(lessonUUIDs: string[]) {
+            const lessonWithQuestions = await lessonService.pull.fetchQuestionsWithLessons(lessonUUIDs);
+            if (lessonWithQuestions) {
+                return lessonWithQuestions;
             }
         },
 
         async fetchLessons() {
             const lessons = await lessonService.pull.fetchLessons();
-            this.lessons = [];
-            this.examples = [];
-
-            if (lessons) {
-                const enrichedLessons = [];
-
-                for (const lesson of lessons) {
-                    const creatorUsername = await profileService.pull.getUsername(lesson.user_id) || {username: 'Unbekannt'};
-                    const creatorAvatar = await profileService.pull.getAvatar(lesson.user_id) || {avatar: 'fhdo'};
-
-                    enrichedLessons.push({
-                        lessonDTO: lesson,
-                        isFinished: false,
-                        isStarted: false,
-                        hasSavedProgress: false,
-                        userScore: 0,
-                        creatorUsername: creatorUsername.username,
-                        creatorAvatar: creatorAvatar.avatar
-                    });
-                }
-
-                this.lessons = enrichedLessons;
-            }
-
-
             const exampleLessons = await lessonService.pull.fetchLessons(true);
 
-            if (exampleLessons) {
-                this.examples = exampleLessons.map((l) => ({
-                    lessonDTO: l,
-                    isFinished: false,
-                    isStarted: false,
-                    hasSavedProgress: false,
-                    userScore: 0
-                }));
-            }
-            await this.initLessons(this.lessons);
-            await this.initLessons(this.examples);
-            let finishedLessons = this.getAmountOfFinishedLessons;
-            this.openLessons = this.lessons.length - finishedLessons;
-        },
+            if (lessons) {
+                for (const lesson of lessons) {
+                    const creatorUsername = await profileService.pull.getUsername(lesson.lessonDTO.user_id) || {username: 'Unbekannt'};
+                    const creatorAvatar = await profileService.pull.getAvatar(lesson.lessonDTO.user_id) || {avatar: 'fhdo'};
 
-        async initLessons(lessons: Lesson[]) {
-            for (const l of lessons) {
-                const status = await this.getStatusOfLessonForUser(l.lessonDTO.uuid);
-                l.isFinished = status && (status.finished !== null) ? status.finished : false;
-                l.isStarted = status && (status.is_started !== null) ? status.is_started : true;
-                await this.loadFirstUserScoreForLesson(l.lessonDTO.uuid);
-                if (l.isStarted) {
-                    l.hasSavedProgress = await this.checkIfLessonHasProgress(l.lessonDTO.uuid);
+                    lesson.creatorAvatar = creatorAvatar.avatar;
+                    lesson.creatorUsername = creatorUsername.username;
                 }
             }
+
+            this.lessons = lessons ? lessons : [];
+            this.examples = exampleLessons ? exampleLessons : [];
         },
 
         async deleteLesson(lessonUUID: string) {
@@ -150,6 +152,10 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
+        loadLessonWithQuestions(lessonUUID: string) {
+            this.clearLessonModules();
+        },
+
         addLessonModuleWithData(componentName: string, componentUUID: string, data: {
             uuid: string,
             question: any,
@@ -172,28 +178,9 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        generateUserResults(): LessonAnswer | null {
-            const questions = this.filterComponentsByQuestionOnly();
-            if (this.currentLesson) {
-                return {
-                    uuid: this.currentLesson?.lessonDTO.uuid,
-                    answers: questions.map(component => {
-                        return {
-                            uuid: component.uuid,
-                            question: component.data.question,
-                            options: toRaw(component.data.options),
-                            type: component.type
-                        }
-                    })
-                };
-            }
-            return null;
-        },
-
         async loadQuestionsWithSolutionsForLesson(lessonUUID: string) {
             const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-            if (authStore.isTeacher || (lesson?.isFinished && !lesson.isStarted)) {
+            if (authStore.isTeacher) {
                 const data = await lessonService.pull.fetchQuestionsWithSolutionsForLesson(lessonUUID);
 
                 if (data) {
@@ -209,135 +196,8 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        filterComponentsByQuestionOnly() {
-            return this.lessonModules.filter(c =>
-                c.type === 'MultipleChoice' ||
-                c.type === 'TrueOrFalse' ||
-                c.type === 'Slider' ||
-                c.type === 'Requirement')
-        },
-
         clearLessonModules() {
             this.lessonModules = [];
-        },
-
-        async getUserResultsForLesson(lessonUUID: string) {
-            const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-            let score = 0;
-            if (lesson) {
-                if (authStore.user && lesson.isFinished) {
-                    const data = await lessonService.pull.fetchUserScoreForLesson(lessonUUID, authStore.user.id);
-                    if (data) {
-                        data.forEach(d => {
-                            score += d.result.score;
-                        })
-                    } else {
-                        return -1;
-                    }
-                }
-            }
-            return Math.round(score);
-        },
-
-        async loadFirstUserScoreForLesson(lessonUUID: string) {
-            const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-            if (lesson) {
-                if (authStore.user && lesson.isFinished) {
-                    const points = await lessonService.pull.fetchFirstUserScoreForLesson(lessonUUID, authStore.user.id);
-                    if (points) {
-                        lesson.userScore = Math.round(points);
-                    } else {
-                        lesson.userScore = -1;
-                    }
-                }
-            }
-        },
-
-        async loadNewUserScoreForLesson(lessonUUID: string) {
-            const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-            if (lesson) {
-                if (authStore.user && lesson.isFinished) {
-                    const points = await lessonService.pull.fetchNewUserScoreForLesson(lessonUUID, authStore.user.id);
-                    if (points) {
-                        return Math.round(points);
-                    } else {
-                        return -1;
-                    }
-                }
-            }
-        },
-
-        async checkIfLessonHasProgress(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.user && !authStore.isTeacher) {
-                return await LessonService.pull.checkIfLessonHasSavedProgress(lessonUUID, authStore.user.id);
-            }
-            return false;
-        },
-
-        async restartLessonForUser(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.user) {
-                const data = await lessonService.push.setLessonStartedStatus(lessonUUID, authStore.user.id, true);
-                if (data) {
-                    const lesson = this.findLesson(lessonUUID);
-                    if (lesson) {
-                        lesson.isStarted = true;
-                    }
-                }
-            }
-
-            this.clearLessonModules();
-        },
-
-        async restartLessonProgressForUser(lessonUUID: string) {
-            const authStore = useAuthStore();
-            const lesson = this.findLesson(lessonUUID);
-            if (authStore.user && lesson && lesson.hasSavedProgress) {
-                await lessonService.push.deleteLessonProgressForUser(lessonUUID, authStore.user.id);
-                if (lesson) lesson.hasSavedProgress = false;
-            }
-
-            this.clearLessonModules();
-        },
-
-        async loadUserAnswersForLesson(lessonUUID: string) {
-            const authStore = useAuthStore();
-            let lesson = this.findLesson(lessonUUID);
-
-            if (authStore.user && lesson) {
-                const status = await this.getStatusOfLessonForUser(lessonUUID);
-                if (status && !status.is_started) {
-                    const answers = await lessonService.pull.fetchLessonUserAnswers(lessonUUID, authStore.user.id);
-                    if (answers) {
-                        this.hydrateUserAnswers(answers);
-                    }
-                }
-            }
-        },
-
-        async getStatusOfLessonForUser(lessonUUID: string) {
-            const authStore = useAuthStore();
-            const lesson = this.findLesson(lessonUUID);
-            if (authStore.user && lesson) {
-                const status = await lessonService.pull.fetchLessonStatusForUser(lessonUUID, authStore.user.id);
-                if (status) {
-                    return status;
-                }
-            }
-        },
-
-        async checkLessonFinishedForFirstTime(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.user) {
-                const status = await lessonService.pull.fetchLessonStatusForUser(lessonUUID, authStore.user.id);
-                if (status) {
-                    return status.finished_for_first_time;
-                }
-            }
         },
 
         setUpLessonModules() {
@@ -358,14 +218,6 @@ export const useLessonStore = defineStore('lesson', {
             }
         },
 
-        hydrateUserAnswers(answers: UserAnswer[]) {
-            answers.forEach(answer => {
-                const comp =
-                    this.lessonModules.find(c => c.uuid === answer.question_id);
-                if (comp) comp.data.options = answer.answer;
-            });
-        },
-
         findLesson(lessonUUID: string) {
             let lesson = this.lessons.find(l => l.lessonDTO.uuid === lessonUUID);
             if (!lesson) {
@@ -374,54 +226,9 @@ export const useLessonStore = defineStore('lesson', {
             return lesson;
         },
 
-        async getLessonStatistics(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (authStore.isTeacher) {
-                return await LessonService.pull.fetchLessonStatistics(lessonUUID);
-            }
-        },
-
-        async getCountOfStudentsForTeacher() {
-            const authStore = useAuthStore();
-            if (authStore.isTeacher && authStore.user) {
-                return await LessonService.pull.getCountOfStudentsForTeacher(authStore.user.id);
-            }
-        },
-
-        async uploadUserProgressToLesson(lessonAnswers: LessonAnswer) {
-            const authStore = useAuthStore();
-            if (!authStore.isTeacher && authStore.user) {
-                await LessonService.push.uploadUserProgressToLesson(authStore.user.id, lessonAnswers);
-            }
-        },
-
-        async fetchUserProgressForLesson(lessonUUID: string) {
-            const authStore = useAuthStore();
-            if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
-                const data = await LessonService.pull.fetchUserProgressForLesson(authStore.user.id, lessonUUID);
-
-                if (data) {
-                    if (data.answers && Array.isArray(data.answers)) {
-                        const questionsWithAnswers: UserAnswer[] = data.answers.map((a: any) => ({
-                            question_id: a.uuid,
-                            answer: a.options
-                        }));
-                        this.hydrateUserAnswers(questionsWithAnswers);
-                    }
-                }
-            }
-        },
-
-        async uploadUsedHintForQuestion(questionUUID: string) {
-            const authStore = useAuthStore();
-            if (!authStore.isTeacher && authStore.user && this.currentLesson?.isStarted) {
-                await LessonService.push.uploadUsedHintForQuestion(authStore.user.id, questionUUID, this.currentLesson.lessonDTO.uuid);
-            }
-        },
-
         async checkIfLessonTitleExists(lessonTitle: string, lessonUUID: string) {
             return await LessonService.pull.checkIfLessonTitleExists(lessonTitle, lessonUUID);
-        }
+        },
 
     },
 });

@@ -1,14 +1,15 @@
-import { Group, isSelectEntryEdited, SelectEntry } from "@bpmn-io/properties-panel";
+import { CheckboxEntry, Group, isSelectEntryEdited, SelectEntry } from "@bpmn-io/properties-panel";
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil.js";
 import { jsx } from "@bpmn-io/properties-panel/preact/jsx-runtime";
 import { useService } from "bpmn-js-properties-panel";
 import { useLessonStore } from "@/stores/lesson.ts";
 import { toRaw } from "vue";
+import { setInputParameters } from "@/bpmn/properties/util/Helper.js";
 
 export function UserTaskGroup(element, translate) {
   const group = {
-    label: translate('Lesson'),
-    id: 'ReqPal__Lesson',
+    label: translate('Student Task'),
+    id: 'Lesson',
     component: Group,
     entries: [...UserTaskProps({ element, translate })]
   };
@@ -19,29 +20,74 @@ export function UserTaskGroup(element, translate) {
 }
 
 function UserTaskProps(props) {
-  const { element, translate } = props;
-  if (!(is(element, 'bpmn:UserTask'))) {
-    return [];
-  }
+  const { element } = props;
+  if (!(is(element, 'bpmn:UserTask'))) {return [];}
   const entries = [];
 
   entries.push({
-    id: 'lesson',
-    component: LessonType,
+    id: 'taskType',
+    component: TaskType,
     isEdited: isSelectEntryEdited,
-    get(element, node) {
-      const lessonId = getLesson(element)
-      return { lesson: lessonId || '' };
-    },
-    set(element, values) {
-      const lessonId = values.lesson;
-      const businessObject = element.businessObject;
-      businessObject.set('lesson', lessonId);
-      return [element];
-    }
   });
 
+  const taskType = getTaskType(element);
+
+  if (taskType === "solveLesson") {
+    entries.push({
+        id: "lessonToSolve",
+        component: LessonType,
+        isEdited: isSelectEntryEdited
+      },
+      {
+        id: "grantPointsAsXP",
+        component: GrantAchievedPointsAsXP,
+        isEdited: isSelectEntryEdited
+      }
+    );
+  }
+
   return entries;
+}
+
+function TaskType(props) {
+  const { element } = props;
+  const translate = useService('translate');
+  const modeling = useService('modeling');
+  const lessonStore = useLessonStore();
+
+  const getValue = () => getTaskType(element);
+
+  const setValue = (value) => {
+    modeling.updateProperties(element, { taskType: value })
+  };
+
+  const getOptions = () => {
+    const options = [];
+
+    if (lessonStore.lessons.length > 0) {
+      options.push({ value: 'solveLesson', label: translate('Solve Lesson') });
+    }
+
+    if (lessonStore.lessons.length === 0) {
+      options.push({ value: "noLessons", label: translate("No Lessons found") });
+    }
+
+    return options;
+  };
+
+  return jsx(SelectEntry, {
+    element,
+    id: "taskType",
+    label: translate('Student Task Type'),
+    getValue,
+    setValue,
+    validate: (element) => {
+      if (!element) {
+        return translate('Required.');
+      }
+    },
+    getOptions
+  });
 }
 
 function LessonType(props) {
@@ -51,7 +97,7 @@ function LessonType(props) {
   const modeling = useService('modeling');
 
   const getValue = () => {
-    return getLesson(element);
+    return getLessonToSolve(element);
   };
 
   const setValue = (value) => {
@@ -60,17 +106,20 @@ function LessonType(props) {
     const selectedLesson = lessons.find(lesson => lesson.value === value);
     const label = selectedLesson ? selectedLesson.label : '';
 
-    businessObject.set('lesson', value);
+    businessObject.set('lessonToSolve', value);
     businessObject.set('name', label);
+    businessObject.set('camunda:assignee', '${studentId}');
 
-    addExecutionListener(element, modeling, bpmnFactory, value);
+    setInputParameters(element, modeling, bpmnFactory,'lessonId', value);
+    setInputParameters(element, modeling, bpmnFactory,'grantPointsAsXP', "false");
+
+    addExecutionListener(element, modeling, bpmnFactory);
   };
 
   const getOptions = () => {
     const lessonStore = useLessonStore();
     const lessons = toRaw(lessonStore.lessons);
-    const publishedLessons = lessons.filter(lesson => lesson.lessonDTO.published);
-    return publishedLessons.map(lesson => ({
+    return lessons.map(lesson => ({
       value: lesson.lessonDTO.uuid,
       label: lesson.lessonDTO.title
     }));
@@ -78,7 +127,7 @@ function LessonType(props) {
 
   return jsx(SelectEntry, {
     element: element,
-    id: "lesson",
+    id: "lessonToSolve",
     label: translate('Lesson to solve'),
     getValue: getValue,
     setValue: setValue,
@@ -91,35 +140,72 @@ function LessonType(props) {
   });
 }
 
-function getLesson(element) {
-  const businessObject = element.businessObject;
-  return businessObject.get('lesson');
+function GrantAchievedPointsAsXP(props) {
+  const { element } = props;
+  const debounce = useService('debounceInput');
+  const translate = useService('translate');
+  const modeling = useService('modeling');
+  const bpmnFactory = useService('bpmnFactory');
+  const lessonObjectives = getLessonObjectives(getLessonToSolve(element)).join(", ") || "No objectives defined in lesson.";
+
+  const getValue = () => {
+    const businessObject = getBusinessObject(element);
+    return businessObject ? !!businessObject.grantPointsAsXP : false;
+  };
+
+  const setValue = (value) => {
+    const businessObject = getBusinessObject(element);
+    if (businessObject) {
+      modeling.updateProperties(element, { grantPointsAsXP: value });
+      setInputParameters(element, modeling, bpmnFactory,'grantPointsAsXP', value.toString());
+    }
+  };
+
+  return jsx(CheckboxEntry, {
+    element,
+    id: "grantPointsAsXP",
+    label: translate("Grant achieved points as XP to lesson objective(s):"),
+    getValue,
+    debounce: debounce,
+    setValue,
+    description: lessonObjectives
+  });
 }
 
-function addExecutionListener(element, modeling, bpmnFactory, lessonId) {
+function getLessonObjectives(lessonId) {
+  const lessonStore = useLessonStore();
+  return lessonStore.getLessonObjectives(lessonId);
+}
+
+function getLessonToSolve(element) {
+  const businessObject = element.businessObject;
+  return businessObject.get('lessonToSolve');
+}
+
+function getTaskType(element) {
+  const businessObject = element.businessObject;
+  return businessObject.get('taskType');
+}
+
+function addExecutionListener(element, modeling, bpmnFactory) {
   const businessObject = getBusinessObject(element);
 
-  if (!businessObject.extensionElements) {
-    businessObject.extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
-      values: []
-    });
-  }
+  businessObject.extensionElements = businessObject.extensionElements || bpmnFactory.create('bpmn:ExtensionElements', { values: [] });
 
   const extensionElements = businessObject.extensionElements;
 
-  const script = bpmnFactory.create('camunda:Script', {
-    scriptFormat: 'JavaScript',
-    value: `item.data.currentLessonId = "${lessonId}";`
+  const existingListeners = extensionElements.get('values').filter(value => value.$type === 'camunda:ExecutionListener');
+
+  ['start', 'end'].forEach(event => {
+    const alreadyExists = existingListeners.some(listener => listener.event === event && listener.delegateExpression === '${lessonUserTaskDelegate}');
+    if (!alreadyExists) {
+      const listener = bpmnFactory.create('camunda:ExecutionListener', {
+        event: event,
+        delegateExpression: '${lessonUserTaskDelegate}'
+      });
+      extensionElements.get('values').push(listener);
+    }
   });
 
-  const executionListener = bpmnFactory.create('camunda:ExecutionListener', {
-    event: 'start',
-    script: script
-  });
-
-  extensionElements.get('values').push(executionListener);
-
-  modeling.updateProperties(element, {
-    extensionElements: extensionElements
-  });
+  modeling.updateProperties(element, { extensionElements });
 }

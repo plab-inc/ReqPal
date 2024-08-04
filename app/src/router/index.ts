@@ -6,21 +6,27 @@ import {
     RouteLocationRaw,
     Router
 } from "vue-router";
-
-import { requiresAuth, requiresStudent, requiresTeacher } from "@/middlewares/auth.ts";
-import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
+import { fetchObjectiveLevelsByUser, fetchReqPalLevelByUser } from "@/middlewares/level.ts";
 import {
-    fetchLessons,
-    fetchQuestionsForLesson,
-    fetchUserAnswersForQuestions,
-    fetchUserProgressForLesson,
-    loadLessonByUUID,
-    loadQuestionsWithSolutions,
-    requiresFinishedLesson,
-    requiresUnfinishedLesson
-} from "@/middlewares/lesson.ts";
+    requiresAuth,
+    requiresModerator,
+    requiresPending,
+    requiresStudent,
+    requiresTeacher
+} from "@/middlewares/auth.ts";
+import { fetchCatalog, fetchCatalogs } from "@/middlewares/catalogs.ts";
+import { fetchLessons, fetchQuestionsForLesson, loadLessonByUUID } from "@/middlewares/lesson.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { fetchProductsByUser } from "@/middlewares/product.ts";
+import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
+import {
+    fetchAchievementImages,
+    fetchAchievementsByUser,
+    fetchReqPalAchievementImages,
+    fetchReqPalAchievementsByModerator
+} from "@/middlewares/achievement.ts";
+import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
+import { fetchCurrentScenarioResults, fetchScenarioAchievements, fetchScenarios } from "@/middlewares/scenario.ts";
 
 const routes = [
     {
@@ -30,59 +36,29 @@ const routes = [
             {
                 path: "",
                 name: "Home",
-                component: () => import("@/views/home/Home.vue"),
-                meta: {
-                    middleware: [
-                        fetchLessons
-                    ]
-                }
+                component: () => import("@/views/home/Home.vue")
             },
             {
-                path: "/lessons",
-                name: "Lessons",
+                path: "/lesson",
+                name: "Lesson",
                 component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
-                        fetchLessons
+                        requiresAuth,
+                        fetchLessons,
+                        requiresTeacher
                     ]
                 }
             },
             {
-                path: "/builder",
+                path: "/lesson/builder",
                 name: "LessonBuilder",
                 component: () => import("@/views/lesson/LessonBuilder.vue"),
                 meta: {
                     middleware: [
                         requiresTeacher,
-                        fetchLessons
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID",
-                name: "LessonDetails",
-                component: () => import("@/views/lesson/LessonDetailsStudent.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        requiresUnfinishedLesson,
-                        loadLessonByUUID,
-                        fetchQuestionsForLesson,
-                        fetchUserProgressForLesson
-                    ]
-                }
-            },
-            {
-                path: "/lessons/:lessonUUID/results",
-                name: "LessonResults",
-                component: () => import("@/views/lesson/LessonResults.vue"),
-                meta: {
-                    middleware: [
-                        requiresStudent,
-                        loadLessonByUUID,
-                        requiresFinishedLesson,
-                        loadQuestionsWithSolutions,
-                        fetchUserAnswersForQuestions
+                        fetchLessons,
+                        fetchObjectivesByLessonOwner
                     ]
                 }
             },
@@ -99,7 +75,7 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs",
+                path: "/catalog",
                 name: "Catalogs",
                 component: () => import("@/views/catalog/CatalogOverview.vue"),
                 meta: {
@@ -110,13 +86,17 @@ const routes = [
                 }
             },
             {
-                path: "/catalogs/upload",
+                path: "/catalog/upload",
                 name: "UploadCatalog",
                 component: () => import("@/views/catalog/CatalogUpload.vue"),
-                meta: {}
+                meta: {
+                    middleware: [
+                        requiresTeacher
+                    ]
+                }
             },
             {
-                path: "/catalogs/:catalogId",
+                path: "/catalog/:catalogId",
                 name: "CatalogDetails",
                 component: () => import("@/views/catalog/CatalogDetail.vue"),
                 meta: {
@@ -140,9 +120,85 @@ const routes = [
                 }
             },
             {
+                path: "/objectives",
+                name: "Objectives",
+                component: () => import("@/views/objective/ObjectiveOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchObjectivesByUser
+                    ]
+                }
+            },
+            {
+                path: "/achievements",
+                name: "Achievements",
+                component: () => import("@/views/achievement/AchievementOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresTeacher,
+                        fetchAchievementsByUser,
+                        fetchAchievementImages
+                    ]
+                }
+            },
+            {
+                path: "/reqpal-achievements",
+                name: "ReqPalAchievements",
+                component: () => import("@/views/achievement/ReqPalAchievementOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchReqPalAchievementsByModerator,
+                        fetchReqPalAchievementImages
+                    ]
+                }
+            },
+            {
+                path: "/scenario",
+                name: "Scenario Overview",
+                component: () => import("@/views/scenario/ScenarioOverview.vue"),
+                meta: {
+                    middleware: [
+                        fetchScenarios,
+                        requiresAuth
+                    ]
+                }
+            },
+            {
+                path: "/scenario/builder",
+                name: "Scenario Builder",
+                component: () => import("@/views/scenario/ScenarioBuilder.vue"),
+                meta: {
+                    middleware: [
+                        requiresAuth,
+                        fetchLessons,
+                        fetchObjectivesByLessonOwner,
+                        fetchAchievementsByUser,
+                    ]
+                }
+            },
+            {
+                path: "/scenario/loader",
+                name: "Scenario Loader",
+                component: () => import("@/views/scenario/ScenarioStepper.vue"),
+                meta: {
+                    middleware: [
+                        requiresAuth,
+                        fetchCurrentScenarioResults,
+                        fetchScenarioAchievements
+                    ]
+                }
+            },
+            {
                 path: "/feedback",
                 name: "Feedback",
                 component: () => import("@/views/user/Feedback.vue"),
+                meta: {
+                    middleware: [
+                        requiresAuth
+                    ]
+                }
             },
             {
                 path: "/legal",
@@ -165,12 +221,47 @@ const routes = [
                 component: () => import("@/views/user/ResetPassword.vue"),
             },
             {
-                path: "/account",
+                path: "/profile/settings",
                 name: "Account",
                 component: () => import("@/views/user/Account.vue"),
                 meta: {
                     middleware: [
                         requiresAuth
+                    ]
+                },
+            },
+            {
+                path: "/profile",
+                name: "Profil",
+                component: () => import("@/views/user/Profile.vue"),
+                meta: {
+                    middleware: [
+                        requiresAuth,
+                        requiresStudent,
+                        fetchReqPalLevelByUser,
+                        fetchObjectiveLevelsByUser
+                    ]
+                },
+            },
+            {
+                path: "/teacher-requests",
+                name: "TeacherRequests",
+                component: () => import("@/views/user/PendingTeacherOverview.vue"),
+                meta: {
+                    middleware: [
+                        requiresModerator,
+                        fetchTeacherRequests
+                    ]
+                },
+            },
+            {
+                path: "/teacher-request",
+                name: "PendingRequests",
+                component: () => import("@/views/user/PendingTeacherRequest.vue"),
+                meta: {
+                    middleware: [
+                        requiresPending,
+                        fetchLatestTeacherRequestByUser
                     ]
                 },
             },

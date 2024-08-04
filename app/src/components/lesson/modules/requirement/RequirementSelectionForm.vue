@@ -10,6 +10,7 @@ import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
 import { onBeforeMount, ref, watch } from "vue";
+import { convertStringToNumber } from "@/utils/helper.ts";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -23,8 +24,12 @@ const products = ref<Product[]>([]);
 
 const fields = ref<any>({
   question: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'question'),
-  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {toleranceValue: 0},
+  solution: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'solution') || {
+    type: "Requirement",
+    toleranceValue: 0
+  },
   options: lessonFormStore.getLessonModuleFieldValues(props.componentId, 'options') || {
+    type: "Requirement",
     catalogId: undefined,
     requirementId: undefined,
     askForQualification: false,
@@ -69,6 +74,10 @@ watch(fields, async (value) => {
     selectedRequirement.value = undefined;
   }
 
+  if (fields.value.solution.toleranceValue) {
+    fields.value.solution.toleranceValue = convertStringToNumber(fields.value.solution.toleranceValue)
+  }
+
   if (value.options.catalogId) {
     await catalogStore.getFullCatalogById(value.options.catalogId);
   }
@@ -95,8 +104,8 @@ watch(fields, async (value) => {
             v-model="fields.options.catalogId"
             :rules="[requiredRule]"
             :items="catalogs"
-            :item-title="item => item.catalog_name"
-            :item-value="item => item.catalog_id"
+            :item-title="(item: CatalogDTO) => item.catalog_name"
+            :item-value="(item: CatalogDTO) => item.catalog_id"
             :loading="loadingCatalogs"
         ></v-select>
         <v-select
@@ -104,8 +113,8 @@ watch(fields, async (value) => {
             v-model="selectedRequirement"
             :rules="[requiredRule]"
             :items="requirements"
-            :item-title="item => item.title"
-            :item-value="item => item"
+            :item-title="(item: Requirement) => item.title"
+            :item-value="(item: Requirement) => item"
             :loading="loadingReqs"
             :disabled="!fields.options.catalogId"
         ></v-select>

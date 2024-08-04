@@ -1,4 +1,5 @@
-import {Database} from "@/types/supabase.ts";
+import { Database } from "@/types/supabase.ts";
+import { ObjectiveDTO } from "@/types/objective.ts";
 
 export type LessonDTO = Database["public"]["Tables"]["lessons"]["Row"];
 export type QuestionDTO = Database["public"]["Tables"]["questions"]["Row"];
@@ -18,13 +19,19 @@ export type Question = {
 
 export type Lesson = {
     lessonDTO: LessonDTO,
-    isFinished: boolean,
-    isStarted: boolean,
-    hasSavedProgress: boolean,
-    userScore: number,
+    objectives: ObjectiveDTO[],
 
     creatorAvatar?: string,
     creatorUsername?: string,
+}
+
+export type LessonAnswer = {
+  answers: any[]
+}
+
+export type LessonQuestions = {
+  lesson: Lesson,
+  questions: Question[]
 }
 
 export type LessonForm = {
@@ -32,20 +39,7 @@ export type LessonForm = {
     title: string;
     description: string;
     questions: Question[];
-}
-
-export type LessonAnswer = {
-    uuid: string,
-    answers: any[]
-}
-
-export type UserAnswer = {
-    question_id: string,
-    answer: string[]
-}
-
-export type UserResult = {
-    result: { score: number, results: any, isCorrect: boolean }
+    objectiveIds: string[];
 }
 
 export type LessonStatistic = {

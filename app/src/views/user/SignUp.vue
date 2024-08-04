@@ -3,9 +3,12 @@
     <v-col cols="auto" class="text-h3">
       Registrieren als <span class="text-info">{{ isTeacher ? 'Dozent' : 'Student' }}</span>
     </v-col>
+    <v-col v-if="isTeacher" cols="auto" class="text-subtitle-1">
+      <v-alert color="info" icon="mdi-school" title="Hinweis zur Registrierung" text="Wenn Sie sich als Dozent registrieren, muss Ihre Registrierung zunächst von den Moderatoren auf ReqPal validiert und anschließend freigegeben werden.
+      Bis dahin werden Sie noch nicht als Dozent auf ReqPal erkannt. Sobald sich Ihr Status ändert, können Sie als Dozent loslegen!"></v-alert>
+    </v-col>
   </v-row>
   <v-divider/>
-
   <v-form v-model="isFormValid" @submit.prevent="submit" ref="signUpForm" fast-fail class="mt-10">
     <v-row no-gutters justify="space-between">
       <v-col cols="10">
@@ -61,8 +64,8 @@
             v-model="selectedTeacher"
             :rules="[requiredRule]"
             :items="teachers"
-            :item-title="item => item.username"
-            :item-value="item => item.id"
+            :item-title="(item: any) => item.username"
+            :item-value="(item: any) => item.id"
         ></v-select>
       </v-col>
     </v-row>
@@ -91,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import {useAuthStore} from "@/stores/auth.ts";
+import { useAuthStore } from "@/stores/auth.ts";
 import {
   matchingPasswordsRule,
   requiredAtLeast6CharsRule,
@@ -102,9 +105,9 @@ import {
 } from "@/utils/validationRules";
 
 import router from "@/router";
-import {AuthenticationError, UserAlreadyRegisteredError} from "@/errors/custom.ts";
-import {useUtilStore} from "@/stores/util.ts";
-import {useProfileStore} from "@/stores/profile.ts";
+import { AuthenticationError, UserAlreadyRegisteredError } from "@/errors/custom.ts";
+import { useUtilStore } from "@/stores/util.ts";
+import { useProfileStore } from "@/stores/profile.ts";
 import { onBeforeMount, ref } from "vue";
 
 const authStore = useAuthStore();
@@ -124,7 +127,7 @@ const submit = async () => {
   if (isFormValid.value) {
 
     try {
-      const role = isTeacher.value ? 'teacher' : 'student';
+      const role = isTeacher.value ? 'pending' : 'student';
       const teacher = isTeacher.value ? undefined : selectedTeacher.value;
       await authStore.signUp(email.value, password.value, username.value, role, teacher)
           .then(() => {

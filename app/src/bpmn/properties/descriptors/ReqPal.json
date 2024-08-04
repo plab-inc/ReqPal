@@ -1,0 +1,79 @@
+{
+  "name": "UserTaskLesson",
+  "prefix": "reqPal",
+  "uri": "http://lethalgoose.com",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "UserTask",
+      "extends": [
+        "bpmn:UserTask"
+      ],
+      "properties": [
+        {
+          "name": "lessonToSolve",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "taskType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "grantPointsAsXP",
+          "isAttr": true,
+          "type": "Boolean"
+        }
+      ]
+    },
+    {
+      "name": "FormalExpression",
+      "extends": [
+        "bpmn:FormalExpression"
+      ],
+      "properties": [
+        {
+          "name": "conditionType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ServiceTask",
+      "extends": [
+        "bpmn:ServiceTask"
+      ],
+      "properties": [
+        {
+          "name": "achievementToAssign",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "objectiveToGrantXPTo",
+          "isAttr": true,
+          "type": "String",
+          "isOptional": true
+        },
+        {
+          "name": "xp",
+          "isAttr": true,
+          "type": "Integer",
+          "isOptional": true
+        },
+        {
+          "name": "serviceTaskType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

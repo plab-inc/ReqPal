@@ -1,4 +1,4 @@
-class PrivilegeError extends Error {
+export class PrivilegeError extends Error {
     private code: number;
 
     constructor(message: string, code: number) {
@@ -8,7 +8,7 @@ class PrivilegeError extends Error {
     }
 }
 
-class DatabaseError extends Error {
+export class DatabaseError extends Error {
     private code: number;
 
     constructor(message: string, code: number) {
@@ -18,7 +18,35 @@ class DatabaseError extends Error {
     }
 }
 
-class ConversionError extends Error {
+export class BpmnParsingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BpmnParsingError";
+  }
+}
+
+export class BpmnPersistError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BpmnPersistError";
+  }
+}
+
+export class BpmnImportError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BpmnImportError";
+  }
+}
+
+export class BpmnProcessError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BpmnProcessError";
+  }
+}
+
+export class ConversionError extends Error {
     private code: number;
 
     constructor(message: string, code: number) {
@@ -28,7 +56,7 @@ class ConversionError extends Error {
     }
 }
 
-class AuthenticationError extends Error {
+export class AuthenticationError extends Error {
     private code: number;
 
     constructor(message: string, code: number) {
@@ -38,12 +66,9 @@ class AuthenticationError extends Error {
     }
 }
 
-class UserAlreadyRegisteredError extends Error {
+export class UserAlreadyRegisteredError extends Error {
     constructor(message: string) {
         super(message);
         this.name = "UserAlreadyRegisteredError";
     }
 }
-
-
-export {PrivilegeError, DatabaseError, ConversionError, AuthenticationError, UserAlreadyRegisteredError};

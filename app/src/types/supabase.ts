@@ -9,6 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       catalogs: {
         Row: {
           catalog_id: string
@@ -34,6 +69,39 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_objectives: {
+        Row: {
+          id: string
+          lesson_id: string | null
+          objective_id: string | null
+        }
+        Insert: {
+          id?: string
+          lesson_id?: string | null
+          objective_id?: string | null
+        }
+        Update: {
+          id?: string
+          lesson_id?: string | null
+          objective_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_objectives_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "lesson_objectives_objective_id_fkey"
+            columns: ["objective_id"]
+            isOneToOne: false
+            referencedRelation: "objectives"
             referencedColumns: ["id"]
           },
         ]
@@ -72,6 +140,38 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "lessons_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      objectives: {
+        Row: {
+          description: string | null
+          id: string
+          max_level: number | null
+          name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          max_level?: number | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          max_level?: number | null
+          name?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "objectives_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -225,13 +325,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "profiles_teacher_fkey"
             columns: ["teacher"]
             isOneToOne: false
@@ -281,6 +374,82 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
+          },
+        ]
+      }
+      reqpal_achievement_levels: {
+        Row: {
+          description: string | null
+          id: string
+          image: string | null
+          level: number
+          reqpal_achievement_id: string | null
+          threshold: number | null
+          title: string | null
+          xp: number
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          image?: string | null
+          level: number
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+          xp?: number
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          image?: string | null
+          level?: number
+          reqpal_achievement_id?: string | null
+          threshold?: number | null
+          title?: string | null
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievement_levels_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reqpal_achievements: {
+        Row: {
+          created_at: string
+          description: string | null
+          example: boolean | null
+          id: string
+          target_field: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          example?: boolean | null
+          id?: string
+          target_field?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          example?: boolean | null
+          id?: string
+          target_field?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reqpal_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -364,48 +533,216 @@ export type Database = {
         }
         Relationships: []
       }
-      user_answers: {
+      scenario_user_progress: {
         Row: {
-          answer: Json | null
-          lesson_id: string
-          question_id: string
-          result: Json | null
+          created_at: string
+          ended: boolean
+          id: string
+          lesson_id: string | null
+          scenario_id: string
+          started: boolean
+          started_version: number
+          step: number
           user_id: string
-          uuid: string
         }
         Insert: {
-          answer?: Json | null
-          lesson_id: string
-          question_id: string
-          result?: Json | null
-          user_id: string
-          uuid?: string
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          started_version?: number
+          step?: number
+          user_id?: string
         }
         Update: {
-          answer?: Json | null
-          lesson_id?: string
-          question_id?: string
-          result?: Json | null
+          created_at?: string
+          ended?: boolean
+          id?: string
+          lesson_id?: string | null
+          scenario_id?: string
+          started?: boolean
+          started_version?: number
+          step?: number
           user_id?: string
-          uuid?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_answers_lesson_id_fkey"
+            foreignKeyName: "user_scenario_currentLesson_id_fkey"
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
             referencedColumns: ["uuid"]
           },
           {
-            foreignKeyName: "user_answers_question_id_fkey"
-            columns: ["question_id"]
+            foreignKeyName: "user_scenario_scenario_id_fkey"
+            columns: ["scenario_id"]
             isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["uuid"]
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_answers_user_id_fkey"
+            foreignKeyName: "user_scenario_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenario_user_statistics: {
+        Row: {
+          achievements: Json | null
+          created_at: string
+          id: string
+          lesson_results: Json | null
+          objectives: Json | null
+          scenario_user_progress_id: string
+          score: number | null
+        }
+        Insert: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id: string
+          score?: number | null
+        }
+        Update: {
+          achievements?: Json | null
+          created_at?: string
+          id?: string
+          lesson_results?: Json | null
+          objectives?: Json | null
+          scenario_user_progress_id?: string
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_scenario_progress_scenario_user_progress_id_fkey"
+            columns: ["scenario_user_progress_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_user_progress"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenarios: {
+        Row: {
+          achievements: string[]
+          created_at: string
+          deployed: boolean
+          description: string | null
+          edited: boolean
+          id: string
+          lessons: number
+          locked: boolean
+          minLessons: number
+          title: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          achievements?: string[]
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          edited?: boolean
+          id?: string
+          lessons?: number
+          locked?: boolean
+          minLessons?: number
+          title: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          achievements?: string[]
+          created_at?: string
+          deployed?: boolean
+          description?: string | null
+          edited?: boolean
+          id?: string
+          lessons?: number
+          locked?: boolean
+          minLessons?: number
+          title?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenarios_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_requests: {
+        Row: {
+          approved: boolean | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved?: boolean | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          amount: number | null
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          achievement_id?: string | null
+          amount?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          achievement_id?: string | null
+          amount?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -435,100 +772,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_feedback_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_finished_lessons: {
-        Row: {
-          finished: boolean | null
-          finished_for_first_time: boolean | null
-          id: string
-          is_started: boolean | null
-          lesson_id: string
-          new_user_points: number | null
-          used_hints: number | null
-          user_id: string
-          user_points: number | null
-        }
-        Insert: {
-          finished?: boolean | null
-          finished_for_first_time?: boolean | null
-          id?: string
-          is_started?: boolean | null
-          lesson_id: string
-          new_user_points?: number | null
-          used_hints?: number | null
-          user_id: string
-          user_points?: number | null
-        }
-        Update: {
-          finished?: boolean | null
-          finished_for_first_time?: boolean | null
-          id?: string
-          is_started?: boolean | null
-          lesson_id?: string
-          new_user_points?: number | null
-          used_hints?: number | null
-          user_id?: string
-          user_points?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_finished_lessons_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_finished_lessons_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_hints: {
-        Row: {
-          id: string
-          lesson_id: string
-          question_id: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          lesson_id: string
-          question_id: string
-          user_id: string
-        }
-        Update: {
-          id?: string
-          lesson_id?: string
-          question_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_hints_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_hints_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "questions"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_hints_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -572,25 +815,201 @@ export type Database = {
           },
         ]
       }
-      user_points: {
+      user_levels: {
         Row: {
+          created_at: string | null
           id: string
-          points: number
-          user_id: string
+          level: number | null
+          max: boolean | null
+          objective_id: string | null
+          user_id: string | null
+          xp: number | null
+          xp_threshold: number | null
         }
         Insert: {
+          created_at?: string | null
           id?: string
-          points?: number
-          user_id: string
+          level?: number | null
+          max?: boolean | null
+          objective_id?: string | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
         }
         Update: {
+          created_at?: string | null
           id?: string
-          points?: number
-          user_id?: string
+          level?: number | null
+          max?: boolean | null
+          objective_id?: string | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_points_user_id_fkey"
+            foreignKeyName: "user_levels_objective_id_fkey"
+            columns: ["objective_id"]
+            isOneToOne: false
+            referencedRelation: "objectives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_levels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_reqpal_achievements: {
+        Row: {
+          created_at: string
+          id: string
+          max: boolean | null
+          reqpal_achievement_id: string | null
+          reqpal_achievement_level_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max?: boolean | null
+          reqpal_achievement_id?: string | null
+          reqpal_achievement_level_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_id_fkey"
+            columns: ["reqpal_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_reqpal_achievement_level_id_fkey"
+            columns: ["reqpal_achievement_level_id"]
+            isOneToOne: false
+            referencedRelation: "reqpal_achievement_levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reqpal_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_reqpal_levels: {
+        Row: {
+          created_at: string
+          id: string
+          level: number | null
+          user_id: string | null
+          xp: number | null
+          xp_threshold: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: number | null
+          user_id?: string | null
+          xp?: number | null
+          xp_threshold?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reqpal_levels_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_statistics: {
+        Row: {
+          created_at: string
+          id: string
+          total_objective_xp: number | null
+          total_points: number | null
+          total_reqpal_xp: number | null
+          total_scenarios: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          total_objective_xp?: number | null
+          total_points?: number | null
+          total_reqpal_xp?: number | null
+          total_scenarios?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          total_objective_xp?: number | null
+          total_points?: number | null
+          total_reqpal_xp?: number | null
+          total_scenarios?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      xp_activity_logs: {
+        Row: {
+          action: string | null
+          created_at: string
+          id: string
+          received_xp: number | null
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string
+          id?: string
+          received_xp?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string
+          id?: string
+          received_xp?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "xp_activity_logs_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -603,6 +1022,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_threshold: {
+        Args: {
+          level: number
+        }
+        Returns: number
+      }
       check_user_role: {
         Args: {
           uid: string
@@ -652,6 +1077,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_szenario_statistics: {
+        Args: {
+          szenario_ids: string[]
+        }
+        Returns: Json
+      }
       get_teacher_uuid: {
         Args: {
           user_uuid: string
@@ -671,7 +1102,10 @@ export type Database = {
       }
       reverse_boolean_value: {
         Args: {
-          row_uuid: string
+          table_name: string
+          boolean_column_name: string
+          id_column_name: string
+          row_id: string
         }
         Returns: undefined
       }

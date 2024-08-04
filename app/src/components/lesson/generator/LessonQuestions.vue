@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {LessonModuleEntry} from "@/stores/lesson.ts";
+import { LessonModuleEntry } from "@/stores/lesson.ts";
 import DividerModule from "@/components/lesson/modules/divider/DividerModule.vue";
 import TrueOrFalseModule from "@/components/lesson/modules/trueOrFalse/TrueOrFalseModule.vue";
 import RequirementModule from "@/components/lesson/modules/requirement/RequirementModule.vue";
@@ -41,16 +41,15 @@ function isRequirementOrTextfieldOrDivider(componentType: string): boolean {
   <v-container v-if="components">
     <v-row v-for="question in components" no-gutters>
       <v-col class="my-2">
-        <v-sheet
-            :class="isRequirementOrTextfieldOrDivider(question.type) ? '' : 'pa-3'"
-            rounded
-            :elevation="isRequirementOrTextfieldOrDivider(question.type) ? '0' : '8'">
+        <v-card
+          :elevation="isRequirementOrTextfieldOrDivider(question.type) ? '0' : '8'"
+          :variant="isRequirementOrTextfieldOrDivider(question.type) ? 'plain' : 'outlined'">
           <component
               :is="getLessonModuleInstance(question.type)"
               :key="question.uuid"
               :componentId="question.uuid"
           ></component>
-        </v-sheet>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

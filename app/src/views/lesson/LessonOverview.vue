@@ -1,44 +1,30 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
-    <v-col v-if="authStore.isTeacher" cols="auto" class="text-h4">
+    <v-col cols="auto" class="text-h4">
       Meine Lektionen ({{
-        lessons.length
-      }}/20)
-    </v-col>
-    <v-col v-else cols="auto" class="text-h4">
-      Abgeschlossene Lektionen ({{
-        lessons.filter(l => l.isFinished).length
-      }}/{{ lessons.length }})
+        filters.includes('showOnlyOwn') ?
+            filteredLessons.length : lessons.length
+      }}/{{ lessonFormStore.MAX_LESSONS }})
     </v-col>
     <v-col cols="auto">
-      <v-btn-toggle
-          v-if="authStore.isTeacher"
+      <v-btn-group
           elevation="3"
-          v-model="filters"
           variant="outlined"
           rounded
-          multiple
           divided
-          color="warning"
-          group
       >
         <v-btn
-            v-if="authStore.isModerator"
-            value="showOnlyOwn"
+          @click="router.push({path: '/builder'})"
+          :disabled="lessons.length >= lessonFormStore.MAX_LESSONS"
         >
-          Nur Eigene Lektionen
+          Neue Lektion erstellen
         </v-btn>
-        <v-btn
-            value="showExample"
-        >
-          Beispiel verbergen
-        </v-btn>
-      </v-btn-toggle>
+      </v-btn-group>
     </v-col>
   </v-row>
-  <v-divider></v-divider>
+  <v-divider />
   <v-row no-gutters>
-    <v-col v-if="authStore.isTeacher && !filters.includes('showExample')">
+    <v-col>
       <v-list>
         <v-list-item
             v-for="lesson in examples"
@@ -48,10 +34,9 @@
             variant="outlined"
             rounded
             base-color="info"
-            min-height="80px"
             ripple
             elevation="7"
-            class="ma-5"
+            class="ma-2"
             subtitle="Beispiellektion"
         >
           <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
@@ -63,7 +48,6 @@
           </template>
           <template v-slot:append>
             <v-btn-group
-                v-if="authStore.isTeacher"
                 variant="outlined"
                 elevation="24"
                 divided
@@ -85,127 +69,44 @@
           </template>
         </v-list-item>
       </v-list>
-      <v-divider/>
+      <v-divider opacity="0.5" />
     </v-col>
-
-    <v-col cols="12" v-if="true">
-      <v-list>
-        <v-list-item
-            v-for="lesson in filteredLessons"
-            :key="lesson.lessonDTO.uuid"
-            @click="openLessonDetails(lesson)"
-            border
-            variant="outlined"
-            rounded
-            min-height="80px"
-            ripple
-            elevation="12"
-            class="ma-5"
-        >
-          <v-list-item-title>{{ lesson.lessonDTO.title }}</v-list-item-title>
-          <v-list-item-subtitle>{{ lesson.lessonDTO.description }}</v-list-item-subtitle>
-          <template v-slot:prepend>
-            <v-icon>
-              mdi-clipboard-text
-            </v-icon>
-          </template>
-          <template v-slot:append>
-            <v-chip
-                v-if="authStore.isModerator"
-                class="mr-10 ma-5"
-                :prepend-avatar="'avatars/' + lesson.creatorAvatar + '.png'"
-                elevation="8"
-            >
-              {{ lesson.creatorUsername }}
-            </v-chip>
-            <LessonStatusStudent v-if="!authStore.isTeacher" :lesson="lesson"/>
-            <v-btn-group
-                v-if="authStore.isTeacher"
-                variant="outlined"
-                elevation="24"
-                divided
-                density="default"
-            >
-              <v-btn
-                  @click.stop="editLesson(lesson.lessonDTO.uuid)"
-                  color="primary"
-              >
-                Bearbeiten
-              </v-btn>
-              <v-btn
-                  color="info"
-                  @click.stop="copyLesson(lesson.lessonDTO.uuid)"
-              >
-                Kopieren
-              </v-btn>
-              <v-btn
-                  @click.stop="togglePublished(lesson.lessonDTO)"
-                  :color="lesson.lessonDTO.published ? 'warning' : 'success'"
-                  min-width="180px"
-              >
-                {{ lesson.lessonDTO.published ? 'Verbergen' : 'Veröffentlichen' }}
-              </v-btn>
-              <v-btn
-                  @click.stop="openDeleteDialog(lesson.lessonDTO.uuid)"
-                  color="error"
-              >
-                Löschen
-              </v-btn>
-            </v-btn-group>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <v-btn
-          v-if="authStore.isTeacher"
-          color="primary"
-          @click="router.push({path: '/builder'})"
-          block
-          :disabled="lessons.length >= 20"
-      >
-        Neue Lektion erstellen
-      </v-btn>
+    <v-col cols="12">
+      <LessonTable :filters="filters"></LessonTable>
     </v-col>
   </v-row>
 </template>
 
 <script setup lang="ts">
 
-import {useLessonStore} from "@/stores/lesson.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
 import router from "@/router";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useLessonFormStore} from "@/stores/lessonForm.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useLessonFormStore } from "@/stores/lessonForm.ts";
 import lessonService from "@/services/database/lesson.ts";
-import alertService from "@/services/util/alert.ts";
-import {Lesson, LessonDTO} from "@/types/lesson.ts";
-import LessonStatusStudent from "@/components/lesson/toolbar/LessonStatusStudent.vue";
-import {v4 as uuidv4} from "uuid";
+import { Lesson } from "@/types/lesson.ts";
+import { v4 as uuidv4 } from "uuid";
 import { computed, ref } from "vue";
+import LessonTable from "@/components/lesson/LessonTable.vue";
 
 const lessonStore = useLessonStore();
 const lessonFormStore = useLessonFormStore();
 const authStore = useAuthStore();
-
 const filters = ref<string[]>([]);
-
 const examples: Lesson[] = lessonStore.getExampleLessons;
 const lessons: Lesson[] = lessonStore.getLessons;
 
 const filteredLessons = computed(() => {
-  if (filters.value.includes('showOnlyOwn')) {
-    return lessons.filter(lesson => lesson.creatorUsername === authStore.userMetadata.username);
-  }
-  return lessons;
+  return lessons.filter(lesson =>
+      lesson.lessonDTO.user_id === authStore.user?.id
+  )
 });
 
 async function editLesson(lessonUUID: string) {
   await lessonService.pull.getLesson(lessonUUID).then((lesson) => {
     if (lesson) {
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }
@@ -218,43 +119,12 @@ async function copyLesson(lessonUUID: string) {
         question.uuid = uuidv4();
       })
       lessonFormStore.hydrate(lesson);
-      router.push({path: '/builder'});
+      router.push({ path: "lesson/builder" });
     }
   });
 }
 
-function togglePublished(lesson: LessonDTO) {
-  lessonService.push.togglePublished(lesson.uuid).then(() => {
-    lesson.published = !lesson.published; //Trick in UI, damit Objekt nicht erneut geladen werden muss
-  })
-}
-
 async function openLessonDetails(lesson: Lesson) {
-
-  if (authStore.isTeacher) {
-    await router.push({name: 'LessonTeacherOverview', params: {lessonUUID: lesson.lessonDTO.uuid}});
-  } else if (lesson.isFinished && !lesson.isStarted) {
-    await router.push({name: 'LessonResults', params: {lessonUUID: lesson.lessonDTO.uuid}});
-  } else {
-    await router.push({name: 'LessonDetails', params: {lessonUUID: lesson.lessonDTO.uuid}});
-  }
+  await router.push({name: 'LessonTeacherOverview', params: {lessonUUID: lesson.lessonDTO.uuid}});
 }
-
-function openDeleteDialog(lessonUUID: string) {
-  alertService.openDialog(
-      "Lektion löschen",
-      "Möchtest du die Lektion wirklich löschen? Das Löschen ist unwiderruflich",
-      "Ja",
-      "Nein",
-      () => deleteLesson(lessonUUID)
-  )
-}
-
-function deleteLesson(lessonUUID: string): void {
-  lessonStore.deleteLesson(lessonUUID)
-      .then(() => {
-        alertService.addSuccessAlert("Lektion gelöscht")
-      })
-}
-
 </script>
