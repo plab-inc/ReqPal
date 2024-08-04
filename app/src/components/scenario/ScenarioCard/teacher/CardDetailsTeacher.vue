@@ -61,7 +61,7 @@ watch(selectedVersion, (newVersion) => {
 
     if (totalStatistics && studentCount) {
       endedCount.value = totalStatistics.endedCount;
-      totalCount.value = studentCount;
+      totalCount.value = studentCount - 1;
       startedCount.value = totalStatistics.startedCount - totalStatistics.endedCount;
     }
   }
