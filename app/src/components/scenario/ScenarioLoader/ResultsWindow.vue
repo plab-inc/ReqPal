@@ -31,7 +31,8 @@
                   </v-col>
                   <v-col cols="auto" class="d-flex flex-grow-1 justify-end mr-2" align-self="center">
                     <div class="text-h5 text-md-h4">
-                      {{ result.totalLessonScore }} / {{ result.lessonQuestion.lesson.lessonDTO.points }}
+                      {{ roundNumberToTwoDecimals(result.totalLessonScore) }} /
+                      {{ result.lessonQuestion.lesson.lessonDTO.points }}
                       <v-icon class="mb-1" size="35" color="warning"
                               :icon="'mdi-star-four-points-circle-outline'"></v-icon>
                     </div>
@@ -108,6 +109,7 @@ import MultipleChoiceResult from "@/components/scenario/Results/MultipleChoiceRe
 import SliderResult from "@/components/scenario/Results/SliderResult.vue";
 import AchievementItem from "@/components/achievement/AchievementItem.vue";
 import ObjectiveItem from "@/components/objectives/ObjectiveItem.vue";
+import {roundNumberToTwoDecimals} from "@/utils/helper.ts";
 
 const stepperStore = useStepperStore();
 const scenarioStatisticStore = useScenarioStatisticStore();

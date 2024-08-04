@@ -18,15 +18,6 @@
               <v-text-field variant="outlined" label="Eigenes Ziel" v-model="localAchievement.target_field"
                             :rules="[requiredStringRule]"/>
             </v-col>
-            <v-col cols="auto" class="d-flex justify-end">
-              <v-switch
-                  color="primary"
-                  v-model="localAchievement.example"
-                  label="Beispiel"
-                  hide-details
-                  inset
-              ></v-switch>
-            </v-col>
             <v-col>
               <v-select
                   v-model="localAchievement.target_field"
@@ -77,7 +68,6 @@ const localAchievement = ref<ReqPalAchievement>({
   created_at: "",
   firstLevelImage: "",
   target_field: "",
-  example: false,
   id: "", description: "", levels: []
 });
 

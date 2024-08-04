@@ -1,8 +1,9 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="250">
+  <v-card variant="elevated" color="primary" max-height="250" class="flex-card">
     <v-card-title>
       {{ objectiveStatistic.objective.name }}
     </v-card-title>
+    <v-card-item class="flex-grow-1">
     <v-card-text>
       <div class="d-flex align-center justify-space-between">
         <div class="text-subtitle-1 scroll-container">
@@ -16,6 +17,7 @@
         </div>
       </div>
     </v-card-text>
+    </v-card-item>
   </v-card>
 </template>
 
@@ -30,5 +32,9 @@ defineProps<{ objectiveStatistic: ObjectiveStatistic }>();
   max-height: 200px;
   max-width: 350px;
   overflow-y: auto;
+}
+.flex-card {
+  display: flex;
+  flex-direction: column;
 }
 </style>

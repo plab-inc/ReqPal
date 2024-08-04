@@ -1,16 +1,16 @@
 <template>
-  <v-card variant="elevated" color="primary" class="flex-fill" max-width="600">
+  <v-card v-if="reqPalLevel" variant="elevated" color="primary" class="flex-fill" max-width="600">
     <v-card-title class="headline">
       <div class="d-flex align-center justify-space-between">
         ReqPal Level
         <div class="d-flex align-center">
-          <v-icon left>mdi-star</v-icon>
-          <span>{{ reqPalLevel?.level }}</span>
+          <v-icon left class="mr-1">mdi-star</v-icon>
+          <span>{{ reqPalLevel.level }}</span>
         </div>
       </div>
     </v-card-title>
     <v-card-subtitle>Dieses Level beschreibt deine Erfahrung auf der Lernplattform.</v-card-subtitle>
-    <v-card-text v-if="reqPalLevel">
+    <v-card-text>
       <div class="d-flex justify-space-between mt-2">
         <span>{{ reqPalLevel.level && reqPalLevel.level > 0 ? reqPalLevel.level : 0 }}</span>
         <span>{{ reqPalLevel.level && reqPalLevel.level > 0 ? reqPalLevel.level + 1 : 0 }}</span>
@@ -24,10 +24,12 @@
                     }}</span>
       </div>
     </v-card-text>
-    <v-card-text v-else>
-      <v-alert type="info">Lade ReqPal Level...</v-alert>
-    </v-card-text>
   </v-card>
+  <v-row v-else class="text-subtitle-1">
+    <v-col>
+      Noch keine XP für ReqPal Level.
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">

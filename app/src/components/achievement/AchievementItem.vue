@@ -1,8 +1,9 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="250">
+  <v-card variant="elevated" color="primary" max-height="250" class="flex-card">
     <v-card-title>
       {{ achievement.title }}
     </v-card-title>
+    <v-card-item class="flex-grow-1">
     <v-card-text>
       <div class="d-flex align-center">
         <v-img :src="getAchievementImageUrl(achievement.image)" width="60" max-width="60" class="mr-5">
@@ -12,6 +13,7 @@
         </div>
       </div>
     </v-card-text>
+    </v-card-item>
   </v-card>
 </template>
 
@@ -30,5 +32,9 @@ defineProps<Props>();
 .scroll-container {
   max-height: 200px;
   overflow-y: auto;
+}
+.flex-card {
+  display: flex;
+  flex-direction: column;
 }
 </style>

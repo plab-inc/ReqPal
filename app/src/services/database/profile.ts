@@ -1,5 +1,6 @@
-import { supabase } from "@/plugins/supabase";
-import { ProfileDTO } from "@/types/auth.ts";
+import {supabase} from "@/plugins/supabase";
+import {ProfileDTO} from "@/types/auth.ts";
+import {UserStatisticDTO} from "@/types/studentStatistic.ts";
 
 class ProfileServiceClass {
 
@@ -11,7 +12,7 @@ class ProfileServiceClass {
     public pull = {
         fetchProfile: this.fetchProfile.bind(this),
         fetchTeachers: this.getTeachers.bind(this),
-        fetchPoints: this.fetchPoints.bind(this),
+        fetchUserStatistic: this.fetchUserStatistic.bind(this),
         getAvatar: this.getAvatar.bind(this),
         getUsername: this.getUsername.bind(this),
         checkIfUsernameExists: this.checkIfUsernameExists.bind(this),
@@ -32,11 +33,6 @@ class ProfileServiceClass {
 
     }
 
-    private async fetchPoints(userId: string): Promise<{ points: number } | null> {
-      //TODO fetch points aktuallisieren
-      return null;
-    }
-
     private async getUsername(userId: string): Promise<{ username: string }> {
         const {data, error} = await supabase
             .from('profiles')
@@ -48,6 +44,20 @@ class ProfileServiceClass {
 
         return data;
 
+    }
+
+    private async fetchUserStatistic(userId: string): Promise<UserStatisticDTO | undefined> {
+        const {data, error} = await supabase
+            .from('user_statistics')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+
+        if (error) throw error;
+
+        if (data) {
+            return data as UserStatisticDTO;
+        }
     }
 
     private async getAvatar(userId: string): Promise<{ avatar: string }> {

@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {DialogText} from "@/utils/dialogs.ts";
-import {XpActivityLogDTO} from "@/types/gamification.ts";
+import {XpActivityLogDTO} from "@/types/xpActivityLog.ts";
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
 export type DialogType =

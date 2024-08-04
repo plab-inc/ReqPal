@@ -11,3 +11,7 @@ export function convertStringToNumber(value: string) {
         return numValue;
     }
 }
+
+export function roundNumberToTwoDecimals(value: number) {
+    return Math.round((value + Number.EPSILON) * 100) / 100
+}

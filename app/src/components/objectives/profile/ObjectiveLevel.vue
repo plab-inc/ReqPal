@@ -4,7 +4,7 @@
       <div class="d-flex align-center justify-space-between">
         {{ objectiveLevel.objective.name }}
         <div class="d-flex align-center">
-          <v-icon left :color="color">mdi-star</v-icon>
+          <v-icon left :color="color" class="mr-1">mdi-star</v-icon>
           <span v-if="!objectiveLevel.max">{{ currentLevel }} / {{objectiveLevel.objective.max_level}}</span>
           <span v-else>MAX</span>
         </div>

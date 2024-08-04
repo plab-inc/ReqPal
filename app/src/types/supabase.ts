@@ -422,7 +422,6 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          example: boolean | null
           id: string
           target_field: string | null
           user_id: string | null
@@ -430,7 +429,6 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
-          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -438,7 +436,6 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
-          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
