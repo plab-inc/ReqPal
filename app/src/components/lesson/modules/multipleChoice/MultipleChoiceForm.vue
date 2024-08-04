@@ -136,9 +136,9 @@ watch(fields, (newFields) => {
     </v-row>
     <v-row no-gutters>
       <v-col cols="2">
-        <PointsInput :component-id="props.componentId"></PointsInput>
+        <PointsInput :component-id="props.componentId" :answer-amount="answers.length"></PointsInput>
       </v-col>
-      <v-col cols="10" class="d-flex flex-grow-1 align-end justify-end">
+      <v-col cols="10" class="d-flex flex-grow-1 align-center justify-end">
         <Help dialog-type="mcExplanation"/>
         <div class="mx-1"/>
         <Delete :component-id="props.componentId"/>
