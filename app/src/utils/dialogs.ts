@@ -244,3 +244,21 @@ export const DeleteTeacherRequest: DialogText = {
     confirmLabel: "Löschen",
     cancelLabel: "Zurück"
 };
+
+export const BPMNHint: DialogText = {
+    title: "Erstellen von Szenarien",
+    message:
+      "Damit die Diagramme gültig sind, sollten Sie für die Erstellung nur den ReqPal BPMN Modeler verwenden!\n\n" +
+      "Zusätzlich gelten folgende Validierungsregeln:\n" +
+      "1. Modelle müssen ein Start- und ein End-Event haben.\n" +
+      "2. User- oder Service-Tasks müssen immer einer Lektion, einem Achievement oder einem Objective zugewiesen sein.\n" +
+      "3. Andere BPMN-Elemente, außer den angebotenen, werden nicht unterstützt.\n" +
+      "4. Bedingungen müssen eine Art und einen Auswertungsausdruck enthalten.\n\n" +
+      "Weiterhin sollten folgende Hinweise beachtet werden, damit Studierende erfolgreich durch das Szenario kommen:\n" +
+      "1. Schleifen sollten, wenn nicht gut durchdacht, vermieden werden.\n" +
+      "2. Es sollten immer eindeutige Pfade aus den Tasks/Bedingungen herausführen.\n" +
+      "3. Der Token-Simulator liefert einen guten Hinweis, ob ein Szenario ausführbar ist.\n" +
+      "4. Achievements/XP-Boosts lassen sich nicht an Bedingungen binden und sind einem LessonTask zuzuordnen.\n" +
+      "5. Das explizite Auswählen des Default-Flows erleichtert die lesbarkeit des Diagrams.",
+    confirmLabel: "OK"
+};

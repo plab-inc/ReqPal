@@ -10,7 +10,7 @@
         rounded
         divided
       >
-        <v-btn color="warning" text="Hinweise"/>
+        <v-btn color="info" text="Hinweise" @click="utilStore.openDialog(BPMNHint)" />
         <v-btn color="error" text="Zurücksetzen" @click="resetScenario()"/>
         <v-btn color="success" text="Szenario Speichern" @click="saveScenario()"/>
       </v-btn-group>
@@ -58,6 +58,7 @@ import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 import { ref } from "vue";
 import router from "@/router/index.ts";
 import { useUtilStore } from "@/stores/util.ts";
+import { BPMNHint } from "@/utils/dialogs.ts";
 
 const scenarioModelerStore = useScenarioModelerStore();
 const utilStore = useUtilStore();
