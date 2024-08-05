@@ -1,5 +1,4 @@
 <template>
-  <v-card variant="outlined">
     <v-container>
       <v-row>
         <v-col>
@@ -39,13 +38,12 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
 </template>
 
 <script setup lang="ts">
-import {QuestionResult, SliderResult} from "@/types/scenarioUserStatistic.ts";
-import {onBeforeMount} from "vue";
-import {roundNumberToTwoDecimals} from "@/utils/helper.ts";
+import { QuestionResult, SliderResult } from "@/types/scenarioUserStatistic.ts";
+import { onBeforeMount } from "vue";
+import { roundNumberToTwoDecimals } from "@/utils/helper.ts";
 
 interface Props {
   questionResult: QuestionResult,
