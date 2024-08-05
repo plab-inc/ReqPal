@@ -177,7 +177,7 @@ export const useStepperStore = defineStore("stepper", {
     },
     addLessonStep() {
       this.lessonSteps.push({
-        title: `Lesson ${this.currentStep}`,
+        title: `Lektion ${this.currentStep}`,
         startStep: false,
         placeholderStep: false,
         endStep: false,
