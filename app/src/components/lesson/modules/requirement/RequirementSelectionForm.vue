@@ -90,8 +90,11 @@ watch(fields, async (value) => {
   if (!selectedRequirement.value?.requirement_id && value.options.requirementId) {
     selectedRequirement.value = requirements.value.find(req => req.requirement_id === value.options.requirementId);
   }
-  updateStoreData();
 
+  if (fields.value.options.askForQualification === false) {
+    lessonFormStore.setLessonModuleData(props.componentId, 'points', null);
+  }
+  updateStoreData();
 }, {deep: true, immediate: true});
 </script>
 
@@ -194,6 +197,3 @@ watch(fields, async (value) => {
     </v-row>
   </v-container>
 </template>
-<style scoped>
-
-</style>

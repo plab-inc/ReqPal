@@ -24,8 +24,8 @@ function updateStoreData(points: any) {
 }
 
 function getPointsText() {
-  const points = lessonFormStore.getAmountOfPointsPerRightAnswer(props.componentId, props.answerAmount);
-  return props.answerAmount > 1 ? points + ' Punkte pro richtiger Antwort' : points + ' Punkte bei richtiger Antwort';
+  const pointsPerRightAnswer = lessonFormStore.getAmountOfPointsPerRightAnswer(props.componentId, props.answerAmount);
+  return props.answerAmount > 1 ? pointsPerRightAnswer + ' Punkte pro richtiger Antwort' : pointsPerRightAnswer + ' Punkte bei richtiger Antwort';
 }
 
 watch(points, (newPoints) => {
@@ -33,7 +33,6 @@ watch(points, (newPoints) => {
     updateStoreData(newPoints)
   }
 }, {deep: true});
-
 </script>
 <template>
   <div class="d-flex justify-start align-center flex-grow-1">

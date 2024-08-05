@@ -14,7 +14,7 @@
           divided
       >
         <v-btn
-          @click="router.push({path: '/builder'})"
+          @click="router.push({path: '/lesson/builder'})"
           :disabled="lessons.length >= lessonFormStore.MAX_LESSONS"
         >
           Neue Lektion erstellen
