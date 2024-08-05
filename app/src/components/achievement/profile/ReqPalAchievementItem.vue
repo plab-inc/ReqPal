@@ -1,37 +1,38 @@
 <template>
-  <v-card :prepend-icon="achievement.max ? 'mdi-crown' : ''" variant="elevated" color="primary" max-height="250" class="flex-card">
+  <v-card :prepend-icon="achievement.max ? 'mdi-crown' : ''" variant="elevated" color="primary"
+          :class="['ma-3', 'border-opacity-100', borderClass]" width="600" height="250"
+          rounded elevation="10">
     <template v-slot:title>
-      <span> {{ currentAchievementLevel.title }}</span>
+      <span>{{ currentAchievementLevel.title }}</span>
     </template>
-    <v-card-item class="flex-grow-1">
+    <v-card-item>
       <v-card-text>
         <v-row>
-          <v-col :md="maxLevel <= 1 ? 12 : 8" :lg="maxLevel <= 1 ? 12 : 9">
-            <div class="d-flex align-center">
-              <v-img :src="getAchievementImageUrl(currentAchievementLevel.image)" width="80" max-width="80"
-                     class="mr-5">
-              </v-img>
-              <div class="text-subtitle-1 scroll-container">
-                {{ currentAchievementLevel.description }}
-              </div>
-            </div>
+          <v-col sm="3" class="d-flex align-center justify-center">
+            <v-img :src="getAchievementImageUrl(currentAchievementLevel.image)" width="80" max-width="80">
+            </v-img>
           </v-col>
-          <v-col md="4" lg="3" v-if="maxLevel > 1" class="d-flex justify-center align-center">
-            <v-btn variant="plain" size="35" @click="selectPreviousLevel" color="secondary"
-                   :disabled="currentAchievementLevel.level <= 1" icon="mdi-chevron-left">
-            </v-btn>
-            <div class="text-subtitle-1 ml-1 mr-1">
-              {{ currentAchievementLevel.level }}/{{ maxLevel }}
+          <v-col sm="9">
+            <div class="text-subtitle-1 scroll-container">
+              {{ currentAchievementLevel.description }}
             </div>
-            <v-btn variant="plain" size="35" @click="selectNextLevel"
-                   :disabled="currentAchievementLevel.level >= maxLevel"
-                   color="secondary"
-                   class="ml-1" icon="mdi-chevron-right"
-            >
-            </v-btn>
           </v-col>
         </v-row>
       </v-card-text>
+      <v-card-actions v-if="maxLevel > 1" class="d-flex justify-center align-center">
+        <v-btn variant="plain" size="35" @click="selectPreviousLevel" color="secondary"
+               :disabled="currentAchievementLevel.level <= 1" icon="mdi-chevron-left">
+        </v-btn>
+        <div class="text-subtitle-1 ml-1 mr-1">
+          {{ currentAchievementLevel.level }}/{{ maxLevel }}
+        </div>
+        <v-btn variant="plain" size="35" @click="selectNextLevel"
+               :disabled="currentAchievementLevel.level >= maxLevel"
+               color="secondary"
+               class="ml-1" icon="mdi-chevron-right"
+        >
+        </v-btn>
+      </v-card-actions>
     </v-card-item>
   </v-card>
 </template>
@@ -49,6 +50,7 @@ const props = defineProps<Props>();
 
 const currentAchievementLevel = ref<StudentReqPalAchievementLevel>(props.achievement.currentLevel);
 const maxLevel = props.achievement.previousLevels.length;
+const borderClass = props.achievement.max ? 'borderClassGold' : props.achievement.currentLevel.level > 1 ? 'borderClassSilver' : 'borderClassBronze';
 
 function selectPreviousLevel() {
   const currentLevel = currentAchievementLevel.value.level;
@@ -62,14 +64,23 @@ function selectNextLevel() {
   if (found) currentAchievementLevel.value = found;
 }
 </script>
+
 <style scoped>
 .scroll-container {
-  max-height: 200px;
+  max-height: 100px;
   overflow-y: auto;
 }
+.borderClassGold {
+   border: 2px solid rgb(var(--v-theme-goldColor));
+   border-radius: 8px;
+ }
+.borderClassSilver {
+  border: 2px solid rgb(var(--v-theme-silverColor));
+  border-radius: 8px;
+}
 
-.flex-card {
-  display: flex;
-  flex-direction: column;
+.borderClassBronze {
+  border: 2px solid rgb(var(--v-theme-bronzeColor));
+  border-radius: 8px;
 }
 </style>

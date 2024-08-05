@@ -2,14 +2,14 @@
   <v-row no-gutters>
     <v-col>
       <v-progress-linear
-        bg-color="surface-variant"
-        class="mb-2"
-        :color=progressBarColor()
-        max="5"
-        disabled
-        height="25"
-        :model-value=progressBarStatus()
-        rounded="pill">
+          bg-color="surface-variant"
+          class="mb-2"
+          :color=progressBarColor()
+          max="5"
+          disabled
+          height="25"
+          :model-value=progressBarStatus()
+          rounded="pill">
         <strong>{{ progressBarText() }}</strong>
       </v-progress-linear>
     </v-col>
@@ -20,14 +20,7 @@
                   :icon="'mdi-star-four-points-circle-outline'"></v-icon>
           {{ scenarioStatistic.score }} Punkte
         </v-chip>
-        <v-chip v-for="achievement in scenarioStatistic.achievements" class="mb-1 mr-1" color="success"
-                @click="router.push({name: 'Profil'})">
-          <v-icon class="mr-2">
-            <v-img :src="getAchievementImageUrl(achievement.image)"
-                   :alt="'ReqPal-Achievement Level Image: '+achievement.image"></v-img>
-          </v-icon>
-          {{ achievement.title }}
-        </v-chip>
+        <AchievementChip v-for="achievement in scenarioStatistic.achievements" :achievement="achievement" :chip-class="'mb-1 mr-1'"></AchievementChip>
         <v-chip v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics" class="mb-1 mr-1" color="info"
                 @click="router.push({name: 'Profil'})">
           {{ objectiveStatistic.objective.name }}: {{ objectiveStatistic.xp }} XP
@@ -37,13 +30,13 @@
   </v-row>
 </template>
 <script setup lang="ts">
-import { useScenarioProgressStore } from "@/stores/scenarioProgress.ts";
-import { defineProps } from "vue";
-import { Scenario, ScenarioProgress } from "@/types/scenario.ts";
-import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
-import { ScenarioUserStatistic } from "@/types/scenarioUserStatistic.ts";
-import { getAchievementImageUrl } from "@/utils/achievementImage.ts";
+import {useScenarioProgressStore} from "@/stores/scenarioProgress.ts";
+import {defineProps} from "vue";
+import {Scenario, ScenarioProgress} from "@/types/scenario.ts";
+import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
+import {ScenarioUserStatistic} from "@/types/scenarioUserStatistic.ts";
 import router from "@/router";
+import AchievementChip from "@/components/achievement/AchievementChip.vue";
 
 const props = defineProps<{
   scenario: Scenario

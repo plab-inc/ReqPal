@@ -33,7 +33,7 @@ export const dark: ThemeDefinition = {
     warning: '#FFC93C',
     textColor: '#e8e8e8',
     highlightColor: '#edd9ff',
-    bronzeColor: '#cd7f32',
+    bronzeColor: '#ce8c4e',
     silverColor: '#c0c0c0',
     goldColor: '#ffd700'
   },
