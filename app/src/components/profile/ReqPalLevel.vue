@@ -1,6 +1,8 @@
 <template>
-  <v-card v-if="reqPalLevel" variant="elevated" color="primary" class="flex-fill" max-width="600">
-    <v-card-title class="headline">
+  <v-card v-if="reqPalLevel" variant="elevated" color="primary"
+          class="ma-3 border-opacity-100" width="600" height="200"
+          rounded elevation="10">
+    <v-card-title>
       <div class="d-flex align-center justify-space-between">
         ReqPal Level
         <div class="d-flex align-center">

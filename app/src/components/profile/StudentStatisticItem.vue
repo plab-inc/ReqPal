@@ -1,5 +1,6 @@
 <template>
-  <v-card variant="elevated" :color="color ? color : 'primary'" max-height="250">
+  <v-card variant="elevated" :color="color ? color : 'primary'" class="ma-3 border-opacity-100" width="600" height="80"
+          rounded elevation="10">
     <v-card-item>
       <v-row>
         <v-col sm="2" class="d-flex justify-center align-center">

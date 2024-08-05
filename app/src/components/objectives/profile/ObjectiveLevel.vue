@@ -1,5 +1,6 @@
 <template>
-  <v-card class="flex-fill" variant="outlined" max-width="600" :color="objectiveLevel.max ? 'goldColor' : ''">
+  <v-card variant="outlined" width="600" height="200" class="ma-3 border-opacity-100"
+          rounded elevation="10" :color="objectiveLevel.max ? 'goldColor' : ''">
     <v-card-title class="headline">
       <div class="d-flex align-center justify-space-between">
         {{ objectiveLevel.objective.name }}

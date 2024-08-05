@@ -27,13 +27,13 @@
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="0">
         <v-container>
-          <v-row class="mt-2">
+          <v-row class="mt-2" no-gutters justify="start">
             <v-col>
               <div class="text-h6">
                 Lernplattform Fortschritte
               </div>
             </v-col>
-            <v-col class="d-flex align-center justify-center">
+            <v-col>
               <ReqPalLevel></ReqPalLevel>
             </v-col>
           </v-row>
@@ -42,16 +42,17 @@
               <v-divider></v-divider>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col class="text-h6">
-              <div>
+          <v-row class="mt-2" no-gutters justify="start">
+            <v-col>
+              <div class="text-h6">
                 Lernziel Fortschritte
               </div>
             </v-col>
-            <v-col v-if="objectiveLevels && objectiveLevels.length > 0" md="12" lg="6"
-                   v-for="objectiveLevel in objectiveLevels"
-                   class="mt-5 d-flex align-center justify-center">
-              <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
+            <v-col v-if="objectiveLevels && objectiveLevels.length > 0" class="d-flex justify-start flex-wrap">
+              <div v-if="objectiveLevels && objectiveLevels.length > 0"
+                   v-for="objectiveLevel in objectiveLevels">
+                <ObjectiveLevelComponent :objectiveLevel="objectiveLevel"></ObjectiveLevelComponent>
+              </div>
             </v-col>
             <v-col v-else>
               Noch keine XP für Lernziele gesammelt.
@@ -61,22 +62,25 @@
       </v-tabs-window-item>
       <v-tabs-window-item :value="1">
         <v-container>
-          <v-row class="mt-2">
+          <v-row class="mt-2" no-gutters justify="start">
             <v-col>
               <div class="text-h6">
                 ReqPal Achievements
               </div>
             </v-col>
-            <v-col v-if="studentAchievementStore.reqPalAchievements.length > 0" md="6" lg="4"
-                   v-for="achievement in studentAchievementStore.reqPalAchievements"
-                   class="mt-5 d-flex">
-              <ReqPalAchievementItem class="flex-grow-1" :achievement="achievement"></ReqPalAchievementItem>
+            <v-col v-if="studentAchievementStore.reqPalAchievements.length > 0" class="d-flex justify-start flex-wrap">
+              <div
+                  v-for="achievement in studentAchievementStore.reqPalAchievements"
+                  :key="achievement.reqPalAchievementId"
+              >
+                <ReqPalAchievementItem :achievement="achievement"></ReqPalAchievementItem>
+              </div>
             </v-col>
             <v-col v-else>
               Noch keine ReqPal Achievements gesammelt.
             </v-col>
           </v-row>
-          <v-row class="mt-2">
+          <v-row class="mt-2" no-gutters justify="start">
             <v-col>
               <v-divider></v-divider>
             </v-col>
@@ -87,9 +91,11 @@
                 Achievements aus Szenarien
               </div>
             </v-col>
-            <v-col v-if="studentAchievementStore.achievements.length > 0" md="6" lg="4"
-                   v-for="achievement in studentAchievementStore.achievements" class="mt-5 d-flex">
-              <StudentAchievementItem class="flex-grow-1" :achievement="achievement"></StudentAchievementItem>
+            <v-col v-if="studentAchievementStore.achievements.length > 0" class="d-flex justify-start flex-wrap">
+              <div
+                  v-for="achievement in studentAchievementStore.achievements" class="mt-5 d-flex">
+                <StudentAchievementItem class="flex-grow-1" :achievement="achievement"></StudentAchievementItem>
+              </div>
             </v-col>
             <v-col v-else>
               Noch keine Achievements gesammelt.
