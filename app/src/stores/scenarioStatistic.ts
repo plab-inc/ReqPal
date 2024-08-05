@@ -1,24 +1,24 @@
-import {defineStore} from "pinia";
-import {Scenario} from "@/types/scenario.ts";
+import { defineStore } from "pinia";
+import { Scenario } from "@/types/scenario.ts";
 import ScenarioService from "@/services/database/scenario.ts";
-import {useAuthStore} from "@/stores/auth.ts";
-import {LessonQuestionResult, ScenarioUserStatistic} from "@/types/scenarioUserStatistic.ts";
-import {mapStatisticToQuestionWithResult, mapToScenarioUserStatistic} from "@/mapper/scenarioUserStatistic.ts";
-import {useAchievementStore} from "@/stores/achievement.ts";
-import {useObjectiveStore} from "@/stores/objective.ts";
-import {Achievement} from "@/types/achievement.ts";
-import {Objective} from "@/types/objective.ts";
-import {useLessonStore} from "@/stores/lesson.ts";
-import {LessonQuestions} from "@/types/lesson.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { LessonQuestionResult, ScenarioUserStatistic } from "@/types/scenarioUserStatistic.ts";
+import { mapStatisticToQuestionWithResult, mapToScenarioUserStatistic } from "@/mapper/scenarioUserStatistic.ts";
+import { useAchievementStore } from "@/stores/achievement.ts";
+import { useObjectiveStore } from "@/stores/objective.ts";
+import { Achievement } from "@/types/achievement.ts";
+import { Objective } from "@/types/objective.ts";
+import { useLessonStore } from "@/stores/lesson.ts";
+import { LessonQuestions } from "@/types/lesson.ts";
 
-interface ThemeState {
+interface ScenarioStatisticState {
     scenarioStatistics: ScenarioUserStatistic[];
     currentScenarioStatistic: ScenarioUserStatistic | null;
     currentScenarioResults: LessonQuestionResult[];
 }
 
 export const useScenarioStatisticStore = defineStore("scenario_statistic", {
-    state: (): ThemeState => ({
+    state: (): ScenarioStatisticState => ({
         scenarioStatistics: [],
         currentScenarioStatistic: null,
         currentScenarioResults: []

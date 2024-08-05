@@ -123,12 +123,14 @@ export const useStepperStore = defineStore("stepper", {
     },
     async nextStep(lessonAnswers: QuestionAnswer[]) {
       const utilStore = useUtilStore();
+      const statisticStore = useScenarioStatisticStore();
       if (this.scenario && !this.getCurrentStep.endStep) {
         try {
           utilStore.startLoadingBar();
           const response = await invokeItem(this.scenario.id, lessonAnswers);
           if (response.nextLessonId) {
             this.currentLessonId = response.nextLessonId;
+            await statisticStore.fetchCurrentScenarioStatistic(this.scenario);
             this.currentStep++;
             await this.loadInLesson();
             this.addLessonStep();

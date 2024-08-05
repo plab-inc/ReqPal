@@ -1,6 +1,20 @@
 <template>
-  <v-row v-if="scenarioStatistic">
-    <v-col class="text-subtitle-1">
+  <v-row>
+    <v-col>
+      <v-progress-linear
+        bg-color="surface-variant"
+        class="mb-2"
+        :color=progressBarColor()
+        max="5"
+        disabled
+        height="25"
+        :model-value=progressBarStatus()
+        rounded="pill"
+      >
+        <strong>{{ progressBarText() }}</strong>
+      </v-progress-linear>
+    </v-col>
+    <v-col class="text-subtitle-1" v-if="scenarioStatistic">>
       <div class="d-flex align-center flex-wrap mt-2">
         <v-chip color="warning" class="mb-1 mr-1" @click="router.push({name: 'Profil'})">
           <v-icon class="mr-2" color="warning"
@@ -21,29 +35,15 @@
         </v-chip>
       </div>
     </v-col>
-    <v-col>
-      <v-progress-linear
-          bg-color="surface-variant"
-          class="mb-2"
-          :color=progressBarColor()
-          max="5"
-          disabled
-          height="25"
-          :model-value=progressBarStatus()
-          rounded="pill"
-      >
-        <strong>{{ progressBarText() }}</strong>
-      </v-progress-linear>
-    </v-col>
   </v-row>
 </template>
 <script setup lang="ts">
-import {useScenarioProgressStore} from "@/stores/scenarioProgress.ts";
-import {defineProps} from "vue";
-import {Scenario, ScenarioProgress} from "@/types/scenario.ts";
-import {useScenarioStatisticStore} from "@/stores/scenarioStatistic.ts";
-import {ScenarioUserStatistic} from "@/types/scenarioUserStatistic.ts";
-import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
+import { useScenarioProgressStore } from "@/stores/scenarioProgress.ts";
+import { defineProps } from "vue";
+import { Scenario, ScenarioProgress } from "@/types/scenario.ts";
+import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
+import { ScenarioUserStatistic } from "@/types/scenarioUserStatistic.ts";
+import { getAchievementImageUrl } from "@/utils/achievementImage.ts";
 import router from "@/router";
 
 const props = defineProps<{
