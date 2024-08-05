@@ -64,7 +64,7 @@ const routes = [
                 }
             },
             {
-                path: "/lessons/:lessonUUID/teacher-overview",
+                path: "/lesson/:lessonUUID/teacher-overview",
                 name: "LessonTeacherOverview",
                 component: () => import("@/views/lesson/LessonDetailsTeacher.vue"),
                 meta: {

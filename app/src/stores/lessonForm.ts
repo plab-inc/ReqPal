@@ -177,7 +177,7 @@ export const useLessonFormStore = defineStore("lessonForm", {
       const lesson = this.generateLesson();
 
       await LessonService.push.uploadLesson(lesson).then(async () => {
-        await router.push({ path: "/lessons" });
+        await router.push({ path: "/lesson" });
         utilStore.addAlert("Lektion erfolgreich gespeichert", "success");
         this.flushStore();
       }).catch(() => {
