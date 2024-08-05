@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="elevated" color="primary" class="ma-3 border-opacity-100" width="600" height="250"
+  <v-card variant="elevated" color="primary" :class="['ma-3', 'border-opacity-100', borderClass]" width="600" height="250"
           rounded elevation="10">
     <v-card-title>
       {{ achievement.title }}
@@ -37,12 +37,28 @@ interface Props {
   achievement: StudentAchievement;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+const borderClass = props.achievement.amount > 10 ? 'borderClassGold' : props.achievement.amount > 4 ? 'borderClassSilver' : 'borderClassBronze';
 </script>
 
 <style scoped>
 .scroll-container {
   max-height: 100px;
   overflow-y: auto;
+}
+
+.borderClassGold {
+  border: 2px solid rgb(var(--v-theme-goldColor));
+  border-radius: 8px;
+}
+
+.borderClassSilver {
+  border: 2px solid rgb(var(--v-theme-silverColor));
+  border-radius: 8px;
+}
+
+.borderClassBronze {
+  border: 2px solid rgb(var(--v-theme-bronzeColor));
+  border-radius: 8px;
 }
 </style>
