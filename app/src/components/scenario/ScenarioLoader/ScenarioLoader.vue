@@ -27,22 +27,69 @@
           </v-stepper-window-item>
         </v-stepper-window>
 
-        <v-row class="justify-end ma-2" no-gutters>
-          <v-col cols="auto">
-            <v-btn variant="outlined" size="x-large" text="Szenario Verlassen" color="warning" class="mr-2"
-                   v-if="stepperStore.getCurrentStep.startStep || stepperStore.getCurrentStep.endStep" to="/scenario" />
+        <v-row class="align-center" no-gutters>
+          <v-col class="d-flex align-center" cols="auto"
+                 v-if="!stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.endStep">
+            <div class="text-h4">
+              {{ statisticStore.currentScenarioStatistic ? statisticStore.currentScenarioStatistic.score : 0 }}
+              <v-icon class="mb-1" size="35" color="warning"
+                      :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+            </div>
+            <div class="ml-4" style="max-width: 595px; overflow-x: auto; white-space: nowrap;">
+              <v-chip
+                v-for="achievement in statisticStore.currentScenarioStatistic?.achievements"
+                :key="achievement.title"
+                class="mb-1 mr-1"
+                color="success"
+              >
+                <v-icon class="mr-2">
+                  <v-img :src="getAchievementImageUrl(achievement.image)"
+                         :alt="'ReqPal-Achievement Level Image: ' + achievement.image"></v-img>
+                </v-icon>
+                {{ achievement.title }}
+              </v-chip>
+            </div>
+          </v-col>
 
-            <v-btn size="x-large" color="success" text="Szenario Starten" variant="outlined"
-                   v-if="stepperStore.getCurrentStep.startStep" @click="stepperStore.start" append-icon="mdi-play" />
+          <v-col cols="auto" class="ml-auto d-flex justify-end">
+            <v-btn
+              variant="outlined"
+              size="x-large"
+              text="Szenario Verlassen"
+              color="warning"
+              class="mr-2"
+              v-if="stepperStore.getCurrentStep.startStep || stepperStore.getCurrentStep.endStep"
+              to="/scenario"
+            />
 
-            <v-btn variant="outlined" size="x-large" text="Lektions Fortschritt Speichern und Szenario verlassen"
-                   color="warning" class="mr-2"
-                   v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
-                   @click="quitScenario()" />
-            <v-btn variant="outlined" color="success" size="x-large" text="Nächste Lektion"
-                   v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
-                   @click="submitLesson"
-                   append-icon="mdi-play"
+            <v-btn
+              size="x-large"
+              color="success"
+              text="Szenario Starten"
+              variant="outlined"
+              v-if="stepperStore.getCurrentStep.startStep"
+              @click="stepperStore.start"
+              append-icon="mdi-play"
+            />
+
+            <v-btn
+              variant="outlined"
+              size="x-large"
+              text="Lektions Fortschritt Speichern und Szenario verlassen"
+              color="warning"
+              class="mr-2"
+              v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
+              @click="quitScenario()"
+            />
+
+            <v-btn
+              variant="outlined"
+              color="success"
+              size="x-large"
+              text="Nächste Lektion"
+              v-if="!stepperStore.getCurrentStep.endStep && !stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.placeholderStep"
+              @click="submitLesson"
+              append-icon="mdi-play"
             />
           </v-col>
         </v-row>
@@ -61,6 +108,8 @@ import { useLessonStore } from "@/stores/lesson.ts";
 import { QuestionAnswer } from "@/types/lesson.ts";
 import router from "@/router/index.ts";
 import { useUtilStore } from "@/stores/util.ts";
+import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
+import { getAchievementImageUrl } from "@/utils/achievementImage.ts";
 
 onMounted(() => {
   if (!stepperStore.scenario) {
@@ -70,6 +119,7 @@ onMounted(() => {
 
 const stepperStore = useStepperStore();
 const lessonStore = useLessonStore();
+const statisticStore = useScenarioStatisticStore();
 const utilStore = useUtilStore();
 
 const saveLesson = async () => {
