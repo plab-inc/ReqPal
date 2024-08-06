@@ -1,5 +1,6 @@
 package inc.plab.bpmn.aws;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 import java.net.URI;
 
 @Configuration
+@RequiredArgsConstructor
 public class S3BucketConfiguration {
 
     @Value("${app.aws.access.key.id}")
