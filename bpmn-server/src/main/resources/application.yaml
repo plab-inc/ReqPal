@@ -9,7 +9,7 @@ camunda:
       schema-update: false
     admin-user:
       id: camunda
-      password: camunda
+      password: ${CAMUNDA_PASSWORD}
     history-level: NONE
     generic-properties:
       properties:
@@ -30,8 +30,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
+    url: jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+    username: postgres.rouarbdbmlahwttlyspf
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -54,15 +54,10 @@ resilience4j:
         timeout-duration: 0s
 app:
   aws:
-    endpoint:  ${AWS_ENDPOINT}
+    endpoint: https://rouarbdbmlahwttlyspf.supabase.co/storage/v1/s3
     access:
       key:
         id: ${AWS_ACCESS_KEY_ID}
         secret: ${AWS_ACCESS_KEY_SECRET}
   jwt:
     secret: ${JWT_SECRET}
-  technical-user:
-    teacher:
-      id: ${TECHNICAL_TEACHER}
-    student:
-      id: ${TECHNICAL_STUDENT}
