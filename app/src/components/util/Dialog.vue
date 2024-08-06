@@ -63,7 +63,7 @@ openDialog.value = props.modelValue;
         </v-col>
       </v-row>
 
-      <v-card-text>
+      <v-card-text style="white-space: pre-wrap;">
         {{ message }}
       </v-card-text>
       <v-card-actions>

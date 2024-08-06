@@ -112,13 +112,13 @@ const achievementStore = useAchievementStore();
 const headers = ref([
   {title: "Beschreibung", value: "description", sortable: true, width: "25%", align: "start"},
   {title: "Ziel", value: "target_field", sortable: true, width: "auto", align: "center"},
-  {title: "Beispiel", value: "example", sortable: true, width: "auto", align: "center"},
   {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
 ] as const);
 
 const levelHeaders = ref([
   {title: "Level", value: "level", sortable: true, width: "auto", align: "start"},
   {title: "Titel", value: "title", sortable: true, width: "auto", align: "center"},
+  {title: "Beschreibung", value: "description", sortable: true, width: "auto", align: "center"},
   {title: "Schwellenwert", value: "threshold", sortable: true, width: "auto", align: "center"},
   {title: "XP-Belohnung", value: "xp", sortable: true, width: "auto", align: "center"},
   {title: "Bild", value: "image", sortable: false, width: "auto", align: "center"},

@@ -2,11 +2,11 @@ package inc.plab.bpmn.service;
 
 import inc.plab.bpmn.exception.InvalidAnswerOptionsException;
 import inc.plab.bpmn.exception.InvalidQuestionTypeException;
+import inc.plab.bpmn.model.lesson.QuestionAnswer;
 import inc.plab.bpmn.model.productRequirement.ProductRequirement;
 import inc.plab.bpmn.model.productRequirement.ProductRequirementRepository;
 import inc.plab.bpmn.model.question.Question;
 import inc.plab.bpmn.model.question.QuestionRepository;
-import inc.plab.bpmn.mapper.Answer;
 import inc.plab.bpmn.model.question.evaluation.result.*;
 import inc.plab.bpmn.model.question.option.*;
 import inc.plab.bpmn.model.question.solution.MultipleChoiceSolution;
@@ -26,29 +26,29 @@ public class EvaluationService {
     private QuestionRepository questionRepository;
     private ProductRequirementRepository productRequirementRepository;
 
-    public Result evaluateQuestionType(Answer answer) {
-        String lowerCaseType = answer.getType().toLowerCase().trim();
+    public Result evaluateQuestionType(QuestionAnswer questionAnswer) {
+        String lowerCaseType = questionAnswer.getType().toLowerCase().trim();
 
         switch (lowerCaseType) {
             case "trueorfalse" -> {
-                return evaluateTrueOrFalse(answer);
+                return evaluateTrueOrFalse(questionAnswer);
             }
             case "multiplechoice" -> {
-                return evaluateMultipleChoice(answer);
+                return evaluateMultipleChoice(questionAnswer);
             }
             case "slider" -> {
-                return evaluateSlider(answer);
+                return evaluateSlider(questionAnswer);
             }
             case "requirement" -> {
-                return evaluateRequirement(answer);
+                return evaluateRequirement(questionAnswer);
             }
             default -> throw new InvalidQuestionTypeException("Unknown question type: " + lowerCaseType);
         }
     }
 
-    private Result evaluateSlider(Answer answer) {
-        if (answer.getOptions() instanceof SliderOptions sliderOptions) {
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
+    private Result evaluateSlider(QuestionAnswer questionAnswer) {
+        if (questionAnswer.getOptions() instanceof SliderOptions sliderOptions) {
+            UUID questionUUID = UUID.fromString(questionAnswer.getQuestionId());
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
 
             if (questionOptional.isPresent()) {
@@ -80,12 +80,12 @@ public class EvaluationService {
         return sliderResult;
     }
 
-    private Result evaluateRequirement(Answer answer) {
-        if (answer.getOptions() instanceof RequirementOptions requirementOptions) {
+    private Result evaluateRequirement(QuestionAnswer questionAnswer) {
+        if (questionAnswer.getOptions() instanceof RequirementOptions requirementOptions) {
             if (!requirementOptions.isAskForQualification()) {
                 return null;
             }
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
+            UUID questionUUID = UUID.fromString(questionAnswer.getQuestionId());
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
 
             if (questionOptional.isPresent()) {
@@ -136,10 +136,10 @@ public class EvaluationService {
         return requirementResult;
     }
 
-    private Result evaluateMultipleChoice(Answer answer) {
-        if (answer.getOptions() instanceof MultipleChoiceOptions multipleChoiceOptions) {
+    private Result evaluateMultipleChoice(QuestionAnswer questionAnswer) {
+        if (questionAnswer.getOptions() instanceof MultipleChoiceOptions multipleChoiceOptions) {
 
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
+            UUID questionUUID = UUID.fromString(questionAnswer.getQuestionId());
 
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
             if (questionOptional.isPresent()) {
@@ -180,10 +180,10 @@ public class EvaluationService {
         return result;
     }
 
-    private Result evaluateTrueOrFalse(Answer answer) {
-        if (answer.getOptions() instanceof TrueOrFalseOptions trueOrFalseOptions) {
+    private Result evaluateTrueOrFalse(QuestionAnswer questionAnswer) {
+        if (questionAnswer.getOptions() instanceof TrueOrFalseOptions trueOrFalseOptions) {
 
-            UUID questionUUID = UUID.fromString(answer.getQuestionId());
+            UUID questionUUID = UUID.fromString(questionAnswer.getQuestionId());
             Optional<Question> questionOptional = questionRepository.findById(questionUUID);
 
             if (questionOptional.isPresent()) {

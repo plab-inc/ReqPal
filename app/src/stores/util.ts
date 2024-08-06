@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {DialogText} from "@/utils/dialogs.ts";
-import {XpActivityLogDTO} from "@/types/gamification.ts";
+import {XpActivityLogDTO} from "@/types/xpActivityLog.ts";
 
 export type AlertType = 'success' | 'error' | 'info' | 'warning';
 export type DialogType =
@@ -80,18 +80,21 @@ export const useUtilStore = defineStore({
                 }
             }
 
-            switch (actionType) {
-                case('Objective'):
+            switch (actionType.toLowerCase()) {
+                case('objective'):
                     alertText = xp + " XP für Lernziel " + actionTitle + " erhalten!"
                     break;
-                case('Achievement'):
+                case('achievement'):
                     alertText = xp + " XP für Achievement " + actionTitle + " erhalten!";
                     break;
-                case('ReqPal Achievement'):
+                case('reqpal achievement'):
                     alertText = xp + " XP für ReqPal Achievement " + actionTitle + " erhalten!";
                     break;
-                case('All lesson objectives'):
+                case('all lesson objectives'):
                     alertText = xp + " XP für alle Lernziele dieser Lektion erhalten!";
+                    break;
+                case('scenario completed'):
+                    alertText = xp + " XP für das Beenden des Szenarios erhalten!";
                     break;
                 default:
                     alertText = xp + " XP erhalten!"

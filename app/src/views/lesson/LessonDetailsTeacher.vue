@@ -24,24 +24,6 @@
       </v-btn-toggle>
     </v-col>
   </v-row>
-  <v-row>
-    <v-col cols="auto" class="d-flex justify-start align-center flex-wrap">
-      <div v-for="objective in currentLesson?.objectives" v-if="currentLesson && currentLesson.objectives?.length > 0">
-        <v-tooltip location="top" v-if="objective.description" :text="objective.description">
-          <template v-slot:activator="{ props }">
-            <v-chip
-                v-bind="props"
-                class="ma-5"
-                prepend-icon="mdi-trophy"
-                elevation="8"
-            >
-              {{ objective.name }}
-            </v-chip>
-          </template>
-        </v-tooltip>
-      </div>
-    </v-col>
-  </v-row>
   <v-row align="center" no-gutters>
     <v-col cols="11" class="text-h5">
       {{ currentLesson?.lessonDTO.description }}
@@ -57,10 +39,10 @@
 
 <script setup lang="ts">
 
-import { LessonModuleEntry, useLessonStore } from "@/stores/lesson.ts";
+import {LessonModuleEntry, useLessonStore} from "@/stores/lesson.ts";
 import LessonQuestions from "@/components/lesson/generator/LessonQuestions.vue";
-import { Lesson } from "@/types/lesson.ts";
-import { ref, watch } from "vue";
+import {Lesson} from "@/types/lesson.ts";
+import {ref, watch} from "vue";
 
 const lessonStore = useLessonStore();
 const currentLesson: Lesson | null = lessonStore.getCurrentLesson;
@@ -77,7 +59,7 @@ watch(filters, async (newShowSolutions) => {
     components.value = lessonStore.getLessonModules;
   }
   if (!filters.value.includes('showSolutions') && currentLesson?.lessonDTO) {
-    await lessonStore.fetchQuestionsWithLesson(currentLesson.lessonDTO.uuid);
+    await lessonStore.fetchLessonWithQuestions(currentLesson.lessonDTO.uuid);
     components.value = lessonStore.getLessonModules;
   }
 }, {deep: true});

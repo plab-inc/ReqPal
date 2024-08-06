@@ -25,7 +25,7 @@ export async function loadLessonByUUID(to: RouteLocationNormalized, from: RouteL
 export async function fetchQuestionsForLesson(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
     try {
         const lessonStore = useLessonStore();
-      await lessonStore.fetchQuestionsWithLesson(to.params.lessonUUID.toString());
+      await lessonStore.fetchLessonWithQuestions(to.params.lessonUUID.toString());
         return next();
     } catch (error) {
         return next({name: 'Error'});

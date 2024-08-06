@@ -1,21 +1,31 @@
 <template>
   <v-data-table-virtual
-      :v-model="lessonStore.getLessons"
-      v-model:expanded="expanded"
-      :headers="authStore.isModerator ? headersModerator : headers"
-      :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
-      item-value="lessonDTO.uuid"
-      select-strategy="all"
-      show-expand
-      expand-on-click
-      hover
-      height="75vh"
-      no-data-text="Sie haben noch keine Lektionen erstellt."
+    :v-model="lessonStore.getLessons"
+    v-model:expanded="expanded"
+    :headers="authStore.isModerator ? headersModerator : headers"
+    :items="filters.includes('showOnlyOwn') ? filteredLessons : lessons"
+    item-value="lessonDTO.uuid"
+    select-strategy="all"
+    hover
+    height="75vh"
+    no-data-text="Sie haben noch keine Lektionen erstellt."
   >
+    <template v-slot:item.objectives="{ item }">
+      <v-chip v-for="objective in item.objectives"
+              prepend-icon="mdi-trophy"
+              density="comfortable"
+              variant="outlined"
+              elevation="3" class="mr-1"
+              @click="router.push({name: 'Objectives'})"
+      >
+        {{ objective.name }}
+      </v-chip>
+    </template>
+
     <template v-slot:item.creatorUsername="{ item }">
       <v-chip
-          :prepend-avatar="'avatars/' + item.creatorAvatar + '.png'"
-          elevation="8"
+        :prepend-avatar="'avatars/' + item.creatorAvatar + '.png'"
+        elevation="8"
       >
         {{ item.creatorUsername }}
       </v-chip>
@@ -23,79 +33,55 @@
 
     <template v-slot:item.actions="{ item }">
       <div>
-        <v-btn
-            class="ml-1"
-            density="compact"
-            color="success"
-            variant="plain"
-            size="medium"
-            icon="mdi-open-in-new"
-            @click.stop="openLessonDetails(item)"
-        />
-        <v-btn
-            class="ml-2"
-            density="compact"
-            color="success"
-            variant="plain"
-            size="medium"
-            icon="mdi-content-copy"
-            @click.stop="copyLesson(item)"
-        />
-        <v-btn
-            class="ml-2"
-            density="compact"
-            color="success"
-            variant="plain"
-            size="medium"
-            icon="mdi-pencil"
-            @click.stop="editLesson(item)"
-        />
-        <v-btn
-            class="ml-2"
-            density="compact"
-            color="error"
-            variant="plain"
-            size="medium"
-            icon="mdi-delete"
-            @click.stop="deleteLesson(item)"
-        />
+        <v-tooltip text="Vorschau der Lektion" location="left">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="info"
+              variant="plain"
+              size="small"
+              icon="mdi-eye-outline"
+              @click.stop="openLessonDetails(item)"
+            />
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Lektion in Builder kopieren" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="success"
+              variant="plain"
+              size="small"
+              icon="mdi-content-copy"
+              @click.stop="copyLesson(item)"
+            />
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Lektion bearbeiten" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="success"
+              variant="plain"
+              size="small"
+              icon="mdi-pencil"
+              @click.stop="editLesson(item)"
+            />
+          </template>
+        </v-tooltip>
+        <v-tooltip text="Lektion löschen" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="error"
+              variant="plain"
+              size="small"
+              icon="mdi-delete"
+              @click.stop="deleteLesson(item)"
+            />
+          </template>
+        </v-tooltip>
       </div>
-    </template>
-    <template v-slot:expanded-row="{ columns, item }">
-      <tr v-if="item.objectives.length > 0">
-        <td :colspan="columns.length">
-          <v-list>
-            <v-list-subheader>Lernziele</v-list-subheader>
-
-            <v-list-item
-                v-for="(objective, i) in item.objectives"
-                :key="i"
-                :value="objective"
-                color="primary"
-                variant="plain"
-            >
-              <template v-slot:prepend>
-                <v-icon icon="mdi-trophy"></v-icon>
-              </template>
-
-              <v-list-item-title v-text="objective.name"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </td>
-      </tr>
-      <tr v-else>
-        <td :colspan="columns.length">
-          <v-list>
-            <v-list-subheader>Lernziele</v-list-subheader>
-            <v-list-item
-                color="primary"
-                variant="plain"
-            >
-              <v-list-item-title v-text="'Noch keine Lernziele zur Lektion hinzugefügt'"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </td>
-      </tr>
     </template>
   </v-data-table-virtual>
 </template>
@@ -122,25 +108,27 @@ const props = defineProps<{ filters: string[] }>();
 const lessons = lessonStore.getLessons;
 
 const headers = ref([
-  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
-  {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
-  {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
-  {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
+  { title: "Titel", value: "lessonDTO.title", sortable: true, width: "auto", align: "start" },
+  { title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center" },
+  { title: "Lernziele", value: "objectives", sortable: true, width: "auto", align: "center" },
+  { title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center" },
+  { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
 ] as const);
 
 const headersModerator = ref([
-  {title: "Titel", value: "lessonDTO.title", sortable: true, width: "25%", align: "start"},
-  {title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center"},
-  {title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center"},
-  {title: "Besitzer", value: "creatorUsername", sortable: true, width: "auto", align: "center"},
-  {title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end"}
+  { title: "Titel", value: "lessonDTO.title", sortable: true, width: "auto", align: "start" },
+  { title: "Beschreibung", value: "lessonDTO.description", sortable: true, width: "auto", align: "center" },
+  { title: "Lernziele", value: "objectives", sortable: true, width: "auto", align: "center" },
+  { title: "Punkte", value: "lessonDTO.points", sortable: true, width: "auto", align: "center" },
+  { title: "Besitzer", value: "creatorUsername", sortable: true, width: "auto", align: "center" },
+  { title: "Aktionen", value: "actions", sortable: false, width: "auto", align: "end" }
 ] as const);
 
 const filteredLessons = computed(() => {
-  if (props.filters.includes('showOnlyOwn')) {
+  if (props.filters.includes("showOnlyOwn")) {
     return lessons.filter(lesson =>
-        lesson.lessonDTO.user_id === authStore.user?.id
-    )
+      lesson.lessonDTO.user_id === authStore.user?.id
+    );
   }
   return lessons;
 });
@@ -160,7 +148,7 @@ async function copyLesson(item: Lesson) {
       lesson.uuid = uuidv4();
       lesson.questions.forEach((question) => {
         question.uuid = uuidv4();
-      })
+      });
       lessonFormStore.hydrate(lesson);
       router.push({ path: "lesson/builder" });
     }
@@ -168,7 +156,7 @@ async function copyLesson(item: Lesson) {
 }
 
 async function openLessonDetails(lesson: Lesson) {
-  await router.push({name: 'LessonTeacherOverview', params: {lessonUUID: lesson.lessonDTO.uuid}});
+  await router.push({ name: "LessonTeacherOverview", params: { lessonUUID: lesson.lessonDTO.uuid } });
 }
 
 function deleteLesson(item: Lesson) {

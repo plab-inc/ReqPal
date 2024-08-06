@@ -1,16 +1,16 @@
 <script setup lang="ts">
 
-import { CatalogDTO, Product, Requirement } from "@/types/catalog.ts";
-import { useCatalogStore } from "@/stores/catalog.ts";
+import {CatalogDTO, Product, Requirement} from "@/types/catalog.ts";
+import {useCatalogStore} from "@/stores/catalog.ts";
 import RequirementItem from "@/components/catalog/requirement/Requirement.vue";
-import { useLessonFormStore } from "@/stores/lessonForm.ts";
+import {useLessonFormStore} from "@/stores/lessonForm.ts";
 import ProductDetail from "@/components/catalog/product/ProductDetail.vue";
-import { containsAtLeastOneElementRule, requiredRule, requiredStringRule } from "@/utils/validationRules.ts";
+import {containsAtLeastOneElementRule, requiredRule, requiredStringRule} from "@/utils/validationRules.ts";
 import Help from "@/components/lesson/builder/helper/Help.vue";
 import Delete from "@/components/lesson/builder/helper/Delete.vue";
 import PointsInput from "@/components/lesson/builder/helper/PointsInput.vue";
-import { onBeforeMount, ref, watch } from "vue";
-import { convertStringToNumber } from "@/utils/helper.ts";
+import {onBeforeMount, ref, watch} from "vue";
+import {convertStringToNumber} from "@/utils/helper.ts";
 
 const lessonFormStore = useLessonFormStore()
 const catalogStore = useCatalogStore();
@@ -90,8 +90,11 @@ watch(fields, async (value) => {
   if (!selectedRequirement.value?.requirement_id && value.options.requirementId) {
     selectedRequirement.value = requirements.value.find(req => req.requirement_id === value.options.requirementId);
   }
-  updateStoreData();
 
+  if (fields.value.options.askForQualification === false) {
+    lessonFormStore.setLessonModuleData(props.componentId, 'points', null);
+  }
+  updateStoreData();
 }, {deep: true, immediate: true});
 </script>
 
@@ -183,8 +186,8 @@ watch(fields, async (value) => {
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col cols="2" v-if="fields.options.askForQualification">
-        <PointsInput :component-id="props.componentId"></PointsInput>
+      <v-col cols="2" v-if="fields.options.askForQualification && fields.options.productIds.length > 0">
+        <PointsInput :component-id="props.componentId" :answer-amount="fields.options.productIds.length"></PointsInput>
       </v-col>
       <v-col :cols="fields.options.askForQualification ? 10 : 12" class="d-flex flex-grow-1 align-end justify-end">
         <Help dialog-type="productQualificationTeacherExplanation"/>
@@ -194,6 +197,3 @@ watch(fields, async (value) => {
     </v-row>
   </v-container>
 </template>
-<style scoped>
-
-</style>

@@ -16,13 +16,7 @@
     </div>
     <div class="text-h6">
       Zu erreichende Achievements:
-      <v-chip v-for="achievement in achievementStore.achievements" class="mb-1 mr-1 ml-2" color="success">
-        <v-icon class="mr-2">
-          <v-img :src="getAchievementImageUrl(achievement.image)"
-                 :alt="'ReqPal-Achievement Level Image: '+achievement.image"></v-img>
-        </v-icon>
-        {{ achievement.title }}
-      </v-chip>
+      <AchievementChip v-for="achievement in achievementStore.achievements" :achievement="achievement" :chip-class="'mb-1 mr-1'"></AchievementChip>
     </div>
   </div>
   <div v-else>
@@ -34,7 +28,7 @@
 <script setup lang="ts">
 import {useStepperStore} from "@/stores/stepper.ts";
 import {useAchievementStore} from "@/stores/achievement.ts";
-import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
+import AchievementChip from "@/components/achievement/AchievementChip.vue";
 
 const stepperStore = useStepperStore();
 const achievementStore = useAchievementStore();

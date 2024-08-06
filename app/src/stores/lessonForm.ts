@@ -6,6 +6,7 @@ import { VForm } from "vuetify/components";
 import LessonService from "@/services/database/lesson.ts";
 import router from "@/router/index.ts";
 import { useUtilStore } from "@/stores/util.ts";
+import {roundNumberToTwoDecimals} from "@/utils/helper.ts";
 
 interface LessonModuleEntry {
   uuid: string;
@@ -51,6 +52,19 @@ export const useLessonFormStore = defineStore("lessonForm", {
     getLessonModuleFieldValues: (state) => (componentId: string, field: string) => {
       const component = state.lessonModules.find(comp => comp.uuid === componentId);
       return component ? component.data[field] : null;
+    },
+    getAmountOfPointsPerRightAnswer: (state) => (componentId: string, answerAmount: number) : number => {
+      const component = state.lessonModules.find(comp => comp.uuid === componentId);
+      if(component) {
+        const points = component.data['points'];
+        if(points) {
+            if(answerAmount > 1) {
+                return roundNumberToTwoDecimals(points / answerAmount);
+            }
+         return points;
+        }
+      }
+     return 0;
     },
     getLessonModuleFormTitle: (state) => {
       return state.lessonTitle;
@@ -163,7 +177,7 @@ export const useLessonFormStore = defineStore("lessonForm", {
       const lesson = this.generateLesson();
 
       await LessonService.push.uploadLesson(lesson).then(async () => {
-        await router.push({ path: "/lessons" });
+        await router.push({ path: "/lesson" });
         utilStore.addAlert("Lektion erfolgreich gespeichert", "success");
         this.flushStore();
       }).catch(() => {

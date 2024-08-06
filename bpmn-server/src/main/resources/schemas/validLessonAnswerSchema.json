@@ -1,86 +1,138 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "answers": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "questionId": {
-            "type": "string"
-          },
-          "options": {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "input": { "type": "boolean" }
-                },
-                "required": ["input"]
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "answers": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "integer" },
-                        "description": { "type": "string" },
-                        "input": { "type": "boolean" }
-                      },
-                      "required": ["id", "description", "input"]
-                    }
-                  }
-                },
-                "required": ["answers"]
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "input": { "type": "integer" },
-                  "minValue": { "type": "integer" },
-                  "maxValue": { "type": "integer" },
-                  "steps": { "type": "integer" }
-                },
-                "required": ["input", "minValue", "maxValue", "steps"]
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "catalogId": { "type": "string" },
-                  "productIds": {
-                    "type": "array",
-                    "items": { "type": "string" }
-                  },
-                  "requirementId": { "type": "string" },
-                  "askForQualification": { "type": "boolean" },
-                  "products": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string" },
-                        "input": { "type": "integer" }
-                      },
-                      "required": ["id", "input"]
-                    }
-                  }
-                },
-                "required": ["catalogId", "productIds", "requirementId", "askForQualification"]
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "questionId": {
+        "type": "string"
+      },
+      "options": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "input": {
+                "type": "boolean"
               }
+            },
+            "required": [
+              "input"
             ]
           },
-          "type": {
-            "type": "string",
-            "enum": ["TrueOrFalse", "MultipleChoice", "Slider", "Requirement"]
+          {
+            "type": "object",
+            "properties": {
+              "answers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description",
+                    "input"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "answers"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "input": {
+                "type": "integer"
+              },
+              "minValue": {
+                "type": "integer"
+              },
+              "maxValue": {
+                "type": "integer"
+              },
+              "steps": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "input",
+              "minValue",
+              "maxValue",
+              "steps"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "catalogId": {
+                "type": "string"
+              },
+              "productIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "requirementId": {
+                "type": "string"
+              },
+              "askForQualification": {
+                "type": "boolean"
+              },
+              "products": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "input": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "input"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "catalogId",
+              "productIds",
+              "requirementId",
+              "askForQualification"
+            ]
           }
-        },
-        "required": ["questionId", "options", "type"]
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "TrueOrFalse",
+          "MultipleChoice",
+          "Slider",
+          "Requirement"
+        ]
       }
-    }
-  },
-  "required": ["answers"]
+    },
+    "required": [
+      "questionId",
+      "options",
+      "type"
+    ]
+  }
 }

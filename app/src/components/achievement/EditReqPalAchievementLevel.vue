@@ -17,6 +17,8 @@
               </div>
               <v-text-field variant="outlined" label="Titel" v-model="localAchievementLevel.title"
                             :rules="[requiredStringRule]"/>
+              <v-text-field variant="outlined" label="Beschreibung" v-model="localAchievementLevel.description"
+                            :rules="[requiredStringRule]"/>
               <v-text-field variant="outlined" label="Schwellenwert" v-model="localAchievementLevel.threshold"
                             :rules="[requiredNumberRule]"/>
               <v-text-field variant="outlined" label="Level" v-model="localAchievementLevel.level"
@@ -93,9 +95,9 @@ const achievementStore = useAchievementStore();
 const isFormValid = ref<boolean>(false);
 const localAchievementLevel = ref<ReqPalAchievementLevelDTO>({
   id: "",
+  description: "",
   image: "",
   level: 0,
-  description: "",
   reqpal_achievement_id: "",
   threshold: 0,
   title: "",

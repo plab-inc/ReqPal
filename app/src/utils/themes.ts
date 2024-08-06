@@ -1,4 +1,5 @@
 import { ThemeDefinition } from "vuetify";
+
 export const LIGHT_THEME = "light";
 export const light: ThemeDefinition = {
   colors: {
@@ -11,7 +12,10 @@ export const light: ThemeDefinition = {
     success: '#1EA885',
     warning: '#FF9900',
     textColor: '#363636',
-    highlightColor: '#edd9ff'
+    highlightColor: '#edd9ff',
+    bronzeColor: '#c46e00',
+    silverColor: '#838383',
+    goldColor: '#d5a300'
   },
 };
 
@@ -29,7 +33,7 @@ export const dark: ThemeDefinition = {
     warning: '#FFC93C',
     textColor: '#e8e8e8',
     highlightColor: '#edd9ff',
-    bronzeColor: '#cd7f32',
+    bronzeColor: '#ce8c4e',
     silverColor: '#c0c0c0',
     goldColor: '#ffd700'
   },

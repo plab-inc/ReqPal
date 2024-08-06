@@ -20,13 +20,14 @@ import { useUtilStore } from "@/stores/util.ts";
 import { fetchProductsByUser } from "@/middlewares/product.ts";
 import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
 import {
-    fetchAchievementImages,
+    fetchAchievementImages, fetchAchievementsByStudent,
     fetchAchievementsByUser,
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
 import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
 import { fetchCurrentScenarioResults, fetchScenarioAchievements, fetchScenarios } from "@/middlewares/scenario.ts";
+import {fetchStatisticsByStudent} from "@/middlewares/profile.ts";
 
 const routes = [
     {
@@ -63,7 +64,7 @@ const routes = [
                 }
             },
             {
-                path: "/lessons/:lessonUUID/teacher-overview",
+                path: "/lesson/:lessonUUID/teacher-overview",
                 name: "LessonTeacherOverview",
                 component: () => import("@/views/lesson/LessonDetailsTeacher.vue"),
                 meta: {
@@ -239,7 +240,9 @@ const routes = [
                         requiresAuth,
                         requiresStudent,
                         fetchReqPalLevelByUser,
-                        fetchObjectiveLevelsByUser
+                        fetchObjectiveLevelsByUser,
+                        fetchAchievementsByStudent,
+                        fetchStatisticsByStudent
                     ]
                 },
             },

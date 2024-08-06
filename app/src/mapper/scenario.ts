@@ -1,4 +1,5 @@
 import { Scenario, ScenarioDTO, ScenarioProgress, ScenarioProgressDTO } from "@/types/scenario.ts";
+import { QuestionAnswer } from "@/types/lesson.ts";
 
 export const mapToScenario = (input: ScenarioDTO): Scenario => {
   return {
@@ -17,13 +18,14 @@ export const mapToScenario = (input: ScenarioDTO): Scenario => {
   };
 };
 
-export const mapToScenarioProgress = (inputScenarioUser: ScenarioProgressDTO, inputScenario: Scenario): ScenarioProgress => {
+export const mapToScenarioProgress = (inputScenarioProgress: ScenarioProgressDTO, inputScenario: Scenario): ScenarioProgress => {
   return {
     scenario: inputScenario,
-    userId: inputScenarioUser.user_id,
-    currentStep: inputScenarioUser.step,
-    started: inputScenarioUser.started,
-    ended: inputScenarioUser.ended,
-    currentLessonId: inputScenarioUser.lesson_id || undefined
+    userId: inputScenarioProgress.user_id,
+    currentStep: inputScenarioProgress.step,
+    started: inputScenarioProgress.started,
+    ended: inputScenarioProgress.ended,
+    currentLessonId: inputScenarioProgress.lesson_id || undefined,
+    currentLessonAnswers: inputScenarioProgress.lesson_answers as QuestionAnswer[] || undefined
   };
 };

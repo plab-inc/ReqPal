@@ -422,7 +422,6 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          example: boolean | null
           id: string
           target_field: string | null
           user_id: string | null
@@ -430,7 +429,6 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
-          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -438,7 +436,6 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
-          example?: boolean | null
           id?: string
           target_field?: string | null
           user_id?: string | null
@@ -538,6 +535,7 @@ export type Database = {
           created_at: string
           ended: boolean
           id: string
+          lesson_answers: Json | null
           lesson_id: string | null
           scenario_id: string
           started: boolean
@@ -549,6 +547,7 @@ export type Database = {
           created_at?: string
           ended?: boolean
           id?: string
+          lesson_answers?: Json | null
           lesson_id?: string | null
           scenario_id?: string
           started?: boolean
@@ -560,6 +559,7 @@ export type Database = {
           created_at?: string
           ended?: boolean
           id?: string
+          lesson_answers?: Json | null
           lesson_id?: string | null
           scenario_id?: string
           started?: boolean
@@ -772,42 +772,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_feedback_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_lesson_progress: {
-        Row: {
-          answers: Json | null
-          id: string
-          lesson_id: string
-          user_id: string
-        }
-        Insert: {
-          answers?: Json | null
-          id?: string
-          lesson_id: string
-          user_id: string
-        }
-        Update: {
-          answers?: Json | null
-          id?: string
-          lesson_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_lesson_progress_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lessons"
-            referencedColumns: ["uuid"]
-          },
-          {
-            foreignKeyName: "user_lesson_progress_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

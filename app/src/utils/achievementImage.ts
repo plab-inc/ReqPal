@@ -3,6 +3,6 @@ export const createPathToImage = (folder: string, imageName: string): string => 
 };
 
 export const getAchievementImageUrl = (path: string) => {
-    const url = "https://rouarbdbmlahwttlyspf.supabase.co/storage/v1/object/public/achievement-images";
+    const url = import.meta.env.VITE_SUPABASE_URL + "/storage/v1/object/public/achievement-images";
     return url + path;
 }

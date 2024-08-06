@@ -11,7 +11,7 @@
   >
     <template v-slot:item.image="{item}">
       <div class="d-flex align-center justify-center">
-        <v-img max-width="50" :src="getAchievementImageUrl(item.image)" :alt="'Achievement Image: '+item.image"></v-img>
+        <v-img max-width="40" :src="getAchievementImageUrl(item.image)" :alt="'Achievement Image: '+item.image"></v-img>
       </div>
     </template>
     <template v-slot:item.actions="{ item }">
