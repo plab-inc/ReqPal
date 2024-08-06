@@ -1,4 +1,5 @@
 <template>
+  <v-container class="pa-2">
   <div v-if="stepperStore.scenario">
     <v-row>
       <v-col>
@@ -74,10 +75,9 @@
           <div class="text-h6 mr-5 mb-2">
             Erhaltene Achievements:
           </div>
-          <v-row>
+          <v-row no-gutters>
             <v-col md="6" lg="4" v-for="achievement in scenarioStatistic.achievements" class="d-flex">
-              <AchievementItem class="flex-grow-1" :achievement="achievement">
-              </AchievementItem>
+              <AchievementItem class="flex-grow-1" :achievement="achievement" />
             </v-col>
           </v-row>
         </v-col>
@@ -85,9 +85,9 @@
           <div class="text-h6 mr-5 mb-2">
             Erhaltene XP für Lernziele:
           </div>
-          <v-row>
+          <v-row no-gutters>
             <v-col md="6" lg="4" v-for="objectiveStatistic in scenarioStatistic.objectiveStatistics" class="d-flex">
-              <ObjectiveItem class="flex-grow-1" :objective-statistic="objectiveStatistic"></ObjectiveItem>
+              <ObjectiveItem class="flex-grow-1" :objective-statistic="objectiveStatistic" />
             </v-col>
           </v-row>
         </v-col>
@@ -99,6 +99,7 @@
       Kein Szenario geladen.
     </div>
   </div>
+  </v-container>
 </template>
 <script setup lang="ts">
 import { useStepperStore } from "@/stores/stepper.ts";

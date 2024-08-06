@@ -1,25 +1,26 @@
 <template>
-  <v-card variant="elevated" color="primary" max-height="250" class="flex-card">
-    <v-card-title>
-      {{ achievement.title }}
+  <v-card variant="outlined" :elevation="6" density="comfortable" color="info" height="100" class="flex-card ma-2"
+          @click="router.push('/profile')">
+    <v-card-title class="pr-2">
+      <v-row no-gutters class="justify-space-between">
+        <v-col cols="8">
+          {{ achievement.title }}
+        </v-col>
+        <v-col cols="auto">
+          <v-img :src="getAchievementImageUrl(achievement.image)" width="50" />
+        </v-col>
+      </v-row>
     </v-card-title>
-    <v-card-item class="flex-grow-1">
-    <v-card-text>
-      <div class="d-flex align-center">
-        <v-img :src="getAchievementImageUrl(achievement.image)" width="60" max-width="60" class="mr-5">
-        </v-img>
-        <div class="text-subtitle-1 scroll-container">
-          {{ achievement.description }}
-        </div>
-      </div>
-    </v-card-text>
-    </v-card-item>
+    <v-card-subtitle>
+      {{ achievement.description }}
+    </v-card-subtitle>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import {Achievement} from "@/types/achievement.ts";
-import {getAchievementImageUrl} from "@/utils/achievementImage.ts";
+import { Achievement } from "@/types/achievement.ts";
+import { getAchievementImageUrl } from "@/utils/achievementImage.ts";
+import router from "@/router/index.ts";
 
 interface Props {
   achievement: Achievement;
