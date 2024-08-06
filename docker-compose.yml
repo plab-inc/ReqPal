@@ -9,20 +9,24 @@ services:
         API_ENDPOINT: http://localhost:8081/bpmn/
         SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
         SUPABASE_PROJECT_ID: ${SUPABASE_PROJECT_ID}
-
+    image: reqpal/ui:latest
     ports:
       - "8080:80"
-
+    env_file:
+      - .env
   bpmn-backend:
     build:
       context: ./bpmn-server
       dockerfile: Dockerfile
+    image: reqpal/bpmn-backend:latest
     ports:
       - "8081:8081"
+    env_file:
+      - .env
     environment:
-      CAMUNDA_PASSWORD: ${CAMUNDA_PASSWORD}
       SUPABASE_PROJECT_ID: ${SUPABASE_PROJECT_ID}
-      DB_PASSWORD: ${DB_PASSWORD}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      SUPABASE_DB_PASSWORD: ${DB_PASSWORD}
+      CAMUNDA_PASSWORD: ${CAMUNDA_PASSWORD}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      JWT_SECRET: ${JWT_SECRET}
       AWS_ACCESS_KEY_SECRET: ${AWS_ACCESS_KEY_SECRET}
