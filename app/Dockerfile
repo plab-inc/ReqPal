@@ -12,9 +12,13 @@ ENV VITE_SUPABASE_URL=https://${SUPABASE_PROJECT_ID}.supabase.co
 
 COPY package.json ./
 
+#installing node_modules
 RUN yarn install
+#move app files into image
 COPY . ./
-RUN yarn build
+#typecheck and build project
+RUN yarn type-check
+RUN yarn build:no-tsc
 
 FROM nginx:latest as build-serve
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
