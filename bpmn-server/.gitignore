@@ -19,6 +19,9 @@ lerna-debug.log*
 #env
 .env
 
+#keystores
+keystore.p12
+
 # Tests
 /coverage
 /.nyc_output
