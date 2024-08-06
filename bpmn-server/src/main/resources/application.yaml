@@ -31,7 +31,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres
-    username: postgres.rouarbdbmlahwttlyspf
+    username: postgres.${SUPABASE_PROJECT_ID}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -53,11 +53,12 @@ resilience4j:
         limit-refresh-period: 60s
         timeout-duration: 0s
 app:
+  supabase:
+    jwt:
+      secret: ${JWT_SECRET}
   aws:
-    endpoint: https://rouarbdbmlahwttlyspf.supabase.co/storage/v1/s3
+    endpoint: https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3
     access:
       key:
         id: ${AWS_ACCESS_KEY_ID}
         secret: ${AWS_ACCESS_KEY_SECRET}
-  jwt:
-    secret: ${JWT_SECRET}

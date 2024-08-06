@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,14 +27,15 @@ import javax.crypto.SecretKey;
 
 @Component
 @RequiredArgsConstructor
+@Configuration
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final SupabaseAuthService supabaseAuthService;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    @Value("${app.jwt.secret}")
-    private final String jwtSecret;
+    @Value("${app.supabase.jwt.secret}")
+    private String jwtSecret;
 
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver handlerExceptionResolver;
