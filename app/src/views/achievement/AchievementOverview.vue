@@ -10,6 +10,7 @@
           rounded
           divided
       >
+        <v-btn color="info" text="Hinweise" @click="utilStore.openDialog(AchievementHint)" />
         <v-btn
             @click="createAchievement"
             :disabled="achievementStore.achievements.length >= MAX_ACHIEVEMENTS"
@@ -34,10 +35,13 @@ import {ref} from "vue";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import AchievementTable from "@/components/achievement/AchievementTable.vue";
 import EditAchievement from "@/components/achievement/EditAchievement.vue";
+import {AchievementHint} from "@/utils/dialogs.ts";
+import {useUtilStore} from "@/stores/util.ts";
 
 const MAX_ACHIEVEMENTS = 20;
 const achievementStore = useAchievementStore();
 const authStore = useAuthStore();
+const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
 function updateEditDialog(value: boolean) {
