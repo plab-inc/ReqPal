@@ -17,7 +17,7 @@ export type DialogType =
     | 'textfieldExplanation'
     | 'dividerTeacherExplanation';
 
-interface IAlert {
+export interface IAlert {
     id: string;
     message: string;
     type: AlertType;
@@ -34,7 +34,6 @@ export const useUtilStore = defineStore({
     id: 'util',
     state: () => ({
         alerts: [] as IAlert[],
-        gamificationAlerts: [] as IAlert[],
         showLoadingBar: false,
         dialogs: [] as IDialog[],
     }),
@@ -63,45 +62,5 @@ export const useUtilStore = defineStore({
         closeDialog(id: string) {
             this.dialogs = this.dialogs.filter(dialog => dialog.id !== id);
         },
-        addGamificationAlert(activity: XpActivityLogDTO) {
-            const xp: number | null = activity.received_xp;
-            const action: string | null = activity.action;
-            let alertText: string = "";
-            let actionType: string = "";
-            let actionTitle: string = "";
-
-            if (action) {
-                const actionParts = action.split(':');
-                if (actionParts.length > 1) {
-                    actionType = action.split(':')[0].trim();
-                    actionTitle = action.split(':')[1].trim();
-                } else {
-                    actionType = action;
-                }
-            }
-
-            switch (actionType.toLowerCase()) {
-                case('objective'):
-                    alertText = xp + " XP für Lernziel " + actionTitle + " erhalten!"
-                    break;
-                case('achievement'):
-                    alertText = xp + " XP für Achievement " + actionTitle + " erhalten!";
-                    break;
-                case('reqpal achievement'):
-                    alertText = xp + " XP für ReqPal Achievement " + actionTitle + " erhalten!";
-                    break;
-                case('all lesson objectives'):
-                    alertText = xp + " XP für alle Lernziele dieser Lektion erhalten!";
-                    break;
-                case('scenario completed'):
-                    alertText = xp + " XP für das Beenden des Szenarios erhalten!";
-                    break;
-                default:
-                    alertText = xp + " XP erhalten!"
-            }
-
-            const id: string = Date.now().toString();
-            this.gamificationAlerts.push({id: id, message: alertText, type: "success"});
-        }
     }
 });
