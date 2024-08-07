@@ -27,10 +27,18 @@
     </v-navigation-drawer>
     <v-main>
       <v-container fluid>
-        <div v-for="alert in utilStore.gamificationAlerts" :key="alert.id">
-          <Snackbar :text="alert.message" :id="alert.id"></Snackbar>
+        {{alertStore.gamificationAlerts}}
+        {{alertStore.gamificationAlertQueue}}
+        <v-btn @click="alertStore.addGamificationAlert({action: 'Lernziel' ,created_at: '',id: '',received_xp: Math.random() ,user_id: ''})">add alert</v-btn>
+        <div v-for="(alert, index) in alertStore.gamificationAlerts" :key="alert.id">
+          <Snackbar :text="alert.message" :id="alert.id" :index="index"></Snackbar>
+        </div>
+        <!--
+        <div v-for="(alert, index) in utilStore.gamificationAlerts" :key="alert.id">
+          <Snackbar :text="alert.message" :id="alert.id" :index="index"></Snackbar>
           {{ removeAlertWithDelay(alert.id) }}
         </div>
+-->
         <v-row>
           <v-col>
             <div v-for="alert in utilStore.alerts" :key="alert.id">
@@ -84,8 +92,10 @@ import TeacherNav from "@/layouts/navigation/Teacher.vue";
 import StudentNav from "@/layouts/navigation/Student.vue";
 import ModeratorNav from "@/layouts/navigation/Moderator.vue";
 import CommonNavBottom from "@/layouts/navigation/CommonBottom.vue";
+import {useGamificationAlertStore} from "@/stores/alert.ts";
 
 const utilStore = useUtilStore();
+const alertStore = useGamificationAlertStore();
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
@@ -116,7 +126,7 @@ supabase
     },
     (payload) => {
       let activity: XpActivityLogDTO = payload.new as XpActivityLogDTO;
-      utilStore.addGamificationAlert(activity);
+      alertStore.addGamificationAlert(activity);
     }
   )
   .subscribe();
