@@ -6,48 +6,42 @@
           <v-stepper-header elevation="0">
             <template v-for="(step, index) in stepperStore.allSteps" :key="index">
               <v-stepper-item
-                  :complete="stepperStore.currentStep > index"
-                  :step="step.title"
-                  :title="step.title"
-                  :icon="stepperStore.getStepIcon(step)"
-                  :color="stepperStore.getStepColor(step)"
-                  :value="index"
-                  :editable="false"
+                :complete="stepperStore.currentStep > index"
+                :step="step.title"
+                :title="step.title"
+                :icon="stepperStore.getStepIcon(step)"
+                :color="stepperStore.getStepColor(step)"
+                :value="index"
+                :editable="false"
               ></v-stepper-item>
-              <v-divider v-if="index < stepperStore.allSteps.length - 1" opacity="0.8"/>
+              <v-divider v-if="index < stepperStore.allSteps.length - 1" opacity="0.8" />
             </template>
           </v-stepper-header>
         </v-card>
 
         <v-stepper-window style="min-height: 72vh">
           <v-stepper-window-item v-for="(step, index) in stepperStore.allSteps" :key="index" :value="index">
-            <StartWindow v-if="step.startStep && !step.placeholderStep && !step.endStep"/>
-            <LessonWindow v-if="!step.startStep && !step.placeholderStep && !step.endStep"/>
-            <ResultsWindow v-if="!step.startStep && !step.placeholderStep && step.endStep"/>
+            <StartWindow v-if="step.startStep && !step.placeholderStep && !step.endStep" />
+            <LessonWindow v-if="!step.startStep && !step.placeholderStep && !step.endStep" />
+            <ResultsWindow v-if="!step.startStep && !step.placeholderStep && step.endStep" />
           </v-stepper-window-item>
         </v-stepper-window>
 
         <v-row class="align-center" no-gutters>
           <v-col class="d-flex align-center" cols="auto"
                  v-if="!stepperStore.getCurrentStep.startStep && !stepperStore.getCurrentStep.endStep">
-            <div class="text-h4">
-              {{ statisticStore.currentScenarioStatistic ? statisticStore.currentScenarioStatistic.score : 0 }}
-              <v-icon class="mb-1" size="35" color="warning"
-                      :icon="'mdi-star-four-points-circle-outline'"></v-icon>
-            </div>
+            <v-tooltip location="top right" text="Insgesamt gesammelte Punkte">
+              <template v-slot:activator="{ props }">
+                <div class="text-h4" v-bind="props">
+                  {{ statisticStore.currentScenarioStatistic ? statisticStore.currentScenarioStatistic.score : 0 }}
+                  <v-icon class="mb-1" size="35" color="warning"
+                          :icon="'mdi-star-four-points-circle-outline'"></v-icon>
+                </div>
+              </template>
+            </v-tooltip>
             <div class="ml-4" style="max-width: 595px; overflow-x: auto; white-space: nowrap;">
-              <v-chip
-                v-for="achievement in statisticStore.currentScenarioStatistic?.achievements"
-                :key="achievement.title"
-                class="mb-1 mr-1"
-                color="success"
-              >
-                <v-icon class="mr-2">
-                  <v-img :src="getAchievementImageUrl(achievement.image)"
-                         :alt="'ReqPal-Achievement Level Image: ' + achievement.image"></v-img>
-                </v-icon>
-                {{ achievement.title }}
-              </v-chip>
+              <AchievementChip v-for="achievement in statisticStore.currentScenarioStatistic?.achievements"
+                               :achievement="achievement" :chip-class="'mb-1 mr-1'" />
             </div>
           </v-col>
 
@@ -109,11 +103,11 @@ import { QuestionAnswer } from "@/types/lesson.ts";
 import router from "@/router/index.ts";
 import { useUtilStore } from "@/stores/util.ts";
 import { useScenarioStatisticStore } from "@/stores/scenarioStatistic.ts";
-import { getAchievementImageUrl } from "@/utils/achievementImage.ts";
+import AchievementChip from "@/components/achievement/AchievementChip.vue";
 
 onMounted(() => {
   if (!stepperStore.scenario) {
-    router.push({path: "/scenario"});
+    router.push({ path: "/scenario" });
   }
 });
 
