@@ -37,10 +37,10 @@ const props = defineProps<Props>();
 
 const snackbar = ref<boolean>(true);
 const timeout = 5000;
-const alertStore = useGamificationAlertStore();
+const gamificationAlertStore = useGamificationAlertStore();
 
 function closeSnackbar() {
   snackbar.value = false;
-  if (props.id) alertStore.removeCurrentAlertAndResetTimer();
+  if (props.id) gamificationAlertStore.removeCurrentAlertAndResetTimer();
 }
 </script>
