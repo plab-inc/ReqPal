@@ -10,6 +10,7 @@
           rounded
           divided
       >
+        <v-btn color="info" text="Hinweise" @click="utilStore.openDialog(ReqPalHint)" />
         <v-btn
             @click="createAchievement"
         >
@@ -33,9 +34,12 @@ import {ref} from "vue";
 import {useAchievementStore} from "@/stores/achievement.ts";
 import ReqPalAchievementTable from "@/components/achievement/ReqPalAchievementTable.vue";
 import EditReqPalAchievement from "@/components/achievement/EditReqPalAchievement.vue";
+import {useUtilStore} from "@/stores/util.ts";
+import {ReqPalHint} from "@/utils/dialogs.ts";
 
 const achievementStore = useAchievementStore();
 const authStore = useAuthStore();
+const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
 function updateEditDialog(value: boolean) {

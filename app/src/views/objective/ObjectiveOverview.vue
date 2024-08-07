@@ -10,6 +10,7 @@
           rounded
           divided
       >
+        <v-btn color="info" text="Hinweise" @click="utilStore.openDialog(ObjectiveHint)" />
         <v-btn
             @click="createObjective"
             :disabled="objectivesStore.objectives.length >= MAX_OBJECTIVES"
@@ -34,10 +35,13 @@ import {ref} from "vue";
 import ObjectiveTable from "@/components/objectives/ObjectiveTable.vue";
 import EditObjective from "@/components/objectives/EditObjective.vue";
 import {useObjectiveStore} from "@/stores/objective.ts";
+import {ObjectiveHint} from "@/utils/dialogs.ts";
+import {useUtilStore} from "@/stores/util.ts";
 
 const MAX_OBJECTIVES = 5;
 const objectivesStore = useObjectiveStore();
 const authStore = useAuthStore();
+const utilStore = useUtilStore();
 const editDialog = ref<boolean>(false);
 
 function updateEditDialog(value: boolean) {

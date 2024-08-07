@@ -262,3 +262,42 @@ export const BPMNHint: DialogText = {
       "5. Das explizite Auswählen des Default-Flows erleichtert die lesbarkeit des Diagrams.",
     confirmLabel: "OK"
 };
+
+
+export const ObjectiveHint: DialogText = {
+    title: "Lernziele",
+    message:
+      "Lernziele sind Ziele, die an Lektionen geknüpft werden können.\n" +
+        "Lernende können dadurch ihre Fortschritte verfolgen für verschiedene Lernziele und für diese Erfahrungspunkte (XP) sammeln. " +
+        "Dies erfolgt mithilfe von Levels, die sie pro Lernziel erhalten. Durch das maximale Level wird das Lernziel erreichbar für den Lernenden.\n\n" +
+        "Lernziel Level-Grenzen:\n" +
+        "Die Grenzen werden mit einer Formel automatisch berechnet und erhöhen sich jeweils um 25XP für das nächste Level.\n"+
+        "So würden die ersten 4 Level z.B. so aussehen, vorausgesetzt, man startet mit Level 0:\n" +
+        "\n" +
+        "1. 50\n" +
+        "2. 75\n" +
+        "3. 100\n" +
+        "4. 125\n\n" +
+        "Beim Erreichen eines neuen Levels werden die XP für das Level abgezogen, die man für das nächste Level benötigt. Rest-XP werden behalten.\n" +
+        "In Szenarien können Sie dann XP für einzelne oder alle Lernziele verteilen. Sie können sich demnach an dem Basiswert von 25XP orientieren und den Level-Grenzen.\n" +
+    "Haben die Lernenden ihr maximales Level erreicht, so sammeln sie dennoch weiter XP und können diese in ihren Statistiken einsehen.",
+    confirmLabel: "OK"
+};
+
+export const AchievementHint: DialogText = {
+    title: "Achievements",
+    message:
+        "Achievements sind Errungenschaften, die man in Szenarien erhalten und sammeln kann.\n" +
+        "Lernende erhalten beim Sammeln von Achievements 25XP für ihr ReqPal Level. Sie können das gleiche Achievement mehrmals erhalten und einsehen, wie oft sie es erhalten haben.\n" +
+        "Sie können die Achievements frei definieren und z.B. an bestimmte Szenarien und Lektionen anpassen.\n" +
+        "Lernende erhalten dadurch Belohnungen für ihre Fortschritte und Leistungen.",
+    confirmLabel: "OK"
+};
+
+export const ReqPalHint: DialogText = {
+    title: "ReqPal-Achievements",
+    message:
+        "ReqPal-Achievements sind Errungenschaften, die Lernende für verschiedene Aktionen auf der Lernplattform erhalten.\n" +
+        "Diese sind häufig an Statistiken gebunden, aber auch an Aktionen wie die Registrierung. Sie besitzen verschiedene Stufen, die sie erreichen können.",
+    confirmLabel: "OK"
+};
