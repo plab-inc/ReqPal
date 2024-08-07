@@ -6,7 +6,7 @@ services:
       context: ./app
       dockerfile: Dockerfile
       args:
-        API_ENDPOINT: http://localhost:8081/bpmn/
+        BPMN_API_ENDPOINT: http://localhost:8081/bpmn/
         SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
         SUPABASE_PROJECT_ID: ${SUPABASE_PROJECT_ID}
     image: reqpal/ui:latest
