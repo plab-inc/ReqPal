@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="outlined" :elevation="6" density="comfortable" color="info" height="100" class="flex-card ma-2"
+  <v-card variant="outlined" :elevation="6" density="comfortable" color="info" height="100" width="550" class="ma-2"
           @click="router.push('/profile')">
     <v-card-title class="pr-2">
       <v-row no-gutters class="justify-space-between">
@@ -11,8 +11,10 @@
         </v-col>
       </v-row>
     </v-card-title>
-    <v-card-subtitle>
-      {{ achievement.description }}
+    <v-card-subtitle opacity="1">
+      <div class="scroll-container">
+        {{ achievement.description }}
+      </div>
     </v-card-subtitle>
   </v-card>
 </template>
@@ -31,11 +33,7 @@ defineProps<Props>();
 
 <style scoped>
 .scroll-container {
-  max-height: 200px;
+  max-height: 100px;
   overflow-y: auto;
-}
-.flex-card {
-  display: flex;
-  flex-direction: column;
 }
 </style>
