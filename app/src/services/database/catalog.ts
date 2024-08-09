@@ -121,27 +121,26 @@ class CatalogServiceClass {
       .select("product_requirement_id, comment, requirement_id, product_id, qualification")
       .eq("requirement_id", requirementId)
       .eq("product_id", productId)
-      .single();
 
     if (error) throw error;
 
-    if (data) {
-      return data as ProductRequirementDTO;
+    if (data && data.length > 0) {
+      return data[0] as ProductRequirementDTO;
     }
   }
 
   private async fetchProductDetailsByRequirementWithoutQualificationByProductId(requirementId: string, productId: string): Promise<ProductRequirementDTO | undefined> {
     const { data, error } = await supabase
-      .from("product_requirements")
+        .from("product_requirements")
       .select("product_requirement_id, comment, requirement_id, product_id")
       .eq("requirement_id", requirementId)
       .eq("product_id", productId)
-      .single();
 
     if (error) throw error;
 
-    if (data) {
-      return data as ProductRequirementDTO;
+    if (data && data.length > 0) {
+
+      return data[0] as ProductRequirementDTO;
     }
   }
 
