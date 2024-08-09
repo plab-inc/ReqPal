@@ -1,5 +1,5 @@
 <template>
-  <v-card variant="elevated" color="primary" :class="['ma-3', 'border-opacity-100', borderClass]" width="600" height="250"
+  <v-card variant="elevated" color="surface" :class="['ma-3', 'border-opacity-100', borderClass]" width="600" height="250"
           rounded elevation="10">
     <v-card-title>
       {{ achievement.title }}

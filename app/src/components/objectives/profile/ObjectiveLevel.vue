@@ -1,6 +1,6 @@
 <template>
   <v-card variant="elevated" width="600" height="200" :class="['ma-3', 'border-opacity-100', borderClass]"
-          rounded elevation="10" color="primary">
+          rounded elevation="10" color="surface">
     <v-card-title class="headline">
       <div class="d-flex align-center justify-space-between">
         {{ objectiveLevel.objective.name }}

@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="reqPalLevel" variant="elevated" color="primary"
+  <v-card v-if="reqPalLevel" variant="elevated" color="surface"
           width="600" height="200"
           rounded elevation="10" :class="['ma-3', 'border-opacity-100', borderClass]">
     <v-card-title>
