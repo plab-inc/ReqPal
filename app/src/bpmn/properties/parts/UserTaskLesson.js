@@ -147,6 +147,7 @@ function GrantAchievedPointsAsXP(props) {
   const modeling = useService('modeling');
   const bpmnFactory = useService('bpmnFactory');
   const lessonObjectives = getLessonObjectives(getLessonToSolve(element)).join(", ") || "No objectives defined in lesson.";
+  const disabled = getLessonObjectives(getLessonToSolve(element)).length === 0;
 
   const getValue = () => {
     const businessObject = getBusinessObject(element);
@@ -168,7 +169,8 @@ function GrantAchievedPointsAsXP(props) {
     getValue,
     debounce: debounce,
     setValue,
-    description: lessonObjectives
+    description: lessonObjectives,
+    disabled: disabled
   });
 }
 
