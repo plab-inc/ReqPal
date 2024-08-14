@@ -18,7 +18,9 @@
     </v-card-title>
     <v-card-item>
       <v-card-subtitle opacity="1">
-        {{ objectiveStatistic.objective.description }}
+        <div class="scroll-container">
+          {{ objectiveStatistic.objective.description }}
+        </div>
       </v-card-subtitle>
     </v-card-item>
   </v-card>
@@ -33,12 +35,7 @@ defineProps<{ objectiveStatistic: ObjectiveStatistic }>();
 
 <style scoped>
 .scroll-container {
-  max-height: 200px;
-  max-width: 350px;
+  max-height: 100px;
   overflow-y: auto;
-}
-.flex-card {
-  display: flex;
-  flex-direction: column;
 }
 </style>

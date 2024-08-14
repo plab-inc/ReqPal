@@ -31,8 +31,8 @@ public class WebSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionConfigurer -> exceptionConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/bpmn/scenario/**").hasAnyRole("TEACHER", "TECHNICAL_USER")
-                        .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER","STUDENT","TECHNICAL_USER")
+                        .requestMatchers("/bpmn/scenario/**").hasAnyRole("TEACHER", "TECHNICAL_USER", "MODERATOR")
+                        .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER", "STUDENT", "TECHNICAL_USER", "MODERATOR")
                         .requestMatchers("/camunda/**").permitAll()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -49,7 +49,7 @@ public class WebSecurityConfiguration {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5000", "http://localhost:4173", "https://www.lethalgoose.com"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5000", "http://localhost:8080", "http://localhost:4173", "https://www.lethalgoose.com"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "X-Refresh-Token", "Origin", "Content-Type", "Accept"));
         corsConfiguration.setMaxAge(Duration.ofMinutes(10));

@@ -10,6 +10,7 @@ import { fetchObjectiveLevelsByUser, fetchReqPalLevelByUser } from "@/middleware
 import {
     requiresAuth,
     requiresModerator,
+    requiresNoAuth,
     requiresPending,
     requiresStudent,
     requiresTeacher
@@ -20,14 +21,15 @@ import { useUtilStore } from "@/stores/util.ts";
 import { fetchProductsByUser } from "@/middlewares/product.ts";
 import { fetchObjectivesByLessonOwner, fetchObjectivesByUser } from "@/middlewares/objective.ts";
 import {
-    fetchAchievementImages, fetchAchievementsByStudent,
+    fetchAchievementImages,
+    fetchAchievementsByStudent,
     fetchAchievementsByUser,
     fetchReqPalAchievementImages,
     fetchReqPalAchievementsByModerator
 } from "@/middlewares/achievement.ts";
 import { fetchLatestTeacherRequestByUser, fetchTeacherRequests } from "@/middlewares/teacherRequest.ts";
 import { fetchCurrentScenarioResults, fetchScenarioAchievements, fetchScenarios } from "@/middlewares/scenario.ts";
-import {fetchStatisticsByStudent} from "@/middlewares/profile.ts";
+import { fetchStatisticsByStudent } from "@/middlewares/profile.ts";
 
 const routes = [
     {
@@ -45,7 +47,6 @@ const routes = [
                 component: () => import("@/views/lesson/LessonOverview.vue"),
                 meta: {
                     middleware: [
-                        requiresAuth,
                         fetchLessons,
                         requiresTeacher
                     ]
@@ -210,16 +211,33 @@ const routes = [
                 path: "/login",
                 name: "LogIn",
                 component: () => import("@/views/user/LogIn.vue"),
+                meta: {
+                    middleware: [
+                        requiresNoAuth
+                    ]
+                }
+
             },
             {
                 path: "/signup",
                 name: "SignUp",
                 component: () => import("@/views/user/SignUp.vue"),
+                meta: {
+                    middleware: [
+                        requiresNoAuth
+                    ]
+                }
+
             },
             {
                 path: "/resetPassword",
                 name: "ResetPassword",
                 component: () => import("@/views/user/ResetPassword.vue"),
+                meta: {
+                    middleware: [
+                        requiresNoAuth
+                    ]
+                }
             },
             {
                 path: "/profile/settings",
@@ -237,7 +255,6 @@ const routes = [
                 component: () => import("@/views/user/Profile.vue"),
                 meta: {
                     middleware: [
-                        requiresAuth,
                         requiresStudent,
                         fetchReqPalLevelByUser,
                         fetchObjectiveLevelsByUser,

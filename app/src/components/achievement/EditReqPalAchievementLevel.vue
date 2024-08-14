@@ -17,7 +17,7 @@
               </div>
               <v-text-field variant="outlined" label="Titel" v-model="localAchievementLevel.title"
                             :rules="[requiredStringRule]"/>
-              <v-text-field variant="outlined" label="Beschreibung" v-model="localAchievementLevel.description"
+              <v-textarea variant="outlined" label="Beschreibung" v-model="localAchievementLevel.description"
                             :rules="[requiredStringRule]"/>
               <v-text-field variant="outlined" label="Schwellenwert" v-model="localAchievementLevel.threshold"
                             :rules="[requiredNumberRule]"/>
@@ -174,7 +174,7 @@ onBeforeMount(async () => {
 
 <style scoped>
 .scroll-container {
-  max-height: 250px;
+  max-height: 380px;
   overflow-y: auto;
 }
 </style>

@@ -22,6 +22,8 @@ interface Props {
   chipClass?: string;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  chipClass: ""
+});
 </script>
 

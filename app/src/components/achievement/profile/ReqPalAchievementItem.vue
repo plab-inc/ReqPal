@@ -1,5 +1,5 @@
 <template>
-  <v-card :prepend-icon="achievement.max ? 'mdi-crown' : ''" variant="elevated" color="primary"
+  <v-card :prepend-icon="achievement.max ? 'mdi-crown' : ''" variant="elevated" color="surface"
           :class="['ma-3', 'border-opacity-100', borderClass]" width="600" height="250"
           rounded elevation="10">
     <template v-slot:title>

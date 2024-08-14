@@ -1,6 +1,6 @@
-import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
-import {supabase} from '@/plugins/supabase';
-import {useAuthStore} from "@/stores/auth.ts";
+import { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
+import { supabase } from "@/plugins/supabase";
+import { useAuthStore } from "@/stores/auth.ts";
 import alertService from "@/services/util/alert.ts";
 
 async function isAuthenticated() {
@@ -15,6 +15,18 @@ export async function requiresAuth(to: RouteLocationNormalized, from: RouteLocat
     if (!await isAuthenticated()) {
         return next({
             name: 'LogIn'
+        });
+    }
+
+    return next();
+}
+
+export async function requiresNoAuth(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
+
+
+    if (await isAuthenticated()) {
+        return next({
+            name: "Home"
         });
     }
 

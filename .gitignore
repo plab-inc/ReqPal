@@ -4,6 +4,9 @@
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
+#env files
+.env
+
 # any out directory
 out/
 

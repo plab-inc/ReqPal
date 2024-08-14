@@ -24,7 +24,7 @@
                   clearable
                   chips
                   label="Messbare Ziele aus den Statistiken"
-                  :items="['total_xp', 'total_scenarios', 'total_points', 'total_levels', 'total_achievements']"
+                  :items="['total_reqpal_xp', 'total_objective_xp', 'total_scenarios', 'total_points', 'total_levels', 'total_achievements']"
               ></v-select>
             </v-col>
             <v-col>

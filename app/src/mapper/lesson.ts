@@ -14,7 +14,6 @@ export const mapToLesson = (input: any): Lesson => {
         points: input.points,
         created_at: input.created_at,
         uuid: input.uuid,
-        published: input.published,
         user_id: input.user_id,
         example: input.example
     }

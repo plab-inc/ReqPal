@@ -112,7 +112,6 @@ export type Database = {
           description: string
           example: boolean
           points: number | null
-          published: boolean
           title: string
           user_id: string
           uuid: string
@@ -122,7 +121,6 @@ export type Database = {
           description: string
           example?: boolean
           points?: number | null
-          published?: boolean
           title: string
           user_id: string
           uuid?: string
@@ -132,7 +130,6 @@ export type Database = {
           description?: string
           example?: boolean
           points?: number | null
-          published?: boolean
           title?: string
           user_id?: string
           uuid?: string
