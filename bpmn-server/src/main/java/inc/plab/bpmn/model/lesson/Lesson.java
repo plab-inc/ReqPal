@@ -45,11 +45,6 @@ public class Lesson {
 
     @NotNull
     @ColumnDefault("false")
-    @Column(name = "published", nullable = false)
-    private Boolean published = false;
-
-    @NotNull
-    @ColumnDefault("false")
     @Column(name = "example", nullable = false)
     private Boolean example = false;
 
