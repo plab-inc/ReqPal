@@ -1,8 +1,11 @@
 {
-  "name": "vuetify",
+  "name": "reqpal-ui",
+  "author": "Fabian Teufel, Laura Seifert",
+  "license": "MIT",
+  "licenseText": "Copyright (c) 2024 plab.inc",
   "packageManager": "yarn@1.22.19",
   "type": "module",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>inc.plab.bpmn</groupId>
-    <artifactId>reqpal-camunda-server</artifactId>
+    <artifactId>reqpal-bpmn-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

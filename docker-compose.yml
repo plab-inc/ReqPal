@@ -14,7 +14,7 @@ services:
       - "8080:80"
     env_file:
       - .env
-  bpmn-backend:
+  bpmn-server:
     build:
       context: ./bpmn-server
       dockerfile: Dockerfile
