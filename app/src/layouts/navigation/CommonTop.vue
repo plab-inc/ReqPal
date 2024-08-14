@@ -16,7 +16,7 @@
                  title="Login" to="Login"
                  rounded
     />
-    <v-divider class="mt-1 mb-1" opacity="0.5" />
+    <v-divider v-if="authStore.user && !authStore.isPending" class="mt-1 mb-1" opacity="0.5" />
     <v-list-item
       rounded prepend-icon="mdi-home"
       title="Home" to="/"
@@ -25,7 +25,7 @@
     <div v-if="authStore.user && authStore.isPending">
       <v-list-item rounded prepend-icon="mdi-account-clock" title="Anfrage Status" to="/teacher-request" />
     </div>
-    <v-divider v-if="authStore.user" class="my-1" opacity="0.5" />
+    <v-divider v-if="authStore.user && !authStore.isPending" class="my-1" opacity="0.5" />
   </v-list>
 </template>
 
