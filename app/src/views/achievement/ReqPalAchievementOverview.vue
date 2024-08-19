@@ -1,7 +1,7 @@
 <template>
   <v-row justify="space-between" align="center" class="mb-1">
     <v-col cols="auto" class="text-h4">
-      Meine ReqPal-Achievements ({{ achievementStore.reqPalAchievements.length }})
+      ReqPal-Achievements ({{ achievementStore.reqPalAchievements.length }})
     </v-col>
     <v-col cols="auto">
       <v-btn-group

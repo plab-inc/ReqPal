@@ -185,15 +185,14 @@ class AchievementServiceClass {
         }
     }
 
-    private async fetchReqPalAchievementsByModerator(userUUID: string): Promise<ReqPalAchievement[] | undefined> {
+    private async fetchReqPalAchievementsByModerator(): Promise<ReqPalAchievement[] | undefined> {
 
         const {data, error} = await supabase
             .from('reqpal_achievements')
             .select(`
             *,
             reqpal_achievement_levels(*)
-        `)
-            .eq('user_id', userUUID);
+        `);
 
         if (error) throw error;
 
