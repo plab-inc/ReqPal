@@ -7,7 +7,7 @@ const httpClient = axios.create({
 
 httpClient.interceptors.request.use(
   (config) => {
-    const authStore = useAuthStore(); // Zugriff auf den Auth-Store
+    const authStore = useAuthStore();
     if (authStore.sessionToken) {
       config.headers["Authorization"] = `Bearer ${authStore.sessionToken}`;
     }
