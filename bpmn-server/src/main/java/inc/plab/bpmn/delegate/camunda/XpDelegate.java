@@ -36,13 +36,9 @@ public class XpDelegate implements JavaDelegate {
             throw new Error("XP could not be parsed. XP needs to be a number: " + e.getMessage());
         }
 
-        if (xp > 0) {
-            levelService.addXpToObjectiveForUser(xp, objectiveId, userId);
-            userStatisticService.addToTotalObjectiveXp(xp, userId);
-            scenarioUserStatisticsService.addObjectiveAndXp(objectiveId, xp, userId, scenarioId);
-            activityLogService.addLogEntryForObjective(xp, objectiveId, userId);
-        } else {
-            throw new Error("XP needs to be a positive number greater than 0.");
-        }
+        levelService.addXpToObjectiveForUser(xp, objectiveId, userId);
+        userStatisticService.addToTotalObjectiveXp(xp, userId);
+        scenarioUserStatisticsService.addObjectiveAndXp(objectiveId, xp, userId, scenarioId);
+        activityLogService.addLogEntryForObjective(xp, objectiveId, userId);
     }
 }
