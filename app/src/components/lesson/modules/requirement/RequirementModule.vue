@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {useCatalogStore} from "@/stores/catalog.ts";
-import {Requirement} from "@/types/catalog.ts";
-import {onBeforeMount, ref, watch} from "vue";
-import {useLessonStore} from "@/stores/lesson.ts";
+import { useCatalogStore } from "@/stores/catalog.ts";
+import { Requirement } from "@/types/catalog.ts";
+import { onBeforeMount, ref, watch } from "vue";
+import { useLessonStore } from "@/stores/lesson.ts";
 import ProductQualification from "@/components/catalog/product/ProductQualification.vue";
 import Hint from "@/components/lesson/builder/helper/Hint.vue";
 import Help from "@/components/lesson/builder/helper/Help.vue";
-import {useAuthStore} from "@/stores/auth.ts";
-import {useProductStore} from "@/stores/product.ts";
+import { useAuthStore } from "@/stores/auth.ts";
+import { useProductStore } from "@/stores/product.ts";
 
 const requirement = ref<Requirement>();
 const loading = ref<boolean>(false);
@@ -159,7 +159,7 @@ watch(products.value, (newProducts) => {
   <v-card :loading="loading"
           variant="text"
           elevation="8"
-          color="white"
+          color="text"
   >
     <v-card-title class="text-h4 text-decoration-underline">
       Anforderung:
