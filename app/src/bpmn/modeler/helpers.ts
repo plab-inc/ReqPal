@@ -40,13 +40,7 @@ export async function validateProcessDefinition(processDefinition: ModdleElement
 
   const userTasks = flowElements.filter((element: FlowElement) => element.$type === "bpmn:UserTask");
   const serviceTasks = flowElements.filter((element: FlowElement) => element.$type === "bpmn:ServiceTask");
-  const startEvents = flowElements.filter((element: FlowElement) => element.$type === "bpmn:StartEvent");
-  const endEvents = flowElements.filter((element: FlowElement) => element.$type === "bpmn:EndEvent");
 
-  if (startEvents.length === 0) throw new BpmnParsingError("Szenario enthält kein StartEvent.");
-  if (startEvents.length > 1) throw new BpmnParsingError("Szenario enthält mehr als ein StartEvent.");
-  if (endEvents.length === 0) throw new BpmnParsingError("Szenario enthält kein EndEvent.");
-  if (endEvents.length > 1) throw new BpmnParsingError("Szenario enthält mehr als ein EndEvent.");
   if (userTasks.length === 0) throw new BpmnParsingError("Szenario enthält keine Lektionen.");
 
   const userTasksWithoutLessonId = userTasks.filter(task => !task.lessonToSolve);

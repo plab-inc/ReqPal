@@ -13,7 +13,7 @@ import {
   getAllUserTaskIds,
   validateProcessDefinition
 } from "@/bpmn/modeler/helpers.ts";
-import { BpmnImportError, BpmnPersistError } from "@/errors/custom.ts";
+import { BpmnImportError, BpmnParsingError, BpmnPersistError } from "@/errors/custom.ts";
 
 interface ModelerState {
   uuid: string;
@@ -69,6 +69,13 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
       }
     },
     async generateScenario(userId: string, xml: string, svg: string): Promise<Scenario> {
+
+      const issuesArray = await this.lintDiagram();
+
+      if (issuesArray.length > 0) {
+        throw new BpmnParsingError("Szenario enthällt noch Fehler.");
+      }
+
       const processDefinition = ((this.bpmnModeler?.getDefinitions() as unknown) as {
         rootElements: any[]
       }).rootElements[0];
@@ -111,6 +118,10 @@ export const useScenarioModelerStore = defineStore('scenarioModeler', {
     },
     async loadInDiagram(){
       this.bpmnModeler?.importXML(this.diagram);
+    },
+    async lintDiagram() {
+      const linter = this.bpmnModeler?.get("linting") as any;
+      return Object.values(await linter.lint()).flat();
     },
     async getDiagramXML(): Promise<string | undefined> {
       try {

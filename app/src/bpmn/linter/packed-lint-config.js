@@ -857,6 +857,7 @@ function uniqueBy(extractor, ...collections) {
 const unionBy = uniqueBy;
 
 
+
 /**
  * Sort collection by criteria.
  *
@@ -1768,59 +1769,8 @@ var noGatewayJoinFork = function() {
 };
 
 const {
-  isAny: isAny$4
-} = require$$0;
-
-
-/**
- * A rule that checks that no implicit split is modeled
- * starting from a task.
- *
- * users should model the parallel splitting gateway
- * explicitly instead.
- */
-var noImplicitSplit = function() {
-
-  function check(node, reporter) {
-
-    if (!isAny$4(node, [
-      "bpmn:Activity",
-      "bpmn:Event"
-    ])) {
-      return;
-    }
-
-    const outgoing = node.outgoing || [];
-
-    const outgoingWithoutCondition = outgoing.filter((flow) => {
-      return !hasCondition(flow) && !isDefaultFlow(node, flow);
-    });
-
-    if (outgoingWithoutCondition.length > 1) {
-      reporter.report(node.id, "Flow splits implicitly");
-    }
-  }
-
-  return {
-    check
-  };
-
-};
-
-
-// helpers /////////////////////////////
-
-function hasCondition(flow) {
-  return !!flow.conditionExpression;
-}
-
-function isDefaultFlow(node, flow) {
-  return node["default"] === flow;
-}
-
-const {
   is: is$8,
-  isAny: isAny$3
+  isAny: isAny$4
 } = require$$0;
 
 
@@ -1857,7 +1807,7 @@ var noImplicitEnd = function() {
 
   function check(node, reporter) {
 
-    if (!isAny$3(node, ["bpmn:Event", "bpmn:Activity", "bpmn:Gateway"])) {
+    if (!isAny$4(node, ["bpmn:Event", "bpmn:Activity", "bpmn:Gateway"])) {
       return;
     }
 
@@ -1868,6 +1818,57 @@ var noImplicitEnd = function() {
 
   return { check };
 };
+
+const {
+  isAny: isAny$3
+} = require$$0;
+
+
+/**
+ * A rule that checks that no implicit split is modeled
+ * starting from a task.
+ *
+ * users should model the parallel splitting gateway
+ * explicitly instead.
+ */
+var noImplicitSplit = function() {
+
+  function check(node, reporter) {
+
+    if (!isAny$3(node, [
+      "bpmn:Activity",
+      "bpmn:Event"
+    ])) {
+      return;
+    }
+
+    const outgoing = node.outgoing || [];
+
+    const outgoingWithoutCondition = outgoing.filter((flow) => {
+      return !hasCondition(flow) && !isDefaultFlow(node, flow);
+    });
+
+    if (outgoingWithoutCondition.length > 1) {
+      reporter.report(node.id, "Flow splits implicitly");
+    }
+  }
+
+  return {
+    check
+  };
+
+};
+
+
+// helpers /////////////////////////////
+
+function hasCondition(flow) {
+  return !!flow.conditionExpression;
+}
+
+function isDefaultFlow(node, flow) {
+  return node["default"] === flow;
+}
 
 const {
   is: is$7,
@@ -2387,8 +2388,8 @@ const rules = {
   "conditional-flows": "error",
   "end-event-required": "error",
   "event-sub-process-typed-start-event": "error",
-  "fake-join": "warn",
-  "global": "warn",
+  "fake-join": "error",
+  "global": "error",
   "label-required": "error",
   "link-event": "error",
   "no-bpmndi": "error",
@@ -2396,17 +2397,17 @@ const rules = {
   "no-disconnected": "error",
   "no-duplicate-sequence-flows": "error",
   "no-gateway-join-fork": "error",
-  "no-implicit-split": "error",
   "no-implicit-end": "error",
+  "no-implicit-split": "error",
   "no-implicit-start": "error",
   "no-inclusive-gateway": "error",
-  "no-overlapping-elements": "warn",
+  "no-overlapping-elements": "error",
   "single-blank-start-event": "error",
   "single-event-definition": "error",
   "start-event-required": "error",
   "sub-process-blank-start-event": "error",
-  "superfluous-gateway": "warn",
-  "superfluous-termination": "warn"
+  "superfluous-gateway": "error",
+  "superfluous-termination": "error"
 };
 
 const config = {
@@ -2442,9 +2443,9 @@ cache["bpmnlint/no-duplicate-sequence-flows"] = noDuplicateSequenceFlows;
 
 cache["bpmnlint/no-gateway-join-fork"] = noGatewayJoinFork;
 
-cache["bpmnlint/no-implicit-split"] = noImplicitSplit;
-
 cache["bpmnlint/no-implicit-end"] = noImplicitEnd;
+
+cache["bpmnlint/no-implicit-split"] = noImplicitSplit;
 
 cache["bpmnlint/no-implicit-start"] = noImplicitStart;
 

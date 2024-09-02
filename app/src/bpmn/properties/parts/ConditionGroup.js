@@ -73,6 +73,7 @@ function ConditionType(props) {
     };
     const formalExpressionElement = createFormalExpression(element, attributes, bpmnFactory);
     updateCondition(element, commandStack, formalExpressionElement, value);
+    updateGateway(element, commandStack, formalExpressionElement, value);
   };
 
   const getOptions = () => [
@@ -232,6 +233,18 @@ function updateCondition(element, commandStack, condition = undefined, type) {
       properties: {
         conditionExpression: condition,
         name: camelCaseToTitleCase(type)
+      }
+    });
+  }
+}
+
+function updateGateway(element, commandStack, condition = undefined, type) {
+  const source = element.source;
+  if (source && is(source, "bpmn:ExclusiveGateway")) {
+    commandStack.execute("element.updateProperties", {
+      element: source,
+      properties: {
+        name: `Gateway for ${camelCaseToTitleCase(type)}`
       }
     });
   }
