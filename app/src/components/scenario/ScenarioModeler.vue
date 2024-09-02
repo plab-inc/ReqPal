@@ -64,7 +64,9 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css";
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
+import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
 import BpmnModeler from "bpmn-js/lib/Modeler";
+import LintModule from "bpmn-js-bpmnlint";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
 import TokenSimulationModule from "bpmn-js-token-simulation";
 import {
@@ -76,6 +78,7 @@ import CustomProperties from "@/bpmn/properties/CustomProperties.js";
 import CustomElements from "@/bpmn/modeler/customElements.ts";
 import ReqPalModdle from "@/bpmn/properties/descriptors/ReqPal.json";
 import CamundaBpmnModdle from "camunda-bpmn-moddle/resources/camunda.json";
+import linterConfig from "@/bpmn/linter/packed-lint-config";
 import { useScenarioModelerStore } from "@/stores/scenarioModeler.ts";
 
 const scenarioModelerStore = useScenarioModelerStore();
@@ -89,6 +92,10 @@ onMounted(() => {
     propertiesPanel: {
       parent: propertiesPanel.value
     },
+    linting: {
+      bpmnlint: linterConfig,
+      active: true
+    },
     additionalModules: [
       BpmnColorPickerModule,
       BpmnPropertiesPanelModule,
@@ -96,7 +103,8 @@ onMounted(() => {
       CamundaPlatformPropertiesProviderModule,
       TokenSimulationModule,
       CustomProperties,
-      CustomElements
+      CustomElements,
+      LintModule
     ],
     moddleExtensions: {
       camunda: CamundaBpmnModdle,
@@ -125,3 +133,12 @@ const handleFileUpload = async (event: Event) => {
   }
 };
 </script>
+<style>
+.bts-set-animation-speed {
+  margin-bottom: 40px;
+}
+
+.bts-notifications {
+  margin-left: 150px;
+}
+</style>

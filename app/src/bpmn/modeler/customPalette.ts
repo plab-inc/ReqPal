@@ -28,30 +28,44 @@ class CustomPalette implements PaletteProvider {
   getPaletteEntries(): PaletteEntriesCallback {
     return (entries: PaletteEntries): PaletteEntries => {
       this.removeUnusedEntries(entries);
-      const taskEntries = this.createTaskEntries();
+      const customEntries = this.createCustomEntries();
 
       return {
         ...entries,
-        ...taskEntries
+        ...customEntries
       };
     };
   }
 
   private removeUnusedEntries(entries: PaletteEntries) {
     const keysToRemove = [
-      'create.service-task',
+      "create.task",
+      "create.exclusive-gateway",
+      "create.parallel-gateway",
+      "create.inclusive-gateway",
       'create.intermediate-event',
+      "create.event-based-gateway",
+      "create.subprocess-expanded",
       'create.data-store',
-      'create.subprocess-expanded',
       'create.participant-expanded',
       'create.data-object',
-      'create.task',
     ];
 
     keysToRemove.forEach(key => delete entries[key]);
   }
 
-  private createTaskEntries(): PaletteEntries {
+  private createCustomEntries(): PaletteEntries {
+    const createExclusiveGateway = (event: any) => {
+      const businessObject = this.bpmnFactory.create("bpmn:ExclusiveGateway");
+
+      const shape = this.elementFactory.createShape({
+        type: "bpmn:ExclusiveGateway",
+        businessObject: businessObject
+      });
+
+      this.create.start(event, shape);
+    };
+
     const createUserTask = (event: any) => {
       const businessObject = this.bpmnFactory.create('bpmn:UserTask');
 
@@ -68,6 +82,18 @@ class CustomPalette implements PaletteProvider {
 
       const shape = this.elementFactory.createShape({
         type: 'bpmn:ServiceTask',
+        businessObject: businessObject
+      });
+
+      this.create.start(event, shape);
+    };
+
+    const createEndEvent = (event: any) => {
+      const businessObject = this.bpmnFactory.create("bpmn:EndEvent");
+      businessObject.name = "Ende";
+
+      const shape = this.elementFactory.createShape({
+        type: "bpmn:EndEvent",
         businessObject: businessObject
       });
 
@@ -92,11 +118,29 @@ class CustomPalette implements PaletteProvider {
           dragstart: createServiceTask,
           click: createServiceTask
         }
+      },
+      "create.exclusive-gateway": {
+        group: "gateway",
+        className: "bpmn-icon-gateway-xor",
+        title: this.translate("Create Exclusive Gateway"),
+        action: {
+          dragstart: createExclusiveGateway,
+          click: createExclusiveGateway
+        }
+      },
+      "create.end-event": {
+        group: "event",
+        className: "bpmn-icon-end-event-none",
+        title: this.translate("Create End Event"),
+        action: {
+          dragstart: createEndEvent,
+          click: createEndEvent
+        }
       }
     };
   }
 }
 
-CustomPalette.$inject = ['palette','create', 'bpmnFactory', 'elementFactory', 'translate'];
+CustomPalette.$inject = ["palette", "create", "bpmnFactory", "elementFactory", "translate"];
 
 export default CustomPalette;
