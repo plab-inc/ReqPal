@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.aws;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.gamification;
 
 import inc.plab.bpmn.model.objective.Objective;
 import inc.plab.bpmn.model.objective.ObjectiveRepository;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @AllArgsConstructor
-public class LevelService {
+public class UserLevelService {
 
     private final ObjectiveRepository objectiveRepository;
     private final UserLevelRepository userLevelRepository;

@@ -1,9 +1,9 @@
-package inc.plab.bpmn.delegate.camunda;
+package inc.plab.bpmn.delegate;
 
-import inc.plab.bpmn.service.AchievementService;
-import inc.plab.bpmn.service.ActivityLogService;
-import inc.plab.bpmn.service.ScenarioUserStatisticsService;
-import inc.plab.bpmn.service.UserStatisticService;
+import inc.plab.bpmn.service.gamification.AchievementService;
+import inc.plab.bpmn.service.gamification.ActivityLogService;
+import inc.plab.bpmn.service.gamification.UserStatisticsService;
+import inc.plab.bpmn.service.scenario.ScenarioUserStatisticsService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -18,13 +18,13 @@ public class AchievementDelegate implements JavaDelegate {
     final AchievementService achievementService;
     final ScenarioUserStatisticsService scenarioUserStatisticsService;
     final ActivityLogService activityLogService;
-    final UserStatisticService userStatisticService;
+    final UserStatisticsService userStatisticsService;
 
-    public AchievementDelegate(AchievementService achievementService, ScenarioUserStatisticsService scenarioUserStatisticsService, ActivityLogService activityLogService, UserStatisticService userStatisticService) {
+    public AchievementDelegate(AchievementService achievementService, ScenarioUserStatisticsService scenarioUserStatisticsService, ActivityLogService activityLogService, UserStatisticsService userStatisticsService) {
         this.achievementService = achievementService;
         this.scenarioUserStatisticsService = scenarioUserStatisticsService;
         this.activityLogService = activityLogService;
-        this.userStatisticService = userStatisticService;
+        this.userStatisticsService = userStatisticsService;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class AchievementDelegate implements JavaDelegate {
         achievementService.addAchievementToUser(achievementId, userId);
         scenarioUserStatisticsService.addGainedAchievement(achievementId, userId, scenarioId);
         activityLogService.addLogEntryForAchievement(achievementXp, achievementId, userId);
-        userStatisticService.addToTotalReqPalXp(achievementXp, userId);
+        userStatisticsService.addToTotalReqPalXp(achievementXp, userId);
         addAchievementToVariable(delegateExecution, achievementId);
     }
 

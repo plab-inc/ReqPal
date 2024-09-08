@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.lesson;
 
 import inc.plab.bpmn.mapper.QuestionAnswerMapper;
 import inc.plab.bpmn.model.lesson.Lesson;
@@ -7,6 +7,10 @@ import inc.plab.bpmn.model.lesson.LessonRepository;
 import inc.plab.bpmn.model.lesson.QuestionAnswer;
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
 import inc.plab.bpmn.model.question.evaluation.result.Result;
+import inc.plab.bpmn.service.gamification.ActivityLogService;
+import inc.plab.bpmn.service.gamification.UserLevelService;
+import inc.plab.bpmn.service.gamification.UserStatisticsService;
+import inc.plab.bpmn.service.scenario.ScenarioUserStatisticsService;
 import inc.plab.bpmn.validation.JsonValidator;
 import lombok.AllArgsConstructor;
 import org.camunda.spin.json.SpinJsonNode;
@@ -22,10 +26,10 @@ import java.util.UUID;
 public class LessonService {
     final EvaluationService evaluationService;
     final LessonRepository lessonRepository;
-    final LevelService levelService;
+    final UserLevelService userLevelService;
     final ScenarioUserStatisticsService scenarioUserStatisticsService;
     final ActivityLogService activityLogService;
-    final UserStatisticService userStatisticService;
+    final UserStatisticsService userStatisticsService;
 
     public LessonResult evaluateLesson(String lessonId, SpinJsonNode lessonAnswers) {
         JsonValidator.validateJson(lessonAnswers.toString());
@@ -53,8 +57,8 @@ public class LessonService {
         if (!lessonObjectives.isEmpty()) {
             for (LessonObjective objective : lessonObjectives) {
                 String objectiveId = String.valueOf(objective.getObjective().getId());
-                levelService.addXpToObjectiveForUser(points, objectiveId, userId);
-                userStatisticService.addToTotalObjectiveXp(points, userId);
+                userLevelService.addXpToObjectiveForUser(points, objectiveId, userId);
+                userStatisticsService.addToTotalObjectiveXp(points, userId);
                 scenarioUserStatisticsService.addObjectiveAndXp(objectiveId, points, userId, scenarioId);
             }
             activityLogService.addLogEntryForAllLessonObjectives(points, userId);

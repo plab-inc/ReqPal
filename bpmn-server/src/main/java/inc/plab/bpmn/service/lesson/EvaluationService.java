@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.lesson;
 
 import inc.plab.bpmn.exception.InvalidAnswerOptionsException;
 import inc.plab.bpmn.exception.InvalidQuestionTypeException;

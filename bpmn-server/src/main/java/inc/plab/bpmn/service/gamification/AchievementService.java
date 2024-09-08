@@ -1,8 +1,11 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.gamification;
 
 import inc.plab.bpmn.model.achievement.Achievement;
 import inc.plab.bpmn.model.achievement.AchievementRepository;
-import inc.plab.bpmn.model.user.*;
+import inc.plab.bpmn.model.user.Profile;
+import inc.plab.bpmn.model.user.ProfileRepository;
+import inc.plab.bpmn.model.user.UserAchievement;
+import inc.plab.bpmn.model.user.UserAchievementRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

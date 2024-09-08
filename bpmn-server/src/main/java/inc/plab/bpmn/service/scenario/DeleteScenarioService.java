@@ -1,20 +1,20 @@
-package inc.plab.bpmn.delegate.service;
+package inc.plab.bpmn.service.scenario;
 
 import inc.plab.bpmn.model.scenario.Scenario;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
-import inc.plab.bpmn.service.BucketService;
+import inc.plab.bpmn.service.aws.BucketService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.stereotype.Component;
 
-import static inc.plab.bpmn.delegate.service.DeployScenarioDelegate.cleanUpDeploymentsToScenario;
+import static inc.plab.bpmn.service.scenario.DeployScenarioService.cleanUpDeploymentsToScenario;
 
 
 @Component
 @RequiredArgsConstructor
-public class DeleteScenarioDelegate {
+public class DeleteScenarioService {
 
     private final ScenarioRepository scenarioRepository;
     private final BucketService bucketService;

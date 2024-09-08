@@ -1,4 +1,4 @@
-package inc.plab.bpmn.delegate.service;
+package inc.plab.bpmn.service.scenario;
 
 import inc.plab.bpmn.dto.StartWorkflowResponseDto;
 import inc.plab.bpmn.model.lesson.Lesson;
@@ -24,11 +24,11 @@ import static org.camunda.spin.Spin.JSON;
 
 @Component
 @RequiredArgsConstructor
-public class WorkflowDelegate {
+public class WorkflowService {
 
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
-    private static final Logger logger = LoggerFactory.getLogger(WorkflowDelegate.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
     private final TaskService taskService;
     private final ScenarioRepository scenarioRepository;
     private final ScenarioProgressRepository scenarioProgressRepository;

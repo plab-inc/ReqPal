@@ -3,7 +3,7 @@ package inc.plab.bpmn.controller;
 import inc.plab.bpmn.dto.InvokeLessonUserTaskResponseDto;
 import inc.plab.bpmn.dto.StartWorkflowResponseDto;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
-import inc.plab.bpmn.service.ProcessService;
+import inc.plab.bpmn.service.scenario.ProcessService;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;

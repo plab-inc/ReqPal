@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.gamification;
 
 import inc.plab.bpmn.model.achievement.Achievement;
 import inc.plab.bpmn.model.achievement.AchievementRepository;

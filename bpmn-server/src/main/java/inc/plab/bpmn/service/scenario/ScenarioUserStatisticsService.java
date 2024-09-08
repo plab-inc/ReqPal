@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.scenario;
 
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
 import inc.plab.bpmn.model.scenario.ScenarioProgress;

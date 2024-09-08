@@ -1,4 +1,4 @@
-package inc.plab.bpmn.delegate.service;
+package inc.plab.bpmn.service.scenario;
 
 import inc.plab.bpmn.model.lesson.Lesson;
 import inc.plab.bpmn.model.lesson.LessonRepository;
@@ -23,14 +23,14 @@ import static org.camunda.spin.Spin.JSON;
 
 @Component
 @RequiredArgsConstructor
-public class TaskDelegate {
+public class ScenarioTaskService {
 
     private final RuntimeService runtimeService;
     private final TaskService taskService;
     private final ScenarioProgressRepository scenarioProgressRepository;
     private final LessonRepository lessonRepository;
     private final ScenarioRepository scenarioRepository;
-    private static final Logger logger = LoggerFactory.getLogger(TaskDelegate.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioTaskService.class);
 
     @SneakyThrows
     public Task invokeLessonUserTask(String scenarioId, String studentId, String teacherId, String lessonResults) {

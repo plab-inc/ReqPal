@@ -2,7 +2,7 @@ package inc.plab.bpmn.controller;
 
 import inc.plab.bpmn.dto.DeployScenarioResponseDto;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
-import inc.plab.bpmn.service.ScenarioService;
+import inc.plab.bpmn.service.scenario.ScenarioService;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.supabase;
 
 import inc.plab.bpmn.model.supabase.SupabaseUser;
 import inc.plab.bpmn.model.user.Profile;

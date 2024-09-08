@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.supabase;
 
 import inc.plab.bpmn.model.supabase.SupabaseUser;
 import inc.plab.bpmn.model.supabase.SupabaseUserRepository;
@@ -7,7 +7,6 @@ import inc.plab.bpmn.model.user.ProfileRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor

@@ -1,7 +1,5 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.scenario;
 
-import inc.plab.bpmn.delegate.service.DeleteScenarioDelegate;
-import inc.plab.bpmn.delegate.service.DeployScenarioDelegate;
 import inc.plab.bpmn.dto.DeployScenarioResponseDto;
 import inc.plab.bpmn.model.scenario.Scenario;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
@@ -19,8 +17,8 @@ import java.util.UUID;
 public class ScenarioService {
 
     private final ScenarioRepository scenarioRepository;
-    private final DeleteScenarioDelegate deleteScenarioDelegate;
-    private final DeployScenarioDelegate deployScenarioDelegate;
+    private final DeleteScenarioService deleteScenarioService;
+    private final DeployScenarioService deployScenarioService;
 
     @SneakyThrows
     public DeployScenarioResponseDto deployScenario(UUID scenarioId, Profile profile) {
@@ -30,7 +28,7 @@ public class ScenarioService {
             throw new Exception("No scenario found to id: " + scenarioId);
         }
 
-        Deployment scenarioDeployment = deployScenarioDelegate.deploy(scenarioOptional.get(), profile);
+        Deployment scenarioDeployment = deployScenarioService.deploy(scenarioOptional.get());
 
         DeployScenarioResponseDto deployScenarioResponseDto = new DeployScenarioResponseDto();
         deployScenarioResponseDto.setDeploymentName(scenarioDeployment.getName());
@@ -47,7 +45,7 @@ public class ScenarioService {
             throw new Exception("No scenario found to id: " + scenarioId);
         }
 
-        deleteScenarioDelegate.deleteScenario(scenarioOptional.get());
+        deleteScenarioService.deleteScenario(scenarioOptional.get());
 
     }
 }

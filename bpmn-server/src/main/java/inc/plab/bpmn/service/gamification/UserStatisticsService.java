@@ -1,4 +1,4 @@
-package inc.plab.bpmn.service;
+package inc.plab.bpmn.service.gamification;
 
 import inc.plab.bpmn.model.user.Profile;
 import inc.plab.bpmn.model.user.ProfileRepository;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @AllArgsConstructor
-public class UserStatisticService {
+public class UserStatisticsService {
 
     private final UserStatisticRepository userStatisticRepository;
     private final ProfileRepository profileRepository;

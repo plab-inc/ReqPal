@@ -2,7 +2,7 @@ package inc.plab.bpmn.websecurity;
 
 import inc.plab.bpmn.exception.TokenVerificationException;
 import inc.plab.bpmn.model.supabase.SupabaseUser;
-import inc.plab.bpmn.service.SupabaseAuthService;
+import inc.plab.bpmn.service.supabase.SupabaseAuthService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

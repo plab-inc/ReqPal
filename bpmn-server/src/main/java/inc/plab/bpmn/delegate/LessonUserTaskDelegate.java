@@ -1,8 +1,8 @@
-package inc.plab.bpmn.delegate.camunda;
+package inc.plab.bpmn.delegate;
 
 import inc.plab.bpmn.model.question.evaluation.LessonResult;
-import inc.plab.bpmn.service.LessonService;
-import inc.plab.bpmn.service.ScenarioUserStatisticsService;
+import inc.plab.bpmn.service.lesson.LessonService;
+import inc.plab.bpmn.service.scenario.ScenarioUserStatisticsService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.spin.json.SpinJsonNode;

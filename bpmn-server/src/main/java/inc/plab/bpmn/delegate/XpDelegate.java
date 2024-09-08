@@ -1,9 +1,9 @@
-package inc.plab.bpmn.delegate.camunda;
+package inc.plab.bpmn.delegate;
 
-import inc.plab.bpmn.service.ActivityLogService;
-import inc.plab.bpmn.service.LevelService;
-import inc.plab.bpmn.service.ScenarioUserStatisticsService;
-import inc.plab.bpmn.service.UserStatisticService;
+import inc.plab.bpmn.service.gamification.ActivityLogService;
+import inc.plab.bpmn.service.gamification.UserLevelService;
+import inc.plab.bpmn.service.gamification.UserStatisticsService;
+import inc.plab.bpmn.service.scenario.ScenarioUserStatisticsService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class XpDelegate implements JavaDelegate {
 
-    final UserStatisticService userStatisticService;
-    final LevelService levelService;
+    final UserStatisticsService userStatisticsService;
+    final UserLevelService userLevelService;
     final ScenarioUserStatisticsService scenarioUserStatisticsService;
     final ActivityLogService activityLogService;
 
-    public XpDelegate(UserStatisticService userStatisticService, LevelService levelService, ScenarioUserStatisticsService scenarioUserStatisticsService, ActivityLogService activityLogService) {
-        this.userStatisticService = userStatisticService;
-        this.levelService = levelService;
+    public XpDelegate(UserStatisticsService userStatisticsService, UserLevelService userLevelService, ScenarioUserStatisticsService scenarioUserStatisticsService, ActivityLogService activityLogService) {
+        this.userStatisticsService = userStatisticsService;
+        this.userLevelService = userLevelService;
         this.scenarioUserStatisticsService = scenarioUserStatisticsService;
         this.activityLogService = activityLogService;
     }
@@ -36,8 +36,8 @@ public class XpDelegate implements JavaDelegate {
             throw new Error("XP could not be parsed. XP needs to be a number: " + e.getMessage());
         }
 
-        levelService.addXpToObjectiveForUser(xp, objectiveId, userId);
-        userStatisticService.addToTotalObjectiveXp(xp, userId);
+        userLevelService.addXpToObjectiveForUser(xp, objectiveId, userId);
+        userStatisticsService.addToTotalObjectiveXp(xp, userId);
         scenarioUserStatisticsService.addObjectiveAndXp(objectiveId, xp, userId, scenarioId);
         activityLogService.addLogEntryForObjective(xp, objectiveId, userId);
     }

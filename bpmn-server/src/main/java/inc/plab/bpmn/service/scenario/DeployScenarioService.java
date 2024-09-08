@@ -1,9 +1,8 @@
-package inc.plab.bpmn.delegate.service;
+package inc.plab.bpmn.service.scenario;
 
 import inc.plab.bpmn.model.scenario.Scenario;
 import inc.plab.bpmn.model.scenario.ScenarioRepository;
-import inc.plab.bpmn.model.user.Profile;
-import inc.plab.bpmn.service.BucketService;
+import inc.plab.bpmn.service.aws.BucketService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.camunda.bpm.engine.RepositoryService;
@@ -17,7 +16,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class DeployScenarioDelegate {
+public class DeployScenarioService {
 
     private final RuntimeService runtimeService;
     private final RepositoryService repositoryService;
@@ -25,11 +24,11 @@ public class DeployScenarioDelegate {
     private final BucketService bucketService;
 
     @SneakyThrows
-    public Deployment deploy(Scenario scenario, Profile profile) {
+    public Deployment deploy(Scenario scenario) {
 
         Deployment deployment = repositoryService.createDeployment()
                 .addInputStream(scenario.getId() + ".bpmn", bucketService.getObjectStreamFromBucket("bpmn", scenario.getBpmnPath()))
-                .tenantId(String.valueOf(profile.getId()))
+                .tenantId(String.valueOf(scenario.getUser().getId()))
                 .name(String.valueOf(scenario.getId()))
                 .source("ReqPal-BPMN-Sever")
                 .enableDuplicateFiltering(true)
