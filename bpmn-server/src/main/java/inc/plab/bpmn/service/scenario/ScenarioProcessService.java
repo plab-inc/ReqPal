@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProcessService {
+public class ScenarioProcessService {
 
     private final WorkflowService workflowService;
     private final TaskService taskService;

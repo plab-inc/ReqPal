@@ -14,11 +14,11 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/bpmn/scenario")
-public class ScenarioController {
+public class ScenarioDeploymentController {
 
     private final ScenarioService scenarioService;
 
-    public ScenarioController(ScenarioService scenarioService) {
+    public ScenarioDeploymentController(ScenarioService scenarioService) {
         this.scenarioService = scenarioService;
     }
 
