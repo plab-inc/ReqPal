@@ -8,10 +8,6 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Component
 public class AchievementDelegate implements JavaDelegate {
 
@@ -37,29 +33,5 @@ public class AchievementDelegate implements JavaDelegate {
         scenarioUserStatisticsService.addGainedAchievement(achievementId, userId, scenarioId);
         activityLogService.addLogEntryForAchievement(achievementXp, achievementId, userId);
         userStatisticsService.addToTotalReqPalXp(achievementXp, userId);
-        addAchievementToVariable(delegateExecution, achievementId);
-    }
-
-    private void addAchievementToVariable(DelegateExecution delegateExecution, String achievementId) {
-        Object currentGainedAchievements = delegateExecution.getVariable("gainedAchievements");
-        List<String> gainedAchievements;
-
-        if (currentGainedAchievements instanceof List<?> tempList) {
-            gainedAchievements = new ArrayList<>();
-            tempList.forEach(item -> {
-                if (item instanceof String) {
-                    gainedAchievements.add((String) item);
-                }
-            });
-
-        } else if (currentGainedAchievements != null && currentGainedAchievements.getClass().isArray() &&
-                currentGainedAchievements.getClass().getComponentType() == String.class) {
-            gainedAchievements = new ArrayList<>(Arrays.asList((String[]) currentGainedAchievements));
-        } else {
-            gainedAchievements = new ArrayList<>();
-        }
-
-        gainedAchievements.add(achievementId);
-        delegateExecution.setVariable("gainedAchievements", gainedAchievements);
     }
 }
